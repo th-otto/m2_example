@@ -262,24 +262,24 @@ PROCEDURE SetColour (no, col: CARDINAL16): [ CARDINAL16 ];
   END SetColour;
 
 
-PROCEDURE FloppyRead (buffer: ADDRESS; drive0, sector,
+PROCEDURE FloppyRead (buffer: ADDRESS; dev, sector,
                       track, side, count: CARDINAL16): INTEGER16;
   BEGIN
-    RETURN trap_14_wllwwwww(8, INTEGER32(buffer), 0, drive0, sector, track, side, count)
+    RETURN trap_14_wllwwwww(8, INTEGER32(buffer), 0, dev, sector, track, side, count)
   END FloppyRead;
   
 
-PROCEDURE FloppyWrite (buffer: ADDRESS; drive0, sector,
+PROCEDURE FloppyWrite (buffer: ADDRESS; dev, sector,
                        track, side, count: CARDINAL16): INTEGER16;
   BEGIN
-    RETURN trap_14_wllwwwww(9, INTEGER32(buffer), 0, drive0, sector, track, side, count)
+    RETURN trap_14_wllwwwww(9, INTEGER32(buffer), 0, dev, sector, track, side, count)
   END FloppyWrite;
   
 
-PROCEDURE FloppyFormat (buffer: ADDRESS; drive0, sectors, track,
+PROCEDURE FloppyFormat (buffer: ADDRESS; dev, sectors, track,
                         side, interleave, virgin: CARDINAL16): INTEGER16;
   BEGIN
-    RETURN trap_14_wllwwwwwlw(10, INTEGER32(buffer), 0, drive0, sectors, track, side, interleave, INTEGER32(087654321H), virgin)
+    RETURN trap_14_wllwwwwwlw(10, INTEGER32(buffer), 0, dev, sectors, track, side, interleave, INTEGER32(087654321H), virgin)
   END FloppyFormat;
   
 
@@ -327,10 +327,10 @@ PROCEDURE PrototypeBootSector (buffer: ADDRESS; serial: INTEGER32;
   END PrototypeBootSector;
 
 
-PROCEDURE FloppyVerify (buffer: ADDRESS; drive0, sector,
+PROCEDURE FloppyVerify (buffer: ADDRESS; dev, sector,
                         track, side, count: CARDINAL16): INTEGER16;
   BEGIN
-    RETURN trap_14_wllwwwww(19, INTEGER32(buffer), 0, drive0, sector, track, side, count)
+    RETURN trap_14_wllwwwww(19, INTEGER32(buffer), 0, dev, sector, track, side, count)
   END FloppyVerify;
   
 

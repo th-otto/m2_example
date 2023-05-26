@@ -15,6 +15,7 @@ DEFINITION MODULE SysVars2;
  *  03.12.90 DS     0.1      Erste Definitionen
  *  04.12.90 DS     1.0      Alle Defintionen fertig
  *  06.12.90 TT     1.0      Kleine Korrekturen
+ *  25.05.23 THO             Port to gm2
  *)
 
 (* Systemvariable nach dem Profibuch

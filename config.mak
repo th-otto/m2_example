@@ -3,6 +3,8 @@ M2 = $(CROSS)gm2 -I$(top_srcdir)/src
 AR = $(CROSS)ar
 M2CFLAGS = -fpim -Os -Werror
 M2LDFLAGS =
+# the cc1gm2 backend sometimes complains about -sys-root being passed
+M2CFLAGS += -Wno-complain-wrong-lang
 ifneq ($(shell echo "" | $(CROSS)gcc -dM -E - | grep __ELF__),)
 M2CFLAGS += -ffunction-sections -fdata-sections
 M2LDFLAGS += -Wl,--gc-sections

@@ -9,6 +9,7 @@ OBJS = \
 	SysVars2.o \
 	Characters.o \
 	XBIOS.o \
+	BIOS.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -20,6 +21,7 @@ SysVars.o: SysVars.mod SysVars.def
 SysVars2.o: SysVars2.mod SysVars2.def
 Characters.o: Characters.mod Characters.def
 XBIOS.o: XBIOS.mod XBIOS.def
+BIOS.o: BIOS.mod BIOS.def
 
 clean::
 	rm -f *.o *.a
