@@ -1,0 +1,200 @@
+DEFINITION MODULE SysVars2;
+
+(*  --------------------------------------------------------------------------
+ *  System-Version: MOS 2.2
+ *  Version       : 1.0
+ *  Text-Version  : V#005
+ *  Modul-Halter  : Dirk Steins
+ *  Copyright Dezember 1990 by Dirk Steins
+ *  --------------------------------------------------------------------------
+ *  DS  : Dirk Steins
+ *  TT  : Ter Tempelmann
+ *  --------------------------------------------------------------------------
+ *  Datum    Autor  Version  Bemerkung (Arbeitsbericht)
+ *
+ *  03.12.90 DS     0.1      Erste Definitionen
+ *  04.12.90 DS     1.0      Alle Defintionen fertig
+ *  06.12.90 TT     1.0      Kleine Korrekturen
+ *)
+
+(* Systemvariable nach dem Profibuch
+ * Bezeichnungen nach
+ *      Atari ST Profi Buch
+ *      Jankowski, Rabich, Reschke
+ *      Sybex-Verlag
+ *
+ * Mehr Informationen zu den Variablen gibt es ebenfalls in diesem
+ * genanntem Werk.
+ *
+ * In diesem Modul sind die Systemvariablen nicht als Adressen
+ * wie im Modul SysVars aufgefÅhrt, sondern direkt als absolut
+ * adressierte Variablen.
+ * Auf die Variablen darf nur aus dem Supervisormodus zugegriffen
+ * werden, da sonst ein Bus-Error ("Zugriff auf unbekannte Adr.")
+ * erfolgt. Verwenden Sie dazu z.B. die Funktionen des Moduls "SysUtil1".
+ *)
+
+FROM SYSTEM     IMPORT ADDRESS, BYTE, CARDINAL16, CARDINAL32, INTEGER16, INTEGER32;
+
+FROM SysTypes   IMPORT BBS, PtrBP, PtrOSHeader;
+
+FROM GrafBase   IMPORT PtrPalette;
+
+TYPE PtrVBL     = POINTER TO ARRAY [0..MAX(SHORTCARD)] OF ADDRESS;
+
+     PtrMD      = POINTER TO MD;
+     MD         = RECORD
+                    m_link  : PtrMD;
+                    m_start : ADDRESS;
+                    m_length: CARDINAL32;
+                    m_own   : PtrBP;
+                  END;
+     
+     PtrHDInfo  = POINTER TO HDInfo;
+     HDInfo     = RECORD
+                    puns        : SHORTCARD;
+                    pun         : ARRAY [0..15] OF BYTE;
+                    partStart   : ARRAY [0..15] OF CARDINAL32;
+                    cookie      : CARDINAL32;
+                    cookiePtr   : ADDRESS;
+                    versionNum  : SHORTCARD;
+                    maxSectSize : SHORTCARD;
+                    reserverd   : ARRAY [0..15] OF CARDINAL32;
+                  END;
+                  
+     PtrBCB     = POINTER TO BCB;
+     BCB        = RECORD
+                    n_link      : PtrBCB;       (* nÑchster BCB         *)
+                    bufdrv      : INTEGER16;    (* Laufwerksnummer      *)
+                    buftyp      : INTEGER16;    (* FAT- od. Dir-Buffer  *)
+                    bufrec      : INTEGER16;    (* Recordnummer         *)
+                    dirty       : INTEGER16;    (* Schreibzugriff hat
+                                                 * stattgefunden        *)
+                    dm          : ADDRESS;      (* Zeiger auf DMD       *)
+                    bufr        : ADDRESS;      (* Zeiger auf Buffer    *)
+                  END;
+                  
+     LBITSET    = SET OF [0..31];
+     
+     cookie     = RECORD
+                    id          : ARRAY[0..3] OF CHAR;
+                    value       : CARDINAL32;
+                  END;
+
+VAR
+    
+ etv_timer  [0400H] : ADDRESS;  (* Interrupt-Vektor des System-Timers *)
+ etv_critic [0404H] : ADDRESS;  (* Vektor fÅr den Critical-Error-Handler *)
+ etv_term   [0408H] : ADDRESS;  (* Interrupt-Vektor fÅr Prozeûbeendigungen *)
+ etv_xtra   [040CH] : ARRAY [0..4] OF ADDRESS;
+                               (* 5 reservierte Vektoren *)
+ memvalid   [0420H] : CARDINAL32; (* = $752019f3 heiût, Speicherkonfiguration *)
+                               (* ist gÅltig (nach RESET)                  *)
+                               (* siehe auch memval2, memval3 und memcntrl *)
+ memcntrl   [0424H] : INTEGER16; (* Unteres Nibble des Schattenregisters des *)
+                               (* Speicherkontroll-Registers ($ff8001)     *)
+ resvalid   [0426H] : CARDINAL32; (* = $31415926 => bei RESET Åber resvector  *)
+                               (*                springen                  *)
+ resvector  [042AH] : ADDRESS;  (* siehe resvalid                           *)
+ phystop    [042EH] : ADDRESS;  (* Zeigt auf 1. Byte Åber phys. Ende des RAM *)
+ _membot    [0432H] : ADDRESS;  (* Anfang des unter GEMDOS freien Speichers  *)
+ _memtop    [0436H] : ADDRESS;  (* Ende   des unter GEMDOS freien Speichers  *)
+ memval2    [043AH] : CARDINAL32; (* = $237698aa , gilt in Verbindung mit memval *)
+ flock      [043EH] : INTEGER16; (* fÅr Sperren des DMA-Zugriffs             *)
+ seekrate   [0440H] : INTEGER16; (* Default-Werte fÅr die Floppy-Steprate    *)
+ _timer_ms  [0442H] : INTEGER16; (* Zeit in ms, die zwischen zwei System-Timer *)
+                               (* Interrupts liegt, normalerweise 20 ms    *)
+ _fverify   [0444H] : INTEGER16; (* 0: kein Verify nach Floppy-Schreiben     *)
+ _bootdev   [0446H] : INTEGER16; (* legt das Boot-Laufwerk nach dem nÑchstem *)
+                               (* RESET fest                               *)
+ palmode    [0448H] : INTEGER16; (* fÅr Fernsehnorm: FALSE=60Hz, sonst 50Hz  *)
+ defshiftmd [044AH] : INTEGER16; (* Default Farb-Auflîsung: 0=320*200,1=640*200*)
+ sshiftmd   [044CH] : BYTE;     (* Shadow des Shifter-Modus-Registers       *)
+ _v_bas_ad  [044EH] : ADDRESS;  (* Zeiger auf den Anfang des Bildspeichers  *)
+ vblsem     [0452H] : INTEGER16; (* TRUE= VBL-Handler aktiviert              *)
+ nvbls      [0454H] : INTEGER16; (* Anzahl der EintrÑge in _vblqueue         *)
+ _vblqueue  [0456H] : PtrVBL;   (* Zeiger auf Tabelle mit Adressen der VBL- *)
+                               (* Routinen. 1. Vektor immer Mausbewegung!! *)
+ colorptr   [045AH] : PtrPalette; (* Zeiger auf Farbpalette nach nÑchstem VBL *)
+                               (* (kann auch 0 sein, dann passiert nichts) *)
+ screenpt   [045EH] : ADDRESS;  (* Zeiger auf Start des Bildschirms nach    *)
+                               (* nÑchstem VBlank. (kann auch NIL sein)    *)
+ _vbclock   [0462H] : CARDINAL32; (* Anzahl der bereits erfolgten VBlanks     *)
+ _frclock   [0466H] : CARDINAL32; (* wie _vbclock, wird nur nicht durch vblsem *)
+                               (* gestoppt                                 *)
+ hdv_init   [046AH] : ADDRESS;  (* Vektor fÅr Init der logischen Drives     *)
+ swv_vec    [046EH] : ADDRESS;  (* Vektor auf Routine bei Wechsel           *)
+                               (* Mono <-> Color, normalerweise auf RESET  *)
+ hdv_bpb    [0472H] : ADDRESS;  (* Vektor fÅr GetBPB auf logischen Drives   *)
+ hdv_rw     [0476H] : ADDRESS;  (* Vektor fÅr Lesen/Schreiben auf log. Drives *)
+ hdv_boot   [047AH] : ADDRESS;  (* Vek. fÅr Lesen des Bootsectors auf log. "  *)
+ hdv_mediach[047EH] : ADDRESS;  (* Vek. fÅr Wechselstatus auf log. Drive    *)
+ _cmdload   [0482H] : BOOLEAN;  (* <>0 : Lade COMMAND.COM statt GEM nach Boot *)
+ conterm    [0484H] : BBS;      (* Attributbits fÅr CON:                    *)
+ trp14ret   [0486H] : ADDRESS;  (* Interne RÅcksprungadresse bei TRAP #14   *)
+ criticret  [048AH] : ADDRESS;  (* Interne RÅcksprungadresse                *)
+ themd      [048EH] : PtrMD;    (* MD-Struktur des GEMDOS. Nicht Ñndern!    *)
+ _____md    [049EH] : PtrMD;    (* Platz fÅr weiteren MD                    *)
+ savptr     [04A2H] : ADDRESS;  (* Zeiger auf BIOS Register-Stack           *)
+ _nflops    [04A6H] : INTEGER16; (* Anzahl der angemeldeten Disk-Drives      *)
+ con_state  [04A8H] : CARDINAL32; (* Interner zeiger fÅr Bildschirmausgaben   *)
+ sav_row    [04ACH] : INTEGER16; (* Speicher fÅr Cursor-Position             *)
+ sav_context[04AEH] : ADDRESS;  (* Zeiger auf Speicherbereich fÅr Regs und  *)
+                               (* Stack-Daten bei Exceptions (norm. $380)  *)
+ _bufl      [04B2H] : ARRAY[0..1] OF PtrBCB;
+                               (* Zeiger auf Buffer-Control-Blocks(BCB)    *)
+ _hz_200    [04BAH] : CARDINAL32; (* Bisherige Anzahl der 200Hz-Interrupts    *)
+ the_env    [04BEH] : ADDRESS;  (* Standard Environment Zeiger (unbenutzt)  *)
+ _drvbits   [04C2H] : LBITSET;  (* Bit-Feld der angemeldeten Drives         *)
+ _dskbufp   [04C6H] : ADDRESS;  (* Zeiger auf 1K-Puffer fÅr Disk-I/O        *)
+ _autopath  [04CAH] : ADDRESS;  (* Zeiger auf Zugriffspfad fÅr AUTO-Ordner  *)
+ _vbl_list  [04CEH] : ARRAY [0..6] OF ADDRESS;
+                               (* UrsprÅngliche Liste der VBL-Routinen      *)
+ _dumpflg   [04EEH] : INTEGER16; (* ZÑhler fÅr ALT-HELP-TastendrÅcke          *)
+ _prtabt    [04F0H] : INTEGER16; (* Flag fÅr Abbruch des Druckvorgangs        *)
+ _sysbase   [04F2H] : PtrOSHeader; (* Zeiger auf TOS-Header                  *)
+ _shell_p   [04F6H] : ADDRESS;  (* Zeiger auf Kommandoeingabe-Routine einer  *)
+                               (* Command-Shell. Im ROM nicht benutzt       *)
+ end_os     [04FAH] : ADDRESS;  (* Zeiger auf 1. nicht vom TOS benutztes Byte*)
+ exec_os    [04FEH] : ADDRESS;  (* Zeiger auf Shell-Programm nach Init von   *)
+                               (* GEMDOS. Normalerweise AES und Desktop     *)
+ scr_dump   [0502H] : ADDRESS;  (* Zeiger auf Hardcopy-Routine               *)
+ 
+ (* Die folgenden Variablen sind erst ab TOS 1.2 (Blitter-TOS) vorhanden
+  *)
+ 
+ prv_lsto   [0506H] : ADDRESS;  (* Zeiger auf Routine fÅr Status der Drucker-*)
+                               (* Schnittstelle. Ebenfalls fÅr Hardcopy     *)
+ prv_lst    [050AH] : ADDRESS;  (* Zeiger auf Routine fÅr Ausgabe auf Drucker-*)
+                               (* Schnittstelle. Ebenfalls fÅr Hardcopy     *)
+ prv_auxo   [050EH] : ADDRESS;  (* Zeiger auf Routine fÅr Status der RS232-  *)
+                               (* Schnittstelle. Ebenfalls fÅr Hardcopy     *)
+ prv_aux    [0512H] : ADDRESS;  (* Zeiger auf Routine fÅr Ausgabe auf RS232- *)
+                               (* Schnittstelle. Ebenfalls fÅr Hardcopy     *)
+ pun_ptr    [0516H] : PtrHDInfo;(* Zeiger auf HDINFO-Struktur                *)
+ memval3    [051AH] : CARDINAL32; (* Siehe memval und memval2. Magic=$5555aaaa *)
+ 
+ _longframe [059EH] : INTEGER32;  (* Stackoffset bei Exceptions                *)
+ 
+ (* Die folgenden Variablen sind erst ab TOS 1.6 (STE, TT) vorhanden
+  *)
+ 
+ _p_cookies [05A0H] : POINTER TO ARRAY[0..MAX(SHORTCARD)] OF cookie;
+                               (* Zeiger auf CookieJar - ggf. Null          *)
+ 
+ bell_hook  [05ACH] : ADDRESS;  (* Adresse fÅr 'Glocken'-Ton. Zeigt auf
+                                * normale Prozedur, die mit RTS beendet
+                                * werden muû. Kann Original aufrufen
+                                *)
+ kcl_hook   [05B0H] : ADDRESS;  (* Adresse fÅr 'Key-Click'-Ton. éhnlich
+                                * bell_hook, sollte nur sehr kurz sein.
+                                *)
+
+ (* Die folgenden zwei sind noch nicht offiziell, sondern nur aus dem
+  * SysMon entnommen, wahrscheinlich TT-Only
+  *)
+ 
+ fmemtop    [05A4H] : ADDRESS; (* Memtop fÅr Fast-RAM (TT-only!)             *)
+ fmemvalid  [05A8H] : ADDRESS; (* Memvalid fÅr Fast-RAM. Magic nicht bekannt *)
+
+END SysVars2.
