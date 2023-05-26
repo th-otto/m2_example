@@ -1,0 +1,298 @@
+DEFINITION MODULE FOR "C" GEMDOS;
+
+(*
+ * GEMDOS-Interface nach TDI V3.00
+ * Mit Korrekturen und Erweiterungen von Thomas Tempelmann
+ *
+ * Die Dokumentation wurde direkt von TDI Åbernommen.
+ *
+ * Bei jeder Funktion steht im Kommentar zu Beginn ihr Originalname von Atari.
+ *
+ * Wichtig: Die Term-Routinen (Term0, Term, TermRes) sollte in der Regel
+ *  nicht verwendet werden, sonst stattdessen TermProcess aus dem Modul
+ *  PrgCtrl, denn sonst werden die Abmelderoutinen (s. CatchProcessTerm)
+ *  unter bestimmten Betriebssystemen (KAOS, Mag!X) ggf. nicht ganz
+ *  korrekt ausgefÅhrt, zumindest wird dann ein falscher Exit Code geliefert.
+ *
+ * 'SetOrGet' wurde durch eine korrekte, andere, Definition ersetzt.
+ * 'Exec' wurde in 'Pexec' geÑndert, die Argumente sind nun ADDRESS-Types.
+ * 'Term' hat kein BOOLEAN-Result mehr.
+ * 'Super' hat eine neue Definition.
+ * 'Alloc' hat einen INTEGER32-Parameter, um auch -1 Åbergeben zu kînnen
+ * 'Dup' und 'Force' hinzugefÅgt.
+ * 'Xalloc' fÅr den Atari TT hinzugefÅgt.
+ *)
+
+
+FROM SYSTEM IMPORT BYTE, ADDRESS, CARDINAL16, CARDINAL32, INTEGER16, INTEGER32;
+
+CONST
+  (* BIOS error codes *)
+  EOK           =   0;
+  Error         =  -1;
+  EDrvNR        =  -2;         (* Drive not ready *)
+  EUnCmd        =  -3;         (* Unknown command *)
+  ECRC          =  -4;         (* CRC error *)
+  EBadRq        =  -5;         (* Bad request *)
+  ESeek         =  -6;         (* Seek error *)
+  EMedia        =  -7;         (* Unknown media *)
+  ESecNF        =  -8;         (* Sector not found *)
+  EPaper        =  -9;         (* No paper *)
+  EWritF        = -10;         (* Write fault *)
+  EReadF        = -11;         (* Read fault *)
+  EGenrl        = -12;         (* General error *)
+  EWrPro        = -13;         (* Write protect *)
+  EChng         = -14;         (* Media change *)
+  EUnDev        = -15;         (* Unknown device *)
+  EBadSF        = -16;         (* Bad sectors on format *)
+  EOther        = -17;         (* Insert other disk *)
+
+  (* BDOS Error codes *)
+  EInvFN        = -32;         (* Invalid function number *)
+  EFilNF        = -33;         (* File not found *)
+  EPthNF        = -34;         (* Path not found *)
+  ENHndl        = -35;         (* No handles left *)
+  EAccDn        = -36;         (* Access denied *)
+  EIHndl        = -37;         (* Invalid handle *)
+  ENSMem        = -39;         (* Insufficient memory *)
+  EIMBA         = -40;         (* Invalid memory block address *)
+  EDrive        = -46;         (* Invaild drive specified *)
+  ENMFil        = -49;         (* No more files *)
+
+  (* Other errors *)
+  ERange        = -64;         (* Range error *)
+  EIntrn        = -65;         (* Internal error *)
+  EPLFmt        = -66;         (* Invalid program load format *)
+  EGSBF         = -67;         (* Setblock failure due to growth restr *)
+
+  (*** Konstanten fÅr 'Pexec' ***)
+
+  loadExecute = 0;
+  load = 3;
+  execute = 4;
+  createBasepage = 5;
+  executeAndFree = 6;  (* neuer Modus ab TOS 1.4 *)
+  createBPwMode  = 7;  (* neuer Modus bei Atari TT *)
+
+  (*** Modi fÅr 'Xalloc': ***)
+
+  stRAMonly = 0;
+  fastRAMonly = 1;
+  stRAMprefered = 2;
+  fastRAMprefered = 3;
+
+
+TYPE
+
+  IOMode = (read, write);
+  SeekMode = (beginning, relative, end);
+
+(*
+ * Diese Type wurde eingeklammert, weil sie falsch von TDI
+ * definiert wurde. Stattdessen ist die folg. Definition zu verwenden!
+ *
+ * SetOrGet = ( set, get );
+ *)
+
+  TimeAccessMode = ( getTime, setTime );
+
+  DiskInfoBuffer = RECORD
+                     freeSpace  : CARDINAL32; (* in clusters *)
+                     clusters   : CARDINAL32; (* num on disk *)
+                     sectorSize : CARDINAL32; (* in bytes *)
+                     clusterSize: CARDINAL32; (* sectors per cluster *)
+                   END;
+
+TYPE SHARED_LIB;
+TYPE SLB_EXEC = PROCEDURE(SHARED_LIB, INTEGER32, ...) : [ INTEGER32 ];
+
+PROCEDURE OldTerm ();
+(* Achtung: In der Regel stattdessen 'TermProcess(0)' benutzen! *)
+
+PROCEDURE ConIn ( VAR ch: CHAR );
+(* 'Cconin': Read character from standard input *)
+
+PROCEDURE ConScanIn ( VAR ch, scan: CHAR );
+(* 'Cconin': Read character and scan code from standard input *)
+
+PROCEDURE ConOut ( ch: CHAR );
+(* 'Cconout': Write character to standard output *)
+
+PROCEDURE AuxIn ( VAR ch: CHAR );
+(* 'Cauxin': Read character from auxiliary port *)
+
+PROCEDURE AuxOut ( ch: CHAR );
+(* 'Cauxout': Write character to auxiliary port *)
+
+PROCEDURE PrnOut ( ch: CHAR );
+(* 'Cprnout': Write character to printer port *)
+
+PROCEDURE RawIO ( VAR ch: CHAR; rw: IOMode );
+(* 'Crawio': Raw IO to standard input/output device *)
+
+PROCEDURE RawIn ( VAR ch: CHAR );
+(* 'Crawcin': Raw input from standard input *)
+
+PROCEDURE RawScanIn ( VAR ch, scan: CHAR );
+(* 'Crawcin': Raw input of character and scan code from standard input *)
+
+PROCEDURE NecIn ( VAR ch: CHAR );
+(* 'Cnecin': Read character from standard input with no echo *)
+
+PROCEDURE ConWS ( str: ARRAY OF CHAR );
+(* 'Cconws': Write null terminated string to standard output device *)
+
+PROCEDURE ConRS ( VAR str: ARRAY OF BYTE );
+(* 'Cconws': Read edited string from standard input device *)
+
+PROCEDURE ConIS (): BOOLEAN;
+(* 'Cconis': Return status of standard input *)
+
+PROCEDURE SetDrv ( drive: CARDINAL; VAR DriveMap: CARDINAL32 );
+(* 'Dsetdrv': Set default drive *)
+
+PROCEDURE ConOS (): BOOLEAN;
+(* 'Cconos': Return output status of standard output *)
+
+PROCEDURE PrnOS (): BOOLEAN;
+(* 'Cprnos': Return output status of standard printer *)
+
+PROCEDURE AuxIS (): BOOLEAN;
+(* 'Cauxis': Return status of standard auxiliary *)
+
+PROCEDURE AuxOS (): BOOLEAN;
+(* 'Cauxos': Return output status of standard auxiliary *)
+
+PROCEDURE Maddalt ( start: ADDRESS; size: INTEGER32 ) : [ INTEGER32 ];
+(* Register 'Alternative' RAM with GEMDOS *)
+
+PROCEDURE Srealloc ( size: INTEGER32 ) : [ INTEGER32 ];
+(* Allocate screen memory *)
+
+PROCEDURE Slbopen(name: ARRAY OF CHAR; path: ARRAY OF CHAR; min_ver: INTEGER32; VAR sl: SHARED_LIB; VAR fn: SLB_EXEC): INTEGER32;
+(* Open a shared library *)
+
+PROCEDURE Slbclose(sl: SHARED_LIB) : [ INTEGER32 ];
+(* Close a shared library *)
+
+PROCEDURE GetDrv ( VAR drive: CARDINAL );
+(* 'Dgetdrv': Get default drive *)
+
+PROCEDURE SetDTA ( addr: ADDRESS );
+(* 'Fsetdta': Set disk transfer address *)
+
+PROCEDURE Super (stack: INTEGER32): INTEGER32;
+(* 'Super':
+ * Ist 'stack' Null, wird in den Supervisormode gelangt und ein Wert
+ * geliefert, der beim ZurÅckschalten in den Usermode hier wieder angegeben
+ * werden muû.
+ * Ist 'stack' Eins, wird der aktuelle Modus geliefert: Null fÅr den
+ * Usermode, -1 fÅr den Supervisormode.
+ *)
+
+PROCEDURE GetDate ( VAR packeddate: CARDINAL16 );
+(* 'Tgetdate': Get Date *)
+
+PROCEDURE SetDate ( packeddate: CARDINAL16 );
+(* 'Tsetdate': Set Date *)
+
+PROCEDURE GetTime ( VAR packedtime: CARDINAL16 );
+(* 'Tgettime': Get Date *)
+
+PROCEDURE SetTime ( packedtime: CARDINAL16 );
+(* 'Tsettime': Set Date *)
+
+PROCEDURE GetDTA ( VAR addr: ADDRESS );
+(* 'Fgetdta': Get disk transfer address *)
+
+PROCEDURE Version ( VAR versionNo: CARDINAL );
+(* 'Sversion': Get version number *)
+
+PROCEDURE TermRes ( keepAmount: CARDINAL32; exitcode: INTEGER );
+(* 'Ptermres': Terminate and stay resident *)
+
+PROCEDURE Sconfig(mode: INTEGER16; flags: INTEGER32) : [ INTEGER32 ];
+(* Configuration of parts of the operating system *)
+
+PROCEDURE DFree (VAR infoblock: DiskInfoBuffer; drive: CARDINAL ) : [ INTEGER32 ];
+(* 'Dfree': Get drive free space *)
+
+PROCEDURE DirCreate ( path: ARRAY OF CHAR ): BOOLEAN;
+(* 'Dcreate': Create a subdirectory *)
+
+PROCEDURE DirDelete ( path: ARRAY OF CHAR ): BOOLEAN;
+(* 'Ddelete': Delete a subdirectory *)
+
+PROCEDURE SetPath ( path: ARRAY OF CHAR ): BOOLEAN;
+(* 'Dsetpath': Set current directory *)
+
+PROCEDURE Create ( fname: ARRAY OF CHAR; attr: CARDINAL;
+                   VAR handle: INTEGER  );
+(* 'Fcreate': Create a file *)
+
+PROCEDURE Open ( fname: ARRAY OF CHAR; mode: CARDINAL;
+                 VAR handle: INTEGER );
+(* 'Fopen': Open a file *)
+
+PROCEDURE Close ( handle: INTEGER ): BOOLEAN;
+(* 'Fclose': Close a file *)
+
+PROCEDURE Read ( handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS );
+(* 'Fread': Read file *)
+
+PROCEDURE Write ( handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS );
+(* 'Fwrite': Write file *)
+
+PROCEDURE Delete ( fname: ARRAY OF CHAR ): BOOLEAN;
+(* 'Fdelete': Delete file *)
+
+PROCEDURE Seek ( offset: INTEGER32; handle: INTEGER; mode: SeekMode;
+                 VAR newPosFromBeginning: INTEGER32 );
+(* 'Fseek': Seek file pointer *)
+
+PROCEDURE Attrib ( fname: ARRAY OF CHAR; getOrSet: TimeAccessMode;
+                   VAR attr: CARDINAL ) : [ BOOLEAN ];
+(* 'Fattrib': Get/Set file attributes *)
+
+PROCEDURE Dup ( stdHandle: INTEGER; VAR newHandle: INTEGER );
+(* 'Fdup': Liefert eine Kopie eines Standard-Handles (0-5) *)
+
+PROCEDURE Force ( stdHandle, newHandle: INTEGER ): BOOLEAN;
+(* 'Fforce': LÑût 'stdHandle' auf 'newHandle' verweisen *)
+
+PROCEDURE GetPath ( VAR path: ARRAY OF CHAR; driveno: CARDINAL ) : [ BOOLEAN ];
+(* 'Dgetpath': Get current directory *)
+
+PROCEDURE Alloc ( amount: INTEGER32; VAR Addr: ADDRESS );
+(* 'Malloc': Allocate memory, 'bytes = -1' returns amount of largest block *)
+
+PROCEDURE Free ( Addr: ADDRESS ): [ BOOLEAN ];
+(* 'Mfree': Free memory *)
+
+PROCEDURE Shrink ( Addr: ADDRESS; NewSize: CARDINAL32 ): [ BOOLEAN ];
+(* 'Mshrink': Shrink size of allocated memory *)
+
+PROCEDURE Pexec ( Mode: CARDINAL; Name, Arguments, Environment: ADDRESS;
+                  VAR Result: INTEGER32 );
+(* 'Pexec': Load or execute a process *)
+
+PROCEDURE Term ( exitcode: INTEGER );
+(* Achtung: In der Regel stattdessen 'TermProcess(exitcode)' benutzen! *)
+
+PROCEDURE SFirst ( fname: ARRAY OF CHAR; Attr: CARDINAL;
+                   VAR Result: INTEGER );
+(* 'Fsfirst': Search for first file *)
+
+PROCEDURE SNext ( VAR Result: INTEGER );
+(* 'Fsnext': Search for next file *)
+
+PROCEDURE Rename ( oldname, newname: ARRAY OF CHAR ) : [ BOOLEAN ];
+(* 'Frename': Rename a file *)
+
+PROCEDURE DaTime ( handle: INTEGER; Buffer: ADDRESS; getOrSet: TimeAccessMode ) : [ BOOLEAN ];
+(* 'Fdatime': Get/Set file date and time stamp *)
+
+PROCEDURE Xalloc ( Bytes: INTEGER32; mode: CARDINAL; VAR Addr: ADDRESS );
+(* 'Mxalloc': Erweiterte Alloc-Funktion fÅr den Atari TT. *)
+
+END GEMDOS.

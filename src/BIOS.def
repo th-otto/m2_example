@@ -89,15 +89,15 @@ PROCEDURE BConIn(dev: Device): CARDINAL32;
        hi word, character in low word. *)
 
 
-PROCEDURE BConOut(dev: Device; c: CHAR): [ INTEGER32 ];
+PROCEDURE BConOut(dev: Device; ch: CHAR): [ INTEGER32 ];
   (* write character to device. (waits for device ready)
 
      dev: the device to write to.
      c: the character to write. *)
 
 
-PROCEDURE RWAbs(rw: RW; buf: ADDRESS; count, recno, dev: CARDINAL): INTEGER32;
-PROCEDURE LRWAbs(rw: RW; buf: ADDRESS; count, dev: CARDINAL; lrecno: INTEGER32): INTEGER32;
+PROCEDURE RWAbs(mode: RW; buffer: ADDRESS; count, recno, dev: CARDINAL): INTEGER32;
+PROCEDURE LRWAbs(mode: RW; buffer: ADDRESS; count, dev: CARDINAL; lrecno: INTEGER32): INTEGER32;
   (* read/write absolute sectors.
 
      rw: the type of read/write operation.
@@ -109,7 +109,7 @@ PROCEDURE LRWAbs(rw: RW; buf: ADDRESS; count, dev: CARDINAL; lrecno: INTEGER32):
      returns: 0 => OK, otherwise error code. *)
 
 
-PROCEDURE SetException(vecnum: CARDINAL; vec: ADDRESS);
+PROCEDURE SetException(excno: CARDINAL; vec: ADDRESS);
   (* set exception vector.
 
      vecnum: vector to set.
@@ -124,7 +124,7 @@ PROCEDURE SetException(vecnum: CARDINAL; vec: ADDRESS);
                        $102 = Process terminate hook. *)
 
 
-PROCEDURE GetException(vecnum: CARDINAL): ADDRESS;
+PROCEDURE GetException(excno: CARDINAL): ADDRESS;
   (* get exception vector.
 
      vecnum: as for SetException.

@@ -127,9 +127,9 @@ PROCEDURE BConOut (dev: Device; ch: CHAR): [ INTEGER32 ];
 
 
 PROCEDURE RWAbs (mode: RW; buffer: ADDRESS;
-                 blocks, blkno, dev: CARDINAL): INTEGER32;
+                 count, recno, dev: CARDINAL): INTEGER32;
   BEGIN
-    RETURN trap_13_wwlwww(4, INTEGER(mode), INTEGER32(buffer), blocks, blkno, dev);
+    RETURN trap_13_wwlwww(4, INTEGER(mode), INTEGER32(buffer), count, recno, dev);
   END RWAbs;
 
 
@@ -139,9 +139,9 @@ PROCEDURE LRWAbs(mode: RW; buffer: ADDRESS; count, dev: CARDINAL; lrecno: INTEGE
   END LRWAbs;
 
 
-PROCEDURE SetException (excno: CARDINAL; proc: ADDRESS);
+PROCEDURE SetException (excno: CARDINAL; vec: ADDRESS);
   BEGIN
-    trap_13_wwl(5, excno, INTEGER32(proc));
+    trap_13_wwl(5, excno, INTEGER32(vec));
   END SetException;
 
 

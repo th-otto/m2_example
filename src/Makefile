@@ -10,6 +10,7 @@ OBJS = \
 	Characters.o \
 	XBIOS.o \
 	BIOS.o \
+	GEMDOS.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -22,6 +23,7 @@ SysVars2.o: SysVars2.mod SysVars2.def
 Characters.o: Characters.mod Characters.def
 XBIOS.o: XBIOS.mod XBIOS.def
 BIOS.o: BIOS.mod BIOS.def
+GEMDOS.o: GEMDOS.mod GEMDOS.def
 
 clean::
 	rm -f *.o *.a

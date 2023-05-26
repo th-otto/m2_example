@@ -210,9 +210,9 @@ BEGIN
 END trap_14_wllwwwwwlw;
 
 
-PROCEDURE InitMouse (mtyp: MouseType; VAR parm: ParamBlk; serveproc: ADDRESS);
+PROCEDURE InitMouse (mtyp: MouseType; VAR param: ParamBlk; serveproc: ADDRESS);
   BEGIN
-    trap_14_wwll(0, INTEGER(mtyp), INTEGER32(ADR(parm)), INTEGER32(serveproc))
+    trap_14_wwll(0, INTEGER(mtyp), INTEGER32(ADR(param)), INTEGER32(serveproc))
   END InitMouse;
 
 
@@ -242,44 +242,44 @@ PROCEDURE GetResolution (): INTEGER16;
   END GetResolution;
 
 
-PROCEDURE SetScreenBase (logAddr, physAddr: ADDRESS; res: INTEGER16);
+PROCEDURE SetScreenBase (logLoc, physLoc: ADDRESS; rez: INTEGER16);
   BEGIN
-    IF logAddr= NIL THEN logAddr := ADDRESS(-1); END;
-    IF physAddr= NIL THEN physAddr := ADDRESS(-1); END;
-    trap_14_wllw(5, INTEGER32(logAddr), INTEGER32(physAddr), res)
+    IF logLoc = NIL THEN logLoc := ADDRESS(-1); END;
+    IF physLoc = NIL THEN physLoc := ADDRESS(-1); END;
+    trap_14_wllw(5, INTEGER32(logLoc), INTEGER32(physLoc), rez);
   END SetScreenBase;
 
 
-PROCEDURE SetPalette (VAR parm: Palette);
+PROCEDURE SetPalette (VAR palette: Palette);
   BEGIN
-    trap_14_wl(6, INTEGER32(ADR(parm)))
+    trap_14_wl(6, INTEGER32(ADR(palette)))
   END SetPalette;
 
 
-PROCEDURE SetColour (no, col: CARDINAL16): [ CARDINAL16 ];
+PROCEDURE SetColour (colorNum, color: CARDINAL16): [ CARDINAL16 ];
   BEGIN
-    RETURN trap_14_www(7, no, col)
+    RETURN trap_14_www(7, colorNum, color)
   END SetColour;
 
 
-PROCEDURE FloppyRead (buffer: ADDRESS; dev, sector,
+PROCEDURE FloppyRead (buffer: ADDRESS; drive, sector,
                       track, side, count: CARDINAL16): INTEGER16;
   BEGIN
-    RETURN trap_14_wllwwwww(8, INTEGER32(buffer), 0, dev, sector, track, side, count)
+    RETURN trap_14_wllwwwww(8, INTEGER32(buffer), 0, drive, sector, track, side, count)
   END FloppyRead;
   
 
-PROCEDURE FloppyWrite (buffer: ADDRESS; dev, sector,
+PROCEDURE FloppyWrite (buffer: ADDRESS; drive, sector,
                        track, side, count: CARDINAL16): INTEGER16;
   BEGIN
-    RETURN trap_14_wllwwwww(9, INTEGER32(buffer), 0, dev, sector, track, side, count)
+    RETURN trap_14_wllwwwww(9, INTEGER32(buffer), 0, drive, sector, track, side, count)
   END FloppyWrite;
   
 
-PROCEDURE FloppyFormat (buffer: ADDRESS; dev, sectors, track,
+PROCEDURE FloppyFormat (buffer: ADDRESS; drive, spt, track,
                         side, interleave, virgin: CARDINAL16): INTEGER16;
   BEGIN
-    RETURN trap_14_wllwwwwwlw(10, INTEGER32(buffer), 0, dev, sectors, track, side, interleave, INTEGER32(087654321H), virgin)
+    RETURN trap_14_wllwwwwwlw(10, INTEGER32(buffer), 0, drive, spt, track, side, interleave, INTEGER32(087654321H), virgin)
   END FloppyFormat;
   
 
@@ -289,9 +289,9 @@ PROCEDURE MIDIWS (VAR str: ARRAY OF BYTE; len: CARDINAL16);
   END MIDIWS;
   
 
-PROCEDURE MFPint (no: CARDINAL16; proc: PROC);
+PROCEDURE MFPint (intNo: CARDINAL16; vector: PROC);
   BEGIN
-    trap_14_wwl(13, no, INTEGER32(proc));
+    trap_14_wwl(13, intNo, INTEGER32(vector));
   END MFPint;
 
 
@@ -308,9 +308,9 @@ PROCEDURE ConfigureRS232 (baud: SerialSpeed; handshake: FlowFlavor;
   END ConfigureRS232;
 
 
-PROCEDURE SetKeyTable (unshift, shift, caps: KeyTransPtr): KeyTablePtr;
+PROCEDURE SetKeyTable (unshift, shift, capslock: KeyTransPtr): KeyTablePtr;
   BEGIN
-    RETURN KeyTablePtr(trap_14_wlll(16, INTEGER32(unshift), INTEGER32(shift), INTEGER32(caps)))
+    RETURN KeyTablePtr(trap_14_wlll(16, INTEGER32(unshift), INTEGER32(shift), INTEGER32(capslock)))
   END SetKeyTable;
 
 
@@ -320,17 +320,17 @@ PROCEDURE Random (): CARDINAL32;
   END Random;
 
 
-PROCEDURE PrototypeBootSector (buffer: ADDRESS; serial: INTEGER32;
-                               dtype, exec: INTEGER16);
+PROCEDURE PrototypeBootSector (buffer: ADDRESS; serialNo: INTEGER32;
+                               disktype, execFlag: INTEGER16);
   BEGIN
-    trap_14_wllww(18, INTEGER32(buffer), serial, dtype, exec);
+    trap_14_wllww(18, INTEGER32(buffer), serialNo, disktype, execFlag);
   END PrototypeBootSector;
 
 
-PROCEDURE FloppyVerify (buffer: ADDRESS; dev, sector,
+PROCEDURE FloppyVerify (buffer: ADDRESS; drive, sector,
                         track, side, count: CARDINAL16): INTEGER16;
   BEGIN
-    RETURN trap_14_wllwwwww(19, INTEGER32(buffer), 0, dev, sector, track, side, count)
+    RETURN trap_14_wllwwwww(19, INTEGER32(buffer), 0, drive, sector, track, side, count)
   END FloppyVerify;
   
 
@@ -346,9 +346,9 @@ PROCEDURE ConfigureCursor (mode: INTEGER16; rate: INTEGER16): [ INTEGER16 ];
   END ConfigureCursor;
 
 
-PROCEDURE SetDateTime (time: CARDINAL32);
+PROCEDURE SetDateTime (datetime: CARDINAL32);
   BEGIN
-    trap_14_wl(22, time)
+    trap_14_wl(22, datetime)
   END SetDateTime;
 
 
@@ -370,29 +370,30 @@ PROCEDURE KeyboardWS (VAR str: ARRAY OF BYTE; len: CARDINAL16);
   END KeyboardWS;
   
 
-PROCEDURE DisableInterrupt (no: CARDINAL16);
+PROCEDURE DisableInterrupt (intNo: CARDINAL16);
   BEGIN
-    trap_14_ww(26, no)
+    trap_14_ww(26, intNo);
   END DisableInterrupt;
 
-PROCEDURE EnableInterrupt (no: CARDINAL16);
+
+PROCEDURE EnableInterrupt (intNo: CARDINAL16);
   BEGIN
-    trap_14_ww(27, no)
+    trap_14_ww(27, intNo);
   END EnableInterrupt;
 
 
-PROCEDURE GIRead (reg: CARDINAL16): CARDINAL16;
+PROCEDURE GIRead (regno: CARDINAL16): CARDINAL16;
 VAR r: INTEGER;
   BEGIN
-    r := SHORTINT(reg);
+    r := SHORTINT(regno);
     RETURN trap_14_www(28, 0, INTEGER(BITSET(r) * BITSET(07FH)))
   END GIRead;
   
 
-PROCEDURE GIWrite (reg: CARDINAL16; data: CARDINAL16);
+PROCEDURE GIWrite (regno: CARDINAL16; data: CARDINAL16);
 VAR r: INTEGER;
   BEGIN
-    r := SHORTINT(reg);
+    r := SHORTINT(regno);
     trap_14_www(28, data, INTEGER(BITSET(r) + BITSET(080H)))
   END GIWrite;
   
@@ -409,9 +410,9 @@ PROCEDURE GIOnBit (bitno: CARDINAL16);
   END GIOnBit;
 
 
-PROCEDURE SetTimerInterrupt (which: Timer; ctrl, data: CARDINAL16; proc: PROC);
+PROCEDURE SetTimerInterrupt (which: Timer; control, data: CARDINAL16; vec: PROC);
   BEGIN
-    trap_14_wwwwl(31, INTEGER(which), ctrl, data, INTEGER32(proc));
+    trap_14_wwwwl(31, INTEGER(which), control, data, INTEGER32(vec));
   END SetTimerInterrupt;
 
 
@@ -421,9 +422,9 @@ PROCEDURE DoSound (data: ADDRESS): [ ADDRESS ];
   END DoSound;
 
 
-PROCEDURE ConfigurePrinter (data: PrtConfigSet): [ PrtConfigSet ];
+PROCEDURE ConfigurePrinter (config: PrtConfigSet): [ PrtConfigSet ];
   BEGIN
-    RETURN PrtConfigSet(trap_14_ww(33, INTEGER(data)))
+    RETURN PrtConfigSet(trap_14_ww(33, INTEGER(config)));
   END ConfigurePrinter;
 
 
@@ -433,9 +434,9 @@ PROCEDURE KeyboardVectors (): KBVectorPtr;
   END KeyboardVectors;
 
 
-PROCEDURE KeyboardRate (delay, repeat: INTEGER16): [ CARDINAL16 ];
+PROCEDURE KeyboardRate (initial, repeat: INTEGER16): [ CARDINAL16 ];
   BEGIN
-    RETURN trap_14_www(35, delay, repeat)
+    RETURN trap_14_www(35, initial, repeat)
   END KeyboardRate;
 
 
@@ -453,9 +454,9 @@ PROCEDURE VSync ();
   END VSync;
 
 
-PROCEDURE SuperExec (proc: SuperExecProc): [ INTEGER32 ];
+PROCEDURE SuperExec (Code: SuperExecProc): [ INTEGER32 ];
   BEGIN
-    RETURN trap_14_wl(38, INTEGER32(proc));
+    RETURN trap_14_wl(38, INTEGER32(Code));
   END SuperExec;
 
 
