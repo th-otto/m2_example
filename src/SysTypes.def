@@ -12,41 +12,6 @@ TYPE    CHARSET = SET OF CHAR;
 
         PtrBBS = POINTER TO BBS; (* FÅr Zugriff auf Peripheriebausteine *)
 
-        PtrBP = POINTER TO BasePage;
-        
-        BasePage = RECORD
-                     p_lowtpa: ADDRESS;
-                     p_hitpa : ADDRESS;
-                     p_tbase : ADDRESS;
-                     p_tlen  : ADDRESS;
-                     p_dbase : ADDRESS;
-                     p_dlen  : ADDRESS;
-                     p_bbase : ADDRESS;
-                     p_blen  : ADDRESS;
-                     p_dta   : ADDRESS;
-                     p_parent: ADDRESS;
-                     reserve1: ADDRESS;
-                     p_env   : ADDRESS;
-                     reserve2: ARRAY [030H..067H] OF BYTE;
-                     regD0   : CARDINAL32;
-                     regA3   : CARDINAL32;
-                     regA4   : CARDINAL32;
-                     regA5   : CARDINAL32;
-                     regA6   : CARDINAL32;
-                     regs    : POINTER TO RECORD
-                                 SP: CARDINAL32; SR: CARDINAL16; PC: CARDINAL32;
-                                 D1: CARDINAL32; D2: CARDINAL32; D3: CARDINAL32;
-                                 D4: CARDINAL32; D5: CARDINAL32; D6: CARDINAL32;
-                                 D7: CARDINAL32; A0: CARDINAL32; A1: CARDINAL32;
-                                 A2: CARDINAL32;
-                               END;
-                     cmdline : RECORD
-                                 len: CHAR;
-                                 str: ARRAY [000H..07EH] OF CHAR
-                               END
-                   END;
-
-
         PtrOSHeader = POINTER TO OSHeader;
 
         OSHeader = RECORD

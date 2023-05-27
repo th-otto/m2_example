@@ -34,6 +34,8 @@ FROM SYSTEM     IMPORT BYTE, ADDRESS, INTEGER16, CARDINAL16;
 
 FROM GrafBase   IMPORT WordBitSet, WritingMode, BitOperation, Point, Rectangle,
                        PtrMouseFormDef, PtrMemFormDef;
+
+FROM GEMBase IMPORT PtrVDIContrlArray, PtrIntinArray;
  
  
 TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
@@ -44,7 +46,7 @@ TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
         PtrFontHeader           = POINTER TO FontHeader;
         FontHeader              = RECORD
                                     id           : CARDINAL16;
-                                    size         : INTEGER;
+                                    size         : INTEGER16;
                                     name         : ARRAY[0..31] OF CHAR;
                                     minADE       : CARDINAL16;
                                     maxADE       : CARDINAL16;
@@ -55,8 +57,8 @@ TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
                                     bottomToBase : CARDINAL16;
                                     maxCharWidth : CARDINAL16;
                                     maxBoxWidth  : CARDINAL16;
-                                    leftOffset   : INTEGER;
-                                    rightOffset  : INTEGER;
+                                    leftOffset   : INTEGER16;
+                                    rightOffset  : INTEGER16;
                                     thickening   : CARDINAL16;
                                     underLineH   : CARDINAL16;
                                     lightMask    : CARDINAL16;
@@ -77,8 +79,8 @@ TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
         LineAVars               = RECORD
                                     planes       : CARDINAL16;
                                     bytesPerLine : CARDINAL16;
-                                    contrl       : PtrIntArray;
-                                    intin        : PtrIntArray;
+                                    contrl       : PtrVDIContrlArray;
+                                    intin        : PtrIntinArray;
                                     ptsin        : PtrIntArray;
                                     intout       : PtrIntArray;
                                     ptsout       : PtrIntArray;
@@ -106,13 +108,13 @@ TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
                                     width        : CARDINAL16;
                                     height       : CARDINAL16;
                                     formBase     : PtrCardArray;
-                                    formWidth    : INTEGER;
+                                    formWidth    : INTEGER16;
                                     style        : WordBitSet;
                                     lightMask    : CARDINAL16;
                                     skewMask     : CARDINAL16;
                                     weight       : CARDINAL16;
-                                    rightOff     : INTEGER;
-                                    leftOff      : INTEGER;
+                                    rightOff     : INTEGER16;
+                                    leftOff      : INTEGER16;
                                     scale        : INTEGER16;
                                     chup         : CARDINAL16;
                                     textFg       : CARDINAL16;
@@ -153,7 +155,7 @@ TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
                                      *  Bildschirms. Siehe auch 'VDIEscapes.
                                      *  SetLineOffset'.
                                      *)
-                                    lineOffset   : INTEGER;
+                                    lineOffset   : INTEGER16;
                                     
                                     (*  Spalten- und Zeilenposition des
                                      *  Cursors
