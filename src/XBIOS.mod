@@ -496,7 +496,7 @@ VAR ptr: PBYTE;
   END FlopRate;
 
 
-PROCEDURE BlitMode (flag: INTEGER16): BITSET;
+PROCEDURE BlitMode (flag: INTEGER16): [ BITSET ];
   BEGIN
     RETURN BITSET(trap_14_ww(64, flag))
   END BlitMode;

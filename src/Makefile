@@ -11,6 +11,7 @@ OBJS = \
 	XBIOS.o \
 	BIOS.o \
 	GEMDOS.o \
+	GrafBase.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -24,6 +25,7 @@ Characters.o: Characters.mod Characters.def
 XBIOS.o: XBIOS.mod XBIOS.def
 BIOS.o: BIOS.mod BIOS.def
 GEMDOS.o: GEMDOS.mod GEMDOS.def
+GrafBase.o: GrafBase.mod GrafBase.def
 
 clean::
 	rm -f *.o *.a

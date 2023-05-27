@@ -1,7 +1,7 @@
 CROSS = m68k-atari-mint-
 M2 = $(CROSS)gm2 -I$(top_srcdir)/src
 AR = $(CROSS)ar
-M2CFLAGS = -fpim -O2 -Wall -Werror -funbounded-by-reference
+M2CFLAGS = -O2 -Wall -Werror -funbounded-by-reference
 M2LDFLAGS =
 # the cc1gm2 backend sometimes complains about -sys-root being passed
 M2CFLAGS += -Wno-complain-wrong-lang

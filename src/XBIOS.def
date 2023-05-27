@@ -7,6 +7,14 @@ DEFINITION MODULE XBIOS;
  *)
 
 FROM SYSTEM IMPORT BYTE, INTEGER16, INTEGER32, CARDINAL16, CARDINAL32, ADDRESS;
+EXPORT QUALIFIED
+	SetColour,
+	ScreenPhysicalBase,
+	ScreenLogicalBase,
+	GetResolution,
+	SetScreenBase,
+	SetPalette,
+	BlitMode;
 
 TYPE SuperExecProc = PROCEDURE(): INTEGER32;
 
@@ -350,7 +358,7 @@ PROCEDURE FlopRate (drive: CARDINAL16; rate: INTEGER16): [ INTEGER16 ];
        drive: 0 => A:, 1 => B:, other values are not allowed!
        rate: -1 -> return current rate, 0: 6ms, 1: 12ms, 2: 2ms, 3: 3ms  *)
 
-PROCEDURE BlitMode (flag: INTEGER16): BITSET;
+PROCEDURE BlitMode (flag: INTEGER16): [ BITSET ];
   (* Is only available on Blitter TOS (version 1.2) and higher! *)
 
 (*

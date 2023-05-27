@@ -16,7 +16,7 @@ DEFINITION MODULE GrafBase;
  *)
  
  
-FROM SYSTEM IMPORT INTEGER16, ADDRESS;
+FROM SYSTEM IMPORT INTEGER16, INTEGER32, CARDINAL16, ADDRESS;
  
  
 CONST           (* Standard Farbenpalette *)
@@ -101,43 +101,43 @@ TYPE    WritingMode     = (replaceWrt, transWrt, xorWrt, reverseWrt);
          
          
         Point           = RECORD
-                            x: INTEGER;
-                            y: INTEGER;
+                            x: INTEGER16;
+                            y: INTEGER16;
                           END;
         
         LongPnt         = RECORD
-                            x: LONGINT;
-                            y: LONGINT;
+                            x: INTEGER32;
+                            y: INTEGER32;
                           END;
                          
         Rectangle       = RECORD
-                            x: INTEGER;
-                            y: INTEGER;
-                            w: INTEGER;
-                            h: INTEGER;
+                            x: INTEGER16;
+                            y: INTEGER16;
+                            w: INTEGER16;
+                            h: INTEGER16;
                           END;
                                  
         LongRect        = RECORD
-                            x: LONGINT;
-                            y: LONGINT;
-                            w: LONGINT;
-                            h: LONGINT;
+                            x: INTEGER32;
+                            y: INTEGER32;
+                            w: INTEGER32;
+                            h: INTEGER32;
                           END;
                                  
-PROCEDURE Pnt (x, y: INTEGER): Point;
-PROCEDURE LPnt (x, y: LONGINT): LongPnt;
+(*  Liefert ein Record, welches den Punkt mit den Koordinaten 'x'
+ *  und 'y' beschreibt.
+ *)
+PROCEDURE Pnt (x, y: INTEGER16): Point;
+PROCEDURE LPnt (x, y: INTEGER32): LongPnt;
 
-        (*  Liefert ein Record, welches den Punkt mit den Koordinaten 'x'
-         *  und 'y' beschreibt.
-         *)
 
-PROCEDURE Rect (x, y, w, h: INTEGER): Rectangle;
-PROCEDURE LRect (x, y, w, h: LONGINT): LongRect;
+(*  Erzeugt ein Record, das ein Rechteck beschreibt, dessen linker,
+ *  oberer Punkt die Koordinaten 'x' und 'y' besitzt und das 'w'
+ *  Pixel breit und 'h' Pixel hoch ist.
+ *)
+PROCEDURE Rect (x, y, w, h: INTEGER16): Rectangle;
+PROCEDURE LRect (x, y, w, h: INTEGER32): LongRect;
 
-        (*  Erzeugt ein Record, das ein Rechteck beschreibt, dessen linker,
-         *  oberer Punkt die Koordinaten 'x' und 'y' besitzt und das 'w'
-         *  Pixel breit und 'h' Pixel hoch ist.
-         *)
 
 PROCEDURE ShortPoint (p    : LongPnt  ): Point;
 PROCEDURE LongPoint  (p    : Point    ): LongPnt;
@@ -147,7 +147,7 @@ PROCEDURE LongFrame  (frame: Rectangle): LongRect;
         (*  Typwandlungen
          *)
 
-PROCEDURE AbsZoomRect (frame: Rectangle; xDelta, yDelta: INTEGER): Rectangle;
+PROCEDURE AbsZoomRect (frame: Rectangle; xDelta, yDelta: INTEGER16): Rectangle;
 
         (*  'frame' wird zentrisch gestreckt und zwar in x-Richtung um
          *  'xDelta' Pixel und in y-Richtung um 'yDelta' Pixel.
@@ -159,7 +159,7 @@ PROCEDURE AbsZoomRect (frame: Rectangle; xDelta, yDelta: INTEGER): Rectangle;
          *  einer Punktspiegelung am Rechtecksmittelpunkt.
          *)
 
-PROCEDURE RelZoomRect (frame: Rectangle; xFactor, yFactor: LONGINT): Rectangle;
+PROCEDURE RelZoomRect (frame: Rectangle; xFactor, yFactor: INTEGER32): Rectangle;
 
         (*  Auch hier wird das Rechteck 'frame' zentrisch gestreckt, nur
          *  werden diesmal relative Maûzahlen fÅr die Streckung benutzt.
@@ -198,8 +198,8 @@ PROCEDURE LClipRect (frame: LongRect; clip: LongRect): LongRect;
          *  der innerhalb von 'clip' liegt.
          *)
 
-PROCEDURE FrameRects (frame1, frame2: Rectangle): Rectangle;
-PROCEDURE LFrameRects (frame1, frame2: LongRect): LongRect;
+PROCEDURE FrameRects (r1, r2: Rectangle): Rectangle;
+PROCEDURE LFrameRects (r1, r2: LongRect): LongRect;
 
         (*  Liefert das kleinste Rechteck, das 'frame1' und 'frame2'
          *  vollstÑndig einschlieût.
@@ -232,9 +232,9 @@ TYPE
 
         MouseFormDef            = RECORD
                                     hotSpot     : Point;
-                                    noPlanes    : CARDINAL;
-                                    maskColor   : CARDINAL;
-                                    dataColor   : CARDINAL;
+                                    noPlanes    : CARDINAL16;
+                                    maskColor   : CARDINAL16;
+                                    dataColor   : CARDINAL16;
                                     mask        : BitBlk16x16;
                                     data        : BitBlk16x16;
                                   END;
@@ -254,11 +254,11 @@ TYPE
                                     
         MemFormDef              = RECORD
                                     start        : ADDRESS;
-                                    w            : CARDINAL;
-                                    h            : CARDINAL;
-                                    words        : CARDINAL;
-                                    standardForm : BOOLEAN;
-                                    planes       : CARDINAL;
+                                    w            : CARDINAL16;
+                                    h            : CARDINAL16;
+                                    words        : CARDINAL16;
+                                    standardForm : INTEGER16;
+                                    planes       : CARDINAL16;
                                     res1         : INTEGER16;
                                     res2         : INTEGER16;
                                     res3         : INTEGER16;
@@ -329,7 +329,7 @@ PROCEDURE SetBlitterMode (active: BOOLEAN);
          *  werden soll oder nicht.
          *)
  
-PROCEDURE GetScreen (VAR log, phys:ADDRESS; VAR rez: INTEGER);
+PROCEDURE GetScreen (VAR log, phys:ADDRESS; VAR rez: INTEGER16);
 
         (*  Liefert die Addresse des aktuellen logischen Bildschirms
          *  (das ist der Bildschirm auf den alle Ausgaben gemacht
@@ -342,7 +342,7 @@ PROCEDURE GetScreen (VAR log, phys:ADDRESS; VAR rez: INTEGER);
          *           oder Ñhnliches natÅrlich nicht.
          *)
 
-PROCEDURE SetScreen (log, phys: ADDRESS; rez: INTEGER);
+PROCEDURE SetScreen (log, phys: ADDRESS; rez: INTEGER16);
 
         (*  Mit 'SetScreen' lassen sich die mit 'GetScreen' erfragten
          *  Parameter neu setzen. Soll einer der Werte unverÑndert
@@ -350,7 +350,7 @@ PROCEDURE SetScreen (log, phys: ADDRESS; rez: INTEGER);
          *)
          
 
-TYPE    Palette         = ARRAY [0..15] OF CARDINAL;
+TYPE    Palette         = ARRAY [0..15] OF CARDINAL16;
         PtrPalette      = POINTER TO Palette;
         
         (*  Ein Paletteneintrag ist folgendermaûen aufgebaut:
@@ -375,7 +375,7 @@ PROCEDURE SetColor (colorNum, color: CARDINAL);
 
 PROCEDURE ColorNumber (colorNum: CARDINAL): CARDINAL;
 
-        (*  Lieût den mit 'SetColor' gesetzten Wert.
+        (*  Liest den mit 'SetColor' gesetzten Wert.
          *)
 
 END GrafBase.
