@@ -9,7 +9,7 @@ DEFINITION MODULE GEMGlobals;
  *)
 
 
-FROM SYSTEM     IMPORT ADDRESS, WORD, BYTE, CARDINAL16, INTEGER32;
+FROM SYSTEM     IMPORT ADDRESS, WORD, BYTE, CARDINAL16, INTEGER16, INTEGER32;
 
 FROM GrafBase   IMPORT Point, Rectangle, WordBitSet, PtrBitPattern;
 
@@ -69,7 +69,7 @@ TYPE    (*  Allgemeine Typen
                             just                 : CARDINAL16;
                             color                : CARDINAL16;
                             res2                 : CARDINAL16;
-                            thickness            : INTEGER;
+                            thickness            : INTEGER16;
                             textLen              : CARDINAL16;
                             tmpltLen             : CARDINAL16;
                           END;
@@ -89,10 +89,10 @@ TYPE    (*  Allgemeine Typen
 
         BitBlock        = RECORD
                             data                 : PtrBitPattern;
-                            bytes                : INTEGER;
-                            h                    : INTEGER;
-                            x                    : INTEGER;
-                            y                    : INTEGER;
+                            bytes                : INTEGER16;
+                            h                    : INTEGER16;
+                            x                    : INTEGER16;
+                            y                    : INTEGER16;
                             color                : CARDINAL16;
                           END;
         PtrBitBlock     = POINTER TO BitBlock;
@@ -107,8 +107,8 @@ TYPE    (*  Allgemeine Typen
                             CASE :BOOLEAN OF
                               FALSE :letter      : CHAR;
                                      thickness   : BYTE;
-                                     color       : CARDINAL16       |
-                              TRUE  :more        : ADDRESS;
+                                     color       : CARDINAL16
+                            | TRUE  :more        : ADDRESS;
                             END;
                           END;
         PtrObjSpec      = POINTER TO ObjSpec;

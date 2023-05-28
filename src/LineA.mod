@@ -13,6 +13,7 @@ IMPLEMENTATION MODULE LineA;
  *  ???????? TT  V2.1   | REF-Parm.
  *  17.02.90 TT         | A6 wird nun gerettet, weil LineA das Reg u.U. zerst”rt
  *  24.11.90 TT         | BREAK aus PutPixel entfernt!
+ *  25.05.23 THO V3.0   | Port to gm2
  *)
  
  

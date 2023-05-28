@@ -20,6 +20,7 @@ IMPLEMENTATION MODULE GrafBase;
  *                'L...'-Funktionen
  *  01.02.90    | Angepažt auf Compilerversion 4.0 (verdrehte SET's)
  *  10.12.93    | LFramePoints korrigiert
+ *  25.05.23    | Port to gm2
  *)
 
 

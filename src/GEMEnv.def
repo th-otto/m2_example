@@ -28,11 +28,11 @@ TYPE    GemHandle;      (*  Dient zur Identifizierung einer kompletten
                          *  (GEM-Referenz)
                          *)
 
-        DeviceHandle;   (*  Dient zur Identifizierung eines VDI-GerÑtes.
+TYPE    DeviceHandle;   (*  Dient zur Identifizierung eines VDI-GerÑtes.
                          *  Siehe auch 'OpenDevice'. (GerÑte-Referenz)
                          *)
                          
-                         
+
 CONST   NoDevice        = DeviceHandle (NIL);   (* Wert fÅr ein nicht besetz-
                                                  * tes GerÑte-handle
                                                  *)

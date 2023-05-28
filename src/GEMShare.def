@@ -1,4 +1,5 @@
 DEFINITION MODULE GEMShare;
+#define REF
 
 
 (*      Megamax Modula-2 GEM Library: Von allen GEM-Library-Modulen genutzte
@@ -15,16 +16,15 @@ DEFINITION MODULE GEMShare;
  *)
 
 
-FROM SYSTEM     IMPORT ADDRESS, WORD, LONGWORD, BYTE;
+FROM SYSTEM     IMPORT ADDRESS, INTEGER16, BYTE;
 
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
 
 FROM GEMGlobals IMPORT GemChar, MButtonSet, SpecialKeySet, TEffectSet;
 
-FROM GEMBase IMPORT VDIContrlArray, AESContrlArray, GlobalArray, AESPB;
+FROM GEMBase IMPORT VDIContrlArray, AESContrlArray, GlobalArray, AESPB, VDIPB;
 
-
-EXPORT  p_device, device, deviceList, p_cb, cb, root_cb, our_cb, error,
+EXPORT  QUALIFIED DeviceHandle, device, deviceList, GemHandle, cb, root_cb, our_cb, error,
         intinMax, ptsinMax, keyboardPlugActive, buttonPlugActive,
         firstRectPlugActive, secondRectPlugActive, messagePlugActive,
         timerPlugActive, keyboardPlug, buttonPlug, firstRectPlug,
@@ -47,6 +47,8 @@ EXPORT  p_device, device, deviceList, p_cb, cb, root_cb, our_cb, error,
         unloadFonts, hideCursor, selectFile, selectFileExtended, shellRead;
         
         
+                         
+
 CONST           (* Misc. private Const's *)
         
         intinMax                = 127;   (* Highest index of the INTIN-Array *)
@@ -138,7 +140,7 @@ TYPE    PrivGDPAttribute= (lineOpPriv, markerOpPriv, textOpPriv, fillOpPriv,
 TYPE    logInpDev       = (noDev, location, value, choice, str);
         inputMode       = (noMode, request, sample);
         
-TYPE    p_device        = POINTER TO device;
+TYPE    DeviceHandle    = POINTER TO device;
         device          = RECORD
                             magic        : CARDINAL;
                             mode         : CARDINAL;
@@ -153,9 +155,9 @@ TYPE    p_device        = POINTER TO device;
                             
                             curInpMode   : ARRAY logInpDev OF inputMode;
                             
-                            next         : p_device;
+                            next         : DeviceHandle;
                           END;
-        deviceList      = p_device;
+        deviceList      = DeviceHandle;
         
         ptrVectorList   = POINTER TO vecListElem;
         vecListElem     = RECORD
@@ -172,8 +174,8 @@ TYPE    p_device        = POINTER TO device;
                             noUpWind     : CARDINAL;
                             noMouseCtrl  : CARDINAL; (* No. wind. updates/ctrls*)
                             
-                            createWinds  : LONGWORD;
-                            openWinds    : LONGWORD; (* Created/opned windows *)
+                            createWinds  : INTEGER;
+                            openWinds    : INTEGER; (* Created/opened windows *)
                             
                             timerChgd,
                             butChgChgd,
@@ -204,7 +206,7 @@ TYPE    p_device        = POINTER TO device;
          *  nen. 'ExitGem' dealloc. die Struktur wieder.
          *)
          
-        p_cb    = POINTER TO cb;
+TYPE    GemHandle       = POINTER TO cb;
         cb      = RECORD
                     
                     (*  AES-Control-Array
@@ -221,13 +223,7 @@ TYPE    p_device        = POINTER TO device;
                                   
                     (*  VDI-Parameterblock
                      *)
-                    VDIPB       : RECORD
-                                    contrl      : ADDRESS;
-                                    intin       : ADDRESS;
-                                    ptsin       : ADDRESS;
-                                    intout      : ADDRESS;
-                                    ptsout      : ADDRESS;
-                                  END;
+                    vdipb       : VDIPB;
                                   
                     (*  AES-Parameterblock
                      *)
@@ -236,7 +232,7 @@ TYPE    p_device        = POINTER TO device;
                     HANDLE      : INTEGER;    (* AES Grafikhandle *)
                     
                     DEVICES     : deviceList; (* Liste der VDI-GerÑte *)
-                    CURDEVICE   : p_device;   (* Aktuelles GerÑt *)
+                    CURDEVICE   : DeviceHandle; (* Aktuelles GerÑt *)
                     
                     FSEL        : PROC;       (* Selector vor Init. d. Levels *)
                     
@@ -248,12 +244,12 @@ TYPE    p_device        = POINTER TO device;
                     
                     DIDAPPLINIT : BOOLEAN;    (* appl_init aufgerufen? *)
                     
-                    LASTCB      : p_cb        (*  Zeigt auf alten (nÑchsten) cb
+                    LASTCB      : GemHandle   (*  Zeigt auf alten (nÑchsten) cb
                                                *  NIL ~ Kein weiterer cb
                                                *)
         END;
         
-VAR     our_cb, root_cb : p_cb; (*  root_cb ~ Zeiger auf die Liste mit den
+VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
                                  *            Kontollblîcken.
                                  *  our_cb  ~ Zeiger auf den momentan aktiven
                                  *            Kontr.block
@@ -356,7 +352,7 @@ PROCEDURE stringIntoCFormat(REF str:ARRAY OF CHAR);
  *              Aufruf nur von Assembler!                                 *)
  
  
-PROCEDURE setDevice(handle:p_device;VAR success:BOOLEAN);
+PROCEDURE setDevice(handle:DeviceHandle;VAR success:BOOLEAN);
         (* Legt das aktuelle VDI-Device fest. 'success=FALSE' falls das *
          * 'handle' ungÅltig war.                                       *)
          
@@ -384,7 +380,7 @@ PROCEDURE gemErrorOccured;
 
         (* A E S *)
         
-PROCEDURE aes_call(pb:p_cb);
+PROCEDURE aes_call(pb: GemHandle);
         (* Ruft Application Enviroment Services mit dem Parameterblock *
          * 'pb' auf.                                                   *)
 
@@ -396,16 +392,16 @@ PROCEDURE aes_if(opcode:CARDINAL);
 
         (* V D I *)
 
-PROCEDURE vdi_call(para:p_cb);
+PROCEDURE vdi_call(para: GemHandle);
         (* Ruft Virtual Display Interface mit dem Parameterblock 'para' auf. *)
 
-PROCEDURE vdi_if(handle:p_device;opcode,subcmd:CARDINAL);
+PROCEDURE vdi_if(handle:DeviceHandle;opcode,subcmd:CARDINAL);
         (* Bereitet Aufruf der VDI-Funktion mit der Nummer 'opcode' vor, *
          * falls diese Unterfunktionsnummern besitzt werden diese in     *
          * 'subcmd' Åbergeben (, sonst setzt man 'subcmd=0'). Dann wird  *
          * 'vdi_call' mit dem aktuellen Parameterblock aufgerufen.       *)
 
-PROCEDURE setINT0attribut(handle:p_device);(* ParameterÅbergabe in D0 + D1 *)
+PROCEDURE setINT0attribut(handle:DeviceHandle);(* ParameterÅbergabe in D0 + D1 *)
         
 (*  setINT0attribute -- geg.: D0 Wert eines Attributes und D1 VDI-Fktsopcode*
  *                      ges.: Aufruf der Funktion die dem Opcode entspricht *
@@ -439,15 +435,15 @@ PROCEDURE shellRead (VAR cmd, tail: ARRAY OF CHAR);
         (*  Von mehren Moduln genutzte GEM-Calls (for supervision)  *)
         (*  ======================================================  *)
        
-PROCEDURE grafMouse (form:WORD(* ~ AESGraphics.MouseForm*);
+PROCEDURE grafMouse (form:INTEGER16 (* ~ AESGraphics.MouseForm*);
                      mFormDefPtr:PtrMouseFormDef);
 
-PROCEDURE showCursor (handle:p_device;force:BOOLEAN);
+PROCEDURE showCursor (handle:DeviceHandle;force:BOOLEAN);
 
-PROCEDURE hideCursor (handle:p_device);
+PROCEDURE hideCursor (handle:DeviceHandle);
 
 
-PROCEDURE updateWindow (update:WORD);
+PROCEDURE updateWindow (update:INTEGER16);
 
 
 PROCEDURE closeWindow (handle:CARDINAL);
@@ -480,7 +476,7 @@ PROCEDURE removeMsMoveVector(VAR hdl:vecListElem);
 
 PROCEDURE removeCurChgVector(VAR hdl:vecListElem);
 
-PROCEDURE unloadFonts (handle:p_device; select:WORD);
+PROCEDURE unloadFonts (handle:DeviceHandle; select:INTEGER16);
 
 VAR ptrToErrHdler: POINTER TO PROC;
 

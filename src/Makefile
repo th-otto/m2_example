@@ -13,6 +13,8 @@ OBJS = \
 	GEMDOS.o \
 	GrafBase.o \
 	LineA.o \
+	GEMGlobals.o \
+	GEMBase.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -28,6 +30,8 @@ BIOS.o: BIOS.mod BIOS.def
 GEMDOS.o: GEMDOS.mod GEMDOS.def
 GrafBase.o: GrafBase.mod GrafBase.def
 LineA.o: LineA.mod LineA.def
+GEMGlobals.o: GEMGlobals.mod GEMGlobals.def
+GEMBase.o: GEMBase.mod GEMBase.def
 
 clean::
 	rm -f *.o *.a

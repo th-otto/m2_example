@@ -36,7 +36,7 @@ DEFINITION MODULE GEMBase;
  *
  *    i)   Ermitteln des VDI-Parameterblocks mit 'GetPBs'
  *    ii)  Ermitteln der GerÑtekennung mit 'VDIHandle'.
- *    iii) Bei jedem Aufruf muû 'pb.pblock^.handle' die in ii) ermittelte
+ *    iii) Bei jedem Aufruf muû 'pb.contrl^.handle' die in ii) ermittelte
  *         Kennung zugewiesen werden und dann wird die Adresse auf den er-
  *         mittelten VDI-Parameterblock an 'CallVDI' Åbergeben
  *
@@ -52,8 +52,7 @@ DEFINITION MODULE GEMBase;
 
 FROM    SYSTEM  IMPORT  ADDRESS, CARDINAL16, INTEGER16, BITSET16;
 
-FROM    GEMEnv  IMPORT  GemHandle, DeviceHandle;
-
+FROM    GEMShare  IMPORT  GemHandle, DeviceHandle;
 
 TYPE    IntinArray      = ARRAY[0..127] OF INTEGER16;
         IntoutArray     = ARRAY[0..127] OF INTEGER16;
@@ -87,11 +86,11 @@ TYPE    IntinArray      = ARRAY[0..127] OF INTEGER16;
         (*  VDI-Parameterblock
          *)
         VDIPB           = RECORD
-                            pblock      : PtrVDIContrlArray;
-                            iioff       : PtrIntinArray;
-                            pioff       : PtrPtsinArray;
-                            iooff       : PtrIntoutArray;
-                            pooff       : PtrPtsoutArray;
+                            contrl      : PtrVDIContrlArray;
+                            intin       : PtrIntinArray;
+                            ptsin       : PtrPtsinArray;
+                            intout      : PtrIntoutArray;
+                            ptsout      : PtrPtsoutArray;
                           END;
         PtrVDIPB        = POINTER TO VDIPB;
         
@@ -136,6 +135,9 @@ TYPE    IntinArray      = ARRAY[0..127] OF INTEGER16;
         PtrAESPB        = POINTER TO AESPB;
 
 
+                        (*  Aufrufroutinen  *)
+                        (*  ==============  *)
+
                         (*  Abfrageroutinen  *)
                         (*  ===============  *)
 
@@ -152,14 +154,11 @@ PROCEDURE GetPBs (gemHdl: GemHandle; VAR vdipb: VDIPB; VAR aespb: AESPB);
          *  (AES bzw. VDI) nicht benutzt werden.
          *)
 
-PROCEDURE VDIHandle (device: DeviceHandle): INTEGER16;
+PROCEDURE VDIHandle (dev: DeviceHandle): INTEGER16;
 
         (*  Liefert die zu einem GerÑt gehîrende VDI-GerÑtekennung.
          *)
 
-
-                        (*  Aufrufroutinen  *)
-                        (*  ==============  *)
 
 PROCEDURE CallVDI (ptrpb: PtrVDIPB);
 
