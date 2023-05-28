@@ -16,13 +16,13 @@ DEFINITION MODULE GEMShare;
  *)
 
 
-FROM SYSTEM     IMPORT ADDRESS, INTEGER16, BYTE;
+FROM SYSTEM     IMPORT ADDRESS, INTEGER16, CARDINAL32, BYTE;
 
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
 
-FROM GEMGlobals IMPORT GemChar, MButtonSet, SpecialKeySet, TEffectSet;
+FROM GEMGlobals IMPORT GemChar, MButtonSet, SpecialKeySet, TEffectSet, MaxStr;
 
-FROM GEMBase IMPORT VDIContrlArray, AESContrlArray, GlobalArray, AESPB, VDIPB;
+FROM GEMBase IMPORT VDIContrlArray, AESContrlArray, GlobalArray, AESPB, PtrAESPB, VDIPB;
 
 EXPORT  QUALIFIED DeviceHandle, device, deviceList, GemHandle, cb, root_cb, our_cb, error,
         intinMax, ptsinMax, keyboardPlugActive, buttonPlugActive,
@@ -31,12 +31,12 @@ EXPORT  QUALIFIED DeviceHandle, device, deviceList, GemHandle, cb, root_cb, our_
         secondRectPlug, messagePlug, timerPlug, noErrorTrap, deviceMagic,
         cbMagic, PtrPrivDevParm, PrivGDPFkt, PrivInputDev, PrivDeviceType,
         PrivScreenType, PrivTextRotType, PrivGDPAttribute, logInpDev,
-        inputMode, errNum, ptrToErrHdler, errorProcPtr, pubs, pubArrays,
+        inputMode, errNum, ptrToErrHdler, errorProcPtr, pubArrays,
         ptrPubArrays,
         
         aes_call, aes_if, vdi_call, vdi_if, testINTOUT0, testErrorCheck,
         setINT0attribut, getCalcedFrame, superData, stringIntoINTIN,
-        (*enchantSuperMode, *)stringIntoCFormat, setDevice, gemErrorOccured,
+        stringIntoCFormat, setDevice, gemErrorOccured,
         
         ptrVectorList, vecListElem, timerVecList, butChgVecList, msMoveVecList,
         curChgVecList, orgTimerVec, orgButChgVec, orgMsMoveVec, orgCurChgVec,
@@ -44,7 +44,7 @@ EXPORT  QUALIFIED DeviceHandle, device, deviceList, GemHandle, cb, root_cb, our_
         grafMouse, updateWindow, showCursor, closeWindow, deleteWindow,
         exchangeTimerVec, exchangeMouseVec, removeTimerVector,
         removeButChgVector, removeMsMoveVector, removeCurChgVector,
-        unloadFonts, hideCursor, selectFile, selectFileExtended, shellRead;
+        unloadFonts, hideCursor, UpdateWindowType;
         
         
                          
@@ -60,6 +60,7 @@ CONST           (* Misc. private Const's *)
         deviceMagic             = 10765; (* Ein denkwÅrdiges Datum *)
         cbMagic                 = 666;   (* HÑ, HÑ... *)
         
+        MaxWinds                = 31;
         
         
 (*  Die nachfolgende Deklaration muû mit der in 'GEMEnv' Åbereinstimmen !!!!! *)
@@ -79,62 +80,61 @@ TYPE    PrivGDPAttribute= (lineOpPriv, markerOpPriv, textOpPriv, fillOpPriv,
         
         PtrPrivDevParm  = POINTER TO PrivDevParm;
         PrivDevParm     = RECORD
-          charWidth          : CARDINAL;
-          charHeight          : CARDINAL;
-          cellWidth          : CARDINAL;
-          cellHeight          : CARDINAL;
-          rasterWidth          : CARDINAL;
-          rasterHeight          : CARDINAL;
-          pointWidth          : CARDINAL;
-          pointHeight          : CARDINAL;
-          fontSizes          : CARDINAL;
-          lTypes          : CARDINAL;
-          lWidths          : CARDINAL;
-          mTypes          : CARDINAL;
-          mSizes          : CARDINAL;
-          fonts          : CARDINAL;
-          fPatterns          : CARDINAL;
-          fHatchings          : CARDINAL;
+          charWidth         : CARDINAL;
+          charHeight        : CARDINAL;
+          cellWidth         : CARDINAL;
+          cellHeight        : CARDINAL;
+          rasterWidth       : CARDINAL;
+          rasterHeight      : CARDINAL;
+          pointWidth        : CARDINAL;
+          pointHeight       : CARDINAL;
+          fontSizes         : CARDINAL;
+          lTypes            : CARDINAL;
+          lWidths           : CARDINAL;
+          mTypes            : CARDINAL;
+          mSizes            : CARDINAL;
+          fonts             : CARDINAL;
+          fPatterns         : CARDINAL;
+          fHatchings        : CARDINAL;
           noColors          : CARDINAL;
           minWChar          : CARDINAL;
           maxWChar          : CARDINAL;
           minHChar          : CARDINAL;
           maxHChar          : CARDINAL;
-          minWRow          : CARDINAL;
-          maxWRow          : CARDINAL;
+          minWRow           : CARDINAL;
+          maxWRow           : CARDINAL;
           minWMark          : CARDINAL;
           maxWMark          : CARDINAL;
           minHMark          : CARDINAL;
           maxHMark          : CARDINAL;
           bgColors          : CARDINAL;
-          maxRasterPls          : CARDINAL;
-          op16PerSec          : CARDINAL;
-          noWrtModes          : CARDINAL;
-          maxInMode          : CARDINAL;
-          maxMarker          : CARDINAL;
-          maxStrLen          : CARDINAL;
+          maxRasterPls      : CARDINAL;
+          op16PerSec        : CARDINAL;
+          noWrtModes        : CARDINAL;
+          maxInMode         : CARDINAL;
+          maxMarker         : CARDINAL;
+          maxStrLen         : CARDINAL;
           noMButts          : CARDINAL;
-          thickLnModes                                  : CARDINAL;
-          possibleGDPs                                  : ARRAY PrivGDPFkt OF
-                                                           PrivGDPAttribute;
-          color          : BOOLEAN;
-          fill          : BOOLEAN;
-          cArray          : BOOLEAN;
-          zooming          : BOOLEAN;
-          lookUpTab          : BOOLEAN;
+          thickLnModes      : CARDINAL;
+          possibleGDPs      : ARRAY PrivGDPFkt OF PrivGDPAttribute;
+          color             : BOOLEAN;
+          fill              : BOOLEAN;
+          cArray            : BOOLEAN;
+          zooming           : BOOLEAN;
+          lookUpTab         : BOOLEAN;
           textJust          : BOOLEAN;
           contFill          : BOOLEAN;
-          penChange          : BOOLEAN;
-          colorRibbon          : BOOLEAN;
-          thickLnTyps                                   : BOOLEAN;
-          grafCCtrl             : PrivInputDev;
-          valueIn             : PrivInputDev;
-          caseIn             : PrivInputDev;
-          alphanumIn                                    : PrivInputDev;
-          deviceType                                    : PrivDeviceType;
-          screen                                        : PrivScreenType;
-          useTEffects                                   : TEffectSet;
-          textRot                                       : PrivTextRotType;
+          penChange         : BOOLEAN;
+          colorRibbon       : BOOLEAN;
+          thickLnTyps       : BOOLEAN;
+          grafCCtrl         : PrivInputDev;
+          valueIn           : PrivInputDev;
+          caseIn            : PrivInputDev;
+          alphanumIn        : PrivInputDev;
+          deviceType        : PrivDeviceType;
+          screen            : PrivScreenType;
+          useTEffects       : TEffectSet;
+          textRot           : PrivTextRotType;
         END;
         
 TYPE    logInpDev       = (noDev, location, value, choice, str);
@@ -148,7 +148,7 @@ TYPE    DeviceHandle    = POINTER TO device;
                             
                             params       : PrivDevParm;
                             
-                            noHdCurs,
+                            noHdCurs     : CARDINAL;  (* FIXME: in VDI, this is shared for all screen workstation handles *)
                             oldHdCurs    : CARDINAL;
                             
                             fontsLoaded  : BOOLEAN;
@@ -174,8 +174,8 @@ TYPE    DeviceHandle    = POINTER TO device;
                             noUpWind     : CARDINAL;
                             noMouseCtrl  : CARDINAL; (* No. wind. updates/ctrls*)
                             
-                            createWinds  : INTEGER;
-                            openWinds    : INTEGER; (* Created/opened windows *)
+                            createWinds  : SET OF [0..MaxWinds];
+                            openWinds    : SET OF [0..MaxWinds]; (* Created/opened windows *)
                             
                             timerChgd,
                             butChgChgd,
@@ -188,12 +188,12 @@ TYPE    DeviceHandle    = POINTER TO device;
                           END;
         
         pubArrays       = RECORD
-                            vINTIN       : ARRAY[0..intinMax] OF INTEGER;
-                            aINTIN       : ARRAY[0..intinMax] OF INTEGER;
-                            vINTOUT      : ARRAY[0..127] OF INTEGER;
-                            aINTOUT      : ARRAY[0..127] OF INTEGER;
-                            PTSIN       : ARRAY[0..ptsinMax] OF INTEGER;
-                            PTSOUT      : ARRAY[0..11]  OF INTEGER;
+                            vINTIN      : ARRAY[0..intinMax] OF INTEGER16;
+                            aINTIN      : ARRAY[0..intinMax] OF INTEGER16;
+                            vINTOUT     : ARRAY[0..127] OF INTEGER16;
+                            aINTOUT     : ARRAY[0..127] OF INTEGER16;
+                            PTSIN       : ARRAY[0..ptsinMax] OF INTEGER16;
+                            PTSOUT      : ARRAY[0..11]  OF INTEGER16;
                             ADDRIN      : ARRAY[0..2] OF ADDRESS;
                             ADDROUT     : ARRAY[0..1] OF ADDRESS;
                           END;
@@ -229,6 +229,8 @@ TYPE    GemHandle       = POINTER TO cb;
                      *)
                     aespb       : AESPB;
                            
+                    pubs        : pubArrays;
+
                     HANDLE      : INTEGER;    (* AES Grafikhandle *)
                     
                     DEVICES     : deviceList; (* Liste der VDI-GerÑte *)
@@ -248,15 +250,15 @@ TYPE    GemHandle       = POINTER TO cb;
                                                *  NIL ~ Kein weiterer cb
                                                *)
         END;
-        
+
+TYPE PXY4 = ARRAY[0..3] OF INTEGER16;
+
 VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
                                  *            Kontollblîcken.
                                  *  our_cb  ~ Zeiger auf den momentan aktiven
                                  *            Kontr.block
                                  *)
         
-        pubs            : ptrPubArrays;
-                                                 
         error           : BOOLEAN;
         errNum          : INTEGER; (*  Ist 'error = TRUE', so steht in
                                     *  'errNum' der Wert der den Fehler aus-
@@ -268,17 +270,25 @@ VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
                                             *  ausgefÅhrt, falls installiert.
                                             *)
         
-        timerVecList,butChgVecList,             (* Vector Variablen *)
-        msMoveVecList,curChgVecList                     :ptrVectorList;
-        orgTimerVec,orgButChgVec,orgMsMoveVec,
-        orgCurChgVec                                    :PROC;
+        (* Vector Variablen *)
+        timerVecList: ptrVectorList;
+        butChgVecList: ptrVectorList;
+        msMoveVecList: ptrVectorList;
+        curChgVecList: ptrVectorList;
+        orgTimerVec: PROC;
+        orgButChgVec: PROC;
+        orgMsMoveVec: PROC;
+        orgCurChgVec: PROC;
         deltaT                                          :CARDINAL;
         
-                (* Plugs for the event watch-dogs (see also 'EventHandler') *)
+        (* Plugs for the event watch-dogs (see also 'EventHandler') *)
         
-        keyboardPlugActive,buttonPlugActive,
-        firstRectPlugActive,secondRectPlugActive,
-        messagePlugActive,timerPlugActive       :BOOLEAN;
+        keyboardPlugActive: BOOLEAN;
+        buttonPlugActive: BOOLEAN;
+        firstRectPlugActive: BOOLEAN;
+        secondRectPlugActive: BOOLEAN;
+        messagePlugActive: BOOLEAN;
+        timerPlugActive: BOOLEAN;
         
         keyboardPlug    : PROC;
                        (* PROCEDURE(VAR (*char:*)GemChar,
@@ -313,7 +323,7 @@ VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
         (*  Misc. subroutines  *)
         (*  =================  *)
         
-PROCEDURE stringIntoINTIN(REF str:ARRAY OF CHAR):CARDINAL;
+PROCEDURE stringIntoINTIN(REF str:ARRAY OF CHAR; offset: CARDINAL):CARDINAL;
 
 (*  stringIntoINTIN -- geg.: Open Array of CHAR 'str', Offset fÅr INTIN   *
  *                           Indizierung in D4 ( in Elementen )           *
@@ -323,7 +333,7 @@ PROCEDURE stringIntoINTIN(REF str:ARRAY OF CHAR):CARDINAL;
  *                !! Aufruf nur von Assemblerteilen !!                    *)
 
 
-PROCEDURE getCalcedFrame(frame:Rectangle);
+PROCEDURE getCalcedFrame(frame:Rectangle; VAR pxy: PXY4);
         
 (*  getCalcedFrame -- geg.: Ein Rechteck 'frame' auf dem Param.stack und die *
  *                          Zieladdresse+8 in A1                             *
@@ -334,14 +344,7 @@ PROCEDURE getCalcedFrame(frame:Rectangle);
  *              Aufruf nur aus Assemblerteilen!!                             *)
 
 
-(*
-PROCEDURE enchantSuperMode;
-
-(*  enchantSuperMode -- Gehe in den Supervisor-Mode
- *)
- *)
-
-PROCEDURE stringIntoCFormat(REF str:ARRAY OF CHAR);
+PROCEDURE stringIntoCFormat(REF str:ARRAY OF CHAR; VAR dst: MaxStr);
         
 (*  stringIntoCFormat -- geg.: 'str' ein String                           *
  *                       ges.: Kopiert 'str' auf den Stack und hÑngt eine *
@@ -352,7 +355,7 @@ PROCEDURE stringIntoCFormat(REF str:ARRAY OF CHAR);
  *              Aufruf nur von Assembler!                                 *)
  
  
-PROCEDURE setDevice(handle:DeviceHandle;VAR success:BOOLEAN);
+PROCEDURE setDevice(handle:DeviceHandle): BOOLEAN;
         (* Legt das aktuelle VDI-Device fest. 'success=FALSE' falls das *
          * 'handle' ungÅltig war.                                       *)
          
@@ -360,7 +363,7 @@ PROCEDURE setDevice(handle:DeviceHandle;VAR success:BOOLEAN);
         (*  global error handling  *)
         (*  =====================  *)
  
-PROCEDURE testINTOUT0;
+PROCEDURE testINTOUT0(pb: PtrAESPB);
 
 (*  testINTOUT0  - geg.: FehlerrÅckmeldung in INTOUT[0]  *
  *                 ges.: 'error'=(our_cb.INTOUT[0]=0)    *)
@@ -384,7 +387,7 @@ PROCEDURE aes_call(pb: GemHandle);
         (* Ruft Application Enviroment Services mit dem Parameterblock *
          * 'pb' auf.                                                   *)
 
-PROCEDURE aes_if(opcode:CARDINAL);
+PROCEDURE aes_if(ctrlcode:CARDINAL32);
         (* Bereitet Aufruf der AES-Funktion mit der Nummer 'opcode' vor *
          * und ruft danach 'aes-call' mit dem aktuellen Parameterblock  *
          * auf.                                                         *)
@@ -395,13 +398,13 @@ PROCEDURE aes_if(opcode:CARDINAL);
 PROCEDURE vdi_call(para: GemHandle);
         (* Ruft Virtual Display Interface mit dem Parameterblock 'para' auf. *)
 
-PROCEDURE vdi_if(handle:DeviceHandle;opcode,subcmd:CARDINAL);
+PROCEDURE vdi_if(handle:DeviceHandle; ctrlcode:CARDINAL32);
         (* Bereitet Aufruf der VDI-Funktion mit der Nummer 'opcode' vor, *
          * falls diese Unterfunktionsnummern besitzt werden diese in     *
          * 'subcmd' Åbergeben (, sonst setzt man 'subcmd=0'). Dann wird  *
          * 'vdi_call' mit dem aktuellen Parameterblock aufgerufen.       *)
 
-PROCEDURE setINT0attribut(handle:DeviceHandle);(* ParameterÅbergabe in D0 + D1 *)
+PROCEDURE setINT0attribut(handle:DeviceHandle; ctrlcode:CARDINAL32; intin0: INTEGER16);
         
 (*  setINT0attribute -- geg.: D0 Wert eines Attributes und D1 VDI-Fktsopcode*
  *                      ges.: Aufruf der Funktion die dem Opcode entspricht *
@@ -413,37 +416,20 @@ PROCEDURE setINT0attribut(handle:DeviceHandle);(* ParameterÅbergabe in D0 + D1 *
 
 
 
-PROCEDURE selectFile (VAR name, path: ARRAY OF CHAR; VAR ok: BOOLEAN);
-PROCEDURE selectFileExtended (REF label     : ARRAY OF CHAR;
-                              VAR name, path: ARRAY OF CHAR;
-                              VAR ok        : BOOLEAN);
 
-        (*  Die GEM File-Selektor-Box fÅr die entsprechende Option
-         *  in 'GEMEnv'.
-         *  'selectFileExtended' erst ab TOS 1.4
-         *)
-         
-PROCEDURE shellRead (VAR cmd, tail: ARRAY OF CHAR);
-
-        (*  Entspricht der von 'AESMisc' exportierten Prozedur.
-         *  Ist hier nur impl., damit keine zyklischen Importe durch
-         *  die Tatsache entstehen, daû 'GEMEnv' die Proc. benutzt.
-         *)
-
-
-
-        (*  Von mehren Moduln genutzte GEM-Calls (for supervision)  *)
-        (*  ======================================================  *)
+        (*  Von mehreren Moduln genutzte GEM-Calls (for supervision)  *)
+        (*  ========================================================  *)
        
 PROCEDURE grafMouse (form:INTEGER16 (* ~ AESGraphics.MouseForm*);
                      mFormDefPtr:PtrMouseFormDef);
 
-PROCEDURE showCursor (handle:DeviceHandle;force:BOOLEAN);
+PROCEDURE showCursor (device:DeviceHandle;force:BOOLEAN);
 
-PROCEDURE hideCursor (handle:DeviceHandle);
+PROCEDURE hideCursor (device:DeviceHandle);
 
+TYPE UpdateWindowType = (EndUpdate, BegUpdate, EndMctrl, BegMctrl);
 
-PROCEDURE updateWindow (update:INTEGER16);
+PROCEDURE updateWindow (update: UpdateWindowType);
 
 
 PROCEDURE closeWindow (handle:CARDINAL);
@@ -451,19 +437,19 @@ PROCEDURE closeWindow (handle:CARDINAL);
 PROCEDURE deleteWindow (handle:CARDINAL);
 
 
-PROCEDURE exchangeTimerVec(new:PROC;VAR time:CARDINAL):PROC;
+PROCEDURE exchangeTimerVec(newproc: PROC;VAR time:CARDINAL): [ PROC ];
 
-(*  exchangeTimeVec -- geg.: 'new' der neue Timerinterrupt vector    *
+(*  exchangeTimeVec -- geg.: 'newproc' der neue Timerinterrupt vector *
  *                     ges.: In 'time' steht die Zeit die zwischen 2 *
  *                           Timerinter. vergeht(in ms), der neue    *
  *                           Vector ist beim VDI angemeldet und der  *
  *                           alte Vector ist RÅckgabewert.           *)
  
         
-PROCEDURE exchangeMouseVec(opcode:CARDINAL;new:PROC):PROC;
+PROCEDURE exchangeMouseVec(opcode:CARDINAL; newproc:PROC): [ PROC ];
 
 (*  exchangeMouseVec -- geg.: 'opcode' der VDI-Opcode fÅr einen Mouse- *
- *                            vector exchange und 'new' die neue Proc. *
+ *                            vector exchange und 'newproc' die neue Proc. *
  *                      ges.: neue Proc. bei VDI angemeldet und alter  *
  *                            Vector als RÅckgabewert                  *)
 

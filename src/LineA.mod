@@ -173,7 +173,7 @@ PROCEDURE FilledPolygon(pts:ARRAY OF Point;noPts:CARDINAL;y:INTEGER);
 BEGIN
   lineAVars^.p.y := y;
   IF ((noPts = 0) OR (noPts > HIGH(pts))) THEN noPts := HIGH(pts) END;
-  lineAVars^.contrl^.sptsin := noPts;
+  lineAVars^.contrl^.nptsin := noPts;
   lineAVars^.ptsin := ADR(pts);
   CallLinea();
 END FilledPolygon;
@@ -221,7 +221,7 @@ END TextBlockTransfer;
 PROCEDURE ShowMouse(force:BOOLEAN);
   DECLARE_LINEA_VOID(9, "dc.w 0xa009")
 BEGIN
-  lineAVars^.intin^[0] := ORD(force);
+  lineAVars^.intin^[0] := INTEGER(BITSET(ORD(force)) / BITSET(1));
   CallLinea();
 END ShowMouse;
 
@@ -281,8 +281,8 @@ BEGIN
   lineAVars^.ptsin^[5] := destStart.y;
   lineAVars^.ptsin^[6] := destEnd.x;
   lineAVars^.ptsin^[7] := destEnd.y;
-  lineAVars^.contrl^.ptr1 := sourceMem;
-  lineAVars^.contrl^.ptr1 := destMem;
+  lineAVars^.contrl^.ptr1.ptr := sourceMem;
+  lineAVars^.contrl^.ptr1.ptr := destMem;
   CallLinea();
 END CopyRasterForm;
  

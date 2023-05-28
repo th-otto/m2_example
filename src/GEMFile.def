@@ -1,0 +1,21 @@
+DEFINITION MODULE GEMFile;
+#define REF
+
+(*      Megamax Modula-2 GEM Library: ripped of from GEMShare
+ *
+ *)
+
+
+EXPORT  QUALIFIED selectFile, selectFileExtended;
+
+PROCEDURE selectFile (VAR path, name: ARRAY OF CHAR; VAR ok: BOOLEAN);
+PROCEDURE selectFileExtended (REF label     : ARRAY OF CHAR;
+                              VAR path, name: ARRAY OF CHAR;
+                              VAR ok        : BOOLEAN);
+
+        (*  Die GEM File-Selektor-Box fÅr die entsprechende Option
+         *  in 'GEMEnv'.
+         *  'selectFileExtended' erst ab TOS 1.4
+         *)
+         
+END GEMFile.

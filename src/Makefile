@@ -15,6 +15,7 @@ OBJS = \
 	LineA.o \
 	GEMGlobals.o \
 	GEMBase.o \
+	GEMShare.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -32,6 +33,7 @@ GrafBase.o: GrafBase.mod GrafBase.def
 LineA.o: LineA.mod LineA.def
 GEMGlobals.o: GEMGlobals.mod GEMGlobals.def
 GEMBase.o: GEMBase.mod GEMBase.def
+GEMShare.o: GEMShare.mod GEMShare.def
 
 clean::
 	rm -f *.o *.a

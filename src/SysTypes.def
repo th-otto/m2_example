@@ -55,7 +55,8 @@ TYPE    CHARSET = SET OF CHAR;
                       14: pal: PtrAnyLongType|
                       15: li : INTEGER32|
                       16: lc : CARDINAL32|
-                      17: r  : LONGREAL
+                      17: r  : LONGREAL|
+                    ELSE
                     END
                   END;
 
@@ -83,6 +84,7 @@ TYPE    CHARSET = SET OF CHAR;
                           14: pal: PtrAnyLongType|
                           15: li : INTEGER32|
                           16: lc : CARDINAL32|
+                        ELSE
                         END
                      END;
 
@@ -96,7 +98,8 @@ TYPE    CHARSET = SET OF CHAR;
                               s  : BBS|
                           3 : w  : CARDINAL16|
                           5 : i  : INTEGER16|
-                          6 : c  : CARDINAL16
+                          6 : c  : CARDINAL16|
+                        ELSE
                         END
                      END;
 
@@ -104,7 +107,8 @@ TYPE    CHARSET = SET OF CHAR;
                         CASE : CARDINAL OF
                           0 : b  : BYTE|
                           1 : ch : CHAR|
-                          2 : s  : BBS
+                          2 : s  : BBS|
+                        ELSE
                         END
                      END;
 
@@ -202,7 +206,8 @@ TYPE    Exceptions = [2..263];
                       BusError, AddrError:   (* zus„tzlich bei Bus/Adr-Error:*)
                        accessAddr : ADDRESS; (* Zugriffsadresse *)
                        superSR    : CARDINAL16;    (* Super-Status-Word *)
-                       instruction: CARDINAL16     (* Fehler erzeugende Anweisung *)
+                       instruction: CARDINAL16 |  (* Fehler erzeugende Anweisung *)
+                    ELSE
                     END
                   END;
 

@@ -431,6 +431,7 @@ TYPE    SpriteFormat    = (vdiFormat, xorFormat);
                               1 :  onePlane  : POINTER TO ARRAY[0..73] OF BYTE|
                               2 :  twoPlanes : POINTER TO ARRAY[0..137] OF BYTE|
                               4 :  fourPlanes: POINTER TO ARRAY[0..265] OF BYTE|
+                            ELSE
                             END;
                           END;
                           

@@ -52,8 +52,8 @@ BEGIN
   aespb.pglobal := NIL;	
   aespb.pintin := NIL;	
   aespb.pintout := NIL;	
-  aespb.padrin := NIL;	
-  aespb.padrout := NIL;	
+  aespb.paddrin := NIL;	
+  aespb.paddrout := NIL;	
 
   (* 'vdipb' lîschen (fÅr Fehlerausgang) *)
   vdipb.contrl := NIL;

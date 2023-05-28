@@ -58,27 +58,33 @@ TYPE    IntinArray      = ARRAY[0..127] OF INTEGER16;
         IntoutArray     = ARRAY[0..127] OF INTEGER16;
         PtsinArray      = ARRAY[0..511] OF INTEGER16;
         PtsoutArray     = ARRAY[0..11]  OF INTEGER16;
-        AdrinArray      = ARRAY[0..2]   OF ADDRESS;
-        AdroutArray     = ARRAY[0..1]   OF ADDRESS;
+        AddrinArray     = ARRAY[0..2]   OF ADDRESS;
+        AddroutArray    = ARRAY[0..1]   OF ADDRESS;
         PtrIntinArray   = POINTER TO IntinArray;
         PtrIntoutArray  = POINTER TO IntoutArray;
         PtrPtsinArray   = POINTER TO PtsinArray;
         PtrPtsoutArray  = POINTER TO PtsoutArray;
-        PtrAdrinArray   = POINTER TO AdrinArray;
-        PtrAdroutArray  = POINTER TO AdroutArray;
+        PtrAddrinArray  = POINTER TO AddrinArray;
+        PtrAddroutArray = POINTER TO AddroutArray;
 
         (*  VDI-Typen *)
 
+        CtrlPtr = RECORD CASE : CARDINAL OF
+        | 0: proc: PROC;
+        | 1: ptr: ADDRESS;
+        | ELSE END
+        END;
+
         VDIContrlArray  = RECORD
                             opcode      : CARDINAL16;
-                            sptsin      : CARDINAL16;
-                            sptsout     : CARDINAL16;
-                            sintin      : CARDINAL16;
-                            sintout     : CARDINAL16;
+                            nptsin      : CARDINAL16;
+                            nptsout     : CARDINAL16;
+                            nintin      : CARDINAL16;
+                            nintout     : CARDINAL16;
                             subcmd      : CARDINAL16;
                             handle      : INTEGER16;
-                            ptr1        : ADDRESS;
-                            ptr2        : ADDRESS;
+                            ptr1        : CtrlPtr;
+                            ptr2        : CtrlPtr;
                             multi5      : INTEGER16;
                           END;
         PtrVDIContrlArray= POINTER TO VDIContrlArray;
@@ -99,10 +105,10 @@ TYPE    IntinArray      = ARRAY[0..127] OF INTEGER16;
         
         AESContrlArray  = RECORD
                             opcode      : CARDINAL16;
-                            sintin      : CARDINAL16;
-                            sintout     : CARDINAL16;
-                            sadrin      : CARDINAL16;
-                            sadrout     : CARDINAL16;
+                            nintin      : CARDINAL16;
+                            nintout     : CARDINAL16;
+                            naddrin     : CARDINAL16;
+                            naddrout    : CARDINAL16;
                           END;
         PtrAESContrlArray= POINTER TO AESContrlArray;
 
@@ -129,14 +135,11 @@ TYPE    IntinArray      = ARRAY[0..127] OF INTEGER16;
                             pglobal     : PtrGlobalArray;
                             pintin      : PtrIntinArray;
                             pintout     : PtrIntoutArray;
-                            padrin      : PtrAdrinArray;
-                            padrout     : PtrAdroutArray;
+                            paddrin     : PtrAddrinArray;
+                            paddrout    : PtrAddroutArray;
                           END;
         PtrAESPB        = POINTER TO AESPB;
 
-
-                        (*  Aufrufroutinen  *)
-                        (*  ==============  *)
 
                         (*  Abfrageroutinen  *)
                         (*  ===============  *)
@@ -160,6 +163,9 @@ PROCEDURE VDIHandle (dev: DeviceHandle): INTEGER16;
          *)
 
 
+                        (*  Aufrufroutinen  *)
+                        (*  ==============  *)
+
 PROCEDURE CallVDI (ptrpb: PtrVDIPB);
 
         (*  Ruft das VDI auf.
@@ -173,6 +179,5 @@ PROCEDURE CallAES (ptrpb: PtrAESPB);
          *
          *  'ptrpb' spezifiziert den zu benutzenden Parameterblock.
          *)
-
 
 END GEMBase.
