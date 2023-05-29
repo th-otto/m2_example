@@ -54,7 +54,7 @@ FROM SYSTEM     IMPORT BYTE, ADR, INTEGER32, SHIFT;
 FROM MOSGlobals IMPORT OutOfStack, IllegalPointer, StringOverflow;
 
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
-FROM ErrBase IMPORT TRAP6;
+FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
 
 #include "gemops.icl"
 #include "gemcnf.icl"
@@ -151,7 +151,7 @@ BEGIN
     IF errorProcPtr <> NIL THEN
       errorProcPtr^()
     ELSE
-      TRAP6(IllegalPointer - 04000H);
+      TRAP6(IllegalPointer - TRAP6_SELF);
     END;
   END;
 END testErrorCheck;

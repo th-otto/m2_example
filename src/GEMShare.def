@@ -24,15 +24,15 @@ FROM GEMGlobals IMPORT GemChar, MButtonSet, SpecialKeySet, TEffectSet, MaxStr;
 
 FROM GEMBase IMPORT VDIContrlArray, AESContrlArray, GlobalArray, AESPB, PtrAESPB, VDIPB;
 
-EXPORT  QUALIFIED DeviceHandle, device, deviceList, GemHandle, cb, root_cb, our_cb, error,
+EXPORT  QUALIFIED DeviceHandle, device, GemHandle, cb, root_cb, our_cb, error,
         intinMax, ptsinMax, keyboardPlugActive, buttonPlugActive,
         firstRectPlugActive, secondRectPlugActive, messagePlugActive,
         timerPlugActive, keyboardPlug, buttonPlug, firstRectPlug,
         secondRectPlug, messagePlug, timerPlug, noErrorTrap, deviceMagic,
-        cbMagic, PtrPrivDevParm, PrivGDPFkt, PrivInputDev, PrivDeviceType,
-        PrivScreenType, PrivTextRotType, PrivGDPAttribute, logInpDev,
+        cbMagic, GDPFkt, InputDev, DeviceType,
+        ScreenType, TextRotType, GDPAttribute, logInpDev,
         inputMode, errNum, ptrToErrHdler, errorProcPtr, pubArrays,
-        ptrPubArrays,
+        ptrPubArrays, DevParm, PtrDevParm,
         
         aes_call, aes_if, vdi_call, vdi_if, testINTOUT0, testErrorCheck,
         setINT0attribut, getCalcedFrame, superData, stringIntoINTIN,
@@ -44,15 +44,15 @@ EXPORT  QUALIFIED DeviceHandle, device, deviceList, GemHandle, cb, root_cb, our_
         grafMouse, updateWindow, showCursor, closeWindow, deleteWindow,
         exchangeTimerVec, exchangeMouseVec, removeTimerVector,
         removeButChgVector, removeMsMoveVector, removeCurChgVector,
-        unloadFonts, hideCursor, UpdateWindowType;
+        unloadFonts, hideCursor, UpdateWindowType, windowSet, MaxWinds;
         
         
                          
 
 CONST           (* Misc. private Const's *)
         
-        intinMax                = 127;   (* Highest index of the INTIN-Array *)
-        ptsinMax                = 511;   (* Highest index of the PTSIN-Array *
+        intinMax                = 128;   (* size of the INTIN-Array *)
+        ptsinMax                = 512;   (* size of the PTSIN-Array *
                                           * GEM erlaubt nicht mehr.          *)
         
         noErrorTrap             = 6;     (* Nummer des Trap's fÅr Errorbehand.*)
@@ -63,90 +63,171 @@ CONST           (* Misc. private Const's *)
         MaxWinds                = 31;
         
         
-(*  Die nachfolgende Deklaration muû mit der in 'GEMEnv' Åbereinstimmen !!!!! *)
-(*  ************************************************************************* *)
-
-TYPE    PrivGDPAttribute= (lineOpPriv, markerOpPriv, textOpPriv, fillOpPriv,
-                           noAttributePriv, notAvaiblePriv);
-        PrivGDPFkt      = (barGDPPriv, arcGDPPriv, pieGDPPriv, circleGDPPriv,
-                           ellipseGDPPriv, eArcGDPPriv,  ePieGDPPriv,
-                           rRectGDPPriv, fRectGDPPriv, jTextGDPPriv);
-        PrivInputDev    = (keybdPriv, otherPriv);
-        PrivDeviceType  = (outDevPriv, inDevPriv, inoutDevPriv,
-                           reservedDevPriv, metafilePriv);
-        PrivScreenType  = (noScreenPriv, difCtrlDifScrnPriv, difCtrlSamScrnPriv,
-                           samCtrlDifMemPriv,  samCtrlSamMemPriv);
-        PrivTextRotType = (noTextRotPriv, step90Priv, everyDirecPriv);
-        
-        PtrPrivDevParm  = POINTER TO PrivDevParm;
-        PrivDevParm     = RECORD
-          charWidth         : CARDINAL;
-          charHeight        : CARDINAL;
-          cellWidth         : CARDINAL;
-          cellHeight        : CARDINAL;
-          rasterWidth       : CARDINAL;
-          rasterHeight      : CARDINAL;
-          pointWidth        : CARDINAL;
-          pointHeight       : CARDINAL;
-          fontSizes         : CARDINAL;
-          lTypes            : CARDINAL;
-          lWidths           : CARDINAL;
-          mTypes            : CARDINAL;
-          mSizes            : CARDINAL;
-          fonts             : CARDINAL;
-          fPatterns         : CARDINAL;
-          fHatchings        : CARDINAL;
-          noColors          : CARDINAL;
-          minWChar          : CARDINAL;
-          maxWChar          : CARDINAL;
-          minHChar          : CARDINAL;
-          maxHChar          : CARDINAL;
-          minWRow           : CARDINAL;
-          maxWRow           : CARDINAL;
-          minWMark          : CARDINAL;
-          maxWMark          : CARDINAL;
-          minHMark          : CARDINAL;
-          maxHMark          : CARDINAL;
-          bgColors          : CARDINAL;
-          maxRasterPls      : CARDINAL;
-          op16PerSec        : CARDINAL;
-          noWrtModes        : CARDINAL;
-          maxInMode         : CARDINAL;
-          maxMarker         : CARDINAL;
-          maxStrLen         : CARDINAL;
-          noMButts          : CARDINAL;
-          thickLnModes      : CARDINAL;
-          possibleGDPs      : ARRAY PrivGDPFkt OF PrivGDPAttribute;
-          color             : BOOLEAN;
-          fill              : BOOLEAN;
-          cArray            : BOOLEAN;
-          zooming           : BOOLEAN;
-          lookUpTab         : BOOLEAN;
-          textJust          : BOOLEAN;
-          contFill          : BOOLEAN;
-          penChange         : BOOLEAN;
-          colorRibbon       : BOOLEAN;
-          thickLnTyps       : BOOLEAN;
-          grafCCtrl         : PrivInputDev;
-          valueIn           : PrivInputDev;
-          caseIn            : PrivInputDev;
-          alphanumIn        : PrivInputDev;
-          deviceType        : PrivDeviceType;
-          screen            : PrivScreenType;
-          useTEffects       : TEffectSet;
-          textRot           : PrivTextRotType;
-        END;
+TYPE    GDPAttribute = (lineOp, markerOp, textOp, fillOp, noAttribute,
+                        notAvaible);
+        GDPFkt       = (barGDP, arcGDP, pieGDP, circleGDP, ellipseGDP,
+                        eArcGDP,  ePieGDP, rRectGDP, fRectGDP, jTextGDP);
+        InputDev     = (noinput, keybd, keybdAndMouse);
+        DeviceType   = (outDev, inDev, inoutDev, reservedDev, metafile);
+        ScreenType   = (noScreen, difCtrlDifScrn, difCtrlSamScrn,
+                        samCtrlDifMem, samCtrlSamMem);
+        TextRotType  = (noTextRot, step90, everyDirec);
         
 TYPE    logInpDev       = (noDev, location, value, choice, str);
         inputMode       = (noMode, request, sample);
         
+        PtrDevParm   = POINTER TO DevParm;
+        DevParm      = RECORD
+        
+                         (*  Diese 4 Werte entsprechen den von
+                          *  'GrafHandle' gelieferten Werten.
+                          *)
+                         charWidth, charHeight,
+                         cellWidth, cellHeight,
+                         
+                         (*  Breite und Hîhe des Pixelrasters
+                          *  [0..rasterWidth] und [0..rasterHeight]
+                          *)
+                         rasterWidth, rasterHeight,
+                         
+                         (*  Breite und Hîhe eines Pixels in mm/1000
+                          *)
+                         pointWidth, pointHeight,
+                         
+                         (*  Anzahl der Schriftgrîûen (0 bed. kontinuierlich)
+                          *)
+                         fontSizes,
+                         
+                         (*  Anzahl der Linienarten und -stÑrken
+                          *  (bei Letzterem bedeutet 0 kontinuierlich)
+                          *)
+                         lTypes, lWidths,
+                         
+                         (*  Anzahl der Makierungsarten und -grîûen
+                          *  (bei Letzterem bedeutet 0 kontinuierlich)
+                          *)
+                         mTypes, mSizes,
+                         
+                         (*  Anzahl der verfÅgbaren ZeichensÑtze
+                          *)
+                         fonts,
+                         
+                         (*  Anzahl der FÅllmuster und Schraffuren
+                          *)
+                         fPatterns, fHatchings,
+                         
+                         (*  Anzahl der gleichzeitig darstellbaren Farben
+                          *)
+                         noColors,
+                         
+                         (*  Minimale und maximale Zeichenbreite und -hîhe
+                          *)
+                         minWChar, maxWChar,
+                         minHChar, maxHChar,
+                         
+                         (*  Minimale und maximale Zeilenbreite
+                          *)
+                         minWRow, maxWRow,
+                         
+                         (*  Minimale und maximale Breite und Hîhe
+                          *  von Makierungen
+                          *)
+                         minWMark, maxWMark,
+                         minHMark, maxHMark,
+                         
+                         (*  Anzahl der verfÅgbaren Hintergrundfarben
+                          *)
+                         bgColors,
+                         
+                         (*  Anzahl der Farbebenen (planes)
+                          *)
+                         maxRasterPls,
+                         
+                         (*  Anzahl der 16x16 Pixel Rasteroperationen pro sec.
+                          *)
+                         op16PerSec,
+                         
+                         (*  Anzahl der Schreibmodi
+                          *)
+                         noWrtModes,
+                         
+                         (*  Hîchster Eingabemodus (0 ~ keine Eingabe,
+                          *  1 ~ Nachfragemodus, 2 ~ Testmodus)
+                          *)
+                         maxInMode,
+                         
+                         (*  Maximale Anzahl von Punkten in einem
+                          *  Punkte-Array und maximale Anzahl von
+                          *  Zeichen in einem Zeichen-Array
+                          *)
+                         maxMarker, maxStrLen,
+                         
+                         (*  Anzahl der Mausknîpfe
+                          *)
+                         noMButts,
+                         
+                         (*  Anzahl der Zeichenmodi fÅr verbreiterte Linien
+                          *)
+                         thickLnModes : CARDINAL;
+                         
+                         (*  Gibt die verfÅgbaren grafischen
+                          *  Grundfunktionen an
+                          *)
+                         possibleGDPs : ARRAY GDPFkt OF GDPAttribute;
+                         
+                         (*  Folgende Flags bestimmen ob gewisse
+                          *  Operationen mit dem beschriebenen
+                          *  GerÑt mîglich sind und zwar:
+                          *)
+                         color,         (*  Farbe                       *)
+                         fill,          (*  FÅllmuster                  *)
+                         cArray,        (*  Cell-Arrays                 *)
+                         zooming,       (*  Skalierung von Rastern      *)
+                         lookUpTab,     (*  Color Look Up Table (CLUT)  *)
+                         textJust,      (*  Textausrichtung             *)
+                         contFill,      (*  contour fill                *)
+                         penChange,     (*  Plotterstift austauschen    *)
+                         colorRibbon,   (*  Farbband (Drucker)          *)
+                         thickLnTyps    (*  verbreiterte Linientypen    *)
+                                      : BOOLEAN;
+                         
+                         (*  Folgende Variable bestimmen das EingabegerÑt
+                          *  fÅr diverse Arten der Eingabe und zwar fÅr:
+                          *)
+                         grafCCtrl,     (*  grafische Eingaben        *)
+                         valueIn,       (*  Werteingaben              *)
+                         caseIn,        (*  Auswahleingaben           *)
+                         alphanumIn     (*  alphanumerische Eingaben  *)
+                                      : InputDev;
+                         
+                         (*  Typ des beschriebenen GerÑtes
+                          *)
+                         deviceType   : DeviceType;
+                         
+                         (*  Art des Bildschirms
+                          *)
+                         screen       : ScreenType;
+                         
+                         (*  UnterstÅtzte Texteffekte
+                          *)
+                         useTEffects  : TEffectSet;
+                         
+                         (*  Art der unterstÅtzten Textrotation
+                          *)
+                         textRot      : TextRotType;
+                         
+                       END;
+     
+(*  Dient zur Identifizierung eines VDI-GerÑtes.
+ *  Siehe auch 'OpenDevice'. (GerÑte-Referenz)
+ *)
 TYPE    DeviceHandle    = POINTER TO device;
         device          = RECORD
                             magic        : CARDINAL;
                             mode         : CARDINAL;
                             handle       : CARDINAL;
                             
-                            params       : PrivDevParm;
+                            params       : DevParm;
                             
                             noHdCurs     : CARDINAL;  (* FIXME: in VDI, this is shared for all screen workstation handles *)
                             oldHdCurs    : CARDINAL;
@@ -157,7 +238,6 @@ TYPE    DeviceHandle    = POINTER TO device;
                             
                             next         : DeviceHandle;
                           END;
-        deviceList      = DeviceHandle;
         
         ptrVectorList   = POINTER TO vecListElem;
         vecListElem     = RECORD
@@ -167,15 +247,17 @@ TYPE    DeviceHandle    = POINTER TO device;
                             next         : ptrVectorList;
                             futureAddr   : ADDRESS;
                           END;
-                         
+        
+        windowSet = SET OF [0..MaxWinds];
+
         superData       = RECORD
                             noGrafMouse  : CARDINAL;
                             oldGrafMouse : CARDINAL; (* Number of mouse hides *)
                             noUpWind     : CARDINAL;
                             noMouseCtrl  : CARDINAL; (* No. wind. updates/ctrls*)
                             
-                            createWinds  : SET OF [0..MaxWinds];
-                            openWinds    : SET OF [0..MaxWinds]; (* Created/opened windows *)
+                            createWinds  : windowSet;
+                            openWinds    : windowSet; (* Created/opened windows *)
                             
                             timerChgd,
                             butChgChgd,
@@ -188,11 +270,11 @@ TYPE    DeviceHandle    = POINTER TO device;
                           END;
         
         pubArrays       = RECORD
-                            vINTIN      : ARRAY[0..intinMax] OF INTEGER16;
-                            aINTIN      : ARRAY[0..intinMax] OF INTEGER16;
+                            vINTIN      : ARRAY[0..intinMax-1] OF INTEGER16;
+                            aINTIN      : ARRAY[0..intinMax-1] OF INTEGER16;
                             vINTOUT     : ARRAY[0..127] OF INTEGER16;
                             aINTOUT     : ARRAY[0..127] OF INTEGER16;
-                            PTSIN       : ARRAY[0..ptsinMax] OF INTEGER16;
+                            PTSIN       : ARRAY[0..ptsinMax-1] OF INTEGER16;
                             PTSOUT      : ARRAY[0..11]  OF INTEGER16;
                             ADDRIN      : ARRAY[0..2] OF ADDRESS;
                             ADDROUT     : ARRAY[0..1] OF ADDRESS;
@@ -206,6 +288,10 @@ TYPE    DeviceHandle    = POINTER TO device;
          *  nen. 'ExitGem' dealloc. die Struktur wieder.
          *)
          
+(*  Dient zur Identifizierung einer kompletten
+ *  Anmeldung (per 'InitGem') beim GEM.
+ *  (GEM-Referenz)
+ *)
 TYPE    GemHandle       = POINTER TO cb;
         cb      = RECORD
                     
@@ -233,7 +319,7 @@ TYPE    GemHandle       = POINTER TO cb;
 
                     HANDLE      : INTEGER;    (* AES Grafikhandle *)
                     
-                    DEVICES     : deviceList; (* Liste der VDI-GerÑte *)
+                    DEVICES     : DeviceHandle; (* Liste der VDI-GerÑte *)
                     CURDEVICE   : DeviceHandle; (* Aktuelles GerÑt *)
                     
                     FSEL        : PROC;       (* Selector vor Init. d. Levels *)

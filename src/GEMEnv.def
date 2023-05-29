@@ -23,15 +23,7 @@ FROM GEMGlobals IMPORT TEffectSet;
                         (*  ===================  *)
                 
                 
-TYPE    GemHandle;      (*  Dient zur Identifizierung einer kompletten
-                         *  Anmeldung (per 'InitGem') beim GEM.
-                         *  (GEM-Referenz)
-                         *)
-
-TYPE    DeviceHandle;   (*  Dient zur Identifizierung eines VDI-GerÑtes.
-                         *  Siehe auch 'OpenDevice'. (GerÑte-Referenz)
-                         *)
-                         
+FROM GEMShare IMPORT GemHandle, DeviceHandle;
 
 CONST   NoDevice        = DeviceHandle (NIL);   (* Wert fÅr ein nicht besetz-
                                                  * tes GerÑte-handle
@@ -153,7 +145,7 @@ CONST   NonVirtual      = 0;    (*  GerÑt soll mit Open Workstation geîffnet
                                  *  werden.
                                  *)
 
-PROCEDURE OpenDevice (dev, sysKoor, mode: CARDINAL; VAR hdl: DeviceHandle);
+PROCEDURE OpenDevice (dev, sysKoor, newMode: CARDINAL; VAR hdl: DeviceHandle);
 
         (*  Dient zum ôffnen einer (virtuellen) Arbeitsstation.
          *
@@ -192,158 +184,6 @@ PROCEDURE CloseDevice (handle: DeviceHandle);
          *)
          
         
-TYPE    GDPAttribute = (lineOp, markerOp, textOp, fillOp, noAttribute,
-                        notAvaible);
-        GDPFkt       = (barGDP, arcGDP, pieGDP, circleGDP, ellipseGDP,
-                        eArcGDP,  ePieGDP, rRectGDP, fRectGDP, jTextGDP);
-        InputDev     = (keybd, other);
-        DeviceType   = (outDev, inDev, inoutDev, reservedDev, metafile);
-        ScreenType   = (noScreen, difCtrlDifScrn, difCtrlSamScrn,
-                        samCtrlDifMem, samCtrlSamMem);
-        TextRotType  = (noTextRot, step90, everyDirec);
-        
-        PtrDevParm   = POINTER TO DevParm;
-        DevParm      = RECORD
-        
-                         (*  Diese 4 Werte entsprechen den von
-                          *  'GrafHandle' gelieferten Werten.
-                          *)
-                         charWidth, charHeight,
-                         cellWidth, cellHeight,
-                         
-                         (*  Breite und Hîhe des Pixelrasters
-                          *  [0..rasterWidth] und [0..rasterHeight]
-                          *)
-                         rasterWidth, rasterHeight,
-                         
-                         (*  Breite und Hîhe eines Pixels in mm/1000
-                          *)
-                         pointWidth, pointHeight,
-                         
-                         (*  Anzahl der Schriftgrîûen (0 bed. kontinuierlich)
-                          *)
-                         fontSizes,
-                         
-                         (*  Anzahl der Linienarten und -stÑrken
-                          *  (bei Letzterem bedeutet 0 kontinuierlich)
-                          *)
-                         lTypes, lWidths,
-                         
-                         (*  Anzahl der Makierungsarten und -grîûen
-                          *  (bei Letzterem bedeutet 0 kontinuierlich)
-                          *)
-                         mTypes, mSizes,
-                         
-                         (*  Anzahl der verfÅgbaren ZeichensÑtze
-                          *)
-                         fonts,
-                         
-                         (*  Anzahl der FÅllmuster und Schraffuren
-                          *)
-                         fPatterns, fHatchings,
-                         
-                         (*  Anzahl der gleichzeitig darstellbaren Farben
-                          *)
-                         noColors,
-                         
-                         (*  Minimale und maximale Zeichenbreite und -hîhe
-                          *)
-                         minWChar, maxWChar,
-                         minHChar, maxHChar,
-                         
-                         (*  Minimale und maximale Zeilenbreite
-                          *)
-                         minWRow, maxWRow,
-                         
-                         (*  Minimale und maximale Breite und Hîhe
-                          *  von Makierungen
-                          *)
-                         minWMark, maxWMark,
-                         minHMark, maxHMark,
-                         
-                         (*  Anzahl der verfÅgbaren Hintergrundfarben
-                          *)
-                         bgColors,
-                         
-                         (*  Anzahl der Farbebenen (planes)
-                          *)
-                         maxRasterPls,
-                         
-                         (*  Anzahl der 16x16 Pixel Rasteroperationen pro sec.
-                          *)
-                         op16PerSec,
-                         
-                         (*  Anzahl der Schreibmodi
-                          *)
-                         noWrtModes,
-                         
-                         (*  Hîchster Eingabemodus (0 ~ keine Eingabe,
-                          *  1 ~ Nachfragemodus, 2 ~ Testmodus)
-                          *)
-                         maxInMode,
-                         
-                         (*  Maximale Anzahl von Punkten in einem
-                          *  Punkte-Array und maximale Anzahl von
-                          *  Zeichen in einem Zeichen-Array
-                          *)
-                         maxMarker, maxStrLen,
-                         
-                         (*  Anzahl der Mausknîpfe
-                          *)
-                         noMButts,
-                         
-                         (*  Anzahl der Zeichenmodi fÅr verbreiterte Linien
-                          *)
-                         thickLnModes : CARDINAL;
-                         
-                         (*  Gibt die verfÅgbaren grafischen
-                          *  Grundfunktionen an
-                          *)
-                         possibleGDPs : ARRAY GDPFkt OF GDPAttribute;
-                         
-                         (*  Folgende Flags bestimmen ob gewisse
-                          *  Operationen mit dem beschriebenen
-                          *  GerÑt mîglich sind und zwar:
-                          *)
-                         color,         (*  Farbe                       *)
-                         fill,          (*  FÅllmuster                  *)
-                         cArray,        (*  Cell-Arrays                 *)
-                         zooming,       (*  Skalierung von Rastern      *)
-                         lookUpTab,     (*  Color Look Up Table (CLUT)  *)
-                         textJust,      (*  Textausrichtung             *)
-                         contFill,      (*  contour fill                *)
-                         penChange,     (*  Plotterstift austauschen    *)
-                         colorRibbon,   (*  Farbband (Drucker)          *)
-                         thickLnTyps    (*  verbreiterte Linientypen    *)
-                                      : BOOLEAN;
-                         
-                         (*  Folgende Variable bestimmen das EingabegerÑt
-                          *  fÅr diverse Arten der Eingabe und zwar fÅr:
-                          *)
-                         grafCCtrl,     (*  grafische Eingaben        *)
-                         valueIn,       (*  Werteingaben              *)
-                         caseIn,        (*  Auswahleingaben           *)
-                         alphanumIn     (*  alphanumerische Eingaben  *)
-                                      : InputDev;
-                         
-                         (*  Typ des beschriebenen GerÑtes
-                          *)
-                         deviceType   : DeviceType;
-                         
-                         (*  Art des Bildschirms
-                          *)
-                         screen       : ScreenType;
-                         
-                         (*  UnterstÅtzte Texteffekte
-                          *)
-                         useTEffects  : TEffectSet;
-                         
-                         (*  Art der unterstÅtzten Textrotation
-                          *)
-                         textRot      : TextRotType;
-                         
-                       END;
-     
 PROCEDURE DeviceParameter (handle: DeviceHandle): PtrDevParm;
 
         (*  Liefert die GerÑteparameter eines geîffneten GerÑtes.
@@ -358,7 +198,7 @@ PROCEDURE CurrGemHandle (): GemHandle;
         (*  Ermittelt die aktuelle GEM-Referenz ('GemHandle').
          *)
 
-PROCEDURE SetCurrGemHandle (handle: GemHandle; VAR success: BOOLEAN);
+PROCEDURE SetCurrGemHandle (handle: GemHandle): [ BOOLEAN ];
 
         (*  Setzt die aktuelle GEM-Refrenz.
          *

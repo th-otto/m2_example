@@ -15,3 +15,5 @@ hellotos: hellotos.mod
 
 clean::
 	rm -f *.o *.a $(PROGRAMS)
+
+$(PROGRAMS): $(top_srcdir)/src/libm2gem.a

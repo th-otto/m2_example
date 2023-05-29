@@ -27,6 +27,8 @@ PROCEDURE RaiseError (    no    : INTEGER;       (* Fehlernummer *)
    *)
 
 PROCEDURE TRAP6(no: INTEGER);
+CONST TRAP6_SELF = 04000H;
+      TRAP6_CONT = 02000H;
 
 (*
   TRAP Instruktionen in Assembler sind wie folgt kodiert:

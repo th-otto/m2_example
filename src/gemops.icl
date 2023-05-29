@@ -1,4 +1,3 @@
-
 (*      Include-Datei:
  *
  *      Konstantendefinitionen fÅr die Megamax Modula-2 GEM-Library
@@ -252,7 +251,7 @@ CONST
 (*
     assembler
     ;                             Application Manager
-        DC.B    0, 1, 0            ; func 010  init
+X       DC.B    0, 1, 0            ; func 010  init
         DC.B    2, 1, 1            ; func 011  read
         DC.B    2, 1, 1            ; func 012  write
         DC.B    0, 1, 1            ; func 013  find
@@ -261,7 +260,7 @@ CONST
         DC.B    0, 0, 0            ; func 016
         DC.B    0, 0, 0            ; func 017
         DC.B    0, 0, 0            ; func 008
-        DC.B    0, 1, 0            ; func 019  exit
+X       DC.B    0, 1, 0            ; func 019  exit
     ;                             Event Manager
         DC.B    0, 1, 0            ; func 020  evnt keybd
         DC.B    3, 5, 0            ; func 021  evnt but
@@ -325,7 +324,7 @@ CONST
         DC.B    8, 1, 0            ; func 074  shrink
         DC.B    4, 1, 1            ; func 075  watch
         DC.B    3, 1, 1            ; func 076  slide
-        DC.B    0, 5, 0            ; func 077  handle
+X       DC.B    0, 5, 0            ; func 077  handle
 X       DC.B    1, 1, 1            ; func 078  mouse
         DC.B    0, 5, 0            ; func 009  mkstate
     ;                            Scrap Manager
@@ -390,8 +389,8 @@ PROCEDURE ctrl_cnts2;
     ASSEMBLER
     ;       PTSIN, INTIN
         DC.B    0, 0         ; func 000
-        DC.B    0, 0         ; func 001
-        DC.B    0, 0         ; func 002
+X       DC.B    0, 0         ; func 001
+X       DC.B    0, 0         ; func 002 close workstation
         DC.B    0, 0         ; func 003 clear workstation
         DC.B    0, 0         ; func 004 update works.
         DC.B    0, 0         ; func 005 escape funktions
@@ -500,8 +499,8 @@ PROCEDURE ctrl_cnts2;
         DC.B    0, 0         ; func 009
     ;
         DC.B    0, 11        ; func 100  open work
-        DC.B    0, 0         ; func 101  close work
-        DC.B    0, 1         ; func 102  ext. inquire
+X       DC.B    0, 0         ; func 101  close work
+X       DC.B    0, 1         ; func 102  ext. inquire
         DC.B    1, 1         ; func 103  contour fill
         DC.B    0, 1         ; func 104  fill perim.
         DC.B    1, 0         ; func 105  get pixel
