@@ -1,4 +1,5 @@
 MODULE AESDemo;
+#define REF
 
 (*
  * Dies Programm zeigt die Anwendung vom Modul 'GEMBase' zum direkten
@@ -21,7 +22,7 @@ MODULE AESDemo;
  * AESBase/VDIBase auf GEMBase angepasst.
  *)
 
-FROM SYSTEM IMPORT ADR, CADR;
+FROM SYSTEM IMPORT ADR;
 
 IMPORT MOSGlobals;
 
@@ -38,9 +39,9 @@ VAR dev: GEMEnv.DeviceHandle;
     ch: CHAR;
     ok: BOOLEAN;
 
-PROCEDURE FselExInput(  REF title: ARRAY OF CHAR;
-                        VAR path, name: ARRAY OF CHAR;
-                        VAR ok: BOOLEAN);
+PROCEDURE FselExInput(  REF ftitle: ARRAY OF CHAR;
+                        VAR fpath, fname: ARRAY OF CHAR;
+                        VAR fok: BOOLEAN);
   (*
    * Implementation von 'fsel_exinput' mit Hilfe von GEMBase.
    *)
@@ -48,13 +49,13 @@ PROCEDURE FselExInput(  REF title: ARRAY OF CHAR;
   BEGIN
     GEMBase.GetPBs (gemHdl, vdipb, aespb);
     WITH aespb DO
-      padrin^[0]:= ADR (path);
-      padrin^[1]:= ADR (name);
-      padrin^[2]:= CADR (title);
-      pcontrl^:= GEMBase.AESContrlArray {91, 0, 2, 3, 0};
+      paddrin^[0]:= ADR (fpath);
+      paddrin^[1]:= ADR (fname);
+      paddrin^[2]:= ADR (ftitle);
+      pcontrl ^:= GEMBase.AESContrlArray {91, 0, 2, 3, 0};
     END;
     GEMBase.CallAES (ADR (aespb));
-    ok:= (aespb.pintout^[1] = 1)
+    fok:= (aespb.pintout^[1] = 1)
   END FselExInput;
 
 BEGIN

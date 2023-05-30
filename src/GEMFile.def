@@ -9,7 +9,7 @@ DEFINITION MODULE GEMFile;
 EXPORT  QUALIFIED selectFile, selectFileExtended;
 
 PROCEDURE selectFile (VAR path, name: ARRAY OF CHAR; VAR ok: BOOLEAN);
-PROCEDURE selectFileExtended (VAR label     : ARRAY OF CHAR;
+PROCEDURE selectFileExtended (REF label     : ARRAY OF CHAR;
                               VAR path, name: ARRAY OF CHAR;
                               VAR ok        : BOOLEAN);
 

@@ -110,14 +110,31 @@ BEGIN
   i := 0;
   (* Kopiere bis 0C oder max. Arrayindex *)
   LOOP
-    IF i > count THEN EXIT END;
+    IF count = 0 THEN EXIT END;
     IF str[i] = 0C THEN EXIT END;
     dst[i] := str[i];
     INC(i);
+    DEC(count);
   END;
   dst[i] := 0C;
 END stringIntoCFormat;
 
+
+PROCEDURE stringFromCFormat(REF str: MaxStr; VAR dst:ARRAY OF CHAR);
+VAR i, count: CARDINAL;
+BEGIN
+  count := HIGH(dst);
+  i := 0;
+  (* Kopiere bis 0C oder max. Arrayindex *)
+  LOOP
+    IF count = 0 THEN EXIT END;
+    IF str[i] = 0C THEN EXIT END;
+    dst[i] := str[i];
+    INC(i);
+    DEC(count);
+  END;
+  dst[i] := 0C;
+END stringFromCFormat;
 
                       (*  global error handling  *)
                       (*  =====================  *)
@@ -142,9 +159,9 @@ END signalGemError;
  * Aufzurufen nach einem AES-Call. INTOUT[0] wird geprueft. Wenn Fehler
  * angezeigt, wird 'error'-Flag gesetzt.
  *)
-PROCEDURE testINTOUT0(pb: PtrAESPB);
+PROCEDURE testINTOUT0();
 BEGIN
-  errNum := pb^.pintin^[0];
+  errNum := our_cb^.aespb.pintin^[0];
   IF errNum = 0 THEN signalGemError; END;
 END testINTOUT0;
 
@@ -283,7 +300,7 @@ BEGIN
   | ELSE
   END;
   aes_if(AES_CTRL_CODE(GEMOps.GRAF_MOUSE, 1, 1, 1));
-  testINTOUT0(ADR(our_cb^.aespb));
+  testINTOUT0();
 END grafMouse;
 
 
@@ -344,7 +361,7 @@ BEGIN
   END;
   our_cb^.pubs.aINTIN[0] := ORD(update);
   aes_if(AES_CTRL_CODE(GEMOps.WIND_UPDATE, 1, 1, 0));
-  testINTOUT0(ADR(our_cb^.aespb));
+  testINTOUT0();
 END updateWindow;
 
 
@@ -355,7 +372,7 @@ BEGIN
   END;
   our_cb^.pubs.aINTIN[0] := handle;
   aes_if(AES_CTRL_CODE(GEMOps.WIND_CLOSE, 1, 1, 0));
-  testINTOUT0(ADR(our_cb^.aespb));
+  testINTOUT0();
 END closeWindow;
 
 
@@ -366,7 +383,7 @@ BEGIN
   END;
   our_cb^.pubs.aINTIN[0] := handle;
   aes_if(AES_CTRL_CODE(GEMOps.WIND_DELETE, 1, 1, 0));
-  testINTOUT0(ADR(our_cb^.aespb));
+  testINTOUT0();
 END deleteWindow;
 
 

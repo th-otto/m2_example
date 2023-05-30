@@ -1,5 +1,7 @@
 DEFINITION MODULE GEMOps;
 
+FROM SYSTEM IMPORT CARDINAL32;
+
 (*      Include-Datei:
  *
  *      Konstantendefinitionen fuer die Megamax Modula-2 GEM-Library
@@ -341,8 +343,8 @@ X       DC.B    1, 1, 1            ; func 078  mouse
         DC.B    0, 0, 0            ; func 008
         DC.B    0, 0, 0            ; func 009
     ;                            fseler Manager
-        DC.B    0, 2, 2            ; func 090  input
-        DC.B    0, 2, 3            ; func 091           (*  Ab TOS 1.4  *)
+X       DC.B    0, 2, 2            ; func 090  input
+X       DC.B    0, 2, 3            ; func 091           (*  Ab TOS 1.4  *)
         DC.B    0, 0, 0            ; func 092
         DC.B    0, 0, 0            ; func 003
         DC.B    0, 0, 0            ; func 004
@@ -614,5 +616,7 @@ PROCEDURE ctrl_cnts5;
   END ctrl_cnts5;
 
 *)
+
+PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
 
 END GEMOps.

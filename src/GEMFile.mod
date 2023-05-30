@@ -5,111 +5,54 @@ IMPLEMENTATION MODULE GEMFile;
  *
  *)
 
+FROM SYSTEM IMPORT ADDRESS, ADR, INTEGER16, CARDINAL16, CARDINAL32, SHIFT;
+FROM GEMShare IMPORT our_cb, stringIntoCFormat, stringFromCFormat, aes_if, testINTOUT0;
+FROM GEMGlobals IMPORT MaxStr;
+FROM ErrBase IMPORT TRAP6;
+FROM MOSGlobals IMPORT StringOverflow;
+
+IMPORT GEMOps;
+
+PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
+BEGIN
+  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(nintin), 16) + SHIFT(BITSET(nintout), 8) + SHIFT(BITSET(naddrin), 0));
+END AES_CTRL_CODE;
+
 PROCEDURE selectFile0 (VAR path, name: ARRAY OF CHAR;
                        VAR ok        : BOOLEAN;
-                           opcode    : CARDINAL);
-  BEGIN
-path[0] := 0C;
-name[0] := 0C;
-ok := FALSE;
-opcode := 0;
-(*
-    assembler
-        LINK    A5, #0
-        MOVEM.L D3/A4-A5,-(A7)
-        MOVE.W  -(A3), D3
-        
-        MOVE.L  -(A3),-(A7)
-        MOVE.L  A3,A1
-        MOVE.L  -(A1),-(A7)
-        MOVE.L  -(A1),-(A7)
-        MOVE.L  -(A1),-(A7)
-        CMPI.W  #11,-2   (A3)
-        BCC     ok1
-        TRAP    #noErrorTrap
-        DC.W    StringOverflow
-        MOVE.W  #11,-2   (A3)
-ok1
-        CMPI.W  #31,-8(A3)
-        BCC     ok2
-        TRAP    #noErrorTrap
-        DC.W    StringOverflow
-        MOVE.W  #31,-8(A3)
-ok2
-        JSR     stringIntoCFormat   ; ADR(name) -> D2
-        MOVE.L  pubs,A0
-        MOVE.L  D2,pubArrays.ADDRIN+4(A0)
-        MOVE.L  D2,A4               ; ADR(path) -> A4
-        JSR     stringIntoCFormat   ; ADR(path) -> D2
-        MOVE.L  pubs,A0
-        MOVE.L  D2,pubArrays.ADDRIN(A0)
-        MOVE.L  D2,A5               ; ADR(path) -> A5
-        MOVE.W  D3,(A3)+
-        JSR     aes_if
-        
-        MOVE.L  (A7),A0
-        MOVE.L  (A0),A0
-        MOVE.L  (A0)+,A1
-        MOVE.W  (A0)+,D0
-loop1
-        MOVE.B  (A5)+,(A1)+
-        DBF     D0,loop1
-        MOVE.L  (A0)+,A1
-        MOVE.W  (A0)+,D0
-loop2
-        MOVE.B  (A4)+,(A1)+
-        DBF     D0,loop2
-        MOVE.L  (A7),A7             ; Strings wieder vom Stack loeschen
-        MOVE.L  (A7),A7
-        ADDA.W  #12,A7
-        
-        MOVE.L  pubs,A0
-        MOVE.L  (A7)+,A1
-        MOVE.W  pubArrays.aINTOUT+2(A0),(A1)
-        JSR     testINTOUT0
-        
-        MOVEM.L (A7)+,D3/A4-A5
-        UNLK    A5
-    END;
-*)
-  END selectFile0;
+                           opcode    : CARDINAL32);
+VAR s, s2: MaxStr;
+BEGIN
+  IF HIGH(name) < 11 THEN TRAP6(StringOverflow) END;
+  IF HIGH(path) < 31 THEN TRAP6(StringOverflow) END;
+  stringIntoCFormat(name, s);
+  our_cb^.pubs.ADDRIN[0] := ADR(s);
+  stringIntoCFormat(path, s2);
+  our_cb^.pubs.ADDRIN[1] := ADR(s2);
+  aes_if(opcode);
+  stringFromCFormat(s, name);
+  stringFromCFormat(s2, path);
+  ok := our_cb^.pubs.aINTOUT[1] <> 0;
+  testINTOUT0();
+END selectFile0;
+
 
 PROCEDURE selectFile (VAR path, name: ARRAY OF CHAR; VAR ok: BOOLEAN);
-  BEGIN
-path[0] := 0C;
-name[0] := 0C;
-ok := FALSE;
-(*
-    assembler
-        MOVE.W  #FSEL_INPUT,(A3)+
-        JMP     selectFile0
-    END;
-*)
-  END selectFile;
+BEGIN
+  selectFile0(path, name, ok, AES_CTRL_CODE(GEMOps.FSEL_INPUT, 0, 2, 2));
+END selectFile;
+
 
 PROCEDURE selectFileExtended (REF label     : ARRAY OF CHAR;
-                              VAR path, name: ARRAY OF CHAR;
-                              VAR ok        : BOOLEAN);
-  BEGIN
-label[0] := 0C;
-path[0] := 0C;
-name[0] := 0C;
-ok := FALSE;
+                            VAR path, name: ARRAY OF CHAR;
+                            VAR ok        : BOOLEAN);
+BEGIN
 (*
-    assembler
-        MOVE.L  -22(A3), (A3)+
-        MOVE.W  -22(A3), (A3)+          ;  don't forget the 4 byte of the prev.
-        JSR     stringIntoCFormat
-        MOVE.L  pubs, A0
-        MOVE.L  D2, pubArrays.ADDRIN+8(A0)     ; 'label' an AES
-        
-        MOVE.W  #FSEL_EX_INPUT,(A3)+
-        JSR     selectFile0
-        
-        MOVE.L  (A7), A7
-        SUBQ.L  #6, A3
-    END;
+  stringIntoCFormat(label, s);
 *)
-  END selectFileExtended;
+  our_cb^.pubs.ADDRIN[2] := ADR(label);
+  selectFile0(path, name, ok, AES_CTRL_CODE(GEMOps.FSEL_EX_INPUT, 0, 2, 3));
+END selectFileExtended;
+
 
 END GEMFile.

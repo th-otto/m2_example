@@ -507,7 +507,7 @@ BEGIN
       error := FALSE;
     ELSE
       DIDAPPLINIT := FALSE;
-      GLOBAL:= root_cb^.GLOBAL
+      GLOBAL := root_cb^.GLOBAL
     END;
 
     (*  Geraeteliste := leere Liste

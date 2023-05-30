@@ -1,3 +1,4 @@
+
 DEFINITION MODULE GEMShare;
 #define REF
 
@@ -36,7 +37,7 @@ EXPORT  QUALIFIED DeviceHandle, device, GemHandle, cb, root_cb, our_cb, error,
         
         aes_call, aes_if, vdi_call, vdi_if, testINTOUT0, testErrorCheck,
         setINT0attribut, getCalcedFrame, superData, stringIntoINTIN,
-        stringIntoCFormat, setDevice, gemErrorOccured,
+        stringIntoCFormat, stringFromCFormat, setDevice, gemErrorOccured,
         
         ptrVectorList, vecListElem, timerVecList, butChgVecList, msMoveVecList,
         curChgVecList, orgTimerVec, orgButChgVec, orgMsMoveVec, orgCurChgVec,
@@ -431,6 +432,7 @@ PROCEDURE getCalcedFrame(frame:Rectangle; VAR pxy: PXY4);
 
 
 PROCEDURE stringIntoCFormat(REF str:ARRAY OF CHAR; VAR dst: MaxStr);
+PROCEDURE stringFromCFormat(REF str: MaxStr; VAR dst:ARRAY OF CHAR);
         
 (*  stringIntoCFormat -- geg.: 'str' ein String                           *
  *                       ges.: Kopiert 'str' auf den Stack und haengt eine *
@@ -449,7 +451,7 @@ PROCEDURE setDevice(handle:DeviceHandle): BOOLEAN;
         (*  global error handling  *)
         (*  =====================  *)
  
-PROCEDURE testINTOUT0(pb: PtrAESPB);
+PROCEDURE testINTOUT0();
 
 (*  testINTOUT0  - geg.: Fehlerrueckmeldung in INTOUT[0]  *
  *                 ges.: 'error'=(our_cb.INTOUT[0]=0)    *)

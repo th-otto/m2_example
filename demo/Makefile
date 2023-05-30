@@ -3,10 +3,14 @@ include $(top_srcdir)/config.mak
 
 PROGRAMS =
 PROGRAMS += asmdemo
+PROGRAMS += aesdemo
 
 all:: $(PROGRAMS)
 
 asmdemo: asmdemo.mod
+	$(M2) $(M2CFLAGS) $(M2LDFLAGS) $< -o $@ -L$(top_srcdir)/src -lm2gem
+
+aesdemo: aesdemo.mod
 	$(M2) $(M2CFLAGS) $(M2LDFLAGS) $< -o $@ -L$(top_srcdir)/src -lm2gem
 
 clean::
