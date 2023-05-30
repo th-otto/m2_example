@@ -1,6 +1,6 @@
 (*      Include-Datei:
  *
- *      Konstantendefinitionen fÅr die Megamax Modula-2 GEM-Library
+ *      Konstantendefinitionen fuer die Megamax Modula-2 GEM-Library
  *)
 
 
@@ -536,7 +536,7 @@ X       DC.B    0, 0         ; func 127  mouse change
     END
   END ctrl_cnts2;
   
-  (* Control Array Parameter fÅr die Generalized Drawing Primitives (GDP) *)
+  (* Control Array Parameter fuer die Generalized Drawing Primitives (GDP) *)
   
 PROCEDURE ctrl_cnts3;
 
@@ -556,7 +556,7 @@ PROCEDURE ctrl_cnts3;
     END;
   END ctrl_cnts3;
 
-    (* Control Array Parameter fÅr die VDI-Escape-Funktionen *)
+    (* Control Array Parameter fuer die VDI-Escape-Funktionen *)
   
 PROCEDURE ctrl_cnts4;
 

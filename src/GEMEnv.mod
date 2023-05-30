@@ -1,5 +1,5 @@
 IMPLEMENTATION MODULE GEMEnv;
-#define REF
+#define REF VAR
 
 (*
 FROM Terminal IMPORT WriteString, WriteLn, Read; (*  FOR DEBUGGING ONLY  *)
@@ -11,7 +11,7 @@ FROM StrConv  IMPORT CardToStr;
  *
  *      geschrieben von Manuel Chakravarty
  *
- *      Version 2.2     V#0395      Erstellt MÑrz-Oktober 1987
+ *      Version 2.2     V#0395      Erstellt Maerz-Oktober 1987
  *)
 
 
@@ -24,9 +24,9 @@ FROM StrConv  IMPORT CardToStr;
  *               'OpenDevice'
  *     27.06.89: Benutzt 'ResCtrl'.
  *     02.08.89: 'SuspendedProcess' raus
- *     11.08.89: Verschiebung wÑhrend dem Kopieren der GerÑteparameterliste
+ *     11.08.89: Verschiebung waehrend dem Kopieren der Geraeteparameterliste
  *               korrigiert.
- *     20.08.89: 'GDOSAvailable' + 'GEMVersion' def. + impl. auûerdem
+ *     20.08.89: 'GDOSAvailable' + 'GEMVersion' def. + impl. ausserdem
  *               Selektorgeschichte auf den 'SelectFileExtended' umgestellt.
  * TT  07.09.89: Kein extended FSel bei GEM V2;
  * TT  ????????: REF-Parm.
@@ -38,20 +38,20 @@ FROM StrConv  IMPORT CardToStr;
  *               selbstst. ein! Bisher wurde das immer von SelectFile hier
  *               erledigt, egal, welche Routine angemeldet war - Mist?!
  * TT  21.11.90: GDOSAvailable drin und getestet; Nur noch ein globales
- *               appl_init und appl_exit pro Prozeû;
+ *               appl_init und appl_exit pro Prozess;
  *               Damit ModLoad auch nach Aufruf von "termProc" noch InitGem u.
- *               ExitGem tÑtigen kann, wird "modId" zu Beginn auf 2 statt 1
- *               gesetzt. So ist "modID"=1 nach "termProc", sodaû die OWNER_ID
- *               bei einem InitGem nicht Null ist (denn dan wÅrde ExitGem nix
+ *               ExitGem taetigen kann, wird "modId" zu Beginn auf 2 statt 1
+ *               gesetzt. So ist "modID"=1 nach "termProc", sodass die OWNER_ID
+ *               bei einem InitGem nicht Null ist (denn dan wuerde ExitGem nix
  *               freigeben).
  *               'ErrorProc' ist nicht mehr HALT sondern ein neuer TRAP#6-Code;
- *               outOfMemory: LINK A5 statt A6; GEMAvailable angepaût;
+ *               outOfMemory: LINK A5 statt A6; GEMAvailable angepasst;
  *               envelopeProc/ExitGem: 'error' wird immer auf FALSE gesetzt,
  *               damit dort nicht noch Fehler gemeldet werden.
- * TT  10.12.90: InitGem/Dev: ShellRead wird nur einmal pro Prozeû gemacht.
+ * TT  10.12.90: InitGem/Dev: ShellRead wird nur einmal pro Prozess gemacht.
  * TT  12.12.90: InitDev: Bei TT-TOS wird auch extended-fileSelector verwendet;
- *               Envelopes: PathEnv.SelectFile wird vom Vater-Prozeû Åbernommen
- * TT  25.02.91: CloseDevice macht "unloadFonts", wenn nîtig.
+ *               Envelopes: PathEnv.SelectFile wird vom Vater-Prozess uebernommen
+ * TT  25.02.91: CloseDevice macht "unloadFonts", wenn noetig.
  * TT  17.04.91: PathEnv.SelectFile wird sowohl bei InitGem als auch bei
  *               InitApplication gesetzt.
  * TT  10.07.93: Kein automatische Error-Meldung mehr bei GemErrors, damit
@@ -91,7 +91,7 @@ FROM AESGraphics IMPORT GrafMouse, MouseForm;
 FROM Directory IMPORT GetDefaultPath;
 FROM GEMFile IMPORT selectFile, selectFileExtended;
 
-(* fÅr Tests:
+(* fuer Tests:
   FROM SysTypes IMPORT ScanDesc;
   FROM SysCtrl IMPORT GetScanAddr;
   FROM GEMScan IMPORT InitChain, InputScan;
@@ -104,13 +104,13 @@ FROM GEMFile IMPORT selectFile, selectFileExtended;
 
 
 
-VAR     noInits         : CARDINAL;  (*  ZÑhlt die Anzahl der '(Sys)InitGem's *)
-        modID           : INTEGER;   (*  ZÑhlt die Ebenen angemeldeter Module
+VAR     noInits         : CARDINAL;  (*  Zaehlt die Anzahl der '(Sys)InitGem's *)
+        modID           : INTEGER;   (*  Zaehlt die Ebenen angemeldeter Module
                                       *  (=0: SysEbene; >0: Mod.init.)
                                       *)
         gemStatus       : (unknown, available);
 
-        didShRead: ARRAY [-1..15] OF BOOLEAN; (* 'ShellRead' durchgefÅhrt? *)
+        didShRead: ARRAY [-1..15] OF BOOLEAN; (* 'ShellRead' durchgefuehrt? *)
         appIsInit: ARRAY [-1..15] OF BOOLEAN; (* appIsInit[modID] zeigt an,
                                                * ob schon appl_init() auf-
                                                * gerugen wurde. *)
@@ -150,7 +150,7 @@ PROCEDURE opnwrk0(ctrlcode: CARDINAL32;
 VAR     oldpts,oldint           :ADDRESS;
         i                       :CARDINAL;
 BEGIN
-  IF HIGH(param)<56 THEN        (* Nicht genug Platz fÅr die Parameter *)
+  IF HIGH(param)<56 THEN        (* Nicht genug Platz fuer die Parameter *)
     TRAP6(GeneralErr - TRAP6_CONT);
     RETURN 0;
   END;
@@ -204,7 +204,7 @@ END v_clsvwk;
 PROCEDURE extendedInquire (handle: DeviceHandle; VAR param: ARRAY OF INTEGER);
 VAR     oldpts,oldint           :ADDRESS;
 BEGIN
-  IF HIGH(param)<56 THEN        (* Nicht genug Platz fÅr die Parameter *)
+  IF HIGH(param)<56 THEN        (* Nicht genug Platz fuer die Parameter *)
     TRAP6(GeneralErr - TRAP6_CONT);
     RETURN;
   END;
@@ -341,7 +341,7 @@ BEGIN
   current^.params.colorRibbon := (parameters[13] <> 0);
   current^.params.maxMarker := parameters[14];
   IF intinMax <= parameters[15] THEN
-    current^.params.maxStrLen := intinMax (* Unser Array ist eben nicht grîûer *)
+    current^.params.maxStrLen := intinMax (* Unser Array ist eben nicht groesser *)
   ELSE
     current^.params.maxStrLen := parameters[15]
   END;
@@ -466,7 +466,7 @@ BEGIN
 
     A_CONTRL.naddrout := 0;
 
-    (*  AES-/VDI-Paramterblîcke mit Array-Adresse init.
+    (*  AES-/VDI-Paramterbloecke mit Array-Adresse init.
      *)
     aespb.pcontrl  := ADR (A_CONTRL);
     aespb.pglobal  := ADR (GLOBAL);
@@ -501,7 +501,7 @@ BEGIN
       GLOBAL:= root_cb^.GLOBAL
     END;
 
-    (*  GerÑteliste := leere Liste
+    (*  Geraeteliste := leere Liste
      *)
     DEVICES := NIL;
     CURDEVICE := NIL;
@@ -525,7 +525,7 @@ BEGIN
                                  *  Listenordnung: historisch
                                  *)
   our_cb^.MAGIC := cbMagic;
-  INC (noInits);                (* Anzahl der Level-Init's erhîhen *)
+  INC (noInits);                (* Anzahl der Level-Init's erhoehen *)
 
   success := TRUE;              (* Neuer Level erfolgreich angemeldet! *)
 END initGem;
@@ -568,7 +568,7 @@ BEGIN
   IF success THEN
     WITH our_cb^ DO
 
-      (* StandardgerÑt (Screen) anmelden *)
+      (* Standardgeraet (Screen) anmelden *)
       GrafHandle (charH, charW, cellH, cellW, wrkStation);
       OpenDevice (screen, sysKoor, wrkStation, handle);
       IF handle = NIL THEN
@@ -590,8 +590,8 @@ BEGIN
 
     (* PathEnv-Vars / File-Selektor-Box init. *)
     IF NOT didShRead[modID] THEN
-      (* nur beim 1. Mal, da spÑter evtl. durch rsrc_load bei alten TOS-
-       * Versionen der Shell-Puffer Åberschrieben wird! *)
+      (* nur beim 1. Mal, da spaeter evtl. durch rsrc_load bei alten TOS-
+       * Versionen der Shell-Puffer ueberschrieben wird! *)
       ShellRead (name, args);
       SplitPath (name, HomePath, name);
       IF HomePath [0] = 0C THEN
@@ -649,14 +649,14 @@ END isValidGemHandle;
 
 
 (*  mouseInput0 -- Ist 'start = TRUE', so werden alle mouse-hides des
- *                 aktuellen 'cb' rÅckgÑngig gemacht. Ist 'start = FALSE'
- *                 werden die mouse hides wieder durchgefÅhrt. Also
+ *                 aktuellen 'cb' rueckgaengig gemacht. Ist 'start = FALSE'
+ *                 werden die mouse hides wieder durchgefuehrt. Also
  *                 der alte Status wiederhergestellt.
  *)
 
 PROCEDURE mouseInput0 (start:BOOLEAN);
 
-CONST   mouseOff        = 9;    (* Ordinalzahl des Modula-AufzÑhlungs- *)
+CONST   mouseOff        = 9;    (* Ordinalzahl des Modula-Aufzaehlungs- *)
         mouseOn         = 10;   (* typen 'MouseForm'                   *)
 VAR count: CARDINAL;
     dev: DeviceHandle;
@@ -700,8 +700,8 @@ start := FALSE;
 END mouseInput0;
 
 
-(*  MouseInput -- Wie 'mouseInput0', nur fÅr alle mouse hides, die von
- *                dieser GEM-Bibliothek durchgefÅhrt wurden (alle 'cb's)
+(*  MouseInput -- Wie 'mouseInput0', nur fuer alle mouse hides, die von
+ *                dieser GEM-Bibliothek durchgefuehrt wurden (alle 'cb's)
  *)
 
 PROCEDURE MouseInput (start:BOOLEAN);
@@ -747,13 +747,13 @@ BEGIN
     IF our_cb^.OWNER_ID <> 0 THEN
 
     (*
-      RemoveSelector;     (* Alte File-Selektor-Box wieder einhÑngen *)
+      RemoveSelector;     (* Alte File-Selektor-Box wieder einhaengen *)
      *)
       MouseInput (TRUE);  (* Alten Mausstatus wiederherstellen *)
 
-                            (* VDI zurÅcksetzen *)
+                            (* VDI zuruecksetzen *)
 
-       (*  'showCursor'-Aufrufe sind schon ausgefÅhrt worden
+       (*  'showCursor'-Aufrufe sind schon ausgefuehrt worden
         *)
 #if doSupervision
        WITH our_cb^.SUPERVISION DO    (* Melde alle GEM-IR-Vektoren ab *)
@@ -779,13 +779,13 @@ BEGIN
         CloseDevice (our_cb^.DEVICES);
       END;
 
-      (* AES zurÅcksetzen und eventuell Obj. abmelden *)
+      (* AES zuruecksetzen und eventuell Obj. abmelden *)
 
 #if doSupervision
       WITH our_cb^.SUPERVISION DO
         WHILE noUpWind > 0 DO updateWindow (EndUpdate) END;
         WHILE noMouseCtrl > 0 DO updateWindow (EndMctrl) END;
-        closeDelWinds; (* Schlieûe und lîsche alle Fenster dieser Modulebene *)
+        closeDelWinds; (* Schliesse und loesche alle Fenster dieser Modulebene *)
       END;
 #endif
 
@@ -950,7 +950,7 @@ BEGIN
       didShRead[modID] := FALSE;
       (*
        * Damit ein Prg "EasyGEM1.SelectFile" benutzen kann, ohne selbst
-       * ein GemInit machen zu mÅssen, muû hier die Routine neu zuge-
+       * ein GemInit machen zu muessen, muss hier die Routine neu zuge-
        * wiesen werden, da EasyGEM1 nur dann selbst ein GemInit macht,
        * wenn GemActive () FALSE liefert.
        *)
@@ -1012,12 +1012,12 @@ VAR     wsp             : MemArea;
         removalHandle   : RemovalCarrier;
 
 BEGIN
-  (*  Anmeldung der ModulÅberwachung
+  (*  Anmeldung der Modulueberwachung
    *)
   wsp.bottom := NIL;
   wsp.length := 0;
   noInits := 0;
-  modID := 2;                     (* ZÑhle Module levels *)
+  modID := 2;                     (* Zaehle Module levels *)
   SetEnvelope (envlpHandle, envelopeProc, wsp);
   CatchProcessTerm (termHandle, termProc, wsp);
   CatchRemoval (removalHandle, removalProc, wsp);

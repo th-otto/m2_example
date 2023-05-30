@@ -1,4 +1,4 @@
-/*      Include-Datei fr Test-Konfigurationen
+/*      Include-Datei fuer Test-Konfigurationen
  */
 
 

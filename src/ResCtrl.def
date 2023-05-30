@@ -5,39 +5,39 @@ FROM SYSTEM IMPORT BYTE;
 FROM MOSGlobals IMPORT MemArea;
 
 (*
- * Dies Modul bietet Funktionen fÅr Systemmodule, die Ressourcen verwalten
- * und sich dazu Sys-Funktionen bedienen (und mit $Y+ Åbersetzt werden).
+ * Dies Modul bietet Funktionen fuer Systemmodule, die Ressourcen verwalten
+ * und sich dazu Sys-Funktionen bedienen (und mit $Y+ uebersetzt werden).
  *
- * ProblemerlÑuterung:
+ * Problemerlaeuterung:
  *   Ein Systemmodul, das 'Sys'-Funktionen bietet oder globale bzw. externe
  * Variablen oder Ressourcen kontrolliert (z.B. Interrupts) sollte sich selbst
  * auch der Sys-Funktionen bedienen.
- *   Beispielsweise kann ein Modul im Modulkîrper Speicher mit SysAlloc
- * anfordern oder einen Systemvektor des TOS verÑndern. Wird das Modul
- * nicht mehr gebraucht und aus dem Speicher entfernt, muû natÅrlich der
- * Speicher zurÅckgegeben bzw. der Vektor restauriert werden. WÅrde man
- * das mit Hilfe der Funktion 'PrgCtrl.CatchProcessTerm' tun, wÅrde es
+ *   Beispielsweise kann ein Modul im Modulkoerper Speicher mit SysAlloc
+ * anfordern oder einen Systemvektor des TOS veraendern. Wird das Modul
+ * nicht mehr gebraucht und aus dem Speicher entfernt, muss natuerlich der
+ * Speicher zurueckgegeben bzw. der Vektor restauriert werden. Wuerde man
+ * das mit Hilfe der Funktion 'PrgCtrl.CatchProcessTerm' tun, wuerde es
  * normalerweise funktionieren.
  *  Das Problem entsteht erst, wenn das Modul, das dieses Systemmodul im-
- * portiert, sich resident macht. Wenn der Prozeû dann endet, wird ja
+ * portiert, sich resident macht. Wenn der Prozess dann endet, wird ja
  * der vom Systemmodul geforderte 'CatchProcessTerm' aktiv und das
- * Systemmodul wÅrde seine Ressourcen schlieûen. Das darf es dann aber
+ * Systemmodul wuerde seine Ressourcen schliessen. Das darf es dann aber
  * noch gar nicht, weil es ja noch resident bleibt und weiterhin von
- * anderen Modulen benîtigt wird.
+ * anderen Modulen benoetigt wird.
  *   Aus diesem Grund gibt es hier die Funktion 'CatchRemoval', die,
  * entgegen 'CatchProcessTerm', das Modul erst dann informiert, wenn
- * es nicht mehr benîtigt, sprich importiert, wird.
+ * es nicht mehr benoetigt, sprich importiert, wird.
  *
  *   Deshalb ist immer dann, wenn man daran denkt, 'CatchProcessTerm' zu
- * verwenden, zu prÅfen, ob nicht der oben beschriebene Fall eintreten
+ * verwenden, zu pruefen, ob nicht der oben beschriebene Fall eintreten
  * kann und dann stattdessen 'CatchRemoval' einzusetzen ist.
  *   Als Faustregel gilt:
- *    - 'CatchRemoval' fÅr Freigabe von Sys-Ressourcen bei Ressource-
+ *    - 'CatchRemoval' fuer Freigabe von Sys-Ressourcen bei Ressource-
  *      verwaltenden Modulen.
  *    - 'CatchProcessTerm' bei Hauptmodulen (denn hier hat das Modul
- *      ja selbst die Kontrolle darÅber, wann es sich resident macht
+ *      ja selbst die Kontrolle darueber, wann es sich resident macht
  *      und wieder freigibt) und Freigabe von Ressourcen des untersten
- *      Levels bei Ressource-verwaltenden Modulen (ergÑnzend zu den
+ *      Levels bei Ressource-verwaltenden Modulen (ergaenzend zu den
  *      "Envelopes").
  *)
 
@@ -46,52 +46,52 @@ TYPE  RemovalCarrier = ARRAY [0..15] OF INTEGER;
 PROCEDURE CatchRemoval ( VAR hdl: RemovalCarrier; info: PROC; wsp: MemArea );
   (*
    * Meldet eine Prozedur an, die aufgerufen wird, wenn das Modul,
-   * das die Prozedur enthÑlt, nicht mehr benîtigt wird und aus dem
+   * das die Prozedur enthaelt, nicht mehr benoetigt wird und aus dem
    * Speicher entfernt werden kann.
    *
    * 'wsp' ist der Stack, der 'info' beim Aufruf zugeteilt wird. 'wsp.bottom'
    * darf NIL sein, dann wird der normale Programm-Stack verwendet.
    *
    * Diese Funktion (und nicht etwa 'CatchProcessTerm') ist deshalb
-   * das exakte GegenstÅck zum Aufruf des Modulkîrpers.
+   * das exakte Gegenstueck zum Aufruf des Modulkoerpers.
    *
    * Dies ist der Fall, wenn
    *  a) das Modul in einem Programm eingelinkt ist und das Programm
    *     normal beendet;
    *  b) das Modul durch einen Import vom Loader (also durch Load-Time
    *     Link) dazugeladen und gestartet wurde und nun wieder freigegeben
-   *     werden kann, da der Prozeû wieder endet;
+   *     werden kann, da der Prozess wieder endet;
    *  c) das Modul von einem Modul importiert wird, das sich mit
    *     'ModCtrl.InstallModule' resident gemacht hatte und nach
    *     einem Aufruf von 'ReleaseModule', wie unter b), entfert wird.
    *
    * Wird ein Modul lediglich vom Loader (mittels 'LoadModule') geladen,
-   * aber nicht aufgerufen, zÑhlt das entsprechende Ausladen des Moduls
-   * nicht zu den obigen FÑllen. Vielmehr wird bei geladenen Modulen
+   * aber nicht aufgerufen, zaehlt das entsprechende Ausladen des Moduls
+   * nicht zu den obigen Faellen. Vielmehr wird bei geladenen Modulen
    * so verfahren, als wenn das Modul jedesmal neu geladen und wieder
    * entladen wird.
    *
    * Somit ist diese Funktion dann zu verwenden, wenn ein Modul Ressourcen
-   * dynamisch bei seiner Initialisierung îffnet, die genau dann wieder
-   * geschlossen werden dÅrfen, wenn das Modul nicht mehr benîtigt wird.
-   * Normalerweise kînnte man das dann mit 'PrgCtrl.CatchProcessTerm'
-   * bewerkstelligen. Nur ist es dann nicht mîglich, das Modul in Pro-
+   * dynamisch bei seiner Initialisierung oeffnet, die genau dann wieder
+   * geschlossen werden duerfen, wenn das Modul nicht mehr benoetigt wird.
+   * Normalerweise koennte man das dann mit 'PrgCtrl.CatchProcessTerm'
+   * bewerkstelligen. Nur ist es dann nicht moeglich, das Modul in Pro-
    * grammen zu verwenden, die sich mit 'InstallModule' resident machen.
    *
-   * Wird also z.B. in einem Modul im Kîrper Speicher angefordert, sollte
-   * dieser mit der Sys-Funktion (SysAlloc) angefordert werden und Åber
+   * Wird also z.B. in einem Modul im Koerper Speicher angefordert, sollte
+   * dieser mit der Sys-Funktion (SysAlloc) angefordert werden und ueber
    * 'CatchRemoval' der Speicher wieder freigegeben werden.
    *
-   * WICHTIG: Das benutzende Modul muû mit der Directive "$Y+" Åbersetzt
+   * WICHTIG: Das benutzende Modul muss mit der Directive "$Y+" uebersetzt
    *          werden!
    *)
 
 PROCEDURE Resident (): BOOLEAN;
   (*
-   * Liefert TRUE, wenn der akt. Prozeû z.Zt. resident ist.
-   * Es ist zu beachten, daû dieser Zustand nicht im Modulkîrper schon
+   * Liefert TRUE, wenn der akt. Prozess z.Zt. resident ist.
+   * Es ist zu beachten, dass dieser Zustand nicht im Modulkoerper schon
    * ermittelt werden soll, da das Hauptmodul, das sich evtl. resident
-   * macht, dies erst spÑter durchfÅhren kann.
+   * macht, dies erst spaeter durchfuehren kann.
    *)
 
 

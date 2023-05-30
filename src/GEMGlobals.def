@@ -5,7 +5,7 @@ DEFINITION MODULE GEMGlobals;
  *
  *      geschrieben von Manuel Chakravarty
  *
- *      Version 0.11    V#0140      Erstellt MÑrz-Oktober 1987
+ *      Version 0.11    V#0140      Erstellt Maerz-Oktober 1987
  *)
 
 
@@ -17,13 +17,13 @@ FROM GrafBase   IMPORT Point, Rectangle, WordBitSet, PtrBitPattern;
 CONST   (*  Diverses Konstanten
          *)
 
-        NoObject        = 65535;    (*  Wert fÅr nicht vorhandene Objekte  *)
+        NoObject        = 65535;    (*  Wert fuer nicht vorhandene Objekte  *)
 
         StandardFont    = 3;        (*  Normaler Zeichensatz            *)
         SmallFont       = 5;        (*  Verkleinerter Zeichensatz (6x6) *)
 
-        MaxDepth        = 8;        (*  Maximale Such- oder Zeichentiefe fÅr
-                                     *  ObjektbÑume ('DrawObject', 'FindObject')
+        MaxDepth        = 8;        (*  Maximale Such- oder Zeichentiefe fuer
+                                     *  Objektbaeume ('DrawObject', 'FindObject')
                                      *)
         Root            = 0;        (*  Wurzelobjekt eines Objektbaumes *)
 
@@ -38,7 +38,7 @@ TYPE    (*  Allgemeine Typen
         GemChar         = RECORD
                             scan : BYTE;        (*  IBM-Scancode der Taste  *)
                             ascii: CHAR;        (*  Falls vorhanden, zuge-  *)
-                          END;                  (*  hîriger ASCII-Code      *)
+                          END;                  (*  hoeriger ASCII-Code      *)
 
 
                 (*  Definitionen zur Objektbehandlung  *)
@@ -137,7 +137,7 @@ TYPE    (*  Allgemeine Typen
                           END;
 
 
-                (*  Typen fÅr die Eingabeoperationen  *)
+                (*  Typen fuer die Eingabeoperationen  *)
                 (*  ================================  *)
 
         MouseButton     = (msBut1, msBut2, msBut3, msBut4, msBut5, msBut6,
@@ -149,7 +149,7 @@ TYPE    (*  Allgemeine Typen
         SpecialKeySet   = SET OF SpecialKey;
 
 
-                (*  Typen fÅr die Ausgabeoperationen  *)
+                (*  Typen fuer die Ausgabeoperationen  *)
                 (*  ================================  *)
 
         LineType        = (solidLn, longDashLn, dottedLn, dashDotLn, dashedLn,

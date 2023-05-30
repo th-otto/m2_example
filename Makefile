@@ -1,4 +1,4 @@
-SUBDIRS = src examples
+SUBDIRS = src demo examples
 
 
 all clean::

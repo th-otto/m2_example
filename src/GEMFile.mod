@@ -1,5 +1,5 @@
 IMPLEMENTATION MODULE GEMFile;
-#define REF
+#define REF VAR
 
 (*      Megamax Modula-2 GEM Library: ripped of from GEMShare
  *
@@ -59,7 +59,7 @@ loop1
 loop2
         MOVE.B  (A4)+,(A1)+
         DBF     D0,loop2
-        MOVE.L  (A7),A7             ; Strings wieder vom Stack l”schen
+        MOVE.L  (A7),A7             ; Strings wieder vom Stack loeschen
         MOVE.L  (A7),A7
         ADDA.W  #12,A7
         

@@ -362,7 +362,7 @@ PROCEDURE BlitMode (flag: INTEGER16): [ BITSET ];
   (* Is only available on Blitter TOS (version 1.2) and higher! *)
 
 (*
- * Die folgenden Funktionen sind nur auf einem Atari TT verfÅgbar:
+ * Die folgenden Funktionen sind nur auf einem Atari TT verfuegbar:
  *)
 
 PROCEDURE Bconmap (devNo: INTEGER16): [ INTEGER32 ];

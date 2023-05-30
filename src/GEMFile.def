@@ -1,5 +1,5 @@
 DEFINITION MODULE GEMFile;
-#define REF
+#define REF VAR
 
 (*      Megamax Modula-2 GEM Library: ripped of from GEMShare
  *
@@ -13,7 +13,7 @@ PROCEDURE selectFileExtended (VAR label     : ARRAY OF CHAR;
                               VAR path, name: ARRAY OF CHAR;
                               VAR ok        : BOOLEAN);
 
-        (*  Die GEM File-Selektor-Box fÅr die entsprechende Option
+        (*  Die GEM File-Selektor-Box fuer die entsprechende Option
          *  in 'GEMEnv'.
          *  'selectFileExtended' erst ab TOS 1.4
          *)

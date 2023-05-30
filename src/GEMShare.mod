@@ -1,25 +1,25 @@
 IMPLEMENTATION MODULE GEMShare;
 (*$L-, N+, Y+*)
-#define REF
+#define REF VAR
 
 
 (*      Megamax Modula-2 GEM Library: Von allen GEM-Library-Modulen genutzte
  *                                    Definitionen und Routinen.
  *                                    (INTERNES MODUL)
  *
- *      Autor: Manuel Chakravarty       Erstellt: MÑrz-Dezember 1987
+ *      Autor: Manuel Chakravarty       Erstellt: Maerz-Dezember 1987
  *
  *      MS: Michael Seyfried
  *
  *      Version 2.1     V#0191
  *)
  
-(*  28.12.87    | Switching der Prozeûkennung bei Accsessories
+(*  28.12.87    | Switching der Prozesskennung bei Accsessories
  *  02.01.88    | Die Vektorexchangeroutine benutzen nun das 'DeviceHandle'
- *                und nicht die VDI-GerÑtekennung
- *  22.01.88 TT | vdi_if lÑdt handle runter bei opcode = open_v_work
+ *                und nicht die VDI-Geraetekennung
+ *  22.01.88 TT | vdi_if laedt handle runter bei opcode = open_v_work
  *  07.02.88    | Process-switching bei 'aes_call' funktioniert nun korrekt
- *  04.05.88    | VorlÑufige Version ohne Process-switching (fÅr Dietmar
+ *  04.05.88    | Vorlaeufige Version ohne Process-switching (fuer Dietmar
  *              | Rabich)
  *  02.06.88    | 'removeTimerVec' korrigiert
  *  08.04.89    | process switching ganz raus.
@@ -29,18 +29,18 @@ IMPLEMENTATION MODULE GEMShare;
  *  03.08.89    | LINK in 'selectFile'
  *  ???????? TT | REF-Parm.
  *  02.04.90    | Aufteilung in public und private Datenstrukturen
- *  13.06.90 TT | echantSuperMode gelîscht
+ *  13.06.90 TT | echantSuperMode geloescht
  *  05.10.90    | 'shellRead' def. + impl.
  *  25.11.90 TT | Um Rekursion in GEMError zu verhindern, wird "error" schon
- *                VOR Aufruf des Error-Handlers gelîscht; 'errNum' wird in
+ *                VOR Aufruf des Error-Handlers geloescht; 'errNum' wird in
  *                setINT0attribut & gemErrorOccured auf Null gesetzt, damit
  *                zumindest ein definierter Wert darin enthalten ist.
  *                'ptrToErrHdler' neu - wird bei Auftreten eines Fehlers
- *                indirekt Åber die GemEnv-Var. "ErrHdlProc" aufgerufen.
- *                öberhaupt: 'testINTOUT0' signalisiert nur einen Fehler,
- *                wenn 'errNum' Null ist. Wozu dann Åberhaupt eine Var dafÅr?
+ *                indirekt ueber die GemEnv-Var. "ErrHdlProc" aufgerufen.
+ *                Ueberhaupt: 'testINTOUT0' signalisiert nur einen Fehler,
+ *                wenn 'errNum' Null ist. Wozu dann ueberhaupt eine Var dafuer?
  *  04.12.90 TT | stringIntoCFormat: SUB D1,D0 nun als Long-Operation!
- *  25.02.91 TT | unloadFonts aus VDIControls Åbertragen
+ *  25.02.91 TT | unloadFonts aus VDIControls uebertragen
  *  20.05.91 MS | unloadFonts korrigiert
  *  21.08.91 TT | 'signalGemError' macht RTS statt Runtime-Error, wenn
  *                'ptrToErrHdler' = NIL ist.
@@ -114,11 +114,11 @@ END stringIntoCFormat;
                       (*  =====================  *)
  
 (*
- * Hier wird "error" auf TRUE gesetzt, so daû der User den Fehler
+ * Hier wird "error" auf TRUE gesetzt, so dass der User den Fehler
  * dann abfragen kann.
  * Falls aber mittels des Util-Moduls "GemErrLocator" der unmittelbare
- * Error-Handler installiert ist, wird sofort darÅber der Fehler
- * angezeigt, so daû ein Scanning auf den Verursacher mîglich ist.
+ * Error-Handler installiert ist, wird sofort darueber der Fehler
+ * angezeigt, so dass ein Scanning auf den Verursacher moeglich ist.
  *)
 PROCEDURE signalGemError;
 BEGIN
@@ -130,7 +130,7 @@ END signalGemError;
 
 
 (*
- * Aufzurufen nach einem AES-Call. INTOUT[0] wird geprÅft. Wenn Fehler
+ * Aufzurufen nach einem AES-Call. INTOUT[0] wird geprueft. Wenn Fehler
  * angezeigt, wird 'error'-Flag gesetzt.
  *)
 PROCEDURE testINTOUT0(pb: PtrAESPB);
@@ -257,7 +257,7 @@ PROCEDURE grafMouse(form:INTEGER16(* ~ AESGraphics.MouseForm*);
                   mFormDefPtr:PtrMouseFormDef);
                   
                   
-(* !!!!!!!!! Muû 'AESGraphics.MouseForm' entsprechen !!!!!!!!!! *)
+(* !!!!!!!!! Muss 'AESGraphics.MouseForm' entsprechen !!!!!!!!!! *)
 
 TYPE    MouseForm       = (arrow, textCursor, bee, pointHand, flatHand,
                          thinCross, thickCross, outlineCross, userCursor,
@@ -509,7 +509,7 @@ BEGIN
   errorProcPtr := NIL;    (*  Keine Fehlerroutine angemeldet  *)
   ptrToErrHdler := NIL;
 
-  (*  'Plugs' zurÅcksetzen  *)
+  (*  'Plugs' zuruecksetzen  *)
 
   keyboardPlugActive := FALSE;
   buttonPlugActive := FALSE;

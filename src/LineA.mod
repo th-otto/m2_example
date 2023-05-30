@@ -2,7 +2,7 @@ IMPLEMENTATION MODULE LineA;
 (*$L-, N+, Y+*)
 
 
-(*  Implementierung der Line-A-Routinen fÅr MEGAMAX Modula-2
+(*  Implementierung der Line-A-Routinen fuer MEGAMAX Modula-2
  *
  *  Autor: Manuel Chakravarty
  *
@@ -11,7 +11,7 @@ IMPLEMENTATION MODULE LineA;
 
 (*  18.08.89 MCH V2.0   | 'NegLineAVariables' def. + impl.
  *  ???????? TT  V2.1   | REF-Parm.
- *  17.02.90 TT         | A6 wird nun gerettet, weil LineA das Reg u.U. zerstîrt
+ *  17.02.90 TT         | A6 wird nun gerettet, weil LineA das Reg u.U. zerstoert
  *  24.11.90 TT         | BREAK aus PutPixel entfernt!
  *  25.05.23 THO V3.0   | Port to gm2
  *)

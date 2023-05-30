@@ -1,5 +1,5 @@
 IMPLEMENTATION MODULE GEMDOS;
-(*$Z-,Y+,S-,N+,R-,L-*)
+#define REF VAR
 
 (*
 TT  20.10.91: $M- entfernt.
@@ -11,18 +11,21 @@ FROM SYSTEM IMPORT BYTE, ADDRESS, ADR, INTEGER16, INTEGER32, CARDINAL32, SHIFT;
 CONST nul = CHR(0);
 
 
-TYPE SHARED_LIB_impl = RECORD dummy: INTEGER32; END;
-     SHARED_LIB = POINTER TO SHARED_LIB_impl;
+TYPE strtmp = ARRAY [0..256] OF CHAR;
 
-TYPE strtmp = ARRAY [0..129] OF CHAR;
-
-PROCEDURE str0(VAR dst: strtmp; src: ARRAY OF CHAR);
+PROCEDURE str0(VAR dst: strtmp; REF src: ARRAY OF CHAR);
 VAR i, len: CARDINAL;
 BEGIN
-  len := HIGH(src);
-  IF len > HIGH(dst) - 1 THEN len := HIGH(dst) - 1; END;
-  FOR i := 0 TO len DO dst[i] := src[i]; END;
-  dst[len + 1] := nul;
+  len := HIGH(dst);
+  i := 0;
+  LOOP
+    IF len = 0 THEN EXIT END;
+    IF src[i] = nul THEN EXIT END;
+    dst[i] := src[i];
+    INC(i);
+    DEC(len);
+  END;
+  dst[i] := nul;
 END str0;
 
 
@@ -274,7 +277,7 @@ BEGIN
 END NecIn;
 
 
-PROCEDURE ConWS (str: ARRAY OF CHAR);
+PROCEDURE ConWS (REF str: ARRAY OF CHAR);
 VAR s: strtmp;
 BEGIN
   str0(s, str);
@@ -336,7 +339,7 @@ BEGIN
 END Srealloc;
 
 
-PROCEDURE Slbopen(name: ARRAY OF CHAR; path: ARRAY OF CHAR; min_ver: INTEGER32; VAR sl: SHARED_LIB; VAR fn: SLB_EXEC): INTEGER32;
+PROCEDURE Slbopen(REF name: ARRAY OF CHAR; REF path: ARRAY OF CHAR; min_ver: INTEGER32; VAR sl: SHARED_LIB; VAR fn: SLB_EXEC): INTEGER32;
 VAR s, s2: strtmp;
 BEGIN
   str0(s, name);
@@ -423,7 +426,7 @@ BEGIN
 END DFree;
 
 
-PROCEDURE DirCreate (path: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE DirCreate (REF path: ARRAY OF CHAR): BOOLEAN;
 VAR s: strtmp;
 BEGIN
   str0(s, path);
@@ -431,7 +434,7 @@ BEGIN
 END DirCreate;
 
 
-PROCEDURE DirDelete (path: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE DirDelete (REF path: ARRAY OF CHAR): BOOLEAN;
 VAR s: strtmp;
 BEGIN
   str0(s, path);
@@ -439,7 +442,7 @@ BEGIN
 END DirDelete;
 
 
-PROCEDURE SetPath (path: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE SetPath (REF path: ARRAY OF CHAR): BOOLEAN;
 VAR s: strtmp;
 BEGIN
   str0(s, path);
@@ -447,7 +450,7 @@ BEGIN
 END SetPath;
 
 
-PROCEDURE Create (fname: ARRAY OF CHAR; attr: CARDINAL; VAR handle: INTEGER);
+PROCEDURE Create (REF fname: ARRAY OF CHAR; attr: CARDINAL; VAR handle: INTEGER);
 VAR s: strtmp;
 BEGIN
   str0(s, fname);
@@ -455,7 +458,7 @@ BEGIN
 END Create;
 
 
-PROCEDURE Open (fname: ARRAY OF CHAR; mode: CARDINAL; VAR handle: INTEGER);
+PROCEDURE Open (REF fname: ARRAY OF CHAR; mode: CARDINAL; VAR handle: INTEGER);
 VAR s: strtmp;
 BEGIN
   str0(s, fname);
@@ -493,7 +496,7 @@ BEGIN
 END Write;
 
 
-PROCEDURE Delete (fname: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE Delete (REF fname: ARRAY OF CHAR): BOOLEAN;
 VAR s: strtmp;
 BEGIN
   str0(s, fname);
@@ -507,7 +510,7 @@ BEGIN
 END Seek;
 
 
-PROCEDURE Attrib (fname: ARRAY OF CHAR; getOrSet: TimeAccessMode; VAR attr: CARDINAL) : [ BOOLEAN ];
+PROCEDURE Attrib (REF fname: ARRAY OF CHAR; getOrSet: TimeAccessMode; VAR attr: CARDINAL) : [ BOOLEAN ];
 VAR r: INTEGER32;
 VAR s: strtmp;
 BEGIN
@@ -572,7 +575,7 @@ BEGIN
 END Term;
 
 
-PROCEDURE SFirst (fname: ARRAY OF CHAR; Attr: CARDINAL; VAR Result: INTEGER);
+PROCEDURE SFirst (REF fname: ARRAY OF CHAR; Attr: CARDINAL; VAR Result: INTEGER);
 VAR s: strtmp;
 BEGIN
   str0(s, fname);
@@ -586,7 +589,7 @@ BEGIN
 END SNext;
 
 
-PROCEDURE Rename (oldname, newname: ARRAY OF CHAR);
+PROCEDURE Rename (REF oldname, newname: ARRAY OF CHAR);
 VAR s, s2: strtmp;
 BEGIN
   str0(s, oldname);

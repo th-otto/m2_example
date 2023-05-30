@@ -3,7 +3,7 @@ IMPLEMENTATION MODULE XBIOS;
 (*$Y+*)
 
 (*
-TT 20.07.90: ConfigurePrinter: MOVE.W statt MOVE.L, SET mÅûte nun stimmen
+TT 20.07.90: ConfigurePrinter: MOVE.W statt MOVE.L, SET muesste nun stimmen
 TT 21.08.90: BlitMode & FlopRate neu
 TT 08.04.91: SetKeyTable funktioniert nun
 TT 20.10.91: $M- entfernt.

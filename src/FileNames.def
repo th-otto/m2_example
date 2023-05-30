@@ -1,5 +1,5 @@
 DEFINITION MODULE FileNames;
-#define REF
+#define REF VAR
 
 (*
  * ---------------------------------------------------------------
@@ -7,10 +7,10 @@ DEFINITION MODULE FileNames;
  *      sowie Hinweise zur Benutzung des GEM-File-Selektors.
  * ---------------------------------------------------------------
  *
- * Namensverwendung und allg. ErklÑrungen:
+ * Namensverwendung und allg. Erklaerungen:
  *
  * - Directories sind Verzeichnisse (Ordner) und werden auch mit "Dir"
- *   abgekÅrzt;
+ *   abgekuerzt;
  *
  * - Das Hauptverzeichnis (Wurzel-) (z.B. "A:\") wird auch "Root"-Dir genannt;
  *
@@ -31,26 +31,26 @@ DEFINITION MODULE FileNames;
  *   (z.B. "A:\MODULA\EDITOR.PRG") gemeint;
  *
  * - Das Default- (aktuelle) Laufwerk ist das, welches angesprochen wird,
- *   wenn ein Pfadname keinen Laufwerkbuchstaben enthÑlt (z.B. "\AUTO\");
+ *   wenn ein Pfadname keinen Laufwerkbuchstaben enthaelt (z.B. "\AUTO\");
  *
  * - Der Default- (aktuelle) Pfad/Dir ist derjenige, der angesprochen wird,
- *   wenn ein Pfad keinen Pfadnamen enthÑlt (sondern hîchstens eine Lauf-
- *   werksbezeichnung). Es gibt fÅr jedes Laufwerk einen eigenen Default-Pfad.
+ *   wenn ein Pfad keinen Pfadnamen enthaelt (sondern hoechstens eine Lauf-
+ *   werksbezeichnung). Es gibt fuer jedes Laufwerk einen eigenen Default-Pfad.
  *   Teilweise wird auch zw. Default-Dir und Default-Pfad unterschieden. Dann
  *   ist mit Default-Dir der aktuelle Pfad auf einem bestimmten Laufwerk
  *   gemeint, mit Default-Pfad der aktuelle Pfad des aktuellen Laufwerks;
  *
  * - Wildcard (auch beliebt als "wildcats") sind Dateinamen mit Jokern.
- *   Joker sind "*" und "?". Joker dÅrfen nicht im Pfad-Teil eines Dateinamens
+ *   Joker sind "*" und "?". Joker duerfen nicht im Pfad-Teil eines Dateinamens
  *   vorkommen (also nicht in Ordnernamen). Ist ein "*" vorhanden, wird es
  *   intern zuerst durch "?" ersetzt, und zwar vom ersten "*" an bis zum
  *   Ende des Prefix/Suffix (beide werden getrennt behandelt). Dann steht
- *   jedes "?" fÅr einen beliebiges Zeichen (oder auch keins). Bleiben
- *   Leerzeichen, haben diese keine Joker-Funktion - an ihrer Stelle dÅrfen
+ *   jedes "?" fuer einen beliebiges Zeichen (oder auch keins). Bleiben
+ *   Leerzeichen, haben diese keine Joker-Funktion - an ihrer Stelle duerfen
  *   nur Leerzeichen oder gar keine vorkommen.
  *   Wildcards werden z.B. in 'DirQuery' (Listen von Dateien in einem Ordner)
- *   oder 'NameMatching' verwendet. Letztere Funktion enthÑlt auch Beispiele
- *   fÅr Wildcards;
+ *   oder 'NameMatching' verwendet. Letztere Funktion enthaelt auch Beispiele
+ *   fuer Wildcards;
  *)
 
 FROM MOSGlobals IMPORT FileStr, PathStr, DriveStr, NameStr, PfxStr, SfxStr,
@@ -60,18 +60,18 @@ FROM MOSGlobals IMPORT FileStr, PathStr, DriveStr, NameStr, PfxStr, SfxStr,
 PROCEDURE ValidatePath ( VAR path: ARRAY OF CHAR );
 PROCEDURE PathValidated ( REF path: ARRAY OF CHAR ): PathStr;
   (*
-   * FÅgen ggf. '\' an den Pfadnamen an, damit 'path' eindeutig als vollst.
-   * Pfadname erkennbar ist. Zudem wird der Pfad ggf. in Groûbuchstaben
+   * Fuegen ggf. '\' an den Pfadnamen an, damit 'path' eindeutig als vollst.
+   * Pfadname erkennbar ist. Zudem wird der Pfad ggf. in Grossbuchstaben
    * umgewandelt.
    *
-   * Ein '\' wird genau dann angefÅgt, wenn der Pfad weder leer, noch das
+   * Ein '\' wird genau dann angefuegt, wenn der Pfad weder leer, noch das
    * letzte Zeichen ein ':' oder schon ein '\' ist.
    *
-   * Bei 'ValidatePath' ist darauf zu achten, daû der String groû genug
+   * Bei 'ValidatePath' ist darauf zu achten, dass der String gross genug
    * ist (mind. 128 Zeichen, z.B. vom Type 'PathStr'), sonst tritt ggf.
    * ein "String overflow"-Fehler auf!
    *
-   * Diese Funktion sollte nach allen Pfadeingaben von auûen angewandt
+   * Diese Funktion sollte nach allen Pfadeingaben von aussen angewandt
    * werden! (Die hiesigen Funktionen, die Pfade liefern, tun dies selbst).
    *
    * Beispiele:
@@ -87,7 +87,7 @@ PROCEDURE SplitPath ( REF fullname: ARRAY OF CHAR;
   (*
    * Spaltet einen vollst. Dateinamen in seinen Pfad und den "einfachen"
    * Dateinamen (ohne Pfad) auf.
-   * 'name' sollte mind. 12 Zeichen fassen, 'path' sollte so groû wie
+   * 'name' sollte mind. 12 Zeichen fassen, 'path' sollte so gross wie
    * 'name' (oder mind. 128 Zeichen) sein, sonst kann ein Laufzeitfehler
    * (string overflow) auftreten.
    *)
@@ -116,10 +116,10 @@ PROCEDURE NameConc ( REF prefix, suffix: ARRAY OF CHAR ): FileStr;
   (*
    * Setzt einen Dateinamen aus Prefix und Suffix zusammen.
    *
-   * Sowohl 'prefix' als auch 'suffix' dÅrfen den jeweils anderen Namensteil
+   * Sowohl 'prefix' als auch 'suffix' duerfen den jeweils anderen Namensteil
    * enthalten (oder auch nur den Punkt) - sie werden ignoriert.
    * 'prefix' darf auch einen Pfadnamen voranstehen haben.
-   * Ist 'suffix' leer, wird kein Punkt angefÅgt.
+   * Ist 'suffix' leer, wird kein Punkt angefuegt.
    *
    * Beispiel: NameConc ( 'd:\venus', 'mup' )   = 'd:\venus.mup'
    *           NameConc ( 'a:\b\c.txt', 'doc' ) = 'a:\b\c.doc'
@@ -132,13 +132,13 @@ PROCEDURE ConcatPath ( REF path, name: ARRAY OF CHAR;
                        VAR fullname: ARRAY OF CHAR);
 PROCEDURE PathConc ( REF path, name: ARRAY OF CHAR ): FileStr;
   (*
-   * Setzt einen vollstÑndigen Dateinamen aus Pfad und Namen zusammen.
+   * Setzt einen vollstaendigen Dateinamen aus Pfad und Namen zusammen.
    *
-   * Sowohl 'path' als auch 'name' dÅrfen den jeweils anderen Namensteil
-   * enthalten - sie werden ignoriert. Allerdings muû 'path', wenn
+   * Sowohl 'path' als auch 'name' duerfen den jeweils anderen Namensteil
+   * enthalten - sie werden ignoriert. Allerdings muss 'path', wenn
    * nur ein Pfadname enthalten ist, ggf. mithilfe von 'ValidatePath' mit
    * einem '\' abgeschlossen sein, weil sonst der letzte Ordnername im
-   * Pfad als Dateiname erkannt werden und abgeschnitten wÅrde.
+   * Pfad als Dateiname erkannt werden und abgeschnitten wuerde.
    *
    * Beispiel: PathConc ( 'A:XXX.DAT', 'C:\MEIN.PA' ) = 'A:MEIN.PA'
    *           PathConc ( 'A:\DA\', 'C:\MEIN.PA' ) = 'A:\DA\MEIN.PA'
@@ -153,14 +153,14 @@ PROCEDURE NameUnique ( REF fileName: ARRAY OF CHAR ): BOOLEAN;
 
 PROCEDURE NameMatching ( REF fileName, wildcard: ARRAY OF CHAR ): BOOLEAN;
   (*
-   * öbergeben werden ein Dateiname in 'fileName' und ein Wildcard-Name
+   * Uebergeben werden ein Dateiname in 'fileName' und ein Wildcard-Name
    * in 'wildcard'.
-   * Es wird TRUE geliefert, wenn der Dateiname zum dem Wildcard paût.
+   * Es wird TRUE geliefert, wenn der Dateiname zum dem Wildcard passt.
    * Ist 'fileName' leer, wird immer FALSE geliefert.
-   * Es dÅrfen keine Pfade in den Namen enthalten sein, sonst kann es
+   * Es duerfen keine Pfade in den Namen enthalten sein, sonst kann es
    * zu fehlerhaften Ergebnissen kommen!
    *
-   * Solch eine PrÅfung wird auch beim 'wildcard'-Parameter bei 'DirQuery'
+   * Solch eine Pruefung wird auch beim 'wildcard'-Parameter bei 'DirQuery'
    * vorgenommen.
    *
    * Beispiele:
@@ -175,7 +175,7 @@ PROCEDURE NameMatching ( REF fileName, wildcard: ARRAY OF CHAR ): BOOLEAN;
 PROCEDURE DriveToStr ( driveNo: Drive ): DriveStr;
   (*
    * Liefert einen Leerstring, wenn 'driveNo' = 'defaultDrv', sonst
-   * den gewÅnschten LW-Buchstaben mit einem Doppelpunkt.
+   * den gewuenschten LW-Buchstaben mit einem Doppelpunkt.
    *
    * Beispiel: 'DriveToStr ( drvB )' = "B:"
    *)
@@ -183,8 +183,8 @@ PROCEDURE DriveToStr ( driveNo: Drive ): DriveStr;
 PROCEDURE StrToDrive ( REF driveStr: ARRAY OF CHAR ): Drive;
   (*
    * Liefert die Laufwerkskennung eines beliebigen Datei- ode Pfadnamens.
-   * Liefert immer 'defaultDrv', wenn kein Laufwerk (muû ':' enthalten!)
-   * oder ein ungÅltiges Laufwerk angegeben ist.
+   * Liefert immer 'defaultDrv', wenn kein Laufwerk (muss ':' enthalten!)
+   * oder ein ungueltiges Laufwerk angegeben ist.
    *
    * Beipiel: 'StrToDrive ("")' = 'defaultDrv'
    *          'StrToDrive ("C")' = 'defaultDrv' (* ':' fehlt! *)
@@ -197,20 +197,20 @@ PROCEDURE StrToDrive ( REF driveStr: ARRAY OF CHAR ): Drive;
  * Anwendung des GEM-File-Selektors (FS)
  * -------------------------------------
  *
- * Der FS erhÑlt beim Aufruf zwei Strings. Der erste bestimmt den
+ * Der FS erhaelt beim Aufruf zwei Strings. Der erste bestimmt den
  * anzuzeigenden Ordner mit der Auswahlmaske (normalerweise '*.*').
- * Der Andere gibt ggf. schon einen ausgewÑhlten Dateinamen vor.
- * Bei der RÅckkehr erhÑlt man ebensolche zusammengesetzten Strings
- * wieder zurÅck.
+ * Der Andere gibt ggf. schon einen ausgewaehlten Dateinamen vor.
+ * Bei der Rueckkehr erhaelt man ebensolche zusammengesetzten Strings
+ * wieder zurueck.
  *
  * Beim ersten Aufruf des FS bietet es sich an, als Pfad den Aktuellen
  * einzusetzen und als Maske '*.*' zu verwenden. Dies wird folgender-
- * maûen erreicht:
+ * massen erreicht:
  *   ordnerUndMaske:= PathConc ( DefaultPath (), '*.*' );
- * Der andere String fÅr den Aufruf wird meist leer sein, nennen wir
+ * Der andere String fuer den Aufruf wird meist leer sein, nennen wir
  * ihn 'name'.
  *   GEMEnv.SelectFile ( ordnerUndMaske, name, ok );
- * Bei der RÅckkehr kann der dann gewÑhlte Dateiname folgendenmaûen
+ * Bei der Rueckkehr kann der dann gewaehlte Dateiname folgendenmassen
  * ermittelt werden:
  *   dateiName:= PathConc ( ordnerUndMaske, name );
  * Bei weiteren Aufrufen des FS ist es meist ratsam, dieselben Strings

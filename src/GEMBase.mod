@@ -10,7 +10,7 @@ IMPLEMENTATION MODULE GEMBase;
 *  Modul-Holder  : Manuel Chakravarty
 *  --------------------------------------------------------------------------
 *  Copyright July 1988 by Manuel Chakravarty
-*  Vertriebsrechte fÅr ATARI ST unter MEGAMAX Modula-2
+*  Vertriebsrechte fuer ATARI ST unter MEGAMAX Modula-2
 *                  liegen bei Application Systems Heidelberg
 *  --------------------------------------------------------------------------
 *  MCH : Manuel Chakravarty
@@ -24,10 +24,10 @@ IMPLEMENTATION MODULE GEMBase;
 *  Modul-Beschreibung:
 *
 *  Dieses Modul soll das Programmieren von VDI- und AES-Aufrufen gestatten,
-*  die die GEM-Library umgehen. Die Namen wurden soweit mîglich direkt von
-*  entsprechenden C-Bindings Åbernommen und deshalb sollte es unter zur
-*  Hilfe nahme entsprechender GEM-Literatur mîglich sein dieses Modul ohne
-*  groûe ErklÑrungen, die diesen Rahmen sprengen wÅrden zu benutzen.
+*  die die GEM-Library umgehen. Die Namen wurden soweit moeglich direkt von
+*  entsprechenden C-Bindings uebernommen und deshalb sollte es unter zur
+*  Hilfe nahme entsprechender GEM-Literatur moeglich sein dieses Modul ohne
+*  grosse Erklaerungen, die diesen Rahmen sprengen wuerden zu benutzen.
 *
 *  --------------------------------------------------------------------------
 *)
@@ -47,7 +47,7 @@ FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
 PROCEDURE GetPBs (gemHdl: GemHandle; VAR vdipb: VDIPB; VAR aespb: AESPB);
 
 BEGIN
-  (*'aespb' lîschen (fÅr Fehlerausgang) *)
+  (*'aespb' loeschen (fuer Fehlerausgang) *)
   aespb.pcontrl := NIL;	
   aespb.pglobal := NIL;	
   aespb.pintin := NIL;	
@@ -55,16 +55,16 @@ BEGIN
   aespb.paddrin := NIL;	
   aespb.paddrout := NIL;	
 
-  (* 'vdipb' lîschen (fÅr Fehlerausgang) *)
+  (* 'vdipb' loeschen (fuer Fehlerausgang) *)
   vdipb.contrl := NIL;
   vdipb.intin := NIL;
   vdipb.ptsin := NIL;
   vdipb.intout := NIL;
   vdipb.ptsout := NIL;
 
-  (* ÅberprÅfe ob 'gemHdl' o.k. ist  *)
+  (* ueberpruefe ob 'gemHdl' o.k. ist  *)
   IF gemHdl <> NIL THEN
-    (* ÅberprÅfe magic number *)
+    (* ueberpruefe magic number *)
     IF (gemHdl^.MAGIC <> cbMagic) THEN
       TRAP6(IllegalPointer - TRAP6_SELF);
     ELSE

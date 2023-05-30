@@ -2,9 +2,9 @@ IMPLEMENTATION MODULE BIOS;
 (*$Z-,Y+,S-,N+,R-,L-*)
 
 (*
-   TT 21.07.89  BConOut l”scht High-Byte der auszugebenden Zeichen, weil
+   TT 21.07.89  BConOut loescht High-Byte der auszugebenden Zeichen, weil
                 sonst abscheinend Busfehler bei ESC-Sequenzen auftreten
-                k”nnen.
+                koennen.
    TT 20.07.90  DriveMap: SETs verkehrt
   THO 25.05.23: Port to gm2
 *)

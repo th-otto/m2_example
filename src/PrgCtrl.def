@@ -1,10 +1,10 @@
 DEFINITION MODULE PrgCtrl;
 
 (*
- * Dies Modul dient zur Kontrolle von programm-/prozeûbedingten Ereignissen:
- *  - Prozeûbeendigung (TermProcess)
- *  - Abfangen einer Prozeûbeendigung (CatchProcessTerm)
- *  - Abfangen von neuen Prozeûstarts und deren Beendigungen (SetEnvelope)
+ * Dies Modul dient zur Kontrolle von programm-/prozessbedingten Ereignissen:
+ *  - Prozessbeendigung (TermProcess)
+ *  - Abfangen einer Prozessbeendigung (CatchProcessTerm)
+ *  - Abfangen von neuen Prozessstarts und deren Beendigungen (SetEnvelope)
  *  - Ermitteln der 'Base Page' eines Prozesses (GetBasePageAddr)
  *  - Erkennung, ob das Programm als Accessory gestartet wurde (Accessory).
  *)
@@ -15,17 +15,17 @@ FROM MOSGlobals IMPORT MemArea;
 
 
 TYPE    PState = ( created,   (* Angelegt, aber noch nicht laufend. *)
-                   opening,   (* Prozeû aktiv in Initialisierung. *)
-                   running,   (* Prozeû aktiv im Hauptprogramm. *)
-                   closing,   (* Prozeû aktiv in Deinitialisierung. *)
-                   finished );(* Prozeû beendet. *)
+                   opening,   (* Prozess aktiv in Initialisierung. *)
+                   running,   (* Prozess aktiv im Hauptprogramm. *)
+                   closing,   (* Prozess aktiv in Deinitialisierung. *)
+                   finished );(* Prozess beendet. *)
 
 
 PROCEDURE TermProcess ( exitCode: INTEGER );
   (*
    * Abbruch eines Prozesses. Wenn ein Modul mittels "SetChain" (im
    * Modul "Loader") als Nachfolger bestimmt wurde, wird dieses gestartet.
-   * Ansonsten erfolgt RÅckkehr zum aufrufenden Modul / Programm.
+   * Ansonsten erfolgt Rueckkehr zum aufrufenden Modul / Programm.
    *)
 
 
@@ -33,15 +33,15 @@ TYPE TermCarrier = ARRAY [0..9] OF INTEGER;
 
 PROCEDURE CatchProcessTerm ( VAR hdl: TermCarrier; call: PROC; wsp: MemArea );
   (*
-   * Ermîglicht das Anmelden von Prozeduren, die aufgerufen werden,
-   * wenn der zum Zeitpunkt der Anmeldung aktive Prozeû beendet wird.
+   * Ermoeglicht das Anmelden von Prozeduren, die aufgerufen werden,
+   * wenn der zum Zeitpunkt der Anmeldung aktive Prozess beendet wird.
    *
-   * Achtung: Diese Funktion eignet sich nicht fÅr die Verwendung in Imple-
+   * Achtung: Diese Funktion eignet sich nicht fuer die Verwendung in Imple-
    * mentations-Moduln, die 'Sys'-Funktionen verwenden oder "Systemvektoren"
-   * verÑndern - in solchen FÑllen muû die Funktion 'CatchRemoval' aus
+   * veraendern - in solchen Faellen muss die Funktion 'CatchRemoval' aus
    * 'ResCtrl' verwendet werden (siehe auch Anmerkungenin betreffendem Def-
-   * Text)! 'CatchProcessTerm' sollte nur im Hauptmodul oder in FÑllen, in
-   * denen wirklich das Prozeûende erwartet wird, verwendet werden!
+   * Text)! 'CatchProcessTerm' sollte nur im Hauptmodul oder in Faellen, in
+   * denen wirklich das Prozessende erwartet wird, verwendet werden!
    * Siehe auch Beispielprogramm 'SysLibDemo.M' im UTILITY-Ordner.
    *
    * Der Funktion 'call' wird beim Aufruf 'wsp' als Stack zugeteilt.
@@ -51,13 +51,13 @@ PROCEDURE CatchProcessTerm ( VAR hdl: TermCarrier; call: PROC; wsp: MemArea );
    * Die angemeldeten Prozeduren werden automatisch nach ihrem Aufruf
    * abgemeldet.
    *
-   * 'hdl' darf keine lokale Variable sein, sie muû so lange erhalten
+   * 'hdl' darf keine lokale Variable sein, sie muss so lange erhalten
    * bleiben, bis 'call' aufgerufen wurde !
    *
-   * Es ist darauf zu achten, daû diese Funktion nur einmal pro anzumeldende
+   * Es ist darauf zu achten, dass diese Funktion nur einmal pro anzumeldende
    * 'call'-Prozedur aufgerufen wird.
    *
-   * FÅr diese Funktion wird der 'etv_term'-Systemvektor benutzt, dabei
+   * Fuer diese Funktion wird der 'etv_term'-Systemvektor benutzt, dabei
    * wird die XBRA-Kennung 'MM2T' verwendet.
    *)
 
@@ -69,18 +69,18 @@ TYPE EnvlpCarrier = ARRAY [0..15] OF INTEGER;
 
 PROCEDURE SetEnvelope ( VAR hdl: EnvlpCarrier; call: EnvlpProc; wsp: MemArea );
   (*
-   * Hiermit kînnen Funktionen angemeldet werden, die jeweils bei Start
+   * Hiermit koennen Funktionen angemeldet werden, die jeweils bei Start
    * und Beendigung eines neuen Prozesses aufgerufen werden.
    *
    * Der Funktion 'call' wird beim Aufruf 'wsp' als Stack zugeteilt.
    * Wenn 'wsp.bottom' = NIL ist, wird der Stack des beendeten Prozesses
    * verwendet (ist in der Regel empfehlenswert).
    *
-   * 'call' wird fÅr einen neuen Prozeû viermal aufgerufen. Die beiden
+   * 'call' wird fuer einen neuen Prozess viermal aufgerufen. Die beiden
    * Parameter geben den Aufrufzeitpunkt an, die Funktion kann dann bei
    * den beiden Aufrufen mit 'inChild'=FALSE (s.u.) jeweils einen Fehler-
    * code (s. MOSGlobals) in 'exitCode' liefern, wenn ein Fehler aufgetre-
-   * ten ist. Bei 'inChild'=TRUE kann der Prozeû auch direkt mit einem
+   * ten ist. Bei 'inChild'=TRUE kann der Prozess auch direkt mit einem
    * Laufzeitfehler beendet werden.
    * Je ein Aufruf erfolgt vor Einrichtung ('opening' = TRUE) und nach
    * Entfernung ('opening' = FALSE) des neuen Prozesses ('inChild' ist
@@ -92,13 +92,13 @@ PROCEDURE SetEnvelope ( VAR hdl: EnvlpCarrier; call: EnvlpProc; wsp: MemArea );
    * Die Funktion 'call' kann mit der Prozedur "RemoveEnvelope" abgemeldet
    * werden.
    *
-   * 'hdl' darf keine lokale Variable sein, sie muû so lange erhalten
+   * 'hdl' darf keine lokale Variable sein, sie muss so lange erhalten
    * bleiben, wie die Funktion 'call' angemeldet ist.
    *
-   * Es ist darauf zu achten, daû diese Funktion nur einmal pro anzumeldende
+   * Es ist darauf zu achten, dass diese Funktion nur einmal pro anzumeldende
    * 'call'-Prozedur aufgerufen wird.
    *
-   * WICHTIG: Das benutzende Modul muû mit der Directive "$Y+" Åbersetzt
+   * WICHTIG: Das benutzende Modul muss mit der Directive "$Y+" uebersetzt
    *          werden!
    *)
 
@@ -117,7 +117,7 @@ PROCEDURE GetBasePageAddr ( VAR bpp: ADDRESS );
   (*
    * Liefert die Adresse der Base-Page vom aktuellen Programm
    * (auch bei Accessories).
-   * Vorsicht bei residenten Programmen: Hier muû, wenn die Base-Page
+   * Vorsicht bei residenten Programmen: Hier muss, wenn die Base-Page
    * vom eigenen Programm ermittelt werden soll, diese Funktion
    * aufgerufen werden, bevor sich das Programm resident gemacht
    * und sich beendet hat!
@@ -145,7 +145,7 @@ PROCEDURE BaseProcess (): ADDRESS;
 
 PROCEDURE ProcessLinked (): BOOLEAN;
   (*
-   * Liefert TRUE, wenn der aktive Prozeû der unterste, gelinkte ist.
+   * Liefert TRUE, wenn der aktive Prozess der unterste, gelinkte ist.
    * Bei Accessories und residenten Programmen wird ebenfalls TRUE geliefert.
    *)
 
@@ -157,10 +157,10 @@ PROCEDURE ProcessState (): PState;
 PROCEDURE CurrentExitCode (): INTEGER;
 PROCEDURE SetNewExitCode ( i: INTEGER );
   (*
-   * Die Funktionen sind gedacht, um wÑhrend der Terminierungsphase eines
-   * Programm den ExitCode nachtrÑglich zu Ñndern (so, wie es beim
-   * Envelope-Handler direkt durch éndern der Åbergebenen 'exitCode'-Variablen
-   * mîglich ist). Deshalb kînnen diese Funktionen nur aufgerufen werden,
+   * Die Funktionen sind gedacht, um waehrend der Terminierungsphase eines
+   * Programm den ExitCode nachtraeglich zu aendern (so, wie es beim
+   * Envelope-Handler direkt durch Aendern der uebergebenen 'exitCode'-Variablen
+   * moeglich ist). Deshalb koennen diese Funktionen nur aufgerufen werden,
    * solange 'ProcessState () = closing' ist.
    * 'CurrentExitCode' liefert den bisherigen ExitCode,
    * 'SetNewExitCode' weist ihm einen neuen Wert zu.

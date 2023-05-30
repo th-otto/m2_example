@@ -1,12 +1,12 @@
 DEFINITION MODULE GEMShare;
-#define REF
+#define REF VAR
 
 
 (*      Megamax Modula-2 GEM Library: Von allen GEM-Library-Modulen genutzte
  *                                    Definitionen und Routinen.
  *                                    (INTERNES MODUL)
  *
- *      Autor: Manuel Chakravarty       Erstellt: MÑrz-Dezember 1987
+ *      Autor: Manuel Chakravarty       Erstellt: Maerz-Dezember 1987
  *
  *      Version 2.1     V#0164
  *
@@ -55,10 +55,10 @@ CONST           (* Misc. private Const's *)
         ptsinMax                = 512;   (* size of the PTSIN-Array *
                                           * GEM erlaubt nicht mehr.          *)
         
-        noErrorTrap             = 6;     (* Nummer des Trap's fÅr Errorbehand.*)
+        noErrorTrap             = 6;     (* Nummer des Trap's fuer Errorbehand.*)
         
-        deviceMagic             = 10765; (* Ein denkwÅrdiges Datum *)
-        cbMagic                 = 666;   (* HÑ, HÑ... *)
+        deviceMagic             = 10765; (* Ein denkwuerdiges Datum *)
+        cbMagic                 = 666;   (* Hae, Hae... *)
         
         MaxWinds                = 31;
         
@@ -85,34 +85,34 @@ TYPE    logInpDev       = (noDev, location, value, choice, str);
                          charWidth, charHeight,
                          cellWidth, cellHeight,
                          
-                         (*  Breite und Hîhe des Pixelrasters
+                         (*  Breite und Hoehe des Pixelrasters
                           *  [0..rasterWidth] und [0..rasterHeight]
                           *)
                          rasterWidth, rasterHeight,
                          
-                         (*  Breite und Hîhe eines Pixels in mm/1000
+                         (*  Breite und Hoehe eines Pixels in mm/1000
                           *)
                          pointWidth, pointHeight,
                          
-                         (*  Anzahl der Schriftgrîûen (0 bed. kontinuierlich)
+                         (*  Anzahl der Schriftgroessen (0 bed. kontinuierlich)
                           *)
                          fontSizes,
                          
-                         (*  Anzahl der Linienarten und -stÑrken
+                         (*  Anzahl der Linienarten und -staerken
                           *  (bei Letzterem bedeutet 0 kontinuierlich)
                           *)
                          lTypes, lWidths,
                          
-                         (*  Anzahl der Makierungsarten und -grîûen
+                         (*  Anzahl der Makierungsarten und -groessen
                           *  (bei Letzterem bedeutet 0 kontinuierlich)
                           *)
                          mTypes, mSizes,
                          
-                         (*  Anzahl der verfÅgbaren ZeichensÑtze
+                         (*  Anzahl der verfuegbaren Zeichensaetze
                           *)
                          fonts,
                          
-                         (*  Anzahl der FÅllmuster und Schraffuren
+                         (*  Anzahl der Fuellmuster und Schraffuren
                           *)
                          fPatterns, fHatchings,
                          
@@ -120,7 +120,7 @@ TYPE    logInpDev       = (noDev, location, value, choice, str);
                           *)
                          noColors,
                          
-                         (*  Minimale und maximale Zeichenbreite und -hîhe
+                         (*  Minimale und maximale Zeichenbreite und -hoehe
                           *)
                          minWChar, maxWChar,
                          minHChar, maxHChar,
@@ -129,13 +129,13 @@ TYPE    logInpDev       = (noDev, location, value, choice, str);
                           *)
                          minWRow, maxWRow,
                          
-                         (*  Minimale und maximale Breite und Hîhe
+                         (*  Minimale und maximale Breite und Hoehe
                           *  von Makierungen
                           *)
                          minWMark, maxWMark,
                          minHMark, maxHMark,
                          
-                         (*  Anzahl der verfÅgbaren Hintergrundfarben
+                         (*  Anzahl der verfuegbaren Hintergrundfarben
                           *)
                          bgColors,
                          
@@ -151,7 +151,7 @@ TYPE    logInpDev       = (noDev, location, value, choice, str);
                           *)
                          noWrtModes,
                          
-                         (*  Hîchster Eingabemodus (0 ~ keine Eingabe,
+                         (*  Hoechster Eingabemodus (0 ~ keine Eingabe,
                           *  1 ~ Nachfragemodus, 2 ~ Testmodus)
                           *)
                          maxInMode,
@@ -162,25 +162,25 @@ TYPE    logInpDev       = (noDev, location, value, choice, str);
                           *)
                          maxMarker, maxStrLen,
                          
-                         (*  Anzahl der Mausknîpfe
+                         (*  Anzahl der Mausknoepfe
                           *)
                          noMButts,
                          
-                         (*  Anzahl der Zeichenmodi fÅr verbreiterte Linien
+                         (*  Anzahl der Zeichenmodi fuer verbreiterte Linien
                           *)
                          thickLnModes : CARDINAL;
                          
-                         (*  Gibt die verfÅgbaren grafischen
+                         (*  Gibt die verfuegbaren grafischen
                           *  Grundfunktionen an
                           *)
                          possibleGDPs : ARRAY GDPFkt OF GDPAttribute;
                          
                          (*  Folgende Flags bestimmen ob gewisse
                           *  Operationen mit dem beschriebenen
-                          *  GerÑt mîglich sind und zwar:
+                          *  Geraet moeglich sind und zwar:
                           *)
                          color,         (*  Farbe                       *)
-                         fill,          (*  FÅllmuster                  *)
+                         fill,          (*  Fuellmuster                  *)
                          cArray,        (*  Cell-Arrays                 *)
                          zooming,       (*  Skalierung von Rastern      *)
                          lookUpTab,     (*  Color Look Up Table (CLUT)  *)
@@ -191,8 +191,8 @@ TYPE    logInpDev       = (noDev, location, value, choice, str);
                          thickLnTyps    (*  verbreiterte Linientypen    *)
                                       : BOOLEAN;
                          
-                         (*  Folgende Variable bestimmen das EingabegerÑt
-                          *  fÅr diverse Arten der Eingabe und zwar fÅr:
+                         (*  Folgende Variable bestimmen das Eingabegeraet
+                          *  fuer diverse Arten der Eingabe und zwar fuer:
                           *)
                          grafCCtrl,     (*  grafische Eingaben        *)
                          valueIn,       (*  Werteingaben              *)
@@ -200,7 +200,7 @@ TYPE    logInpDev       = (noDev, location, value, choice, str);
                          alphanumIn     (*  alphanumerische Eingaben  *)
                                       : InputDev;
                          
-                         (*  Typ des beschriebenen GerÑtes
+                         (*  Typ des beschriebenen Geraetes
                           *)
                          deviceType   : DeviceType;
                          
@@ -208,18 +208,18 @@ TYPE    logInpDev       = (noDev, location, value, choice, str);
                           *)
                          screen       : ScreenType;
                          
-                         (*  UnterstÅtzte Texteffekte
+                         (*  Unterstuetzte Texteffekte
                           *)
                          useTEffects  : TEffectSet;
                          
-                         (*  Art der unterstÅtzten Textrotation
+                         (*  Art der unterstuetzten Textrotation
                           *)
                          textRot      : TextRotType;
                          
                        END;
      
-(*  Dient zur Identifizierung eines VDI-GerÑtes.
- *  Siehe auch 'OpenDevice'. (GerÑte-Referenz)
+(*  Dient zur Identifizierung eines VDI-Geraetes.
+ *  Siehe auch 'OpenDevice'. (Geraete-Referenz)
  *)
 TYPE    DeviceHandle    = POINTER TO device;
         device          = RECORD
@@ -283,7 +283,7 @@ TYPE    DeviceHandle    = POINTER TO device;
           
         (*  cb (control block) ist eine Struktur, die bei
          *  jedem 'InitGem' dynamisch erzeugt wird und ab
-         *  dann die Parameter enthÑlt, die dem, 'InitGem'
+         *  dann die Parameter enthaelt, die dem, 'InitGem'
          *  aufrufenden Modul als Verbindung zum GEM die-
          *  nen. 'ExitGem' dealloc. die Struktur wieder.
          *)
@@ -319,8 +319,8 @@ TYPE    GemHandle       = POINTER TO cb;
 
                     HANDLE      : INTEGER;    (* AES Grafikhandle *)
                     
-                    DEVICES     : DeviceHandle; (* Liste der VDI-GerÑte *)
-                    CURDEVICE   : DeviceHandle; (* Aktuelles GerÑt *)
+                    DEVICES     : DeviceHandle; (* Liste der VDI-Geraete *)
+                    CURDEVICE   : DeviceHandle; (* Aktuelles Geraet *)
                     
                     FSEL        : PROC;       (* Selector vor Init. d. Levels *)
                     
@@ -332,7 +332,7 @@ TYPE    GemHandle       = POINTER TO cb;
                     
                     DIDAPPLINIT : BOOLEAN;    (* appl_init aufgerufen? *)
                     
-                    LASTCB      : GemHandle   (*  Zeigt auf alten (nÑchsten) cb
+                    LASTCB      : GemHandle   (*  Zeigt auf alten (naechsten) cb
                                                *  NIL ~ Kein weiterer cb
                                                *)
         END;
@@ -340,7 +340,7 @@ TYPE    GemHandle       = POINTER TO cb;
 TYPE PXY4 = ARRAY[0..3] OF INTEGER16;
 
 VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
-                                 *            Kontollblîcken.
+                                 *            Kontollbloecken.
                                  *  our_cb  ~ Zeiger auf den momentan aktiven
                                  *            Kontr.block
                                  *)
@@ -348,12 +348,12 @@ VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
         error           : BOOLEAN;
         errNum          : INTEGER; (*  Ist 'error = TRUE', so steht in
                                     *  'errNum' der Wert der den Fehler aus-
-                                    *  lîûte.
+                                    *  loesste.
                                     *)
         errorProcPtr    : POINTER TO PROC; (*  Tritt ein Fehler auf, der von
                                             *  der Anwendung nicht erfragt
                                             *  wird, so wird 'errorProc^'
-                                            *  ausgefÅhrt, falls installiert.
+                                            *  ausgefuehrt, falls installiert.
                                             *)
         
         (* Vector Variablen *)
@@ -411,10 +411,10 @@ VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
         
 PROCEDURE stringIntoINTIN(REF str:ARRAY OF CHAR; offset: CARDINAL):CARDINAL;
 
-(*  stringIntoINTIN -- geg.: Open Array of CHAR 'str', Offset fÅr INTIN   *
+(*  stringIntoINTIN -- geg.: Open Array of CHAR 'str', Offset fuer INTIN   *
  *                           Indizierung in D4 ( in Elementen )           *
  *                     ges.: Die CHAR's des Array befinden sich im INTIN- *
- *                           Array und als RÅckgabewert die StringlÑnge   *
+ *                           Array und als Rueckgabewert die Stringlaenge   *
  
  *                !! Aufruf nur von Assemblerteilen !!                    *)
 
@@ -433,7 +433,7 @@ PROCEDURE getCalcedFrame(frame:Rectangle; VAR pxy: PXY4);
 PROCEDURE stringIntoCFormat(REF str:ARRAY OF CHAR; VAR dst: MaxStr);
         
 (*  stringIntoCFormat -- geg.: 'str' ein String                           *
- *                       ges.: Kopiert 'str' auf den Stack und hÑngt eine *
+ *                       ges.: Kopiert 'str' auf den Stack und haengt eine *
  *                             $0 dran. Danach zeigt D2 auf den Stringanf.*
  *                             und mit 'MOVE.L  (A7),A7' wird der String  *
  *                             wieder vom Stack entfernt.                 *
@@ -443,7 +443,7 @@ PROCEDURE stringIntoCFormat(REF str:ARRAY OF CHAR; VAR dst: MaxStr);
  
 PROCEDURE setDevice(handle:DeviceHandle): BOOLEAN;
         (* Legt das aktuelle VDI-Device fest. 'success=FALSE' falls das *
-         * 'handle' ungÅltig war.                                       *)
+         * 'handle' ungueltig war.                                       *)
          
 
         (*  global error handling  *)
@@ -451,19 +451,19 @@ PROCEDURE setDevice(handle:DeviceHandle): BOOLEAN;
  
 PROCEDURE testINTOUT0(pb: PtrAESPB);
 
-(*  testINTOUT0  - geg.: FehlerrÅckmeldung in INTOUT[0]  *
+(*  testINTOUT0  - geg.: Fehlerrueckmeldung in INTOUT[0]  *
  *                 ges.: 'error'=(our_cb.INTOUT[0]=0)    *)
  
 
 PROCEDURE testErrorCheck;
 
-(*  testErrorCheck - Lîst ein HALT aus, falls der User versÑumt hat einen *
+(*  testErrorCheck - Loest ein HALT aus, falls der User versaeumt hat einen *
  *                   Fehler abzufragen!                                   *)
  
  
 PROCEDURE gemErrorOccured;
 
-(*  gemErrorOccured - Lîst Fehlerbehandlung aus *)
+(*  gemErrorOccured - Loest Fehlerbehandlung aus *)
  
 
 
@@ -487,14 +487,14 @@ PROCEDURE vdi_call(para: GemHandle);
 PROCEDURE vdi_if(handle:DeviceHandle; ctrlcode:CARDINAL32);
         (* Bereitet Aufruf der VDI-Funktion mit der Nummer 'opcode' vor, *
          * falls diese Unterfunktionsnummern besitzt werden diese in     *
-         * 'subcmd' Åbergeben (, sonst setzt man 'subcmd=0'). Dann wird  *
+         * 'subcmd' uebergeben (, sonst setzt man 'subcmd=0'). Dann wird  *
          * 'vdi_call' mit dem aktuellen Parameterblock aufgerufen.       *)
 
 PROCEDURE setINT0attribut(handle:DeviceHandle; ctrlcode:CARDINAL32; intin0: INTEGER16);
         
 (*  setINT0attribute -- geg.: D0 Wert eines Attributes und D1 VDI-Fktsopcode*
  *                      ges.: Aufruf der Funktion die dem Opcode entspricht *
- *                            wobei der Wert Åbergeben wird. Die Globale    *
+ *                            wobei der Wert uebergeben wird. Die Globale    *
  *                            Var. 'error' wird 'TRUE', falls der Wert vom  *
  *                            VDI nicht angenommen wird.                    *
  
@@ -529,15 +529,15 @@ PROCEDURE exchangeTimerVec(newproc: PROC;VAR time:CARDINAL): [ PROC ];
  *                     ges.: In 'time' steht die Zeit die zwischen 2 *
  *                           Timerinter. vergeht(in ms), der neue    *
  *                           Vector ist beim VDI angemeldet und der  *
- *                           alte Vector ist RÅckgabewert.           *)
+ *                           alte Vector ist Rueckgabewert.           *)
  
         
 PROCEDURE exchangeMouseVec(opcode:CARDINAL; newproc:PROC): [ PROC ];
 
-(*  exchangeMouseVec -- geg.: 'opcode' der VDI-Opcode fÅr einen Mouse- *
+(*  exchangeMouseVec -- geg.: 'opcode' der VDI-Opcode fuer einen Mouse- *
  *                            vector exchange und 'newproc' die neue Proc. *
  *                      ges.: neue Proc. bei VDI angemeldet und alter  *
- *                            Vector als RÅckgabewert                  *)
+ *                            Vector als Rueckgabewert                  *)
 
 
 PROCEDURE removeTimerVector(VAR hdl:vecListElem);

@@ -1,6 +1,6 @@
 DEFINITION MODULE SysTypes;
 
-(* Einige nÅtzliche Types und die Exception-Vektor-Konstanten incl. FPU *)
+(* Einige nuetzliche Types und die Exception-Vektor-Konstanten incl. FPU *)
 
 FROM SYSTEM IMPORT BYTE, INTEGER16, INTEGER32, CARDINAL16, CARDINAL32, ADDRESS;
 
@@ -10,7 +10,7 @@ TYPE    CHARSET = SET OF CHAR;
 
         BBS = SET OF [0..7]; (* Byte BitSet *)
 
-        PtrBBS = POINTER TO BBS; (* FÅr Zugriff auf Peripheriebausteine *)
+        PtrBBS = POINTER TO BBS; (* Fuer Zugriff auf Peripheriebausteine *)
 
         PtrOSHeader = POINTER TO OSHeader;
 
@@ -182,7 +182,7 @@ TYPE    Exceptions = [2..263];
 
         ExcSet = SET OF Exceptions;
 
-        ExcDesc = RECORD (* enthÑlt alle wichtigen Daten einer Exception *)
+        ExcDesc = RECORD (* enthaelt alle wichtigen Daten einer Exception *)
                     regD0 : AnyLongType;
                     regD1 : AnyLongType;
                     regD2 : AnyLongType;
@@ -198,12 +198,12 @@ TYPE    Exceptions = [2..263];
                     regA4 : AnyLongType;
                     regA5 : AnyLongType;
                     regA6 : AnyLongType;
-                    regSSP: ADDRESS;     (* SR/PC bereits abgerÑumt *)
+                    regSSP: ADDRESS;     (* SR/PC bereits abgeraeumt *)
                     regUSP: ADDRESS;
                     regPC : ADDRESS;
                     regSR : CARDINAL16;
                     CASE excNo: Exceptions OF
-                      BusError, AddrError:   (* zusÑtzlich bei Bus/Adr-Error:*)
+                      BusError, AddrError:   (* zusaetzlich bei Bus/Adr-Error:*)
                        accessAddr : ADDRESS; (* Zugriffsadresse *)
                        superSR    : CARDINAL16;    (* Super-Status-Word *)
                        instruction: CARDINAL16 |  (* Fehler erzeugende Anweisung *)

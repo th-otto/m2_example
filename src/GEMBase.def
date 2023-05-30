@@ -10,19 +10,19 @@ DEFINITION MODULE GEMBase;
  *)
 
 (*  Dieses Modul soll das Programmieren von VDI- und AES-Aufrufen gestatten,
- *  die die GEM-Library umgehen. Die Namen wurden soweit mîglich direkt von
- *  entsprechenden C-Bindings Åbernommen und deshalb sollte es unter
- *  Zuhilfenahme entsprechender GEM-Literatur mîglich sein dieses Modul ohne
- *  groûe ErklÑrungen, die diesen Rahmen sprengen wÅrden zu benutzen.
+ *  die die GEM-Library umgehen. Die Namen wurden soweit moeglich direkt von
+ *  entsprechenden C-Bindings uebernommen und deshalb sollte es unter
+ *  Zuhilfenahme entsprechender GEM-Literatur moeglich sein dieses Modul ohne
+ *  grosse Erklaerungen, die diesen Rahmen sprengen wuerden zu benutzen.
  *
  *  Die Prozeduren dieses Moduls lassen sich in zwei Kategorien aufteilen:
- *  Abfrageroutinen und Aufrufroutinen. Erstere sind nur nîtig, falls mit
+ *  Abfrageroutinen und Aufrufroutinen. Erstere sind nur noetig, falls mit
  *  schon bestehenden Anmeldungen beim AES oder VDI weitergearbeitet werden
- *  soll (Anmeldungen, die ursprÅnglich von 'GEMEnv' durchgefÅhrt wurden).
+ *  soll (Anmeldungen, die urspruenglich von 'GEMEnv' durchgefuehrt wurden).
  *  Die Aufrufroutinen dienen zum Benutzen einer VDI- bzw. AES-Funktion.
- *  Es ist zu beachten, daû die automatischen Abmeldungen, wie z.B. das
- *  Schlieûen aller noch offenen Fenster bei der Terminierung eines Prozesses
- *  bei Aufrufen, die mit diesem Modul durchgefÅhrt werden in der Eigenver-
+ *  Es ist zu beachten, dass die automatischen Abmeldungen, wie z.B. das
+ *  Schliessen aller noch offenen Fenster bei der Terminierung eines Prozesses
+ *  bei Aufrufen, die mit diesem Modul durchgefuehrt werden in der Eigenver-
  *  antwortung des Programmierers bleiben und nicht mehr vom System kontrol-
  *  liert werden.
  *
@@ -30,22 +30,22 @@ DEFINITION MODULE GEMBase;
  *
  *    i)  Ermitteln des AES-Parameterblocks mit 'GetPBs'
  *    ii) Bei jedem Aufruf wird die Adresse auf den ermittelten Parameterblock
- *        an 'CallAES' Åbergeben
+ *        an 'CallAES' uebergeben
  *
  *  Benutzen einer bestehenden Anmeldung beim VDI (OPEN [VIRTUAL] WORKSTATION)
  *
  *    i)   Ermitteln des VDI-Parameterblocks mit 'GetPBs'
- *    ii)  Ermitteln der GerÑtekennung mit 'VDIHandle'.
- *    iii) Bei jedem Aufruf muû 'pb.contrl^.handle' die in ii) ermittelte
+ *    ii)  Ermitteln der Geraetekennung mit 'VDIHandle'.
+ *    iii) Bei jedem Aufruf muss 'pb.contrl^.handle' die in ii) ermittelte
  *         Kennung zugewiesen werden und dann wird die Adresse auf den er-
- *         mittelten VDI-Parameterblock an 'CallVDI' Åbergeben
+ *         mittelten VDI-Parameterblock an 'CallVDI' uebergeben
  *
  *  Anwendungsbeispiele finden sich im DEMO-Ordner: AESDEMO.M und VDIDEMO.M!
  *
- *  ACHTUNG: Bei der Verwendung dieses Moduls kînnen auf einfachste Weise
- *           die herlichsten AbstÅrze erzeugt werden oder die GEM-Library
+ *  ACHTUNG: Bei der Verwendung dieses Moduls koennen auf einfachste Weise
+ *           die herlichsten Abstuerze erzeugt werden oder die GEM-Library
  *           in Verwirrung gebracht werden. Daher sollte es nur verwendet
- *           werden, sobald es unbedingt nîtig ist und man ausreichend mit
+ *           werden, sobald es unbedingt noetig ist und man ausreichend mit
  *           dem GEM vertraut ist.
  *)
 
@@ -146,20 +146,20 @@ TYPE    IntinArray      = ARRAY[0..127] OF INTEGER16;
 
 PROCEDURE GetPBs (gemHdl: GemHandle; VAR vdipb: VDIPB; VAR aespb: AESPB);
 
-        (*  Liefert die Parmeterblîcke zu einer GEM-Referenz.
+        (*  Liefert die Parmeterbloecke zu einer GEM-Referenz.
          *
-         *  Die zurÅckgelieferten Parameterblîcke sind eine Kopie der
-         *  Blîcke, die von der GEM-Library beim Aufruf einer VDI- bzw.
+         *  Die zurueckgelieferten Parameterbloecke sind eine Kopie der
+         *  Bloecke, die von der GEM-Library beim Aufruf einer VDI- bzw.
          *  AES-Routine benutzt werden, falls 'gemHdl' die zu diesem Zeit-
          *  punkt aktuelle GEM-Referenz ist (siehe 'GEMEnv.CurrGemHandle).
-         *  Ist einer der Parameterblîcke mit dem Wert 'NIL' gefÅllt, so
-         *  kann die Åbergebene GEM-Referenz fÅr entsprechende Aufrufe
+         *  Ist einer der Parameterbloecke mit dem Wert 'NIL' gefuellt, so
+         *  kann die uebergebene GEM-Referenz fuer entsprechende Aufrufe
          *  (AES bzw. VDI) nicht benutzt werden.
          *)
 
 PROCEDURE VDIHandle (dev: DeviceHandle): INTEGER16;
 
-        (*  Liefert die zu einem GerÑt gehîrende VDI-GerÑtekennung.
+        (*  Liefert die zu einem Geraet gehoerende VDI-Geraetekennung.
          *)
 
 

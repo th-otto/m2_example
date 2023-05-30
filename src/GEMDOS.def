@@ -1,10 +1,10 @@
-DEFINITION MODULE FOR "C" GEMDOS;
+DEFINITION MODULE GEMDOS;
 
 (*
  * GEMDOS-Interface nach TDI V3.00
  * Mit Korrekturen und Erweiterungen von Thomas Tempelmann
  *
- * Die Dokumentation wurde direkt von TDI Åbernommen.
+ * Die Dokumentation wurde direkt von TDI uebernommen.
  *
  * Bei jeder Funktion steht im Kommentar zu Beginn ihr Originalname von Atari.
  *
@@ -12,19 +12,20 @@ DEFINITION MODULE FOR "C" GEMDOS;
  *  nicht verwendet werden, sonst stattdessen TermProcess aus dem Modul
  *  PrgCtrl, denn sonst werden die Abmelderoutinen (s. CatchProcessTerm)
  *  unter bestimmten Betriebssystemen (KAOS, Mag!X) ggf. nicht ganz
- *  korrekt ausgefÅhrt, zumindest wird dann ein falscher Exit Code geliefert.
+ *  korrekt ausgefuehrt, zumindest wird dann ein falscher Exit Code geliefert.
  *
  * 'SetOrGet' wurde durch eine korrekte, andere, Definition ersetzt.
- * 'Exec' wurde in 'Pexec' geÑndert, die Argumente sind nun ADDRESS-Types.
+ * 'Exec' wurde in 'Pexec' geaendert, die Argumente sind nun ADDRESS-Types.
  * 'Term' hat kein BOOLEAN-Result mehr.
  * 'Super' hat eine neue Definition.
- * 'Alloc' hat einen INTEGER32-Parameter, um auch -1 Åbergeben zu kînnen
- * 'Dup' und 'Force' hinzugefÅgt.
- * 'Xalloc' fÅr den Atari TT hinzugefÅgt.
+ * 'Alloc' hat einen INTEGER32-Parameter, um auch -1 uebergeben zu koennen
+ * 'Dup' und 'Force' hinzugefuegt.
+ * 'Xalloc' fuer den Atari TT hinzugefuegt.
  *)
 
 
 FROM SYSTEM IMPORT BYTE, ADDRESS, CARDINAL16, CARDINAL32, INTEGER16, INTEGER32;
+FROM SLB IMPORT SHARED_LIB, SLB_EXEC;
 
 CONST
   (* BIOS error codes *)
@@ -65,7 +66,7 @@ CONST
   EPLFmt        = -66;         (* Invalid program load format *)
   EGSBF         = -67;         (* Setblock failure due to growth restr *)
 
-  (*** Konstanten fÅr 'Pexec' ***)
+  (*** Konstanten fuer 'Pexec' ***)
 
   loadExecute = 0;
   load = 3;
@@ -74,7 +75,7 @@ CONST
   executeAndFree = 6;  (* neuer Modus ab TOS 1.4 *)
   createBPwMode  = 7;  (* neuer Modus bei Atari TT *)
 
-  (*** Modi fÅr 'Xalloc': ***)
+  (*** Modi fuer 'Xalloc': ***)
 
   stRAMonly = 0;
   fastRAMonly = 1;
@@ -138,9 +139,6 @@ TYPE
                    END;
 
 
-TYPE SHARED_LIB;
-TYPE SLB_EXEC = PROCEDURE(SHARED_LIB, INTEGER32, ...) : [ INTEGER32 ];
-
 PROCEDURE OldTerm ();
 (* Achtung: In der Regel stattdessen 'TermProcess(0)' benutzen! *)
 
@@ -174,7 +172,7 @@ PROCEDURE RawScanIn ( VAR ch, scan: CHAR );
 PROCEDURE NecIn ( VAR ch: CHAR );
 (* 'Cnecin': Read character from standard input with no echo *)
 
-PROCEDURE ConWS ( str: ARRAY OF CHAR );
+PROCEDURE ConWS ( VAR (* REF *) str: ARRAY OF CHAR );
 (* 'Cconws': Write null terminated string to standard output device *)
 
 PROCEDURE ConRS ( VAR str: ARRAY OF BYTE );
@@ -204,7 +202,7 @@ PROCEDURE Maddalt ( start: ADDRESS; size: INTEGER32 ) : [ INTEGER32 ];
 PROCEDURE Srealloc ( size: INTEGER32 ) : [ INTEGER32 ];
 (* Allocate screen memory *)
 
-PROCEDURE Slbopen(name: ARRAY OF CHAR; path: ARRAY OF CHAR; min_ver: INTEGER32; VAR sl: SHARED_LIB; VAR fn: SLB_EXEC): INTEGER32;
+PROCEDURE Slbopen(VAR (* REF *) name: ARRAY OF CHAR; VAR (* REF *) path: ARRAY OF CHAR; min_ver: INTEGER32; VAR sl: SHARED_LIB; VAR fn: SLB_EXEC): INTEGER32;
 (* Open a shared library *)
 
 PROCEDURE Slbclose(sl: SHARED_LIB) : [ INTEGER32 ];
@@ -219,10 +217,10 @@ PROCEDURE SetDTA ( addr: ADDRESS );
 PROCEDURE Super (stack: INTEGER32): INTEGER32;
 (* 'Super':
  * Ist 'stack' Null, wird in den Supervisormode gelangt und ein Wert
- * geliefert, der beim ZurÅckschalten in den Usermode hier wieder angegeben
- * werden muû.
- * Ist 'stack' Eins, wird der aktuelle Modus geliefert: Null fÅr den
- * Usermode, -1 fÅr den Supervisormode.
+ * geliefert, der beim Zurueckschalten in den Usermode hier wieder angegeben
+ * werden muss.
+ * Ist 'stack' Eins, wird der aktuelle Modus geliefert: Null fuer den
+ * Usermode, -1 fuer den Supervisormode.
  *)
 
 PROCEDURE GetDate ( VAR packeddate: CARDINAL16 );
@@ -252,20 +250,20 @@ PROCEDURE Sconfig(mode: INTEGER16; flags: INTEGER32) : [ INTEGER32 ];
 PROCEDURE DFree (VAR infoblock: DiskInfoBuffer; drive: CARDINAL ) : [ INTEGER32 ];
 (* 'Dfree': Get drive free space *)
 
-PROCEDURE DirCreate ( path: ARRAY OF CHAR ): BOOLEAN;
+PROCEDURE DirCreate ( VAR (* REF *) path: ARRAY OF CHAR ): BOOLEAN;
 (* 'Dcreate': Create a subdirectory *)
 
-PROCEDURE DirDelete ( path: ARRAY OF CHAR ): BOOLEAN;
+PROCEDURE DirDelete ( VAR (* REF *) path: ARRAY OF CHAR ): BOOLEAN;
 (* 'Ddelete': Delete a subdirectory *)
 
-PROCEDURE SetPath ( path: ARRAY OF CHAR ): BOOLEAN;
+PROCEDURE SetPath ( VAR (* REF *) path: ARRAY OF CHAR ): BOOLEAN;
 (* 'Dsetpath': Set current directory *)
 
-PROCEDURE Create ( fname: ARRAY OF CHAR; attr: CARDINAL;
+PROCEDURE Create ( VAR (* REF *) fname: ARRAY OF CHAR; attr: CARDINAL;
                    VAR handle: INTEGER  );
 (* 'Fcreate': Create a file *)
 
-PROCEDURE Open ( fname: ARRAY OF CHAR; mode: CARDINAL;
+PROCEDURE Open ( VAR (* REF *) fname: ARRAY OF CHAR; mode: CARDINAL;
                  VAR handle: INTEGER );
 (* 'Fopen': Open a file *)
 
@@ -278,14 +276,14 @@ PROCEDURE Read ( handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS );
 PROCEDURE Write ( handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS );
 (* 'Fwrite': Write file *)
 
-PROCEDURE Delete ( fname: ARRAY OF CHAR ): BOOLEAN;
+PROCEDURE Delete ( VAR (* REF *) fname: ARRAY OF CHAR ): BOOLEAN;
 (* 'Fdelete': Delete file *)
 
 PROCEDURE Seek ( offset: INTEGER32; handle: INTEGER; mode: SeekMode;
                  VAR newPosFromBeginning: INTEGER32 );
 (* 'Fseek': Seek file pointer *)
 
-PROCEDURE Attrib ( fname: ARRAY OF CHAR; getOrSet: TimeAccessMode;
+PROCEDURE Attrib ( VAR (* REF *) fname: ARRAY OF CHAR; getOrSet: TimeAccessMode;
                    VAR attr: CARDINAL ) : [ BOOLEAN ];
 (* 'Fattrib': Get/Set file attributes *)
 
@@ -293,7 +291,7 @@ PROCEDURE Dup ( stdHandle: INTEGER; VAR newHandle: INTEGER );
 (* 'Fdup': Liefert eine Kopie eines Standard-Handles (0-5) *)
 
 PROCEDURE Force ( stdHandle, newHandle: INTEGER ): BOOLEAN;
-(* 'Fforce': LÑût 'stdHandle' auf 'newHandle' verweisen *)
+(* 'Fforce': Laesst 'stdHandle' auf 'newHandle' verweisen *)
 
 PROCEDURE GetPath ( VAR path: ARRAY OF CHAR; driveno: CARDINAL ) : [ BOOLEAN ];
 (* 'Dgetpath': Get current directory *)
@@ -314,20 +312,20 @@ PROCEDURE Pexec ( Mode: CARDINAL; Name, Arguments, Environment: ADDRESS;
 PROCEDURE Term ( exitcode: INTEGER );
 (* Achtung: In der Regel stattdessen 'TermProcess(exitcode)' benutzen! *)
 
-PROCEDURE SFirst ( fname: ARRAY OF CHAR; Attr: CARDINAL;
+PROCEDURE SFirst ( VAR (* REF *) fname: ARRAY OF CHAR; Attr: CARDINAL;
                    VAR Result: INTEGER );
 (* 'Fsfirst': Search for first file *)
 
 PROCEDURE SNext ( VAR Result: INTEGER );
 (* 'Fsnext': Search for next file *)
 
-PROCEDURE Rename ( oldname, newname: ARRAY OF CHAR ) : [ BOOLEAN ];
+PROCEDURE Rename ( VAR (* REF *) oldname, newname: ARRAY OF CHAR ) : [ BOOLEAN ];
 (* 'Frename': Rename a file *)
 
 PROCEDURE DaTime ( handle: INTEGER; Buffer: ADDRESS; getOrSet: TimeAccessMode ) : [ BOOLEAN ];
 (* 'Fdatime': Get/Set file date and time stamp *)
 
 PROCEDURE Xalloc ( Bytes: INTEGER32; mode: CARDINAL; VAR Addr: ADDRESS );
-(* 'Mxalloc': Erweiterte Alloc-Funktion fÅr den Atari TT. *)
+(* 'Mxalloc': Erweiterte Alloc-Funktion fuer den Atari TT. *)
 
 END GEMDOS.

@@ -1,16 +1,15 @@
 DEFINITION MODULE ErrBase;
-
-#define REF
+#define REF VAR
 
 (*
- * Programmgesteuertes Auslîsen von Laufzeitfehlern
+ * Programmgesteuertes Ausloesen von Laufzeitfehlern
  *)
 
 FROM SYSTEM IMPORT ADDRESS;
 
 FROM SysTypes IMPORT ExcDesc;
 
-TYPE RtnCond = ( mayContinue,    (* Programm darf fortgefÅhrt werden. *)
+TYPE RtnCond = ( mayContinue,    (* Programm darf fortgefuehrt werden. *)
                  mustAbort );    (* Programm sollte beendet werden. *)
 
      ErrResp = ( selfCaused,     (* Fehler selbst verursacht. *)
@@ -38,8 +37,8 @@ CONST TRAP6_SELF = 04000H;
       Bit 15: 0 = Ein Text, mit einem Nullbyte beendet, folgt hiernach.
       Bit 14: Fehlerverursacher, 1=diese Routine, 0=aufrufende Routine
               (funktioniert nur, wenn die Erzeugung des Link-Codes am
-              Prozedurbeginn nicht unterdrÅckt ist).
-      Bit 13: 1 = Programm kann hiernach weiter ausgefÅhrt werden.
+              Prozedurbeginn nicht unterdrueckt ist).
+      Bit 13: 1 = Programm kann hiernach weiter ausgefuehrt werden.
       Bit 12: immer Eins
       Bit 11-0: Fehlernummer, Bit 11 wirkt als Vorzeichenbit und wird
               zur 16 Bit-Zahl nach Bit 12-15 kopiert.
@@ -57,14 +56,14 @@ TYPE ErrHdlProc = PROCEDURE (     (* errNo:   *) INTEGER,
 
 VAR ErrHdl: ErrHdlProc;
   (*
-   * Die Routine erhÑlt bei Aufruf einen Stack von 600 Bytes;
-   * Das Installieren und Restaurieren dieses Vektors muû
-   * vom Aufrufer durchgefÅhrt werden, vor allem bei Prozeûende!
+   * Die Routine erhaelt bei Aufruf einen Stack von 600 Bytes;
+   * Das Installieren und Restaurieren dieses Vektors muss
+   * vom Aufrufer durchgefuehrt werden, vor allem bei Prozessende!
    *)
 
 VAR ExcInstalled: BOOLEAN;
 
-PROCEDURE InstallExc; (* Erfolg ist Åber 'ExcInstalled' zu ermitteln! *)
+PROCEDURE InstallExc; (* Erfolg ist ueber 'ExcInstalled' zu ermitteln! *)
 PROCEDURE RemoveExc;
 
 END ErrBase.
