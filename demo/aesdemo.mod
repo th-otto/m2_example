@@ -30,7 +30,7 @@ IMPORT GEMBase;
 
 IMPORT GEMEnv;
 
-IMPORT InOut;
+IMPORT StrIO, StdIO;
 
 VAR dev: GEMEnv.DeviceHandle;
     gemHdl: GEMEnv.GemHandle;
@@ -73,18 +73,18 @@ BEGIN
   FselExInput ('Dies ist der Titel', path, name, ok);
 
   (* Ausgabeparameter darstellen *)
-  InOut.WriteString ('path: ');
-  InOut.WriteString (path);
-  InOut.WriteLn;
-  InOut.WriteString ('name: ');
-  InOut.WriteString (name);
-  InOut.WriteLn;
+  StrIO.WriteString ('path: ');
+  StrIO.WriteString (path);
+  StrIO.WriteLn;
+  StrIO.WriteString ('name: ');
+  StrIO.WriteString (name);
+  StrIO.WriteLn;
   IF ok THEN
-    InOut.WriteString ('Es wurde der "OK"-Button angewaehlt.')
+    StrIO.WriteString ('Es wurde der "OK"-Button angewaehlt.')
   ELSE
-    InOut.WriteString ('Es wurde der "ABBRUCH"-Button angewaehlt.')
+    StrIO.WriteString ('Es wurde der "ABBRUCH"-Button angewaehlt.')
   END;
-  InOut.WriteLn;
-  InOut.WriteString ('Taste...');
-  InOut.Read (ch)
+  StrIO.WriteLn;
+  StrIO.WriteString ('Taste...');
+  StdIO.Read (ch)
 END AESDemo.

@@ -20,6 +20,7 @@ OBJS = \
 	AESFile.o \
 	GEMOps.o \
 	AESMisc.o \
+	PathEnv.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -42,6 +43,7 @@ GEMEnv.o: GEMEnv.mod GEMEnv.def GEMConf.def GEMOps.def
 AESFile.o: AESFile.mod AESFile.def GEMOps.def
 GEMOps.o: GEMOps.mod GEMOps.def
 AESMisc.o: AESMisc.mod AESMisc.def GEMOps.def
+PathEnv.o: PathEnv.mod PathEnv.def
 
 clean::
 	rm -f *.o *.a

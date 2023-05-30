@@ -126,11 +126,6 @@ VAR   SelectFilePtr: FileSelectProc;
          * Die Datei-Auswahlroutine.
          *)
 
-PROCEDURE NoSelect (REF d:ARRAY OF CHAR; VAR a,b:ARRAY OF CHAR; VAR c:BOOLEAN);
-  (*
-   * Diese Prozedur kann auf 'SelectFile' zugewiesen werden. Sie kehrt
-   * immer sofort zurueck und setzt 'ok' auf FALSE, so dass praktisch "?"
-   * in Pathlisten ignoriert werden.
-   *)
+PROCEDURE NoSelect (VAR label: ARRAY OF CHAR; VAR a,b:ARRAY OF CHAR; VAR c:BOOLEAN);
 
 END PathEnv.

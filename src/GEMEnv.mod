@@ -417,7 +417,7 @@ BEGIN
 END ErrorNumber;
 
 
-PROCEDURE selectFileTOSDependent (VAR label     : ARRAY OF CHAR; (* FIXME: gives ICE in without VAR *)
+PROCEDURE selectFileTOSDependent (VAR label     : ARRAY OF CHAR; (* FIXME: gives ICE without VAR *)
                                   VAR path, name: ARRAY OF CHAR;
                                   VAR ok        : BOOLEAN);
 VAR version: CARDINAL;
