@@ -1,5 +1,5 @@
 IMPLEMENTATION MODULE GEMDOS;
-#define REF VAR
+#define REF
 
 (*
 TT  20.10.91: $M- entfernt.

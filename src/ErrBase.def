@@ -1,5 +1,5 @@
 DEFINITION MODULE ErrBase;
-#define REF VAR
+#define REF
 
 (*
  * Programmgesteuertes Ausloesen von Laufzeitfehlern

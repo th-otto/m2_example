@@ -1,5 +1,5 @@
 IMPLEMENTATION MODULE GEMEnv;
-#define REF VAR
+#define REF
 
 (*
 FROM Terminal IMPORT WriteString, WriteLn, Read; (*  FOR DEBUGGING ONLY  *)

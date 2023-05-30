@@ -1,4 +1,5 @@
 DEFINITION MODULE LineA;
+#define REF
 
 
 (*  Megamax Modula-2 Line-A-Routinen
@@ -279,7 +280,7 @@ PROCEDURE FilledRectangle (p, q: Point);
          *  iablen benutzt.
          *)
 
-PROCEDURE FilledPolygon (pts: ARRAY OF Point; noPts: CARDINAL; y: INTEGER);
+PROCEDURE FilledPolygon (REF pts: ARRAY OF Point; noPts: CARDINAL; y: INTEGER);
 
         (*  Mit dieser Funktion kann man gefuellte Polygone zeichnen, aller-
          *  dings wird bei einem einzelnen Aufruf noch nicht das gesamte

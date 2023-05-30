@@ -1,5 +1,5 @@
 DEFINITION MODULE Directory;
-#define REF VAR
+#define REF
 
 (*
  * ---------------------------------------

@@ -1,4 +1,5 @@
 DEFINITION MODULE GEMDOS;
+#define REF
 
 (*
  * GEMDOS-Interface nach TDI V3.00
@@ -172,7 +173,7 @@ PROCEDURE RawScanIn ( VAR ch, scan: CHAR );
 PROCEDURE NecIn ( VAR ch: CHAR );
 (* 'Cnecin': Read character from standard input with no echo *)
 
-PROCEDURE ConWS ( VAR (* REF *) str: ARRAY OF CHAR );
+PROCEDURE ConWS ( REF str: ARRAY OF CHAR );
 (* 'Cconws': Write null terminated string to standard output device *)
 
 PROCEDURE ConRS ( VAR str: ARRAY OF BYTE );
@@ -202,7 +203,7 @@ PROCEDURE Maddalt ( start: ADDRESS; size: INTEGER32 ) : [ INTEGER32 ];
 PROCEDURE Srealloc ( size: INTEGER32 ) : [ INTEGER32 ];
 (* Allocate screen memory *)
 
-PROCEDURE Slbopen(VAR (* REF *) name: ARRAY OF CHAR; VAR (* REF *) path: ARRAY OF CHAR; min_ver: INTEGER32; VAR sl: SHARED_LIB; VAR fn: SLB_EXEC): INTEGER32;
+PROCEDURE Slbopen(REF name: ARRAY OF CHAR; REF path: ARRAY OF CHAR; min_ver: INTEGER32; VAR sl: SHARED_LIB; VAR fn: SLB_EXEC): INTEGER32;
 (* Open a shared library *)
 
 PROCEDURE Slbclose(sl: SHARED_LIB) : [ INTEGER32 ];
@@ -250,20 +251,20 @@ PROCEDURE Sconfig(mode: INTEGER16; flags: INTEGER32) : [ INTEGER32 ];
 PROCEDURE DFree (VAR infoblock: DiskInfoBuffer; drive: CARDINAL ) : [ INTEGER32 ];
 (* 'Dfree': Get drive free space *)
 
-PROCEDURE DirCreate ( VAR (* REF *) path: ARRAY OF CHAR ): BOOLEAN;
+PROCEDURE DirCreate ( REF path: ARRAY OF CHAR ): BOOLEAN;
 (* 'Dcreate': Create a subdirectory *)
 
-PROCEDURE DirDelete ( VAR (* REF *) path: ARRAY OF CHAR ): BOOLEAN;
+PROCEDURE DirDelete ( REF path: ARRAY OF CHAR ): BOOLEAN;
 (* 'Ddelete': Delete a subdirectory *)
 
-PROCEDURE SetPath ( VAR (* REF *) path: ARRAY OF CHAR ): BOOLEAN;
+PROCEDURE SetPath ( REF path: ARRAY OF CHAR ): BOOLEAN;
 (* 'Dsetpath': Set current directory *)
 
-PROCEDURE Create ( VAR (* REF *) fname: ARRAY OF CHAR; attr: CARDINAL;
+PROCEDURE Create ( REF fname: ARRAY OF CHAR; attr: CARDINAL;
                    VAR handle: INTEGER  );
 (* 'Fcreate': Create a file *)
 
-PROCEDURE Open ( VAR (* REF *) fname: ARRAY OF CHAR; mode: CARDINAL;
+PROCEDURE Open ( REF fname: ARRAY OF CHAR; mode: CARDINAL;
                  VAR handle: INTEGER );
 (* 'Fopen': Open a file *)
 
@@ -276,14 +277,14 @@ PROCEDURE Read ( handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS );
 PROCEDURE Write ( handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS );
 (* 'Fwrite': Write file *)
 
-PROCEDURE Delete ( VAR (* REF *) fname: ARRAY OF CHAR ): BOOLEAN;
+PROCEDURE Delete ( REF fname: ARRAY OF CHAR ): BOOLEAN;
 (* 'Fdelete': Delete file *)
 
 PROCEDURE Seek ( offset: INTEGER32; handle: INTEGER; mode: SeekMode;
                  VAR newPosFromBeginning: INTEGER32 );
 (* 'Fseek': Seek file pointer *)
 
-PROCEDURE Attrib ( VAR (* REF *) fname: ARRAY OF CHAR; getOrSet: TimeAccessMode;
+PROCEDURE Attrib ( REF fname: ARRAY OF CHAR; getOrSet: TimeAccessMode;
                    VAR attr: CARDINAL ) : [ BOOLEAN ];
 (* 'Fattrib': Get/Set file attributes *)
 
@@ -312,14 +313,14 @@ PROCEDURE Pexec ( Mode: CARDINAL; Name, Arguments, Environment: ADDRESS;
 PROCEDURE Term ( exitcode: INTEGER );
 (* Achtung: In der Regel stattdessen 'TermProcess(exitcode)' benutzen! *)
 
-PROCEDURE SFirst ( VAR (* REF *) fname: ARRAY OF CHAR; Attr: CARDINAL;
+PROCEDURE SFirst ( REF fname: ARRAY OF CHAR; Attr: CARDINAL;
                    VAR Result: INTEGER );
 (* 'Fsfirst': Search for first file *)
 
 PROCEDURE SNext ( VAR Result: INTEGER );
 (* 'Fsnext': Search for next file *)
 
-PROCEDURE Rename ( VAR (* REF *) oldname, newname: ARRAY OF CHAR ) : [ BOOLEAN ];
+PROCEDURE Rename ( REF oldname, newname: ARRAY OF CHAR ) : [ BOOLEAN ];
 (* 'Frename': Rename a file *)
 
 PROCEDURE DaTime ( handle: INTEGER; Buffer: ADDRESS; getOrSet: TimeAccessMode ) : [ BOOLEAN ];

@@ -1,5 +1,5 @@
 DEFINITION MODULE PathEnv;
-#define REF VAR
+#define REF
 
 (*
  * Globale Variable zur Festlegung und Abfrage der Pfad-Umgebung:

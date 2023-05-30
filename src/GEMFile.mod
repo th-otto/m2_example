@@ -1,5 +1,5 @@
 IMPLEMENTATION MODULE GEMFile;
-#define REF VAR
+#define REF
 
 (*      Megamax Modula-2 GEM Library: ripped of from GEMShare
  *

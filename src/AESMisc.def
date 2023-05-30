@@ -1,5 +1,5 @@
 DEFINITION MODULE AESMisc;
-#define REF VAR
+#define REF
 
 
 (*  Megemax-Modula 2 GEM-Library :  Verschiedene AES Funktionen

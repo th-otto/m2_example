@@ -11,6 +11,12 @@ MODULE ASMDemo;
  *  Verifikation von Thomas Tempelmann, 05.07.1988.
  *
  *  Literaturverweis: 'ATARI ST Profibuch' 2.Auflage Sybex-Verlag
+ *
+ * THO:
+ *   Changed to use BIOS/GEMDOS functions.
+ *   The actual assembler syntax used is GCC specific.
+ *   For documentation, look at the modula-2 manual
+ *   or at the implementation of the BIOS/GEMDOS functions.
  *)
 
 IMPORT BIOS, GEMDOS;
@@ -110,7 +116,6 @@ END WriteLnChar;
 
 
 PROCEDURE DoTitle;
-VAR t: String;
 CONST
     text1 ='Demoprogramm zu MEGAMAX MODULA-2';
     text2 ='---------------------------------';
@@ -119,15 +124,12 @@ CONST
 BEGIN
   WriteLn; WriteLn;
   WriteLnChar(' ', blanks, FALSE);
-  t := text1;
-  PrintLine(t); WriteLn;
+  PrintLine(text1); WriteLn;
   WriteLnChar(' ', blanks, FALSE);
-  t := text2;
-  PrintLine(t); WriteLn;
+  PrintLine(text2); WriteLn;
   WriteLn;
   WriteLnChar(' ', blanks, FALSE);
-  t := text3;
-  PrintLine(t); WriteLn; WriteLn
+  PrintLine(text3); WriteLn; WriteLn
 END DoTitle;
 
 
@@ -149,7 +151,7 @@ BEGIN
     s[i-2]:= s[i];
     INC(i);
     DEC(k)
-  END(* while *);
+  END;
   s[i-2]:= CHR(0)
 END AdjustString;
 
@@ -164,7 +166,7 @@ BEGIN
     PrintLine(str0);
     ReadString(str1);
     WriteLn; WriteLn;
-    WriteLnChar(' ', 2,FALSE);
+    WriteLnChar(' ', 2, FALSE);
     WriteLnChar('-', 76, TRUE); WriteLn;
     str0:= '  Der eingegebene String lautete : ';
     PrintLine(str0);

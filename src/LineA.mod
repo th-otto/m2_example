@@ -1,5 +1,5 @@
 IMPLEMENTATION MODULE LineA;
-(*$L-, N+, Y+*)
+#define REF
 
 
 (*  Implementierung der Line-A-Routinen fuer MEGAMAX Modula-2
@@ -168,7 +168,7 @@ BEGIN
 END FilledRectangle;
  
 
-PROCEDURE FilledPolygon(pts:ARRAY OF Point;noPts:CARDINAL;y:INTEGER);
+PROCEDURE FilledPolygon(REF pts:ARRAY OF Point;noPts:CARDINAL;y:INTEGER);
   DECLARE_LINEA_VOID(6, "dc.w 0xa006")
 BEGIN
   lineAVars^.p.y := y;

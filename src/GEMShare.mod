@@ -1,6 +1,5 @@
 IMPLEMENTATION MODULE GEMShare;
-(*$L-, N+, Y+*)
-#define REF VAR
+#define REF
 
 
 (*      Megamax Modula-2 GEM Library: Von allen GEM-Library-Modulen genutzte

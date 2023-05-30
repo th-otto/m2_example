@@ -1,5 +1,5 @@
 DEFINITION MODULE FileNames;
-#define REF VAR
+#define REF
 
 (*
  * ---------------------------------------------------------------
