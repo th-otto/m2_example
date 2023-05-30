@@ -1,3 +1,5 @@
+DEFINITION MODULE GEMOps;
+
 (*      Include-Datei:
  *
  *      Konstantendefinitionen fuer die Megamax Modula-2 GEM-Library
@@ -592,8 +594,6 @@ PROCEDURE ctrl_cnts4;
     END;
   END ctrl_cnts4;
 
-CONST   start_cnts5   = 91;     (*  Erste Subcmd-Nummer in 'ctrl_cnts5'  *)
-
 PROCEDURE ctrl_cnts5;
 
   BEGIN
@@ -607,20 +607,12 @@ PROCEDURE ctrl_cnts5;
         DC.B    0, 0    ; #97
         DC.B    2, 0    ; #98 v_meta_extents
         DC.B    0, 0    ; #99 v_write_meta (direkt)
-        DC.B    0, 0    ; #100vm_filename (direkt)
-        DC.B    0, 1    ; #101v_offset
-        DC.B    0, 2    ; #102v_fontinit
+        DC.B    0, 0    ; #100 vm_filename (direkt)
+        DC.B    0, 1    ; #101 v_offset
+        DC.B    0, 2    ; #102 v_fontinit
     END;
   END ctrl_cnts5;
 
 *)
 
-PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
-BEGIN
-  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(nintin), 16) + SHIFT(BITSET(nintout), 8) + SHIFT(BITSET(naddrin), 0));
-END AES_CTRL_CODE;
-
-PROCEDURE VDI_CTRL_CODE(op, subcmd, nptsin, nintin: CARDINAL): CARDINAL32;
-BEGIN
-  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(subcmd), 16) + SHIFT(BITSET(nptsin), 8) + SHIFT(BITSET(nintin), 0));
-END VDI_CTRL_CODE;
+END GEMOps.

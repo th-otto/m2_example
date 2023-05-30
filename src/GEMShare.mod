@@ -56,13 +56,22 @@ FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
 FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
 FROM GEMConf IMPORT doSupervision;
 FROM AESGraphics IMPORT MouseForm;
-
-#include "gemops.icl"
-
-
+IMPORT GEMOps;
 
               (*  Misc. subroutines  *)
               (*  =================  *)
+
+PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
+BEGIN
+  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(nintin), 16) + SHIFT(BITSET(nintout), 8) + SHIFT(BITSET(naddrin), 0));
+END AES_CTRL_CODE;
+
+
+PROCEDURE VDI_CTRL_CODE(op, subcmd, nptsin, nintin: CARDINAL): CARDINAL32;
+BEGIN
+  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(subcmd), 16) + SHIFT(BITSET(nptsin), 8) + SHIFT(BITSET(nintin), 0));
+END VDI_CTRL_CODE;
+
 
 PROCEDURE getCalcedFrame(frame:Rectangle; VAR pxy: PXY4);
 BEGIN
@@ -231,7 +240,7 @@ BEGIN
   our_cb^.V_CONTRL.subcmd := INTEGER(SHIFT(BITSET(ctrlcode), -16) * BITSET(255));
   our_cb^.V_CONTRL.nptsin := INTEGER(SHIFT(BITSET(ctrlcode), -8) * BITSET(255));
   our_cb^.V_CONTRL.nintin := INTEGER(SHIFT(BITSET(ctrlcode), 0) * BITSET(255));
-  IF ((our_cb^.V_CONTRL.opcode <> V_OPNWK) AND (our_cb^.V_CONTRL.opcode <> OPEN_V_WORK)) THEN
+  IF ((our_cb^.V_CONTRL.opcode <> GEMOps.V_OPNWK) AND (our_cb^.V_CONTRL.opcode <> GEMOps.OPEN_V_WORK)) THEN
     IF NOT setDevice(handle) THEN RETURN END;
     our_cb^.V_CONTRL.handle := handle^.handle;
   END;
@@ -273,7 +282,7 @@ BEGIN
     END
   | ELSE
   END;
-  aes_if(AES_CTRL_CODE(GRAF_MOUSE, 1, 1, 1));
+  aes_if(AES_CTRL_CODE(GEMOps.GRAF_MOUSE, 1, 1, 1));
   testINTOUT0(ADR(our_cb^.aespb));
 END grafMouse;
 
@@ -289,7 +298,7 @@ BEGIN
       device^.noHdCurs := 0;
     END;
     our_cb^.pubs.vINTIN[0] := INTEGER(BITSET(ORD(force)) / BITSET(1));
-    vdi_if(device, VDI_CTRL_CODE(SHOW_CURSOR, 0, 0, 1));
+    vdi_if(device, VDI_CTRL_CODE(GEMOps.SHOW_CURSOR, 0, 0, 1));
   END;
 END showCursor;
 
@@ -298,7 +307,7 @@ PROCEDURE hideCursor (device:DeviceHandle);
 BEGIN
   IF setDevice(device) THEN
     DEC(device^.noHdCurs);
-    vdi_if(device, VDI_CTRL_CODE(HIDE_CURSOR, 0, 0, 0));
+    vdi_if(device, VDI_CTRL_CODE(GEMOps.HIDE_CURSOR, 0, 0, 0));
   END;
 END hideCursor;
 
@@ -307,7 +316,7 @@ PROCEDURE unloadFonts(handle:DeviceHandle;select:INTEGER16);
 BEGIN
   IF setDevice(handle) THEN
     our_cb^.pubs.vINTIN[0] := select;
-    vdi_if(handle, VDI_CTRL_CODE(UNLOAD_FONTS, 0, 0, 1));
+    vdi_if(handle, VDI_CTRL_CODE(GEMOps.UNLOAD_FONTS, 0, 0, 1));
     handle^.fontsLoaded := FALSE;
   END;
 END unloadFonts;
@@ -334,7 +343,7 @@ BEGIN
       INC(our_cb^.SUPERVISION.noMouseCtrl);
   END;
   our_cb^.pubs.aINTIN[0] := ORD(update);
-  aes_if(AES_CTRL_CODE(WIND_UPDATE, 1, 1, 0));
+  aes_if(AES_CTRL_CODE(GEMOps.WIND_UPDATE, 1, 1, 0));
   testINTOUT0(ADR(our_cb^.aespb));
 END updateWindow;
 
@@ -345,7 +354,7 @@ BEGIN
     EXCL(our_cb^.SUPERVISION.openWinds, handle);
   END;
   our_cb^.pubs.aINTIN[0] := handle;
-  aes_if(AES_CTRL_CODE(WIND_CLOSE, 1, 1, 0));
+  aes_if(AES_CTRL_CODE(GEMOps.WIND_CLOSE, 1, 1, 0));
   testINTOUT0(ADR(our_cb^.aespb));
 END closeWindow;
 
@@ -356,7 +365,7 @@ BEGIN
     EXCL(our_cb^.SUPERVISION.createWinds, handle);
   END;
   our_cb^.pubs.aINTIN[0] := handle;
-  aes_if(AES_CTRL_CODE(WIND_DELETE, 1, 1, 0));
+  aes_if(AES_CTRL_CODE(GEMOps.WIND_DELETE, 1, 1, 0));
   testINTOUT0(ADR(our_cb^.aespb));
 END deleteWindow;
 
@@ -366,7 +375,7 @@ END deleteWindow;
 PROCEDURE exchangeTimerVec(newproc: PROC; VAR time:CARDINAL): [ PROC ];
 BEGIN
   our_cb^.V_CONTRL.ptr1.proc := newproc;
-  vdi_if(our_cb^.CURDEVICE, VDI_CTRL_CODE(EX_TIMER_INTER, 0, 0, 0));
+  vdi_if(our_cb^.CURDEVICE, VDI_CTRL_CODE(GEMOps.EX_TIMER_INTER, 0, 0, 0));
   time := our_cb^.pubs.vINTOUT[0];
   RETURN our_cb^.V_CONTRL.ptr2.proc;
 END exchangeTimerVec;
@@ -420,7 +429,7 @@ BEGIN
       list^ := list^^.next;
       IF butChgVecList = NIL THEN
         (* Setze Vector wieder in Normalzustand *)
-        exchangeMouseVec(EX_BUT_CHANGE, orgButChgVec);
+        exchangeMouseVec(GEMOps.EX_BUT_CHANGE, orgButChgVec);
       END;
       EXIT;
     END;
@@ -446,7 +455,7 @@ BEGIN
       list^ := list^^.next;
       IF msMoveVecList = NIL THEN
         (* Setze Vector wieder in Normalzustand *)
-        exchangeMouseVec(EX_MOUSE_MOVE, orgMsMoveVec);
+        exchangeMouseVec(GEMOps.EX_MOUSE_MOVE, orgMsMoveVec);
       END;
       EXIT;
     END;
@@ -472,7 +481,7 @@ BEGIN
       list^ := list^^.next;
       IF curChgVecList = NIL THEN
         (* Setze Vector wieder in Normalzustand *)
-        exchangeMouseVec(EX_MOUSE_CHANGE, orgCurChgVec);
+        exchangeMouseVec(GEMOps.EX_MOUSE_CHANGE, orgCurChgVec);
       END;
       EXIT;
     END;

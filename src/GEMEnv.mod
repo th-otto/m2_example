@@ -91,6 +91,7 @@ FROM AESGraphics IMPORT GrafMouse, MouseForm;
 FROM Directory IMPORT GetDefaultPath;
 FROM GEMFile IMPORT selectFile, selectFileExtended;
 FROM GEMConf IMPORT doSupervision;
+IMPORT GEMOps;
 
 (* fuer Tests:
   FROM SysTypes IMPORT ScanDesc;
@@ -98,10 +99,6 @@ FROM GEMConf IMPORT doSupervision;
   FROM GEMScan IMPORT InitChain, InputScan;
   VAR scanidx: CARDINAL; scan: ScanDesc;
 *)
-
-
-#include "gemops.icl"
-
 
 
 VAR     noInits         : CARDINAL;  (*  Zaehlt die Anzahl der '(Sys)InitGem's *)
@@ -119,6 +116,18 @@ VAR     noInits         : CARDINAL;  (*  Zaehlt die Anzahl der '(Sys)InitGem's *
 (*  misc. internal proc.s  *)
 (*  =====================  *)
 
+PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
+BEGIN
+  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(nintin), 16) + SHIFT(BITSET(nintout), 8) + SHIFT(BITSET(naddrin), 0));
+END AES_CTRL_CODE;
+
+
+PROCEDURE VDI_CTRL_CODE(op, subcmd, nptsin, nintin: CARDINAL): CARDINAL32;
+BEGIN
+  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(subcmd), 16) + SHIFT(BITSET(nptsin), 8) + SHIFT(BITSET(nintin), 0));
+END VDI_CTRL_CODE;
+
+
 PROCEDURE outOfMemory();
 BEGIN
   TRAP6(OutOfMemory - TRAP6_SELF - TRAP6_CONT);
@@ -134,7 +143,7 @@ PROCEDURE GrafHandle (VAR charW,
                           cellH: CARDINAL;
                       VAR hdl  : CARDINAL);
 BEGIN
-  aes_if(AES_CTRL_CODE(GRAF_HANDLE, 0, 2, 0));
+  aes_if(AES_CTRL_CODE(GEMOps.GRAF_HANDLE, 0, 2, 0));
   hdl := our_cb^.pubs.aINTOUT[0];
   charW := our_cb^.pubs.aINTOUT[1];
   charH := our_cb^.pubs.aINTOUT[2];
@@ -177,7 +186,7 @@ PROCEDURE v_opnwk (    device,
                        koorSys: CARDINAL;
                    VAR param  : ARRAY OF INTEGER): CARDINAL;
 BEGIN
-  RETURN opnwrk0(VDI_CTRL_CODE(V_OPNWK, 0, 0, 11), 0, device, koorSys, param);
+  RETURN opnwrk0(VDI_CTRL_CODE(GEMOps.V_OPNWK, 0, 0, 11), 0, device, koorSys, param);
 END v_opnwk;
 
 
@@ -185,19 +194,19 @@ PROCEDURE v_opnvwk (    handle          : CARDINAL;
                         device, koorSys : CARDINAL;
                     VAR param           : ARRAY OF INTEGER): CARDINAL;
 BEGIN
-  RETURN opnwrk0(VDI_CTRL_CODE(OPEN_V_WORK, 0, 0, 11), handle, device, koorSys, param);
+  RETURN opnwrk0(VDI_CTRL_CODE(GEMOps.OPEN_V_WORK, 0, 0, 11), handle, device, koorSys, param);
 END v_opnvwk;
 
 
 PROCEDURE v_clswk (handle: DeviceHandle);
 BEGIN
-  vdi_if(handle, VDI_CTRL_CODE(V_CLSWK, 0, 0, 0));
+  vdi_if(handle, VDI_CTRL_CODE(GEMOps.V_CLSWK, 0, 0, 0));
 END v_clswk;
 
 
 PROCEDURE v_clsvwk (handle: DeviceHandle);
 BEGIN
-  vdi_if(handle, VDI_CTRL_CODE(CLOSE_V_WORK, 0, 0, 0));
+  vdi_if(handle, VDI_CTRL_CODE(GEMOps.CLOSE_V_WORK, 0, 0, 0));
 END v_clsvwk;
 
 
@@ -215,7 +224,7 @@ BEGIN
     vdipb.ptsout := ADR (param[45]);
     pubs.vINTIN[0] := 1;                     (* Erfrage erweiterte Parameter *)
   END;
-  vdi_if(handle, VDI_CTRL_CODE(EXTENDED_INQUIRE, 0, 0, 1));
+  vdi_if(handle, VDI_CTRL_CODE(GEMOps.EXTENDED_INQUIRE, 0, 0, 1));
   WITH our_cb^ DO
     vdipb.intout := oldint;
     vdipb.ptsout := oldpts;
@@ -484,7 +493,7 @@ BEGIN
      *)
     IF NOT appIsInit[modID] THEN
       GLOBAL.ap_version := 0;
-      aes_if(AES_CTRL_CODE(APPL_INIT, 0, 1, 0));
+      aes_if(AES_CTRL_CODE(GEMOps.APPL_INIT, 0, 1, 0));
       GLOBAL.ap_id := pubs.aINTOUT[0];
       IF GLOBAL.ap_version <> 0 THEN gemStatus := available END;
       IF (gemStatus <> available) OR (GLOBAL.ap_id < 0)  (*  AES o.k.?  *) THEN
@@ -789,7 +798,7 @@ BEGIN
       END;
 
       IF our_cb^.DIDAPPLINIT THEN
-        aes_if (AES_CTRL_CODE(APPL_EXIT, 0, 1, 0));
+        aes_if (AES_CTRL_CODE(GEMOps.APPL_EXIT, 0, 1, 0));
         our_cb^.DIDAPPLINIT:= FALSE;
         appIsInit[modID] := FALSE;
         error := FALSE
