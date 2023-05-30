@@ -1,8 +1,11 @@
 /*      Include-Datei fuer Test-Konfigurationen
  */
+DEFINITION MODULE GEMConf;
 
+EXPORT QUALIFIED doSupervision;
 
 /* benutzt von: GEMSHARE.I, GEMENV.I */
 /* track number of graf_mouse(M_ON/M_OFF) calls */
-#define doSupervision 1
+CONST doSupervision = TRUE;
 
+END GEMConf.

@@ -34,8 +34,8 @@ GrafBase.o: GrafBase.mod GrafBase.def
 LineA.o: LineA.mod LineA.def
 GEMGlobals.o: GEMGlobals.mod GEMGlobals.def
 GEMBase.o: GEMBase.mod GEMBase.def
-GEMShare.o: GEMShare.mod GEMShare.def
-GEMEnv.o: GEMEnv.mod GEMEnv.def
+GEMShare.o: GEMShare.mod GEMShare.def GEMConf.def
+GEMEnv.o: GEMEnv.mod GEMEnv.def GEMConf.def
 
 clean::
 	rm -f *.o *.a

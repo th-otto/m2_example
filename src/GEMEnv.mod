@@ -90,6 +90,7 @@ FROM AESMisc IMPORT ShellRead;
 FROM AESGraphics IMPORT GrafMouse, MouseForm;
 FROM Directory IMPORT GetDefaultPath;
 FROM GEMFile IMPORT selectFile, selectFileExtended;
+FROM GEMConf IMPORT doSupervision;
 
 (* fuer Tests:
   FROM SysTypes IMPORT ScanDesc;
@@ -100,7 +101,6 @@ FROM GEMFile IMPORT selectFile, selectFileExtended;
 
 
 #include "gemops.icl"
-#include "gemcnf.icl"
 
 
 
@@ -622,18 +622,18 @@ END SysInitGem;
 PROCEDURE closeDelWinds;
 VAR i: CARDINAL;
 BEGIN
-#if doSupervision
-  FOR i := MIN(windowSet) TO MAX(windowSet) DO
-    IF i IN our_cb^.SUPERVISION.openWinds THEN
-      closeWindow(i);
+  IF doSupervision THEN
+    FOR i := MIN(windowSet) TO MAX(windowSet) DO
+      IF i IN our_cb^.SUPERVISION.openWinds THEN
+        closeWindow(i);
+      END;
+    END;
+    FOR i := MIN(windowSet) TO MAX(windowSet) DO
+      IF i IN our_cb^.SUPERVISION.createWinds THEN
+        deleteWindow(i);
+      END;
     END;
   END;
-  FOR i := MIN(windowSet) TO MAX(windowSet) DO
-    IF i IN our_cb^.SUPERVISION.createWinds THEN
-      deleteWindow(i);
-    END;
-  END;
-#endif
 END closeDelWinds;
 
 
@@ -662,41 +662,41 @@ VAR count: CARDINAL;
     dev: DeviceHandle;
 BEGIN
 start := FALSE;
-#if doSupervision
-  (* 'GrafMouse' bearbeiten *)
-  IF start THEN
-    count := our_cb^.SUPERVISION.noGrafMouse;
-    our_cb^.SUPERVISION.oldGrafMouse := count;
-    WHILE count <> 0 DO
-      GrafMouse(mouseOn, NIL);
-      DEC(count);
-    END;
-  ELSE
-    count := our_cb^.SUPERVISION.oldGrafMouse;
-    WHILE count <> 0 DO
-      GrafMouse(mouseOff, NIL);
-      DEC(count);
-    END;
-  END;
-  (* 'Hide-/ShowCursor' bearbeiten *)
-  dev := our_cb^.DEVICES;
-  WHILE dev <> NIL DO
+  IF doSupervision THEN
+    (* 'GrafMouse' bearbeiten *)
     IF start THEN
-      count := dev^.noHdCurs;
-      dev^.oldHdCurs := count;
+      count := our_cb^.SUPERVISION.noGrafMouse;
+      our_cb^.SUPERVISION.oldGrafMouse := count;
       WHILE count <> 0 DO
-        showCursor(dev, FALSE);
+        GrafMouse(mouseOn, NIL);
         DEC(count);
       END;
     ELSE
-      count := dev^.oldHdCurs;
+      count := our_cb^.SUPERVISION.oldGrafMouse;
       WHILE count <> 0 DO
-        hideCursor(dev);
+        GrafMouse(mouseOff, NIL);
         DEC(count);
       END;
     END;
+    (* 'Hide-/ShowCursor' bearbeiten *)
+    dev := our_cb^.DEVICES;
+    WHILE dev <> NIL DO
+      IF start THEN
+        count := dev^.noHdCurs;
+        dev^.oldHdCurs := count;
+        WHILE count <> 0 DO
+          showCursor(dev, FALSE);
+          DEC(count);
+        END;
+      ELSE
+        count := dev^.oldHdCurs;
+        WHILE count <> 0 DO
+          hideCursor(dev);
+          DEC(count);
+        END;
+      END;
+    END;
   END;
-#endif
 END mouseInput0;
 
 
@@ -709,17 +709,17 @@ PROCEDURE MouseInput (start:BOOLEAN);
 VAR     oldHdl  : GemHandle;
         current: GemHandle;
 BEGIN
-#if doSupervision
-  oldHdl := CurrGemHandle();
-  current := root_cb;
-  WHILE current <> NIL DO
-    IF SetCurrGemHandle(current) THEN
-      mouseInput0(start);
+  IF doSupervision THEN
+    oldHdl := CurrGemHandle();
+    current := root_cb;
+    WHILE current <> NIL DO
+      IF SetCurrGemHandle(current) THEN
+        mouseInput0(start);
+      END;
+      current := current^.LASTCB;
     END;
-    current := current^.LASTCB;
+    SetCurrGemHandle(oldHdl);
   END;
-  SetCurrGemHandle(oldHdl);
-#endif
 END MouseInput;
 
 
@@ -746,32 +746,31 @@ BEGIN
 
     IF our_cb^.OWNER_ID <> 0 THEN
 
-    (*
+      (*
       RemoveSelector;     (* Alte File-Selektor-Box wieder einhaengen *)
-     *)
+      *)
       MouseInput (TRUE);  (* Alten Mausstatus wiederherstellen *)
 
                             (* VDI zuruecksetzen *)
 
-       (*  'showCursor'-Aufrufe sind schon ausgefuehrt worden
-        *)
-#if doSupervision
-       WITH our_cb^.SUPERVISION DO    (* Melde alle GEM-IR-Vektoren ab *)
-         WHILE timerChgd DO
-           removeTimerVector (timerVecList^)
-         END;
-         WHILE butChgChgd DO
-           removeButChgVector (butChgVecList^)
-         END;
-         WHILE msMoveChgd DO
-           removeMsMoveVector (msMoveVecList^)
-         END;
-         WHILE curChgChgd DO
-           removeCurChgVector (curChgVecList^)
-         END;
-       END;
-#endif
-
+      (*  'showCursor'-Aufrufe sind schon ausgefuehrt worden
+       *)
+      IF doSupervision THEN
+        WITH our_cb^.SUPERVISION DO    (* Melde alle GEM-IR-Vektoren ab *)
+          WHILE timerChgd DO
+            removeTimerVector (timerVecList^)
+          END;
+          WHILE butChgChgd DO
+            removeButChgVector (butChgVecList^)
+          END;
+          WHILE msMoveChgd DO
+            removeMsMoveVector (msMoveVecList^)
+          END;
+          WHILE curChgChgd DO
+            removeCurChgVector (curChgVecList^)
+          END;
+        END;
+      END;
 
       (* Devices abmelden *)
 
@@ -781,13 +780,13 @@ BEGIN
 
       (* AES zuruecksetzen und eventuell Obj. abmelden *)
 
-#if doSupervision
-      WITH our_cb^.SUPERVISION DO
-        WHILE noUpWind > 0 DO updateWindow (EndUpdate) END;
-        WHILE noMouseCtrl > 0 DO updateWindow (EndMctrl) END;
-        closeDelWinds; (* Schliesse und loesche alle Fenster dieser Modulebene *)
+      IF doSupervision THEN
+        WITH our_cb^.SUPERVISION DO
+          WHILE noUpWind > 0 DO updateWindow (EndUpdate) END;
+          WHILE noMouseCtrl > 0 DO updateWindow (EndMctrl) END;
+          closeDelWinds; (* Schliesse und loesche alle Fenster dieser Modulebene *)
+        END;
       END;
-#endif
 
       IF our_cb^.DIDAPPLINIT THEN
         aes_if (AES_CTRL_CODE(APPL_EXIT, 0, 1, 0));

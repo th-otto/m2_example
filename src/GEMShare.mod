@@ -12,7 +12,7 @@ IMPLEMENTATION MODULE GEMShare;
  *
  *      Version 2.1     V#0191
  *)
- 
+
 (*  28.12.87    | Switching der Prozesskennung bei Accsessories
  *  02.01.88    | Die Vektorexchangeroutine benutzen nun das 'DeviceHandle'
  *                und nicht die VDI-Geraetekennung
@@ -54,9 +54,10 @@ FROM MOSGlobals IMPORT OutOfStack, IllegalPointer, StringOverflow;
 
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
 FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
+FROM GEMConf IMPORT doSupervision;
+FROM AESGraphics IMPORT MouseForm;
 
 #include "gemops.icl"
-#include "gemcnf.icl"
 
 
 
@@ -111,7 +112,7 @@ END stringIntoCFormat;
 
                       (*  global error handling  *)
                       (*  =====================  *)
- 
+
 (*
  * Hier wird "error" auf TRUE gesetzt, so dass der User den Fehler
  * dann abfragen kann.
@@ -251,17 +252,9 @@ END setINT0attribut;
 
 (*  Von mehreren GEM Moduln benutzte GEM-Calls  *)
 (*  ==========================================  *)
-              
+
 PROCEDURE grafMouse(form:INTEGER16(* ~ AESGraphics.MouseForm*);
                   mFormDefPtr:PtrMouseFormDef);
-                  
-                  
-(* !!!!!!!!! Muss 'AESGraphics.MouseForm' entsprechen !!!!!!!!!! *)
-
-TYPE    MouseForm       = (arrow, textCursor, bee, pointHand, flatHand,
-                         thinCross, thickCross, outlineCross, userCursor,
-                         mouseOff, mouseOn);
-     
 BEGIN
   our_cb^.pubs.ADDRIN[0] := mFormDefPtr;
   IF (form = userCursor) OR (form = mouseOff) OR (form = mouseOn) THEN
@@ -274,9 +267,7 @@ BEGIN
     INC(our_cb^.SUPERVISION.noGrafMouse);
   | mouseOn:
     IF our_cb^.SUPERVISION.noGrafMouse = 0 THEN
-#if doSupervision
-      RETURN;
-#endif
+      IF doSupervision THEN RETURN END;
     ELSE
       DEC(our_cb^.SUPERVISION.noGrafMouse);
     END
@@ -327,9 +318,7 @@ BEGIN
   CASE update OF
   | EndUpdate:
     IF our_cb^.SUPERVISION.noUpWind = 0 THEN
-#if doSupervision
-      RETURN
-#endif
+      IF doSupervision THEN RETURN END;
     ELSE
       DEC(our_cb^.SUPERVISION.noUpWind);
     END;
@@ -337,9 +326,7 @@ BEGIN
       INC(our_cb^.SUPERVISION.noUpWind);
   | EndMctrl:
     IF our_cb^.SUPERVISION.noMouseCtrl = 0 THEN
-#if doSupervision
-      RETURN
-#endif
+      IF doSupervision THEN RETURN END;
     ELSE
       DEC(our_cb^.SUPERVISION.noMouseCtrl);
     END;
