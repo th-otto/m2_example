@@ -17,8 +17,9 @@ OBJS = \
 	GEMBase.o \
 	GEMShare.o \
 	GEMEnv.o \
-	GEMFile.o \
+	AESFile.o \
 	GEMOps.o \
+	AESMisc.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -38,8 +39,9 @@ GEMGlobals.o: GEMGlobals.mod GEMGlobals.def
 GEMBase.o: GEMBase.mod GEMBase.def
 GEMShare.o: GEMShare.mod GEMShare.def GEMConf.def GEMOps.def
 GEMEnv.o: GEMEnv.mod GEMEnv.def GEMConf.def GEMOps.def
-GEMFile.o: GEMFile.mod GEMFile.def GEMOps.def
+AESFile.o: AESFile.mod AESFile.def GEMOps.def
 GEMOps.o: GEMOps.mod GEMOps.def
+AESMisc.o: AESMisc.mod AESMisc.def GEMOps.def
 
 clean::
 	rm -f *.o *.a

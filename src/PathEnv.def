@@ -121,7 +121,7 @@ TYPE  FileSelectProc = PROCEDURE ( VAR (* title: *) ARRAY OF CHAR, (* FIXME: giv
                                    VAR (* name:  *) ARRAY OF CHAR,
                                    VAR (* ok:    *) BOOLEAN );
 
-VAR   SelectFile: FileSelectProc;
+VAR   SelectFilePtr: FileSelectProc;
         (*
          * Die Datei-Auswahlroutine.
          *)

@@ -178,72 +178,9 @@ PROCEDURE RecordEvents (VAR buffer  : ARRAY OF RecordedEvent;
          *)
 
 
-                (*  File Selector Manager  *)
-                (*  =====================  *)
 
-
-PROCEDURE SelectFile (VAR path, name: ARRAY OF CHAR;
-                      VAR ok        : BOOLEAN);
-
-        (*  Damit kann die bekannte GEM File-Selector-Box erzeugt werden.
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'path'      -- GEMDOS Pfadnamen oder Leerstring (dann benutzt
-         *                 die Routine das Bootlaufwerk)
-         *  'name'      -- Filename oder Leerstring
-         *
-         *  Ausgabeparameter
-         *  ----------------
-         *
-         *  'path'      -- Enthaelt den GEMDOS Pfadnamen (mit Wildcards)
-         *  'name'      -- Enthaelt den Filenamen
-         *  'ok'        -- Liefert 'TRUE',nachdem der Anwender seine
-         *                 Auswahl getroffen hat und die Box mit dem
-         *                 OK-Knopf beendet wurde.
-         *
-         *  ACHTUNG: 'path' muss mindestens 64 Zeichen und 'name' mindestens
-         *           12 Zeichen fassen koennen, sonst wird ein Laufzeitfehler
-         *           ausgeloest.
-         *)
-
-PROCEDURE SelectFileExtended (REF label     : ARRAY OF CHAR;
-                              VAR path, name: ARRAY OF CHAR;
-                              VAR ok        : BOOLEAN);
-
-        (*  Damit kann die bekannte GEM File-Selector-Box erzeugt werden.
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'label'     -- Eine Ueberschrift, die angibt fuer welchen Zweck
-         *                 eine Datei ausgewaehlt werden soll.
-         *  'path'      -- GEMDOS Pfadnamen oder Leerstring (dann benutzt
-         *                 die Routine das Bootlaufwerk)
-         *  'name'      -- Filename oder Leerstring
-         *
-         *  Ausgabeparameter
-         *  ----------------
-         *
-         *  'path'      -- Enthaelt den GEMDOS Pfadnamen (mit Wildcards)
-         *  'name'      -- Enthaelt den Filenamen
-         *  'ok'        -- Liefert 'TRUE',nachdem der Anwender seine
-         *                 Auswahl getroffen hat und die Box mit dem
-         *                 OK-Knopf beendet wurde.
-         *
-         *  ACHTUNG: 'path' muss mindestens 64 Zeichen und 'name' mindestens
-         *           12 Zeichen fassen koennen, sonst wird ein Laufzeitfehler
-         *           ausgeloest. Ausserdem darf 'label' nicht laenger als 30
-         *           Zeichen sein.
-         *           Diese Routine ist erst ab TOS 1.4 implementiert
-         *           (kann mit GEMEnv.GEMVersion erfragt werden).
-         *)
-
-
-
-                (*  Scrap Manager  *)
-                (*  =============  *)
+(*  Scrap Manager  *)
+(*  =============  *)
                 
                 
 (*      Der Scrap Manager (Notizenverwalter) verwaltet einen Puffer
@@ -355,7 +292,7 @@ PROCEDURE ShellRead (VAR cmd, tail: ARRAY OF CHAR);
 TYPE    ProgramType     = (textPrgm, graphicPrgm);
 
 PROCEDURE ShellWrite (    start    : BOOLEAN;
-                          io       : ProgramType;
+                          isGraf   : ProgramType;
                       REF cmd, tail: ARRAY OF CHAR);
 
         (*  Damit ist es moeglich, andere Programme von einer laufenden

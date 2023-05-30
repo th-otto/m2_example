@@ -75,7 +75,7 @@ FROM    ResCtrl         IMPORT RemovalCarrier, CatchRemoval;
 FROM    GEMGlobals      IMPORT TEffectSet;
 
 FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
-FROM PathEnv IMPORT FileSelectProc, SelectFile, HomePath;
+FROM PathEnv IMPORT FileSelectProc, SelectFilePtr, HomePath;
 FROM FileNames IMPORT SplitPath;
 FROM GEMShare IMPORT device, cb, deviceMagic, logInpDev, inputMode, our_cb, root_cb,
      GDPAttribute, GDPFkt, InputDev, DeviceType, ScreenType, TextRotType,
@@ -89,7 +89,7 @@ FROM GEMShare IMPORT device, cb, deviceMagic, logInpDev, inputMode, our_cb, root
 FROM AESMisc IMPORT ShellRead;
 FROM AESGraphics IMPORT GrafMouse, MouseForm;
 FROM Directory IMPORT GetDefaultPath;
-FROM GEMFile IMPORT selectFile, selectFileExtended;
+FROM AESFile IMPORT SelectFile, SelectFileExtended;
 FROM GEMConf IMPORT doSupervision;
 IMPORT GEMOps;
 
@@ -430,9 +430,9 @@ ok := FALSE;
   (* GEM 2.0 kann fsel_exinput nicht *)
   (* erst 1.4 kann fsel_exinput *)
   IF (version >= 0300H) OR ((version >= 0140H) AND (version < 0200H)) THEN
-    selectFileExtended(label, path, name, ok)
+    SelectFileExtended(label, path, name, ok)
   ELSE
-    selectFile(path, name, ok)
+    SelectFile(path, name, ok)
   END;
   MouseInput(FALSE);
 END selectFileTOSDependent;
@@ -501,7 +501,7 @@ BEGIN
         our_cb := oldc;
         RETURN
       END;
-      SelectFile := selectFileTOSDependent;
+      SelectFilePtr := selectFileTOSDependent;
       DIDAPPLINIT := TRUE;
       appIsInit[modID] := TRUE;
       error := FALSE;
@@ -947,7 +947,7 @@ BEGIN
     IF start THEN
       gotFather:= FALSE;
       IF GemActive() THEN
-        fathersSelectFile := SelectFile;
+        fathersSelectFile := SelectFilePtr;
         gotFather := TRUE
       END
     END
@@ -962,7 +962,7 @@ BEGIN
        * wiesen werden, da EasyGEM1 nur dann selbst ein GemInit macht,
        * wenn GemActive () FALSE liefert.
        *)
-      IF gotFather THEN SelectFile := fathersSelectFile END;
+      IF gotFather THEN SelectFilePtr := fathersSelectFile END;
     ELSE
 
       ptr := root_cb;
