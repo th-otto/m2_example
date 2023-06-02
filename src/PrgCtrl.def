@@ -12,13 +12,14 @@ DEFINITION MODULE PrgCtrl;
 FROM SYSTEM IMPORT ADDRESS;
 
 FROM MOSGlobals IMPORT MemArea;
-
+FROM MOSCtrl IMPORT EnvEntry, TermEntry, EnvlpProc;
 
 TYPE    PState = ( created,   (* Angelegt, aber noch nicht laufend. *)
                    opening,   (* Prozess aktiv in Initialisierung. *)
                    running,   (* Prozess aktiv im Hauptprogramm. *)
                    closing,   (* Prozess aktiv in Deinitialisierung. *)
-                   finished );(* Prozess beendet. *)
+                   finished,  (* Prozess beendet. *)
+                   removed);  (* removed from memory *)
 
 
 PROCEDURE TermProcess ( exitCode: INTEGER );
@@ -29,7 +30,7 @@ PROCEDURE TermProcess ( exitCode: INTEGER );
    *)
 
 
-TYPE TermCarrier = ARRAY [0..9] OF INTEGER;
+TYPE TermCarrier = TermEntry;
 
 PROCEDURE CatchProcessTerm ( VAR hdl: TermCarrier; call: PROC; wsp: MemArea );
   (*
@@ -62,10 +63,7 @@ PROCEDURE CatchProcessTerm ( VAR hdl: TermCarrier; call: PROC; wsp: MemArea );
    *)
 
 
-TYPE EnvlpCarrier = ARRAY [0..15] OF INTEGER;
-     EnvlpProc = PROCEDURE (    (* opening: *) BOOLEAN,
-                                (* inChild: *) BOOLEAN,
-                            VAR (* exitCode:*) INTEGER );
+TYPE EnvlpCarrier = EnvEntry;
 
 PROCEDURE SetEnvelope ( VAR hdl: EnvlpCarrier; call: EnvlpProc; wsp: MemArea );
   (*

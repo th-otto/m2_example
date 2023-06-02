@@ -106,7 +106,6 @@ TYPE
                    END;
 
         PtrBP = POINTER TO BasePage;
-        
         BasePage = RECORD
                      p_lowtpa: ADDRESS;
                      p_hitpa : ADDRESS;
