@@ -55,7 +55,6 @@ FROM MOSGlobals IMPORT OutOfStack, IllegalPointer, StringOverflow;
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
 FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
 FROM GEMConf IMPORT doSupervision;
-FROM AESGraphics IMPORT MouseForm;
 IMPORT GEMOps;
 
               (*  Misc. subroutines  *)
@@ -279,7 +278,7 @@ END setINT0attribut;
 (*  Von mehreren GEM Moduln benutzte GEM-Calls  *)
 (*  ==========================================  *)
 
-PROCEDURE grafMouse(form:INTEGER16(* ~ AESGraphics.MouseForm*);
+PROCEDURE GrafMouse(form: MouseForm;
                   mFormDefPtr:PtrMouseFormDef);
 BEGIN
   our_cb^.pubs.ADDRIN[0] := mFormDefPtr;
@@ -301,7 +300,7 @@ BEGIN
   END;
   aes_if(AES_CTRL_CODE(GEMOps.GRAF_MOUSE, 1, 1, 1));
   testINTOUT0();
-END grafMouse;
+END GrafMouse;
 
 
 

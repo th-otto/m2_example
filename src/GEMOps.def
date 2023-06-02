@@ -321,16 +321,16 @@ X       DC.B    0, 1, 0            ; func 019  exit
         DC.B    0, 0, 0            ; func 008
         DC.B    0, 0, 0            ; func 009
     ;                            Graphics Manager
-        DC.B    4, 3, 0            ; func 070  rubber
-        DC.B    8, 3, 0            ; func 071  drag
-        DC.B    6, 1, 0            ; func 072  move
-        DC.B    8, 1, 0            ; func 073  grow
-        DC.B    8, 1, 0            ; func 074  shrink
-        DC.B    4, 1, 1            ; func 075  watch
-        DC.B    3, 1, 1            ; func 076  slide
+X       DC.B    4, 3, 0            ; func 070  rubber
+X       DC.B    8, 3, 0            ; func 071  drag
+X       DC.B    6, 1, 0            ; func 072  move
+X       DC.B    8, 1, 0            ; func 073  grow
+X       DC.B    8, 1, 0            ; func 074  shrink
+X       DC.B    4, 1, 1            ; func 075  watch
+X       DC.B    3, 1, 1            ; func 076  slide
 X       DC.B    0, 5, 0            ; func 077  handle
 X       DC.B    1, 1, 1            ; func 078  mouse
-        DC.B    0, 5, 0            ; func 009  mkstate
+X       DC.B    0, 5, 0            ; func 009  mkstate
     ;                            Scrap Manager
         DC.B    0, 1, 1            ; func 080  read
         DC.B    0, 1, 1            ; func 081  write

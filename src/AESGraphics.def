@@ -7,176 +7,170 @@ DEFINITION MODULE AESGraphics;
  *
  *  Version   2.2     V#0011
  *)
- 
- 
+
+
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
 
 FROM GEMGlobals IMPORT MButtonSet, SpecialKeySet, OStateSet, PtrObjTree;
- 
- 
+IMPORT  GEMShare;
+
+
                         (*  Graphic Manager  *)
                         (*  ===============  *)
-                
-                
+
+
+(*  Ein vom Benutzer veraenderbarer Rahmen wird auf dem Bildschirm
+ *  animiert.
+ *
+ *  'start' gibt die minimalen Rahmenausmasse und dessen Position
+ *  an. Zum Zeitpunkt des Aufrufs dieser Routine muss die linke
+ *  Maustaste gedrueckt sein. Die Routine kehrt zurueck, sobald die
+ *  Taste losgelassen wurde. In 'loc' wird die Ausdehnung des Rah-
+ *  mens (Breite und Hoehe) zum Zeitpunkt des Loslassens der Maus-
+ *  taste geliefert.
+ *)
 PROCEDURE RubberBox (start: Rectangle; VAR loc: Point);
 
-        (*  Ein vom Benutzer veraenderbarer Rahmen wird auf dem Bildschirm
-         *  animiert.
-         *
-         *  'start' gibt die minimalen Rahmenausmasse und dessen Position
-         *  an. Zum Zeitpunkt des Aufrufs dieser Routine muss die linke
-         *  Maustaste gedrueckt sein. Die Routine kehrt zurueck, sobald die
-         *  Taste losgelassen wurde. In 'loc' wird die Ausdehnung des Rah-
-         *  mens (Breite und Hoehe) zum Zeitpunkt des Loslassens der Maus-
-         *  taste geliefert.
-         *)
-        
+(*  Ein vom Benutzer verschiebarer Rahmen wird auf dem Bildschirm
+ *  animiert.
+ *
+ *  Eingabeparameter:
+ *  -----------------
+ *
+ *  'start'  -- Ausmasse und Startposition des beweglichen Rahmens.
+ *  'bound'  -- Ausmasse und Position der Bildschirmflaeche, inner-
+ *              halb derer der Rahmen bewegt werden kann.
+ *
+ *  Ausgabeparamter:
+ *  ----------------
+ *
+ *  'loc'    -- Position des Rahmens beim Loslassen des linken Maus-
+ *              taste.
+ *
+ *  Die linke Maustaste muss beim Aufruf der Routine gedrueckt sein.
+ *  Sie kehrt zurueck, sobald die Taste losgelassen wird.
+ *)
 PROCEDURE DragBox (start, bound: Rectangle; VAR loc: Point);
 
-        (*  Ein vom Benutzer verschiebarer Rahmen wird auf dem Bildschirm
-         *  animiert.
-         *
-         *  Eingabeparameter:
-         *  -----------------
-         *
-         *  'start'  -- Ausmasse und Startposition des beweglichen Rahmens.
-         *  'bound'  -- Ausmasse und Position der Bildschirmflaeche, inner-
-         *              halb derer der Rahmen bewegt werden kann.
-         *
-         *  Ausgabeparamter:
-         *  ----------------
-         *
-         *  'loc'    -- Position des Rahmens beim Loslassen des linken Maus-
-         *              taste.
-         *
-         *  Die linke Maustaste muss beim Aufruf der Routine gedrueckt sein.
-         *  Sie kehrt zurueck, sobald die Taste losgelassen wird.
-         *)
-        
-PROCEDURE MoveBox (orgin: Rectangle; dest: Point);
+(*  Es wird ein sich bewegender Rahmen animiert.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'origin'    -- Startposition und Ausmasse dews Rahmens
+ *  'dest'      -- Zielpunkt des Rahmens
+ *)
+PROCEDURE MoveBox (origin: Rectangle; dest: Point);
 
-        (*  Es wird ein sich bewegender Rahmen animiert.
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'origin'    -- Startposition und Ausmasse dews Rahmens
-         *  'dest'      -- Zielpunkt des Rahmens
-         *)
- 
-PROCEDURE GrowBox (orgin, dest: Rectangle);
+(*  Es wird ein Rahmen gezeichnet der von 'origin' nach
+ *  'dest'  anwaechst.
+ *)
+PROCEDURE GrowBox (origin, dest: Rectangle);
 
-        (*  Es wird ein Rahmen gezeichnet der von 'orgin' nach
-         *  'dest'  anwaechst.
-         *)
+(*  Der sich von 'origin' nach 'dest' bewegende Rahmen schrumpft.
+ *)
+PROCEDURE ShrinkBox (origin, dest: Rectangle);
 
-PROCEDURE ShrinkBox (orgin, dest: Rectangle);
-
-        (*  Der sich von 'orgin' nach 'dest' bewegende Rahmen schrumpft.
-         *)
-         
+(*  Diese Routine ueberwacht die Maus daraufhin, ob sich der Maus-
+ *  zeiger beim Loslassen der linken Taste innerhalb oder ausser-
+ *  halb eines bestimmten Objekts befindet.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'index'     -- Das Objekt mit diesem Index muss bereits Teil
+ *                 des Objektbaumes sein und sich auf dem Bild-
+ *                 schirm befinden.
+ *  'tree'      -- Gibt den Objektbaum an.
+ *  'inState'   -- Bezeichnet den Status, den das Objekt an-
+ *                 nehmen soll solange sich der Mauszeiger
+ *                 innerhalb des Objekts befindet.
+ *  'outState'  -- ..ausserhalb des Objekts befindet.
+ *
+ *  Ausgabeparameter
+ *  ----------------
+ *
+ *  'inside'    -- 'TRUE' : die linke Maustaste wurde losge-
+ *                 lassen waehrend sich der Zeiger innerhalb
+ *                 des Objekts befand.
+ *
+ *  Beim Aufruf sollte der linke Mausknopf gedrueckt sein, da
+ *  da die Routine beim Loslassen des Knopfes verlassen wird.
+ *)
 PROCEDURE WatchBox (    tree             : PtrObjTree;
                         index            : CARDINAL;
                         inState, outState: OStateSet;
                     VAR inside           : BOOLEAN);
-                   
-        (*  Diese Routine ueberwacht die Maus daraufhin, ob sich der Maus-
-         *  zeiger beim Loslassen der linken Taste innerhalb oder ausser-
-         *  halb eines bestimmten Objekts befindet.
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'index'     -- Das Objekt mit diesem Index muss bereits Teil
-         *                 des Objektbaumes sein und sich auf dem Bild-
-         *                 schirm befinden.
-         *  'tree'      -- Gibt den Objektbaum an.
-         *  'inState'   -- Bezeichnet den Status, den das Objekt an-
-         *                 nehmen soll solange sich der Mauszeiger
-         *                 innerhalb des Objekts befindet.
-         *  'outState'  -- ..ausserhalb des Objekts befindet.
-         *
-         *  Ausgabeparameter
-         *  ----------------
-         *
-         *  'inside'    -- 'TRUE' : die linke Maustaste wurde losge-
-         *                 lassen waehrend sich der Zeiger innerhalb
-         *                 des Objekts befand.
-         *
-         *  Beim Aufruf sollte der linke Mausknopf gedrueckt sein, da
-         *  da die Routine beim Loslassen des Knopfes verlassen wird.
-         *)
-         
-         
+
+
 TYPE    SlideDirection  = (horSlide, vertSlide);
-        
+
+(*  Diese Prozedur kontrolliert die Bewegung eines Schiebereglers.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'child'     -- dieses Objekt kann innerhalb des Objekts
+ *  'parent'    -- verschoben werden. Sie muessen beide auf dem
+ *                 Bildschirm sichtbar sein.
+ *  'tree'      -- Sowohl 'child' als auch 'parent' muss Element
+ *                 des Objektbaumes sein, wobei 'child' in der
+ *                 Baumstruktur Nachfolger von 'parent' sein muss.
+ *  'dir'       -- Legt fest, ob die horizontale oder die ver-
+ *                 tikale Bewegung des Reglers ueberwacht werden
+ *                 soll.
+ *
+ *  Ausgabeparameter
+ *  ----------------
+ *
+ *  'newPos'    -- Gibt die relative Position des Reglers beim
+ *                 Loslassender linken Maustaste im Bereich
+ *                 zwischen 0 und 1000 in Promille an.
+ *
+ *  Die linke Maustaste sollte beim Aufruf gedrueckt sein !
+ *)
 PROCEDURE SlideBox (tree         : PtrObjTree;
                     parent, child: CARDINAL;
                     dir          : SlideDirection;
                 VAR newPos       : CARDINAL);
-                   
-        (*  Diese Prozedur kontrolliert die Bewegung eines Schiebereglers.
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'child'     -- dieses Objekt kann innerhalb des Objekts
-         *  'parent'    -- verschoben werden. Sie muessen beide auf dem
-         *                 Bildschirm sichtbar sein.
-         *  'tree'      -- Sowohl 'child' als auch 'parent' muss Element
-         *                 des Objektbaumes sein, wobei 'child' in der
-         *                 Baumstruktur Nachfolger von 'parent' sein muss.
-         *  'dir'       -- Legt fest, ob die horizontale oder die ver-
-         *                 tikale Bewegung des Reglers ueberwacht werden
-         *                 soll.
-         *
-         *  Ausgabeparameter
-         *  ----------------
-         *
-         *  'newPos'    -- Gibt die relative Position des Reglers beim
-         *                 Loslassender linken Maustaste im Bereich
-         *                 zwischen 0 und 1000 in Promille an.
-         *
-         *  Die linke Maustaste sollte beim Aufruf gedrueckt sein !
-         *)
-        
 
-        (*  'bee' entspricht dem 'hourglass' andere GEM-Library's, der
-         *  ST stellt aber eine Biene und keine Uhr dar, wie es z.B.
-         *  beim IBM-GEM der Fall ist.
-         *)
+
+(*  'bee' entspricht dem 'hourglass' andere GEM-Library's, der
+ *  ST stellt aber eine Biene und keine Uhr dar, wie es z.B.
+ *  beim IBM-GEM der Fall ist.
+ *)
 TYPE    MouseForm       = (arrow, textCursor, bee, pointHand, flatHand,
                            thinCross, thickCross, outlineCross, userCursor,
                            mouseOff, mouseOn);
-       
 
-PROCEDURE GrafMouse (form: MouseForm; mouseFormPtr: PtrMouseFormDef);
 
-        (*  Hiermit kann das Aussehen des Mauscursors veraendert werden.
-         *
-         *  Zum einen stehen einige vordefiniert Zeigerformen zur ver-
-         *  fuegung, zum anderen kann man bei der Wahl von 'userCursor'
-         *  in dem zweiten Parameter 'mFormDefPtr' einen Zeiger auf
-         *  eine eigene Mausform angegeben (siehe 'GrafBase').
-         *  Letztlich kann man mit 'mouseOff' erreichen, dass der Cursor
-         *  versteckt wird und ihn mit 'mouseOn' wieder sichtbar machen.
-         *  Bei sukzessivem Verstecken des Mauszeigers, muss er auch ge-
-         *  nauso oft wieder sichtbar gemacht werden.
-         *)
-         
+(*  Hiermit kann das Aussehen des Mauscursors veraendert werden.
+ *
+ *  Zum einen stehen einige vordefiniert Zeigerformen zur ver-
+ *  fuegung, zum anderen kann man bei der Wahl von 'userCursor'
+ *  in dem zweiten Parameter 'mFormDefPtr' einen Zeiger auf
+ *  eine eigene Mausform angegeben (siehe 'GrafBase').
+ *  Letztlich kann man mit 'mouseOff' erreichen, dass der Cursor
+ *  versteckt wird und ihn mit 'mouseOn' wieder sichtbar machen.
+ *  Bei sukzessivem Verstecken des Mauszeigers, muss er auch ge-
+ *  nauso oft wieder sichtbar gemacht werden.
+ *)
+CONST GrafMouse = GEMShare.GrafMouse;
+(* PROCEDURE GrafMouse (form: MouseForm; mouseFormPtr: PtrMouseFormDef); *)
+
+
+(*  Erfragt den Zustand von Maus und Tastatur.
+ *
+ *  Ausgabeparameter
+ *  ----------------
+ *
+ *  'mouseloc'  -- Position des Mauszeigers.
+ *  'mouseButs' -- Zustand der Maustasten.
+ *  'key'       -- Zustand der Tastatursondertasten.
+ *)
 PROCEDURE MouseKeyState (VAR mouseLoc  : Point;
                          VAR mouseButs : MButtonSet;
                          VAR keys      : SpecialKeySet);
-                        
-        (*  Erfragt den Zustand von Maus und Tastatur.
-         *
-         *  Ausgabeparameter
-         *  ----------------
-         *
-         *  'mouseloc'  -- Position des Mauszeigers.
-         *  'mouseButs' -- Zustand der Maustasten.
-         *  'key'       -- Zustand der Tastatursondertasten.
-         *)
-         
-         
+
+
 END AESGraphics.

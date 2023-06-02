@@ -20,6 +20,7 @@ DEFINITION MODULE GEMShare;
 FROM SYSTEM     IMPORT ADDRESS, INTEGER16, CARDINAL32, BYTE;
 
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
+FROM AESGraphics IMPORT MouseForm;
 
 FROM GEMGlobals IMPORT GemChar, MButtonSet, SpecialKeySet, TEffectSet, MaxStr;
 
@@ -42,7 +43,7 @@ EXPORT  QUALIFIED DeviceHandle, device, GemHandle, cb, root_cb, our_cb, error,
         ptrVectorList, vecListElem, timerVecList, butChgVecList, msMoveVecList,
         curChgVecList, orgTimerVec, orgButChgVec, orgMsMoveVec, orgCurChgVec,
         deltaT,
-        grafMouse, updateWindow, showCursor, closeWindow, deleteWindow,
+        GrafMouse, updateWindow, showCursor, closeWindow, deleteWindow,
         exchangeTimerVec, exchangeMouseVec, removeTimerVector,
         removeButChgVector, removeMsMoveVector, removeCurChgVector,
         unloadFonts, hideCursor, UpdateWindowType, windowSet, MaxWinds;
@@ -508,7 +509,7 @@ PROCEDURE setINT0attribut(handle:DeviceHandle; ctrlcode:CARDINAL32; intin0: INTE
         (*  Von mehreren Moduln genutzte GEM-Calls (for supervision)  *)
         (*  ========================================================  *)
        
-PROCEDURE grafMouse (form:INTEGER16 (* ~ AESGraphics.MouseForm*);
+PROCEDURE GrafMouse (form: MouseForm;
                      mFormDefPtr:PtrMouseFormDef);
 
 PROCEDURE showCursor (device:DeviceHandle;force:BOOLEAN);
