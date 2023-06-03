@@ -23,6 +23,7 @@ OBJS = \
 	PathEnv.o \
 	AESGraphics.o \
 	PrgCtrl.o \
+	MOSCtrl.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -48,6 +49,7 @@ AESMisc.o: AESMisc.mod AESMisc.def GEMOps.def
 PathEnv.o: PathEnv.mod PathEnv.def
 AESGraphics.o: AESGraphics.mod AESGraphics.def
 PrgCtrl.o: PrgCtrl.mod PrgCtrl.def
+MOSCtrl.o: MOSCtrl.mod MOSCtrl.def
 
 clean::
 	rm -f *.o *.a

@@ -1,0 +1,86 @@
+DEFINITION MODULE CookieJar;
+
+(*
+ * Cookies sind, aehnlich XBRA (s. entspr. Modul), im System global
+ * zugaengliche Variablen. Sie bestehen jeweils aus einem Namen (4 Byte,
+ * moeglichst ein lesbarer Text) und einem 32Bit-Wert. Sie werden vom
+ * Betriebssystem (im Atari STE und TT) oder von residenten Programmen
+ * eingetragen.
+ *
+ * Sie dienen dazu, eine statische Schnittstelle zu anderen Programmen
+ * herzustellen. Wenn beispielsweise ein residentes Programm (im AUTO-Ordner)
+ * einen Cookie anlegt, dessen Wert ein Zeiger auf einen eigenen Datenbereich
+ * ist, koennen andere Programme spaeter diesen Cookie finden und auf die Daten
+ * des residenten Programms zugreifen.
+ *
+ * Atari hat weiterhin einige Cookies vordefiniert (s.u.), die den Rechner
+ * und seine Hardware beschreiben. Sie sind allerdings erst seit TOS 1.6,
+ * also z.Zt. nur beim Atari STE und TT vorhanden. Laesst sich also ein
+ * Atari-definierter Cookie nicht finden, kann davon ausgegangen werden,
+ * dass ein Atari ST vorliegt. Allerdings ist es auch moeglich, dass residente
+ * Programme auf dem ST die Atari-Cookies nachtragen.
+ *
+ * VORSICHT: Wenn Sie selbst eigene Cookies eintragen wollen, muessen Sie
+ * einiges mehr an Wissen darueber haben (z.B. Atari STE TOS Release Notes
+ * vom 12.1.90). Vor allem sollten Sie Cookies nur in residenten Programmen
+ * erzeugen, jedoch NIE in Accessories. Fuer Accessories gibt es im uebrigen
+ * eine bessere Methode: Die AES-Funktionen 'FindApplication', 'WriteToAppl'
+ * und 'ReadFromAppl' (Modul AESMisc)!
+ *)
+
+
+FROM SYSTEM IMPORT CARDINAL32;
+
+(*
+ * Liefert TRUE, wenn der uebergebene Cookie gefunden wird. Liefert
+ * dann in 'value' den dazugehoerigen Longword-Wert, bei FALSE ist
+ * 'value' immer Null. Die von Atari vordefinierten Cookies finden
+ * sich weiter unten.
+ *
+ * Wird beispielsweise nur das 1. Word des Wertes als SHORTCARD benoetigt,
+ * kann eine Variable vom Typ "SysTypes.AnyLongType" uebergeben und
+ * der SHORTCARD dann ueber das Record-Feld "c1" erreicht werden.
+ *)
+PROCEDURE GetCookie (cookie: CARDINAL32; VAR value: CARDINAL32): BOOLEAN;
+
+(*
+ * Sucht, wie 'GetCookie', den Cookie und liefert FALSE, wenn er nicht
+ * vorhanden ist. Wird er gefunden, wird 'newvalue' als neuer Cookie-Wert
+ * eingesetzt und die Funktion liefert TRUE.
+ *
+ * Hiermit werden also keine neuen Cookies eingetragen sondern nur
+ * vorhandene modifiziert!
+ *)
+PROCEDURE ModifyCookie (cookie: CARDINAL32; newvalue: CARDINAL32): BOOLEAN;
+
+TYPE CookieProc = PROCEDURE (     (* cookie: *) CARDINAL32,
+                              VAR (* value : *) CARDINAL32 ): BOOLEAN;
+
+(*
+ * Geht die Liste aller Cookies durch und ruft 'with' fuer jeden vorhandenen
+ * Cookie auf. Der Wert wird dabei als VAR-Parameter uebergeben und kann
+ * somit veraendert werden.
+ * Die 'with'-Funktion muss einen BOOLEAN-Wert zurueckgeben. Ist er FALSE,
+ * wird die Query-Funktion abgebrochen, bei TRUE werden weitere Cookies
+ * durchgegangen.
+ *
+ * Wegen des $H+ (s.o.) ist es moeglich, auch lokale Prozeduren an 'with'
+ * zu uebergeben (ist aber nicht portabel!).
+ *
+ * Das Modul 'ShowCookies' im UTILITY-Ordner zeigt die Anwendung dieser
+ * Prozedur.
+ *)
+PROCEDURE QueryCookies (with: CookieProc);
+
+(*
+ * Von Atari vordefinierte Cookies, die den Rechner beschreiben.
+ *)
+CONST CPU            = 05F435055H; (* "_CPU": Hauptprozessor: 0, 10, 20, 30 usw. *)
+CONST FPU            = 05F465055H; (* "_FPU": Mathe-Koprozessor: 0,1,2 im 1. Word *)
+CONST Machine        = 05F4D4348H; (* "_MCH": Rechner; 1. Word: 0=ST, 1=STE, 2=TT *)
+CONST VideoShifter   = 05F56444FH; (* "_VDO": Video-Hardware; 1. Word: 0=ST, 1=STE, 2=TT *)
+CONST SoundHardware  = 05F534E44H; (* "_SND": Bits im Longword: 0: GI/Yamaha(ST), 1: DMA(TT) *)
+CONST ConfigSwitches = 05F535749H; (* "_SWI":  BIOS-interne Konfigurationswerte *)
+CONST FastReadBuffer = 05F465242H; (* "_FRB": Adresse des 64KB-Puffers f. Disk-Treiber im TT *)
+
+END CookieJar.

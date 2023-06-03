@@ -139,7 +139,7 @@ TYPE
                    END;
 
 
-PROCEDURE OldTerm ();
+PROCEDURE OldTerm () <* noreturn *>;
 (* Achtung: In der Regel stattdessen 'TermProcess(0)' benutzen! *)
 
 PROCEDURE ConIn ( VAR ch: CHAR );
@@ -214,7 +214,7 @@ PROCEDURE GetDrv ( VAR drive: CARDINAL );
 PROCEDURE SetDTA ( addr: ADDRESS );
 (* 'Fsetdta': Set disk transfer address *)
 
-PROCEDURE Super (stack: INTEGER32): INTEGER32;
+PROCEDURE Super (stack: INTEGER32): [ INTEGER32 ];
 (* 'Super':
  * Ist 'stack' Null, wird in den Supervisormode gelangt und ein Wert
  * geliefert, der beim Zurueckschalten in den Usermode hier wieder angegeben
@@ -241,7 +241,7 @@ PROCEDURE GetDTA ( VAR addr: ADDRESS );
 PROCEDURE Version ( VAR versionNo: CARDINAL );
 (* 'Sversion': Get version number *)
 
-PROCEDURE TermRes ( keepAmount: CARDINAL32; exitcode: INTEGER );
+PROCEDURE TermRes ( keepAmount: CARDINAL32; exitcode: INTEGER ) <* noreturn *>;
 (* 'Ptermres': Terminate and stay resident *)
 
 PROCEDURE Sconfig(mode: INTEGER16; flags: INTEGER32) : [ INTEGER32 ];
@@ -309,7 +309,7 @@ PROCEDURE Pexec ( Mode: CARDINAL; Name, Arguments, Environment: ADDRESS;
                   VAR Result: INTEGER32 );
 (* 'Pexec': Load or execute a process *)
 
-PROCEDURE Term ( exitcode: INTEGER );
+PROCEDURE Term ( exitcode: INTEGER ) <* noreturn *>;
 (* Achtung: In der Regel stattdessen 'TermProcess(exitcode)' benutzen! *)
 
 PROCEDURE SFirst ( REF fname: ARRAY OF CHAR; Attr: CARDINAL;

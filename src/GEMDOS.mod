@@ -201,9 +201,10 @@ END trap_1_wwwll;
 
 
 
-PROCEDURE OldTerm ();
+PROCEDURE OldTerm () <* noreturn *>;
 BEGIN
   trap_1_w(0);
+  HALT;
 END OldTerm;
 
 
@@ -366,7 +367,7 @@ BEGIN
 END SetDTA;
 
 
-PROCEDURE Super (stack: INTEGER32): INTEGER32;
+PROCEDURE Super (stack: INTEGER32): [ INTEGER32 ];
 BEGIN
   RETURN trap_1_wl(32, stack);
 END Super;
@@ -408,9 +409,10 @@ BEGIN
 END Version;
 
 
-PROCEDURE TermRes (keepAmount: CARDINAL32; exitcode: INTEGER);
+PROCEDURE TermRes (keepAmount: CARDINAL32; exitcode: INTEGER) <* noreturn *>;
 BEGIN
   trap_1_wlw(49, keepAmount, exitcode);
+  HALT;
 END TermRes;
 
 
@@ -569,9 +571,10 @@ BEGIN
 END Pexec;
 
 
-PROCEDURE Term (exitcode: INTEGER);
+PROCEDURE Term (exitcode: INTEGER) <* noreturn *>;
 BEGIN
   trap_1_ww(76, exitcode);
+  HALT;
 END Term;
 
 

@@ -14,7 +14,8 @@ EXPORT QUALIFIED
 	GetResolution,
 	SetScreenBase,
 	SetPalette,
-	BlitMode;
+	BlitMode,
+	SuperExec;
 
 TYPE SuperExecProc = PROCEDURE(): INTEGER32;
 

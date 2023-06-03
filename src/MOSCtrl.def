@@ -7,59 +7,57 @@ DEFINITION MODULE MOSCtrl;
 FROM SYSTEM IMPORT ADDRESS;
 FROM GEMDOS IMPORT PtrBP;
 FROM MOSGlobals IMPORT MemArea;
+FROM SysTypes IMPORT PtrOSHeader;
+FROM PrgCtrl IMPORT PState;
 
 TYPE
      EnvlpProc = PROCEDURE (    (* opening: *) BOOLEAN,
                                 (* inChild: *) BOOLEAN,
                             VAR (* exitCode:*) INTEGER );
 
-VAR ProcessID: POINTER TO ADDRESS;
-     (*
-      * Zeigt auf die TOS-Variable, die den aktuellen Prozess bezeichnet.
-      *)
+(*
+ * Zeigt auf die TOS-Variable, die den aktuellen Prozess bezeichnet.
+ *)
+VAR ProcessID: POINTER TO PtrBP;
 
-    ModLevel: CARDINAL;
-     (*
-      * Globales Modullevel.
-      * Ist Eins fuer unterstes Level;
-      * Null, wenn eigener Prozess nicht mehr aktiv (z.B. bei residenten Prg.).
-      *)
+(*
+ * Globales Modullevel.
+ * Ist Eins fuer unterstes Level;
+ * Null, wenn eigener Prozess nicht mehr aktiv (z.B. bei residenten Prg.).
+ *)
+VAR ModLevel: CARDINAL;
 
-    BaseResident: BOOLEAN;
-     (*
-      * TRUE, wenn Basismodule resident sind.
-      * Bleibt auch erhalten, wenn Basisprozess beendet wird und Prg
-      * resident bleibt.
-      *)
+(*
+ * TRUE, wenn Basismodule resident sind.
+ * Bleibt auch erhalten, wenn Basisprozess beendet wird und Prg
+ * resident bleibt.
+ *)
+VAR BaseResident: BOOLEAN;
 
-    BaseIsAccessory: BOOLEAN;
-     (*
-      * Zeigt an, ob BaseProcess ein ACC ist
-      *)
+(*
+ * Zeigt an, ob BaseProcess ein ACC ist
+ *)
+VAR BaseIsAccessory: BOOLEAN;
 
-    ExitCode: INTEGER;
-     (*
-      * Erst gueltig, wenn processState = 3 (term)
-      *)
+(*
+ * Erst gueltig, wenn processState = 3 (term)
+ *)
+VAR ExitCode: INTEGER;
 
-    RealMode: CARDINAL;
-     (*
-      * Vom Linker uebergeben: 0 = keine Reals, 1 = Soft, 2 = ST-FPU, 3 = TT-FPU
-      *)
+(*
+ * Vom Linker uebergeben: 0 = keine Reals, 1 = Soft, 2 = ST-FPU, 3 = TT-FPU
+ *)
+VAR RealMode: CARDINAL;
 
-    UsedFPU: CARDINAL;
-     (*
-      * 0: none, 1: external, 2: internal
-      *)
-
-    PrgFlags: CARDINAL;
-     (*
-      * Z.Zt. unbenutzt.
-      *)
+(*
+ * 0: none, 1: external, 2: internal
+ *)
+VAR UsedFPU: CARDINAL;
 
 TYPE TermList  = POINTER TO TermEntry;
+     TermProc = PROCEDURE;
      TermEntry = RECORD
-                   call: PROC;
+                   call: TermProc;
                    wsp : MemArea;
                    next: TermList
                  END;
@@ -73,21 +71,22 @@ TYPE TermList  = POINTER TO TermEntry;
                 END;
 
      RemovalList  = POINTER TO RemovalEntry;
+     RemovalProc = PROCEDURE;
      RemovalEntry = RECORD
                       next: RemovalList;
                       prev: RemovalList;
-                      call: PROC;
+                      call: RemovalProc;
                       wsp: MemArea;
                     END;
 
 VAR EnvRoot: EnvEntry;
-    RemovalRoot: RemovalEntry;
+VAR RemovalRoot: RemovalEntry;
 
 
 TYPE PtrPDB = POINTER TO PDB;
      PDB = RECORD
              layout       : CARDINAL;
-             basePageAddr : ADDRESS;
+             basePageAddr : PtrBP;
              modLst       : POINTER TO ARRAY [1..65535] OF RECORD
                               head0: ADDRESS;
                               var0: ADDRESS;
@@ -95,63 +94,61 @@ TYPE PtrPDB = POINTER TO PDB;
                               flags: BITSET;
                             END;
              modNo        : CARDINAL;
-             processState : CARDINAL; (* PState: 0:created, 1:init, 2:run, 3:term *)
-                                      (*         4:finished, 5:remove from memory *)
+             processState : PState;
              bottomOfStack: ADDRESS;
              topOfStack   : ADDRESS;
-             termState    : CARDINAL;
+             termState    : PState;
              resident     : BOOLEAN;
              flags        : CARDINAL; (* vom Linker: 0,1: RealFormat; 2: 68020-Code *)
              termProcs    : TermList;
              prev         : PtrPDB;
              initialSSP   : ADDRESS;
-             prevTermHdlr : PROC;
+             prevTermHdlr : ADDRESS;
            END;
 
+(*
+ * Liefert NIL in pdb, wenn gerade kein MOS-Prozess aktiv und ModLevel > 0.
+ * Wenn ein Prg also resident ist, bekommt es, wenn ModLevel = 0, zumindest
+ * seinen PDB, dessen Daten teilweise noch gueltig sind (Stack-Ptr, resident,
+ * modLst, usw). Wenn Prg ein ACC ist und ModLevel=1, wird PDB geliefert.
+ * 'process' enthaelt immer akt. laufenden TOS-Prozess (akt.Basepage)
+ *)
 PROCEDURE GetPDB ( VAR pdb: PtrPDB; VAR process: ADDRESS );
-  (*
-   * Liefert NIL in pdb, wenn gerade kein MOS-Prozess aktiv und ModLevel > 0.
-   * Wenn ein Prg also resident ist, bekommt es, wenn ModLevel = 0, zumindest
-   * seinen PDB, dessen Daten teilweise noch gueltig sind (Stack-Ptr, resident,
-   * modLst, usw). Wenn Prg ein ACC ist und ModLevel=1, wird PDB geliefert.
-   * 'process' enthaelt immer akt. laufenden TOS-Prozess (akt.Basepage)
-   *)
 
-PROCEDURE PushPDB ( pdb: PtrPDB; process: ADDRESS );
-  (*
-   * Es muss die Adresse eines bereits angelegten
-   * und initialisierten PDB uebergeben werden.
-   *)
+(*
+ * Es muss die Adresse eines bereits angelegten
+ * und initialisierten PDB uebergeben werden.
+ *)
+PROCEDURE PushPDB ( pdb: PtrPDB; process: PtrBP );
 
 PROCEDURE PopPDB;
 
-PROCEDURE SetProcessState ( state: CARDINAL );
-  (*
-   * Muss unbedingt immer aufgerufen werden, weil hierin nicht nur
-   * der Prozess-Status gesetzt, sondern auch abhaengig davon andere
-   * Operationen durchgefuehrt werden! Also keinesfalls PDB.processState
-   * direkt setzen!
-   *)
+(*
+ * Muss unbedingt immer aufgerufen werden, weil hierin nicht nur
+ * der Prozess-Status gesetzt, sondern auch abhaengig davon andere
+ * Operationen durchgefuehrt werden! Also keinesfalls PDB.processState
+ * direkt setzen!
+ *)
+PROCEDURE SetProcessState ( state: PState );
 
 PROCEDURE CallSub ( subRoutine: PROC; VAR wsp: MemArea );
 
+(*
+ * Entfernt u.A. den Termination-Handler
+ *)
 PROCEDURE CallRemoveProcs;
-  (*
-   * Entfernt u.A. den Termination-Handler
-   *)
 
-PROCEDURE Pterm (exitCode: INTEGER);
-  (*
-   * Ersatz fuer GEMDOS-Pterm(). Fuehrt Abmeldefunktionen vorher aus.
-   *)
+(*
+ * Ersatz fuer GEMDOS-Pterm(). Fuehrt Abmeldefunktionen vorher aus.
+ *)
+PROCEDURE Pterm (exitCod: INTEGER);
 
 (*
  * Folg. zwei Vars bezeichnen letzten aktiven MOS-Prozess
  *)
-
 VAR ActPDB : PtrPDB;            (* Bleibt nach unterstem Prozessende erhalten *)
-    ActMOSProcess: PtrBP;       (* Ist NIL unter unterstem Prozesslevel *)
+VAR ActMOSProcess: PtrBP;       (* Ist NIL unter unterstem Prozesslevel *)
 
-    BaseProcess: PtrBP;         (* Bei ACCs hier Base Page des ACC *)
+VAR BaseProcess: PtrBP;         (* Bei ACCs hier Base Page des ACC *)
 
 END MOSCtrl.
