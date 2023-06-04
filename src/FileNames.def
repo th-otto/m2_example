@@ -57,141 +57,141 @@ FROM MOSGlobals IMPORT FileStr, PathStr, DriveStr, NameStr, PfxStr, SfxStr,
                        Drive, DriveSet;
 
 
+(*
+ * Fuegen ggf. '\' an den Pfadnamen an, damit 'path' eindeutig als vollst.
+ * Pfadname erkennbar ist. Zudem wird der Pfad ggf. in Grossbuchstaben
+ * umgewandelt.
+ *
+ * Ein '\' wird genau dann angefuegt, wenn der Pfad weder leer, noch das
+ * letzte Zeichen ein ':' oder schon ein '\' ist.
+ *
+ * Bei 'ValidatePath' ist darauf zu achten, dass der String gross genug
+ * ist (mind. 128 Zeichen, z.B. vom Type 'PathStr'), sonst tritt ggf.
+ * ein "String overflow"-Fehler auf!
+ *
+ * Diese Funktion sollte nach allen Pfadeingaben von aussen angewandt
+ * werden! (Die hiesigen Funktionen, die Pfade liefern, tun dies selbst).
+ *
+ * Beispiele:
+ *   PathValidated ("A:")          = "A:"         (akt. Pfad auf A:)
+ *   PathValidated ("A:ORDNER")    = "A:ORDNER\"
+ *   PathValidated ("ORDNER")      = "ORDNER\"
+ *   PathValidated ("")            = ""           (Default-Pfad)
+ *   PathValidated ("\")           = "\"
+ *)
 PROCEDURE ValidatePath ( VAR path: ARRAY OF CHAR );
 PROCEDURE PathValidated ( REF path: ARRAY OF CHAR ): PathStr;
-  (*
-   * Fuegen ggf. '\' an den Pfadnamen an, damit 'path' eindeutig als vollst.
-   * Pfadname erkennbar ist. Zudem wird der Pfad ggf. in Grossbuchstaben
-   * umgewandelt.
-   *
-   * Ein '\' wird genau dann angefuegt, wenn der Pfad weder leer, noch das
-   * letzte Zeichen ein ':' oder schon ein '\' ist.
-   *
-   * Bei 'ValidatePath' ist darauf zu achten, dass der String gross genug
-   * ist (mind. 128 Zeichen, z.B. vom Type 'PathStr'), sonst tritt ggf.
-   * ein "String overflow"-Fehler auf!
-   *
-   * Diese Funktion sollte nach allen Pfadeingaben von aussen angewandt
-   * werden! (Die hiesigen Funktionen, die Pfade liefern, tun dies selbst).
-   *
-   * Beispiele:
-   *   PathValidated ("A:")          = "A:"         (akt. Pfad auf A:)
-   *   PathValidated ("A:ORDNER")    = "A:ORDNER\"
-   *   PathValidated ("ORDNER")      = "ORDNER\"
-   *   PathValidated ("")            = ""           (Default-Pfad)
-   *   PathValidated ("\")           = "\"
-   *)
 
+(*
+ * Spaltet einen vollst. Dateinamen in seinen Pfad und den "einfachen"
+ * Dateinamen (ohne Pfad) auf.
+ * 'name' sollte mind. 12 Zeichen fassen, 'path' sollte so gross wie
+ * 'name' (oder mind. 128 Zeichen) sein, sonst kann ein Laufzeitfehler
+ * (string overflow) auftreten.
+ *)
 PROCEDURE SplitPath ( REF fullname: ARRAY OF CHAR;
                       VAR path, name: ARRAY OF CHAR );
-  (*
-   * Spaltet einen vollst. Dateinamen in seinen Pfad und den "einfachen"
-   * Dateinamen (ohne Pfad) auf.
-   * 'name' sollte mind. 12 Zeichen fassen, 'path' sollte so gross wie
-   * 'name' (oder mind. 128 Zeichen) sein, sonst kann ein Laufzeitfehler
-   * (string overflow) auftreten.
-   *)
 
-PROCEDURE SplitName ( REF filename: ARRAY OF CHAR;
+(*
+ * Spaltet einen "einfachen" Dateinamen (12 Zeichen, ohne Pfad) in Prefix
+ * (8 Zeichen) und Suffix (3 Zeichen) auf.
+ *)
+PROCEDURE SplitName ( VAR (* REF *) filename: ARRAY OF CHAR; (* FIXME: should be REF, but gives ICE *)
                       VAR prfx, sfx: ARRAY OF CHAR );
-  (*
-   * Spaltet einen "einfachen" Dateinamen (12 Zeichen, ohne Pfad) in Prefix
-   * (8 Zeichen) und Suffix (3 Zeichen) auf.
-   *)
 
+(*
+ * Liefern den Datei-Namen (Prefix & Suffix), den Pfad, den Prefix und
+ * die Extension eines beliebigen Dateinamens.
+ * Zur Ermittelung der Laufwerkskennung kann die Funktion 'StrToDrive'
+ * verwendet werden.
+ *)
 PROCEDURE FileName   ( REF filename: ARRAY OF CHAR ): NameStr;
 PROCEDURE FilePath   ( REF filename: ARRAY OF CHAR ): PathStr;
 PROCEDURE FilePrefix ( REF filename: ARRAY OF CHAR ): PfxStr;
 PROCEDURE FileSuffix ( REF filename: ARRAY OF CHAR ): SfxStr;
-  (*
-   * Liefern den Datei-Namen (Prefix & Suffix), den Pfad, den Prefix und
-   * die Extension eines beliebigen Dateinamens.
-   * Zur Ermittelung der Laufwerkskennung kann die Funktion 'StrToDrive'
-   * verwendet werden.
-   *)
 
 PROCEDURE ConcatName ( REF prefix, suffix: ARRAY OF CHAR;
                        VAR name: ARRAY OF CHAR);
+(*
+ * Setzt einen Dateinamen aus Prefix und Suffix zusammen.
+ *
+ * Sowohl 'prefix' als auch 'suffix' duerfen den jeweils anderen Namensteil
+ * enthalten (oder auch nur den Punkt) - sie werden ignoriert.
+ * 'prefix' darf auch einen Pfadnamen voranstehen haben.
+ * Ist 'suffix' leer, wird kein Punkt angefuegt.
+ *
+ * Beispiel: NameConc ( 'd:\venus', 'mup' )   = 'd:\venus.mup'
+ *           NameConc ( 'a:\b\c.txt', 'doc' ) = 'a:\b\c.doc'
+ *           NameConc ( 'bla.txt', 'xx.doc' ) = 'bla.doc'
+ *           NameConc ( 'bla.txt', '' )       = 'bla'
+ *           NameConc ( 'bla.txt', 'nix.' )   = 'bla.'
+ *)
 PROCEDURE NameConc ( REF prefix, suffix: ARRAY OF CHAR ): FileStr;
-  (*
-   * Setzt einen Dateinamen aus Prefix und Suffix zusammen.
-   *
-   * Sowohl 'prefix' als auch 'suffix' duerfen den jeweils anderen Namensteil
-   * enthalten (oder auch nur den Punkt) - sie werden ignoriert.
-   * 'prefix' darf auch einen Pfadnamen voranstehen haben.
-   * Ist 'suffix' leer, wird kein Punkt angefuegt.
-   *
-   * Beispiel: NameConc ( 'd:\venus', 'mup' )   = 'd:\venus.mup'
-   *           NameConc ( 'a:\b\c.txt', 'doc' ) = 'a:\b\c.doc'
-   *           NameConc ( 'bla.txt', 'xx.doc' ) = 'bla.doc'
-   *           NameConc ( 'bla.txt', '' )       = 'bla'
-   *           NameConc ( 'bla.txt', 'nix.' )   = 'bla.'
-   *)
 
 PROCEDURE ConcatPath ( REF path, name: ARRAY OF CHAR;
                        VAR fullname: ARRAY OF CHAR);
+(*
+ * Setzt einen vollstaendigen Dateinamen aus Pfad und Namen zusammen.
+ *
+ * Sowohl 'path' als auch 'name' duerfen den jeweils anderen Namensteil
+ * enthalten - sie werden ignoriert. Allerdings muss 'path', wenn
+ * nur ein Pfadname enthalten ist, ggf. mithilfe von 'ValidatePath' mit
+ * einem '\' abgeschlossen sein, weil sonst der letzte Ordnername im
+ * Pfad als Dateiname erkannt werden und abgeschnitten wuerde.
+ *
+ * Beispiel: PathConc ( 'A:XXX.DAT', 'C:\MEIN.PA' ) = 'A:MEIN.PA'
+ *           PathConc ( 'A:\DA\', 'C:\MEIN.PA' ) = 'A:\DA\MEIN.PA'
+ *)
 PROCEDURE PathConc ( REF path, name: ARRAY OF CHAR ): FileStr;
-  (*
-   * Setzt einen vollstaendigen Dateinamen aus Pfad und Namen zusammen.
-   *
-   * Sowohl 'path' als auch 'name' duerfen den jeweils anderen Namensteil
-   * enthalten - sie werden ignoriert. Allerdings muss 'path', wenn
-   * nur ein Pfadname enthalten ist, ggf. mithilfe von 'ValidatePath' mit
-   * einem '\' abgeschlossen sein, weil sonst der letzte Ordnername im
-   * Pfad als Dateiname erkannt werden und abgeschnitten wuerde.
-   *
-   * Beispiel: PathConc ( 'A:XXX.DAT', 'C:\MEIN.PA' ) = 'A:MEIN.PA'
-   *           PathConc ( 'A:\DA\', 'C:\MEIN.PA' ) = 'A:\DA\MEIN.PA'
-   *)
 
 
+(*
+ * Liefert FALSE, wenn Wildcards ('?' oder '*') im Namen enthalten sind.
+ * Liefert auch TRUE, wenn 'fileName' leer ist!
+ *)
 PROCEDURE NameUnique ( REF fileName: ARRAY OF CHAR ): BOOLEAN;
-  (*
-   * Liefert FALSE, wenn Wildcards ('?' oder '*') im Namen enthalten sind.
-   * Liefert auch TRUE, wenn 'fileName' leer ist!
-   *)
 
+(*
+ * Uebergeben werden ein Dateiname in 'fileName' und ein Wildcard-Name
+ * in 'wildcard'.
+ * Es wird TRUE geliefert, wenn der Dateiname zum dem Wildcard passt.
+ * Ist 'fileName' leer, wird immer FALSE geliefert.
+ * Es duerfen keine Pfade in den Namen enthalten sein, sonst kann es
+ * zu fehlerhaften Ergebnissen kommen!
+ *
+ * Solch eine Pruefung wird auch beim 'wildcard'-Parameter bei 'DirQuery'
+ * vorgenommen.
+ *
+ * Beispiele:
+ *   auf Wildcard | passen folg. Dateinamen | passen folg. Dateinamen nicht
+ *   ------------ | ----------------------- | -----------------------------
+ *    "*.*"       |  Alle                   |  ""
+ *    "ABC.*"     |  "ABC.A", "ABC"         |  "ABCD.A", "B.DEF"
+ *    "A?"        |  "A", "AB"              |  "ABC", "A.B" (kein Suffix!)
+ *    "?B*.?"     |  "AB", "AB.D", "ABCD"   |  "AB.DEF", "AC.D"
+ *)
 PROCEDURE NameMatching ( REF fileName, wildcard: ARRAY OF CHAR ): BOOLEAN;
-  (*
-   * Uebergeben werden ein Dateiname in 'fileName' und ein Wildcard-Name
-   * in 'wildcard'.
-   * Es wird TRUE geliefert, wenn der Dateiname zum dem Wildcard passt.
-   * Ist 'fileName' leer, wird immer FALSE geliefert.
-   * Es duerfen keine Pfade in den Namen enthalten sein, sonst kann es
-   * zu fehlerhaften Ergebnissen kommen!
-   *
-   * Solch eine Pruefung wird auch beim 'wildcard'-Parameter bei 'DirQuery'
-   * vorgenommen.
-   *
-   * Beispiele:
-   *   auf Wildcard | passen folg. Dateinamen | passen folg. Dateinamen nicht
-   *   ------------ | ----------------------- | -----------------------------
-   *    "*.*"       |  Alle                   |  ""
-   *    "ABC.*"     |  "ABC.A", "ABC"         |  "ABCD.A", "B.DEF"
-   *    "A?"        |  "A", "AB"              |  "ABC", "A.B" (kein Suffix!)
-   *    "?B*.?"     |  "AB", "AB.D", "ABCD"   |  "AB.DEF", "AC.D"
-   *)
 
+(*
+ * Liefert einen Leerstring, wenn 'driveNo' = 'defaultDrv', sonst
+ * den gewuenschten LW-Buchstaben mit einem Doppelpunkt.
+ *
+ * Beispiel: 'DriveToStr ( drvB )' = "B:"
+ *)
 PROCEDURE DriveToStr ( driveNo: Drive ): DriveStr;
-  (*
-   * Liefert einen Leerstring, wenn 'driveNo' = 'defaultDrv', sonst
-   * den gewuenschten LW-Buchstaben mit einem Doppelpunkt.
-   *
-   * Beispiel: 'DriveToStr ( drvB )' = "B:"
-   *)
 
+(*
+ * Liefert die Laufwerkskennung eines beliebigen Datei- ode Pfadnamens.
+ * Liefert immer 'defaultDrv', wenn kein Laufwerk (muss ':' enthalten!)
+ * oder ein ungueltiges Laufwerk angegeben ist.
+ *
+ * Beipiel: 'StrToDrive ("")' = 'defaultDrv'
+ *          'StrToDrive ("C")' = 'defaultDrv' (* ':' fehlt! *)
+ *          'StrToDrive ("C:")' = 'drvC'
+ *          'StrToDrive ("C:SOURCES\TEST.M")' = 'drvC'
+ *          'StrToDrive ("SOURCES\TEST.M")' = 'defaultDrv'
+ *)
 PROCEDURE StrToDrive ( REF driveStr: ARRAY OF CHAR ): Drive;
-  (*
-   * Liefert die Laufwerkskennung eines beliebigen Datei- ode Pfadnamens.
-   * Liefert immer 'defaultDrv', wenn kein Laufwerk (muss ':' enthalten!)
-   * oder ein ungueltiges Laufwerk angegeben ist.
-   *
-   * Beipiel: 'StrToDrive ("")' = 'defaultDrv'
-   *          'StrToDrive ("C")' = 'defaultDrv' (* ':' fehlt! *)
-   *          'StrToDrive ("C:")' = 'drvC'
-   *          'StrToDrive ("C:SOURCES\TEST.M")' = 'drvC'
-   *          'StrToDrive ("SOURCES\TEST.M")' = 'defaultDrv'
-   *)
 
 (*
  * Anwendung des GEM-File-Selektors (FS)
@@ -210,7 +210,7 @@ PROCEDURE StrToDrive ( REF driveStr: ARRAY OF CHAR ): Drive;
  * Der andere String fuer den Aufruf wird meist leer sein, nennen wir
  * ihn 'name'.
  *   GEMEnv.SelectFile ( ordnerUndMaske, name, ok );
- * Bei der Rueckkehr kann der dann gewaehlte Dateiname folgendenmassen
+ * Bei der Rueckkehr kann der dann gewaehlte Dateiname folgendermassen
  * ermittelt werden:
  *   dateiName:= PathConc ( ordnerUndMaske, name );
  * Bei weiteren Aufrufen des FS ist es meist ratsam, dieselben Strings

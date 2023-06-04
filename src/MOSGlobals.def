@@ -26,11 +26,11 @@ TYPE
 
 
         FileStr  = ARRAY [0..139] OF CHAR; (* Datei- & Pfadname *)
-        DriveStr = ARRAY [0..1] OF CHAR;   (* Laufwerksname *)
+        DriveStr = ARRAY [0..2] OF CHAR;   (* Laufwerksname *)
         PathStr  = ARRAY [0..127] OF CHAR; (* Pfadname (incl. Laufwerk) *)
-        NameStr  = ARRAY [0..11] OF CHAR;  (* Dateiname ohne Pfad *)
-        PfxStr   = ARRAY [0..7] OF CHAR;   (* Prefix (Name ohne Extension) *)
-        SfxStr   = ARRAY [0..2] OF CHAR;   (* Suffix (Extension) ohne '.' *)
+        NameStr  = ARRAY [0..12] OF CHAR;  (* Dateiname ohne Pfad *)
+        PfxStr   = ARRAY [0..8] OF CHAR;   (* Prefix (Name ohne Extension) *)
+        SfxStr   = ARRAY [0..3] OF CHAR;   (* Suffix (Extension) ohne '.' *)
 
         Drive = ( defaultDrv, drvA, drvB, drvC, drvD, drvE, drvF, drvG,
                   drvH, drvI, drvJ, drvK, drvL, drvM, drvN, drvO, drvP);

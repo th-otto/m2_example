@@ -24,6 +24,7 @@ OBJS = \
 	AESGraphics.o \
 	PrgCtrl.o \
 	MOSCtrl.o \
+	FileNames.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -50,6 +51,7 @@ PathEnv.o: PathEnv.mod PathEnv.def
 AESGraphics.o: AESGraphics.mod AESGraphics.def
 PrgCtrl.o: PrgCtrl.mod PrgCtrl.def
 MOSCtrl.o: MOSCtrl.mod MOSCtrl.def
+FileNames.o: FileNames.mod FileNames.def
 
 clean::
 	rm -f *.o *.a
