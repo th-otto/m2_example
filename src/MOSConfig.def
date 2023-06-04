@@ -8,7 +8,7 @@ DEFINITION MODULE MOSConfig;
  * dies mitgelinkt wird.
  *)
 
-FROM SYSTEM     IMPORT ADDRESS;
+FROM SYSTEM     IMPORT ADDRESS, CSIZE_T;
 FROM SysTypes   IMPORT CHARSET, ExcSet;
 FROM MOSGlobals IMPORT SfxStr;
 
@@ -51,13 +51,6 @@ VAR StdDateMask: ARRAY [0..31] OF CHAR; (* ('DD.MM.YYYY') *)
 VAR StdTimeExp: CARDINAL;               (* noch unbenutzt *)
 
 VAR StdTimeMask: ARRAY [0..9] OF CHAR;  (* ('HH:MM:SS') *)
-
-(*
- * Diese Monatsnamen werden verwendet, wenn die Datumsmaske
- * "#UUU..." enthaelt (s. TimeConvert.DateToText).
- *)
-VAR NameOfMonth: ARRAY [1..12] OF ARRAY [0..9] OF CHAR;
-
 
 (*
  * Trennzeichen fuer ReadToken und die Read-Funktionen aus NumberIO.
@@ -130,7 +123,7 @@ VAR IgnoreExceptions: ExcSet;
  * (Verfuegbarer Speicher DIV 40). Maximalwert: 7F00H.
  * Normalerweise nicht veraendern!
  *)
-VAR MaxBlSize: LONGINT;                         (* (0) *)
+VAR MaxBlSize: CSIZE_T;                         (* (0) *)
 
 (*
  * Bestimmt, ob StorBase in die Speicherverwaltung des GEMDOS eingreifen
