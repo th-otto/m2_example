@@ -27,6 +27,7 @@ OBJS = \
 	FileNames.o \
 	ErrBase.o \
 	MOSConfig.o \
+	ResCtrl.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -56,6 +57,7 @@ MOSCtrl.o: MOSCtrl.mod MOSCtrl.def
 FileNames.o: FileNames.mod FileNames.def
 ErrBase.o: ErrBase.mod ErrBase.def
 MOSConfig.o: MOSConfig.mod MOSConfig.def
+ResCtrl.o: ResCtrl.mod ResCtrl.def
 
 clean::
 	rm -f *.o *.a
