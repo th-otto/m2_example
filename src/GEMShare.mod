@@ -53,7 +53,7 @@ FROM SYSTEM     IMPORT BYTE, ADR, INTEGER32, SHIFT;
 FROM MOSGlobals IMPORT OutOfStack, IllegalPointer, StringOverflow;
 
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
-FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
+FROM ErrBase IMPORT DoTRAP6, TRAP6_SELF, TRAP6_CONT;
 FROM GEMConf IMPORT doSupervision;
 IMPORT GEMOps;
 
@@ -176,7 +176,7 @@ BEGIN
     IF errorProcPtr <> NIL THEN
       errorProcPtr^()
     ELSE
-      TRAP6(IllegalPointer - TRAP6_SELF);
+      DoTRAP6(IllegalPointer - TRAP6_SELF);
     END;
   END;
 END testErrorCheck;
@@ -200,7 +200,7 @@ BEGIN
     RETURN FALSE
   ELSE
     IF handle^.magic <> deviceMagic THEN
-      TRAP6(IllegalPointer);
+      DoTRAP6(IllegalPointer);
       RETURN FALSE
     ELSE
       our_cb^.CURDEVICE := handle;

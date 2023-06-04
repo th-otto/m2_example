@@ -76,7 +76,7 @@ FROM MOSGlobals IMPORT MemArea, IllegalCall, IllegalPointer, OutOfStack;
 FROM GEMDOS IMPORT TermRes, Term, Super;
 FROM SysVars IMPORT _sysbase, etv_term;
 FROM XBIOS IMPORT SuperExec;
-FROM ErrBase IMPORT TRAP6;
+FROM ErrBase IMPORT DoTRAP6;
 FROM CookieJar IMPORT GetCookie;
 
 
@@ -153,7 +153,7 @@ BEGIN
   IF (wsp.bottom <> NIL) AND (wsp.length <> 0) THEN
     IF wsp.length < 20 THEN
       (* Stack zu klein*)
-      TRAP6(OutOfStack);
+      DoTRAP6(OutOfStack);
       RETURN;
     ELSE
       (* neuen SP verwenden *)
@@ -276,7 +276,7 @@ BEGIN
       ASM VOLATILE("move.l %0,%%a7" : : "g"(mySSP));
     END;
     (* *** setup Stack Pointers & enter User Mode *** *)
-    ASM VOLATILE("lea -512(%%a7),%%a0; move.l %%a0,%%usp; andi.w #0xdfff,sr" : : : "a0"); (* SupervisorStackAmount *)
+    ASM VOLATILE("lea -512(%%a7),%%a0; move.l %%a0,%%usp; andi.w #0xdfff,%%sr" : : : "a0"); (* SupervisorStackAmount *)
     (* *** call installed termination procedures *** *)
     (* last of them removes this handler from the etv_term vector *)
     callExitProcs();
@@ -379,10 +379,10 @@ VAR hdlterm: PtrXBRA_Entry;
     prev: RemovalList;
 BEGIN
   IF (INTEGER32(pdb) <= 0) OR (INTEGER32(process) <= 0) THEN
-    TRAP6(IllegalCall);
+    DoTRAP6(IllegalCall);
   ELSE
     IF pdb^.layout <> layout THEN
-      TRAP6(IllegalPointer);
+      DoTRAP6(IllegalPointer);
     ELSE
       ActMOSProcess := process;
       base := pdb^.basePageAddr;
@@ -443,7 +443,7 @@ VAR hdlterm: PtrXBRA_Entry;
 BEGIN
   prev := ActPDB;
   IF prev = NIL THEN
-    TRAP6(IllegalCall);
+    DoTRAP6(IllegalCall);
   ELSE
     ActPDB := prev^.prev;
     ASM VOLATILE("move.l #hdlterm,%0" : "=g"(hdlterm));
@@ -457,7 +457,7 @@ END PopPDB;
 PROCEDURE SetProcessState ( state: PState );
 BEGIN
   IF ActPDB = NIL THEN
-    TRAP6(IllegalCall);
+    DoTRAP6(IllegalCall);
   ELSE
     ActPDB^.processState := state;
     IF state = opening THEN
@@ -494,7 +494,7 @@ BEGIN
   (* ... but must load exitCode into register first, because that changes sp *)
   ASM VOLATILE("move.l %1,%0" : "=r"(r) : "g"(exitCod) : "cc");
   IF Super(1) = -1 THEN
-    ASM VOLATILE ("andi.w #0xdfff,%sr");
+    ASM VOLATILE ("andi.w #0xdfff,%%sr" : : : );
   END;
   setTermCode(pdb, r);
   IF pdb^.processState <> closing THEN

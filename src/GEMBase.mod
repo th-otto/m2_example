@@ -39,7 +39,7 @@ FROM    MOSGlobals      IMPORT IllegalPointer;
 
 FROM GEMShare IMPORT cbMagic, deviceMagic;
 
-FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
+FROM ErrBase IMPORT DoTRAP6, TRAP6_SELF, TRAP6_CONT;
 
 
 (*  Abfrageroutinen  *)
@@ -66,7 +66,7 @@ BEGIN
   IF gemHdl <> NIL THEN
     (* ueberpruefe magic number *)
     IF (gemHdl^.MAGIC <> cbMagic) THEN
-      TRAP6(IllegalPointer - TRAP6_SELF);
+      DoTRAP6(IllegalPointer - TRAP6_SELF);
     ELSE
       (* kopiere VDI- und AES-Parameterblock *)
       vdipb := gemHdl^.vdipb;
@@ -80,7 +80,7 @@ PROCEDURE VDIHandle (dev: DeviceHandle): INTEGER16;
 BEGIN
   IF dev = NIL THEN RETURN 0; END;
   IF dev^.magic <> deviceMagic THEN
-    TRAP6(IllegalPointer - TRAP6_SELF);
+    DoTRAP6(IllegalPointer - TRAP6_SELF);
     RETURN 0;
   END;
   RETURN dev^.handle;

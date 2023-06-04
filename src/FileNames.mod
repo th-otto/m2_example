@@ -16,7 +16,7 @@ IMPORT Strings;
 FROM MOSGlobals IMPORT FileStr, PathStr, DriveStr, NameStr, SfxStr, PfxStr,
                        OutOfStack, StringOverflow, fNotDeleted, fPathNotFound, fFileNotFound,
                        Drive, DriveSet;
-FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
+FROM ErrBase IMPORT DoTRAP6, TRAP6_SELF, TRAP6_CONT;
 
 CONST drvZ = 26;
 
@@ -124,14 +124,14 @@ BEGIN
   lenp := HIGH(prfx);
   INC(lenp);
   IF lenp < 8 THEN
-    TRAP6(StringOverflow - TRAP6_SELF);
+    DoTRAP6(StringOverflow - TRAP6_SELF);
   END;
 
   (* Fehler melden, wenn 'sfx' zu klein *)
   lens := HIGH(sfx);
   INC(lens);
   IF lens < 3 THEN
-    TRAP6(StringOverflow - TRAP6_SELF);
+    DoTRAP6(StringOverflow - TRAP6_SELF);
   END;
 
   Strings.Assign(filename, buf);

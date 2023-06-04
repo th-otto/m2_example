@@ -7,7 +7,7 @@ IMPLEMENTATION MODULE AESFile;
 FROM SYSTEM IMPORT ADDRESS, ADR, INTEGER16, CARDINAL16, CARDINAL32, SHIFT;
 FROM GEMShare IMPORT our_cb, stringIntoCFormat, stringFromCFormat, aes_if, testINTOUT0;
 FROM GEMGlobals IMPORT MaxStr;
-FROM ErrBase IMPORT TRAP6;
+FROM ErrBase IMPORT DoTRAP6;
 FROM MOSGlobals IMPORT StringOverflow;
 
 IMPORT GEMOps;
@@ -24,8 +24,8 @@ PROCEDURE selectFile0 (VAR path, name: ARRAY OF CHAR;
                            opcode    : CARDINAL32);
 VAR s, s2: MaxStr;
 BEGIN
-  IF HIGH(name) < 11 THEN TRAP6(StringOverflow) END;
-  IF HIGH(path) < 31 THEN TRAP6(StringOverflow) END;
+  IF HIGH(name) < 11 THEN DoTRAP6(StringOverflow) END;
+  IF HIGH(path) < 31 THEN DoTRAP6(StringOverflow) END;
   stringIntoCFormat(name, s);
   our_cb^.pubs.ADDRIN[0] := ADR(s);
   stringIntoCFormat(path, s2);

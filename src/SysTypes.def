@@ -32,86 +32,6 @@ TYPE    CHARSET = SET OF CHAR;
                    END;
 
 
-        PtrAnyType     = POINTER TO AnyType;
-        PtrAnyByteType = POINTER TO AnyByteType;
-        PtrAnyWordType = POINTER TO AnyWordType;
-        PtrAnyLongType = POINTER TO AnyLongType;
-
-        AnyType = RECORD
-                    CASE : CARDINAL OF
-                      0 : b  : BYTE|
-                      1 : ch : CHAR|
-                      2 : s  : BBS|
-                      3 : w  : CARDINAL16|
-                      5 : i  : INTEGER16|
-                      6 : c  : CARDINAL16|
-                      7 : l  : INTEGER32|
-                      8 : ad : ADDRESS|
-                      9 : p  : PtrAnyType|
-                      10: pb : PtrBYTE|
-                      11: ps : PtrBBS|
-                      12: pab: PtrAnyByteType|
-                      13: paw: PtrAnyWordType|
-                      14: pal: PtrAnyLongType|
-                      15: li : INTEGER32|
-                      16: lc : CARDINAL32|
-                      17: r  : LONGREAL|
-                    ELSE
-                    END
-                  END;
-
-        AnyLongType = RECORD
-                        CASE : CARDINAL OF
-                          0 :             (* *)  b3: BYTE; b2: BYTE; b1: BYTE;
-                              b  : BYTE|
-                          1 :             (* *)  ch3: CHAR; ch2: CHAR; ch1: CHAR;
-                              ch : CHAR|
-                          2 :             (* *)  s3: BBS; s2: BBS; s1: BBS;
-                              s  : BBS|
-                          3 :             (* *)  w1: CARDINAL16;
-                              w  : CARDINAL16|
-                          5 :             (* *)  i1: INTEGER16;
-                              i  : INTEGER16|
-                          6 :             (* *)  c1: CARDINAL16;
-                              c  : CARDINAL16|
-                          7 : l  : INTEGER32|
-                          8 : ad : ADDRESS|
-                          9 : p  : PtrAnyType|
-                          10: pb : PtrBYTE|
-                          11: ps : PtrBBS|
-                          12: pab: PtrAnyByteType|
-                          13: paw: PtrAnyWordType|
-                          14: pal: PtrAnyLongType|
-                          15: li : INTEGER32|
-                          16: lc : CARDINAL32|
-                        ELSE
-                        END
-                     END;
-
-        AnyWordType = RECORD
-                        CASE : CARDINAL OF
-                          0 :             (* *)  b1: BYTE;
-                              b  : BYTE|
-                          1 :             (* *)  ch1: CHAR;
-                              ch : CHAR|
-                          2 :             (* *)  s1: BBS;
-                              s  : BBS|
-                          3 : w  : CARDINAL16|
-                          5 : i  : INTEGER16|
-                          6 : c  : CARDINAL16|
-                        ELSE
-                        END
-                     END;
-
-        AnyByteType = RECORD
-                        CASE : CARDINAL OF
-                          0 : b  : BYTE|
-                          1 : ch : CHAR|
-                          2 : s  : BBS|
-                        ELSE
-                        END
-                     END;
-
 (* f. Modul SysCtrl: *)
 
         ScanDesc = RECORD
@@ -182,25 +102,26 @@ TYPE    Exceptions = [2..263];
 
         ExcSet = SET OF Exceptions;
 
+        ExcDescPtr = POINTER TO ExcDesc;
         ExcDesc = RECORD (* enthaelt alle wichtigen Daten einer Exception *)
-                    regD0 : AnyLongType;
-                    regD1 : AnyLongType;
-                    regD2 : AnyLongType;
-                    regD3 : AnyLongType;
-                    regD4 : AnyLongType;
-                    regD5 : AnyLongType;
-                    regD6 : AnyLongType;
-                    regD7 : AnyLongType;
-                    regA0 : AnyLongType;
-                    regA1 : AnyLongType;
-                    regA2 : AnyLongType;
-                    regA3 : AnyLongType;
-                    regA4 : AnyLongType;
-                    regA5 : AnyLongType;
-                    regA6 : AnyLongType;
+                    regD0 : CARDINAL32;
+                    regD1 : CARDINAL32;
+                    regD2 : CARDINAL32;
+                    regD3 : CARDINAL32;
+                    regD4 : CARDINAL32;
+                    regD5 : CARDINAL32;
+                    regD6 : CARDINAL32;
+                    regD7 : CARDINAL32;
+                    regA0 : CARDINAL32;
+                    regA1 : CARDINAL32;
+                    regA2 : CARDINAL32;
+                    regA3 : CARDINAL32;
+                    regA4 : CARDINAL32;
+                    regA5 : CARDINAL32;
+                    regA6 : CARDINAL32;
                     regSSP: ADDRESS;     (* SR/PC bereits abgeraeumt *)
                     regUSP: ADDRESS;
-                    regPC : ADDRESS;
+                    regPC : POINTER TO CARDINAL16;
                     regSR : CARDINAL16;
                     CASE excNo: Exceptions OF
                       BusError, AddrError:   (* zusaetzlich bei Bus/Adr-Error:*)

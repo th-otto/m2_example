@@ -1,0 +1,163 @@
+DEFINITION MODULE MOSConfig;
+
+(*
+ * Enthaelt globale Konfigurationswerte fuer die MOS-Module.
+ * Die Werte werden den meisten Variablen im Implementationsteil
+ * zugewiesen, die standardmaessig eingesetzten Werte stehen in Klammern.
+ * Restliche Variablen werden z.B. in 'GEMError' initialisiert, falls
+ * dies mitgelinkt wird.
+ *)
+
+FROM SYSTEM     IMPORT ADDRESS;
+FROM SysTypes   IMPORT CHARSET, ExcSet;
+FROM MOSGlobals IMPORT SfxStr;
+
+(* Loader: *)
+
+VAR DftSfx: SfxStr; (* Default Suffix bei 'CallModule' ("MOD") *)
+
+    ImpSfx: SfxStr; (* Suffix der importierten Module  ("IMP") *)
+
+    MaxModExec: CARDINAL; (* Max. Anzahl gleichz. startbarer Module (100) *)
+
+    LoaderMsg: POINTER TO ARRAY [0..24] OF ARRAY [0..49] OF CHAR;
+      (* Texte fuer Loader-Fehlermeld., wird z.B. in 'GEMError' init. *)
+
+
+(* Convert: *)
+
+VAR RadixChar: CHAR;
+  (*
+   * Wird bei den REAL-Umwandlungen in Textform zur Trennung der
+   * Nachkommastellen verwendet. (",")
+   * US-Norm: RadixChar:='.' / Deutsch: RadixChar:=',';
+   *)
+
+VAR FixToFloatMax, FixToFloatMin: LONGREAL;
+  (*
+   * Diese Variablen waehlen die Darstellungsform von REAL-Zahlen bei
+   * Umwandlung mit 'ConvReal' oder Ausgabe mit 'WriteReal':
+   * Festkomma, falls FixToFloatMin<=ABS(v) und ABS(v)<=FixToFloatMax,
+   * sonst Fliesskomma.
+   *)
+
+
+(* TimeConvert: *)
+
+VAR StdDateExp: CARDINAL;               (* (1) *)
+
+VAR StdDateMask: ARRAY [0..31] OF CHAR; (* ('DD.MM.YYYY') *)
+
+VAR StdTimeExp: CARDINAL;               (* noch unbenutzt *)
+
+VAR StdTimeMask: ARRAY [0..9] OF CHAR;  (* ('HH:MM:SS') *)
+
+(*
+ * Diese Monatsnamen werden verwendet, wenn die Datumsmaske
+ * "#UUU..." enthaelt (s. TimeConvert.DateToText).
+ *)
+VAR NameOfMonth: ARRAY [1..12] OF ARRAY [0..9] OF CHAR;
+
+
+(*
+ * Trennzeichen fuer ReadToken und die Read-Funktionen aus NumberIO.
+ * Beim Lesen werden fuehrende Trennzeichen ignoriert (ausgefiltert),
+ * sodass ein mit ReadToken gelesener String nie ein Trennzeichen
+ * enthalten kann.
+ *
+ * Standardwert:  CHARSET {0C..' '};
+ *   (das sind alle Control-Zeichen sowie das Leerzeichen)
+ *)
+VAR Separators: CHARSET;
+
+
+(* Exceptions, ErrBase, HdlError *)
+
+(*
+ * Zeigt auf ein dynamisch grosses Feld mit Texten fuer moeglichst alle
+ * in 'MOSGlobals' definierten Laufzeitfehler.
+ * Format siehe 'FileErrMsg'.
+ *)
+VAR RuntimeErrMsg: ADDRESS;
+
+
+(* Files, Directories *)
+
+(*
+ * Zeigt auf ein dynamisch grosses Feld mit Texten fuer moeglichst alle
+ * in 'MOSGlobals' definierten Dateifehler.
+ *
+ * Format:
+ * Die Anzahl der Feldelemente ist um Eins groesser als die Anzahl benutzter
+ * Meldungstexte, dabei muessen hintereinander alle Fehlernummern in belie-
+ * biger Reihenfolge mit ihren zugehoerigen Texten stehen, als Abschluss
+ * dann eine beliebige Fehlernummer mit einem Leertext. Wird ein Text fuer
+ * eine nicht vorkommende Fehlernummer gesucht, wird, jenachdem, ob die
+ * Fehlernummer positiv oder negativ ist, der Text fuer Fehlernummer
+ * 32767 bzw. -32768 verwendet.
+ * Wenn ein Text das Zeichen '@' enhaelt, wird dafuer die Fehlernummer ein-
+ * gesetzt.
+ * Ein Beispiel fuer ein solches Textfeld findet sich in dem Modulsource
+ * 'GEMError.I'.
+ *)
+VAR FileErrMsg: ADDRESS;   (* POINTER TO ARRAY [0..65535] OF RECORD
+                                errNo: INTEGER;
+                                errMsg: ARRAY [0..31] OF CHAR
+                              END; *)
+
+
+(* ErrBase: *)
+
+(*
+ * Bestimmt, welche Exceptions abgefangen werden sollen.
+ * (TRAP #6, Ueberlauf, Bus-Fehler, Adress-Fehler, Illegale Instruktion)
+ *)
+VAR CaughtExceptions: ExcSet;
+
+(*
+ * Bestimmt, welche von den abzufangenden Exceptions zeitweise nicht
+ * behandelt werden sollen. Damit ist es moeglich, kurzzeitig von einem
+ * zuvor installierten Monitor die Exception behandeln zu lassen.
+ *)
+VAR IgnoreExceptions: ExcSet;
+
+
+(* Storage/StorBase: *)
+
+(*
+ * Mindestgroesse der bei StorBase (GEMDOS) angeforderten Bloecke.
+ * Beim Wert Null bestimmt Storage selbst den optimalen Wert
+ * (Verfuegbarer Speicher DIV 40). Maximalwert: 7F00H.
+ * Normalerweise nicht veraendern!
+ *)
+VAR MaxBlSize: LONGINT;                         (* (0) *)
+
+(*
+ * Bestimmt, ob StorBase in die Speicherverwaltung des GEMDOS eingreifen
+ * darf. Mehr dazu im Modul StorBase.
+ *)
+VAR ExtendedMemoryAccess: BOOLEAN;              (* (TRUE) *)
+
+
+(* Runtime/Coroutinen: *)
+
+(*
+ * Werden Coroutinen benutzt, muss das Modula-System dazu einen TRAP-Vektor
+ * belegen. Der gewaehlte TRAP-Vektor darf waehrenddessen nicht von anderen
+ * Programmen benutzt werden. Soll ein anderer TRAP als der voreingestellte
+ * verwendet werden, muss diese Variable lediglich vor dem ersten Aufruf
+ * von NEWPROCESS entsprechend gesetzt werden. Beim ersten NEWPROCESS
+ * wird der TRAP-Vektor dann belegt und wird erst bei Beenden des Programms
+ * wieder freigegeben (der vorherige Wert wird restauriert). Werden Corou-
+ * tinen in residenten Programmen oder Accessories verwendet, bleibt der
+ * Vektor dauerhaft belegt. Sollen mehrere Megamax-Programme mit Coroutinen
+ * gleichzeitig im Speicher sein (z.B. als ACCs), duerfen sie ruhig alle
+ * den selben TRAP-Vektor benutzen.
+ * Protos benutzt beispielsweise auch den TRAP Nr. 4 mit der selben
+ * Funktion. So gibt es mit diesem residenten Programm keine Probleme.
+ *
+ * Bei Installation des TRAP-Vektors wird die XBRA-Kennung "MM2C" verwendet.
+ *)
+VAR CoroutineTrapNo: [0..15];                   (* (4) *)
+
+END MOSConfig.

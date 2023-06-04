@@ -7,7 +7,7 @@ DEFINITION MODULE ErrBase;
 
 FROM SYSTEM IMPORT ADDRESS;
 
-FROM SysTypes IMPORT ExcDesc;
+FROM SysTypes IMPORT ExcDesc, ExcDescPtr;
 
 TYPE RtnCond = ( mayContinue,    (* Programm darf fortgefuehrt werden. *)
                  mustAbort );    (* Programm sollte beendet werden. *)
@@ -15,17 +15,18 @@ TYPE RtnCond = ( mayContinue,    (* Programm darf fortgefuehrt werden. *)
      ErrResp = ( selfCaused,     (* Fehler selbst verursacht. *)
                  callerCaused ); (* Fehler von Aufrufer verursacht. *)
 
+(*
+ * Meldet einen Laufzeitfehler.
+ *
+ * 'msg' darf ein Leerstring sein.
+ *)
 PROCEDURE RaiseError (    no    : INTEGER;       (* Fehlernummer *)
-                      REF msg   : ARRAY OF CHAR; (* Text, max. 32 Zeichen *)
+                      REF msg   : TRAP6Msg; (* Text, max. 32 Zeichen *)
                           causer: ErrResp;
                           cont  : RtnCond );
-  (*
-   * Meldet einen Laufzeitfehler.
-   *
-   * 'msg' darf ein Leerstring sein.
-   *)
 
-PROCEDURE TRAP6(no: INTEGER);
+TYPE TRAP6Msg = ARRAY[0..31] OF CHAR;
+PROCEDURE DoTRAP6(no: INTEGER; [REF msg: TRAP6Msg = '' ]);
 CONST TRAP6_SELF = 04000H;
       TRAP6_CONT = 02000H;
 
@@ -49,17 +50,17 @@ CONST TRAP6_SELF = 04000H;
 (* ======================================================================== *)
 
 TYPE ErrHdlProc = PROCEDURE (     (* errNo:   *) INTEGER,
-                                  (* msg:     *) ARRAY OF CHAR, (* max. 32 Z.*)
+                                  (* msg:     *) REF TRAP6Msg, (* max. 32 Z.*)
                                   (* causer:  *) ErrResp,
                                   (* cont:    *) RtnCond,
-                              VAR (* excData: *) ExcDesc );
+                                  (* excData: *) ExcDescPtr );
 
+(*
+ * Die Routine erhaelt bei Aufruf einen Stack von 600 Bytes;
+ * Das Installieren und Restaurieren dieses Vektors muss
+ * vom Aufrufer durchgefuehrt werden, vor allem bei Prozessende!
+ *)
 VAR ErrHdl: ErrHdlProc;
-  (*
-   * Die Routine erhaelt bei Aufruf einen Stack von 600 Bytes;
-   * Das Installieren und Restaurieren dieses Vektors muss
-   * vom Aufrufer durchgefuehrt werden, vor allem bei Prozessende!
-   *)
 
 VAR ExcInstalled: BOOLEAN;
 

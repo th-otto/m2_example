@@ -16,7 +16,7 @@ FROM MOSGlobals IMPORT MemArea, IllegalCall;
 IMPORT MOSCtrl;
 FROM MOSCtrl IMPORT ProcessID, GetPDB, PtrPDB, TermEntry, EnvEntry, ModLevel, PDB,
       ExitCode, ActMOSProcess, EnvRoot, Pterm, TermList, EnvList;
-FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
+FROM ErrBase IMPORT DoTRAP6, TRAP6_SELF, TRAP6_CONT;
 
 (* ! Storage darf nicht importiert werden ! *)
 
@@ -34,7 +34,7 @@ VAR pdb: PtrPDB;
 BEGIN
   GetPDB(pdb, dummy);
   IF pdb = NIL THEN
-    TRAP6(IllegalCall);
+    DoTRAP6(IllegalCall);
   ELSE
     oldHdl := pdb^.termProcs;
     pdb^.termProcs := ADR(hdl);

@@ -25,6 +25,7 @@ OBJS = \
 	PrgCtrl.o \
 	MOSCtrl.o \
 	FileNames.o \
+	ErrBase.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -52,6 +53,7 @@ AESGraphics.o: AESGraphics.mod AESGraphics.def
 PrgCtrl.o: PrgCtrl.mod PrgCtrl.def
 MOSCtrl.o: MOSCtrl.mod MOSCtrl.def
 FileNames.o: FileNames.mod FileNames.def
+ErrBase.o: ErrBase.mod ErrBase.def
 
 clean::
 	rm -f *.o *.a

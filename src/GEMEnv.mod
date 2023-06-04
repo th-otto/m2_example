@@ -74,7 +74,7 @@ FROM    ResCtrl         IMPORT RemovalCarrier, CatchRemoval;
 
 FROM    GEMGlobals      IMPORT TEffectSet;
 
-FROM ErrBase IMPORT TRAP6, TRAP6_SELF, TRAP6_CONT;
+FROM ErrBase IMPORT DoTRAP6, TRAP6_SELF, TRAP6_CONT;
 FROM PathEnv IMPORT FileSelectProc, SelectFilePtr, HomePath;
 FROM FileNames IMPORT SplitPath;
 FROM GEMShare IMPORT device, cb, deviceMagic, logInpDev, inputMode, our_cb, root_cb,
@@ -130,7 +130,7 @@ END VDI_CTRL_CODE;
 
 PROCEDURE outOfMemory();
 BEGIN
-  TRAP6(OutOfMemory - TRAP6_SELF - TRAP6_CONT);
+  DoTRAP6(OutOfMemory - TRAP6_SELF - TRAP6_CONT);
 END outOfMemory;
 
 
@@ -160,7 +160,7 @@ VAR     oldpts,oldint           :ADDRESS;
         i                       :CARDINAL;
 BEGIN
   IF HIGH(param)<56 THEN        (* Nicht genug Platz fuer die Parameter *)
-    TRAP6(GeneralErr - TRAP6_CONT);
+    DoTRAP6(GeneralErr - TRAP6_CONT);
     RETURN 0;
   END;
   our_cb^.V_CONTRL.handle := handle;
@@ -214,7 +214,7 @@ PROCEDURE extendedInquire (handle: DeviceHandle; VAR param: ARRAY OF INTEGER);
 VAR     oldpts,oldint           :ADDRESS;
 BEGIN
   IF HIGH(param)<56 THEN        (* Nicht genug Platz fuer die Parameter *)
-    TRAP6(GeneralErr - TRAP6_CONT);
+    DoTRAP6(GeneralErr - TRAP6_CONT);
     RETURN;
   END;
   WITH our_cb^ DO
@@ -384,7 +384,7 @@ BEGIN
       END;
       last := ADR(last^^.next);
     END;
-    TRAP6(IllegalPointer);
+    DoTRAP6(IllegalPointer);
   END;
 END CloseDevice;
 
@@ -650,7 +650,7 @@ PROCEDURE isValidGemHandle (handle: GemHandle): BOOLEAN;
 BEGIN
   IF handle = NIL THEN RETURN FALSE; END;
   IF handle^.MAGIC <> cbMagic THEN
-    TRAP6(IllegalPointer - TRAP6_SELF);
+    DoTRAP6(IllegalPointer - TRAP6_SELF);
     RETURN FALSE;
   END;
   RETURN TRUE;
@@ -889,7 +889,7 @@ END ApplicationID;
 PROCEDURE GEMVersion (): CARDINAL;
 BEGIN
   IF our_cb = NIL THEN
-    TRAP6(GeneralErr - TRAP6_CONT - TRAP6_SELF (* , 'GEM NOT INIT.' *) );
+    DoTRAP6(GeneralErr - TRAP6_CONT - TRAP6_SELF (* , 'GEM NOT INIT.' *) );
     RETURN 0;
   END;
   RETURN our_cb^.GLOBAL.ap_version;
