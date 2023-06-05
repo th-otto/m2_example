@@ -29,6 +29,7 @@ OBJS = \
 	MOSConfig.o \
 	ResCtrl.o \
 	Directory.o \
+	Clock.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)

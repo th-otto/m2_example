@@ -42,15 +42,15 @@ TYPE
 
 
         Date = RECORD
-                 day  : [1..31];
-                 month: [1..12];
+                 day  : CARDINAL16 (* [1..31] *);
+                 month: CARDINAL16 (* [1..12] *);
                  year : INTEGER16;
                END;
 
         Time = RECORD
-                 second: [0..59];
-                 minute: [0..59];
-                 hour  : [0..23]
+                 second: CARDINAL16 (* [0..59] *);
+                 minute: CARDINAL16 (* [0..59] *);
+                 hour  : CARDINAL16 (* [0..23] *);
                END;
 
 

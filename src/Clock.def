@@ -26,7 +26,7 @@ PROCEDURE CurrentTime (): Time;
 PROCEDURE SetDateAndTime ( d: Date; t: Time );
 
 (* XBIOS - Zeit *)
-PROCEDURE GetDateAndTime ( VAR d:Date; VAR t: Time );
+PROCEDURE GetDateAndTime ( VAR date:Date; VAR time: Time );
 
 
 (*
@@ -67,11 +67,11 @@ PROCEDURE DayOfWeek (d: Date): WeekDays;
  * Berechnet die Anzahl der Tage zwischen zwei Daten 'from' und 'to'.
  * Ist 'from' aelteren Datums als 'to', wird ein positiver Wert geliefert.
  *)
-PROCEDURE DaysBetween (from, to: Date): LONGINT;
+PROCEDURE DaysBetween (from, to: Date): INTEGER;
 
 (*
  * Addiert zu einem Datum 'd' 'n' Tage und liefert das sich ergebende Datum.
  *)
-PROCEDURE DaysAdded (d: Date; n: LONGINT): Date;
+PROCEDURE DaysAdded (d: Date; n: INTEGER): Date;
 
 END Clock.
