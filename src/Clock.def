@@ -1,0 +1,77 @@
+DEFINITION MODULE Clock;
+
+(*
+ * Zeitbestimmung, Wochentagsbestimmung, sowie Zeitdifferenz/addition.
+ *)
+
+IMPORT MOSGlobals;
+
+TYPE Time = MOSGlobals.Time;
+TYPE Date = MOSGlobals.Date;
+TYPE WeekDays = (mon, tue, wed, thu, fri, sat, sun);
+
+(*
+ * Die GEMDOS-Zeit wird beim Anlegen und Veraendern von Dateien verwendet,
+ * die XBIOS-Zeit bleibt bei einem System-Neustart erhalten. Beide Zeiten
+ * sind nicht exakt gleich !
+ *)
+
+(* GEMDOS - Zeit *)
+PROCEDURE CurrentDate (): Date;
+
+(* GEMDOS - Zeit *)
+PROCEDURE CurrentTime (): Time;
+
+(* GEMDOS - und XBIOS - Zeit *)
+PROCEDURE SetDateAndTime ( d: Date; t: Time );
+
+(* XBIOS - Zeit *)
+PROCEDURE GetDateAndTime ( VAR d:Date; VAR t: Time );
+
+
+(*
+ * Umwandeln der Zeit/Datums-Records in CARDINAL-Werte (GEMDOS-interne
+ * Darstellung) und zurueck.
+ *
+ * Die gepackten Werte von 'Time' und 'Date' entsprechen den Darstellungen
+ * des GEMDOS und sind so aufgebaut, dass Zeitvergleiche einfach mit '>'
+ * und '<' moeglich sind.
+ *)
+
+PROCEDURE PackDate ( d: Date ): CARDINAL;
+
+PROCEDURE UnpackDate ( d: CARDINAL ): Date;
+
+PROCEDURE PackTime ( t: Time ): CARDINAL;
+
+PROCEDURE UnpackTime ( t: CARDINAL ): Time;
+
+
+(*
+ * Die folgenden Funktionen wurden erstellt von
+ *
+ *   Markus Kilbinger, Vaalser Str. 152b, 5100 Aachen, Tel.: 0241 875896
+ *
+ * Sie beruecksichtigen auch die Besonderheiten des gregorianischen
+ * Kalendersystems. Das Datum ist somit ab der Einfuehrung des gregor.
+ * Kalenders im Jahre 1582 gueltig.
+ *)
+
+
+(*
+ * Bestimmt zu einem gegebenen Datum 'd' den Wochentag.
+ *)
+PROCEDURE DayOfWeek (d: Date): WeekDays;
+
+(*
+ * Berechnet die Anzahl der Tage zwischen zwei Daten 'from' und 'to'.
+ * Ist 'from' aelteren Datums als 'to', wird ein positiver Wert geliefert.
+ *)
+PROCEDURE DaysBetween (from, to: Date): LONGINT;
+
+(*
+ * Addiert zu einem Datum 'd' 'n' Tage und liefert das sich ergebende Datum.
+ *)
+PROCEDURE DaysAdded (d: Date; n: LONGINT): Date;
+
+END Clock.

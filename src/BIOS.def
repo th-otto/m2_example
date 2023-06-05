@@ -7,7 +7,7 @@ DEFINITION MODULE BIOS;
  *)
 
 
-FROM SYSTEM IMPORT ADDRESS, CARDINAL32;
+FROM SYSTEM IMPORT ADDRESS, CARDINAL32, INTEGER32;
 FROM GEMDOS IMPORT PtrBP;
 
 
@@ -41,7 +41,7 @@ TYPE BPBPtr = POINTER TO BPB ;
            END ;
 
 TYPE
-  DriveSet = SET OF [0..31];
+  DriveSet = SET OF [0..31]; (* beware: conflicts with MOSGlobals.DriveSet *)
 
 TYPE
   KBShiftBits = (RightShift, LeftShift, ControlKey, AlternateKey,

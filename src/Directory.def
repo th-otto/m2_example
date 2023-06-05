@@ -44,20 +44,17 @@ DEFINITION MODULE Directory;
  * womit dann automatisch das Default-Laufwerk angesprochen wird.
  *)
 
-FROM SYSTEM     IMPORT BYTE;
+FROM SYSTEM     IMPORT BYTE, CARDINAL16, CARDINAL32;
+FROM Clock IMPORT Time, Date;
 FROM MOSGlobals IMPORT FileStr, PathStr, DriveStr, NameStr, PfxStr, SfxStr,
-                       Time, Date, Drive, DriveSet;
+                       Drive, DriveSet;
+IMPORT GEMDOS;
 
 
 TYPE    (* Kennzeichen (Attribut) fuer einen Directory-Eintrag *)
-        FileAttr     = (readOnlyAttr,           (* Datei nicht beschreibbar *)
-                        hiddenAttr,             (* Eintrag unsichtbar *)
-                        systemAttr,             (* (Unsichtbare) Systemdatei *)
-                        volLabelAttr,           (* Diskname *)
-                        subdirAttr,             (* Subdirectory *)
-                        archiveAttr);           (* Archivierte Datei *)
+        FileAttr     = GEMDOS.FileAttr;
 
-        FileAttrSet  = SET OF FileAttr;
+        FileAttrSet  = GEMDOS.FileAttrSet;
 
         (* Daten eines Directory-Eintrages *)
         DirEntry     = RECORD
@@ -65,19 +62,12 @@ TYPE    (* Kennzeichen (Attribut) fuer einen Directory-Eintrag *)
                          attr: FileAttrSet;
                          time: Time;
                          date: Date;
-                         size: LONGCARD
+                         size: CARDINAL32
                        END;
 
-        SearchRec    = RECORD
-                         internal: ARRAY [0..20] OF BYTE;
-                         attr: FileAttrSet;
-                         time: CARDINAL;
-                         date: CARDINAL;
-                         size: LONGCARD;
-                         name: ARRAY [0..13] OF CHAR;
-                       END;
+        SearchRec    = GEMDOS.DTA;
 
-        DTA          = POINTER TO SearchRec;  (* "Disk Transfer Address" *)
+        DTA          = GEMDOS.DTAPtr;  (* "Disk Transfer Address" *)
 
 
         DirQueryProc = PROCEDURE ( REF (* path: *) ARRAY OF CHAR,
@@ -85,266 +75,264 @@ TYPE    (* Kennzeichen (Attribut) fuer einen Directory-Eintrag *)
 
 CONST   (* Fuer Funktionen DirQuery und SearchFirst: *)
         QueryFiles = FileAttrSet {};            (* Nur Dateien *)
-        QueryAll   = FileAttrSet {subdirAttr};  (* Dateien & Ordner *)
+        QueryAll   = FileAttrSet {GEMDOS.subdirAttr};  (* Dateien & Ordner *)
     (* "QueryFolders" unterstuetzt GEMDOS leider nicht *)
 
 
 
+(*
+ * Loescht eine Datei, kein Subdirectory.
+ *
+ * Wenn Datei nicht vorhanden, liefert 'result' den positiven
+ * Wert 'MOSGlobals.fNotDeleted'
+ *)
 PROCEDURE Delete (REF name: ARRAY OF CHAR; VAR result: INTEGER);
-  (*
-   * Loescht eine Datei, kein Subdirectory.
-   *
-   * Wenn Datei nicht vorhanden, liefert 'result' den positiven
-   * Wert 'MOSGlobals.fNotDeleted'
-   *)
 
-PROCEDURE Rename (REF fromName, toName: ARRAY OF CHAR; VAR result: INTEGER);
-  (*
-   * Benennt Datei von 'fromName' nach 'toName' um.
-   * (Ab TOS 1.4 koennen hiermit auch Ordnernamen geaendert werden)
-   *
-   * Wenn Zieldatei existiert, wird 'MOSGlobals.fFileExists' (negativer Wert)
-   * geliefert und der Name nicht geaendert; ggf. vorher 'Delete (toName)'
-   * aufrufen.
-   *)
+(*
+ * Benennt Datei von 'fromName' nach 'toName' um.
+ * (Ab TOS 1.4 koennen hiermit auch Ordnernamen geaendert werden)
+ *
+ * Wenn Zieldatei existiert, wird 'MOSGlobals.fFileExists' (negativer Wert)
+ * geliefert und der Name nicht geaendert; ggf. vorher 'Delete (toName)'
+ * aufrufen.
+ *)
+PROCEDURE Rename (REF oldName, newName: ARRAY OF CHAR; VAR result: INTEGER);
 
 
+(*
+ * Liefert TRUE, wenn die angegebene Datei existiert.
+ * Liefert nicht TRUE bei evtl. existierenden Ordnern!
+ *)
 PROCEDURE FileExists ( REF fileName: ARRAY OF CHAR ): BOOLEAN;
-  (*
-   * Liefert TRUE, wenn die angegebene Datei existiert.
-   * Liefert nicht TRUE bei evtl. existierenden Ordnern!
-   *)
 
+(*
+ * Liefert TRUE, wenn der angegebene Pfad existiert.
+ * Wird ein Dateiname mitsamt eines Pfades angegeben, wird nur der
+ * Pfad geprueft, nicht das Vorhandensein der Datei selbst.
+ *)
 PROCEDURE PathExists ( REF path: ARRAY OF CHAR ): BOOLEAN;
-  (*
-   * Liefert TRUE, wenn der angegebene Pfad existiert.
-   * Wird ein Dateiname mitsamt eines Pfades angegeben, wird nur der
-   * Pfad geprueft, nicht das Vorhandensein der Datei selbst.
-   *)
 
 
+(*
+ * Ermittelt Dateikennzeichen (Attribut) einer Datei (nicht Ordner!).
+ *
+ * Attribute von anderen Directory-Eintraegen koennen mit 'GetDirEntry'
+ * ermittelt werden.
+ *)
 PROCEDURE GetFileAttr ( REF filename: ARRAY OF CHAR;
                         VAR attr: FileAttrSet; VAR result: INTEGER );
-  (*
-   * Ermittelt Dateikennzeichen (Attribut) einer Datei (nicht Ordner!).
-   *
-   * Attribute von anderen Directory-Eintraegen koennen mit 'GetDirEntry'
-   * ermittelt werden.
-   *)
 
+(*
+ * Setzt Dateikennzeichen (Attribut) einer Datei.
+ *)
 PROCEDURE SetFileAttr ( REF filename: ARRAY OF CHAR; attr: FileAttrSet;
                         VAR result: INTEGER );
-  (*
-   * Setzt Dateikennzeichen (Attribut) einer Datei.
-   *)
 
-PROCEDURE GetDirEntry ( REF name: ARRAY OF CHAR;
+(*
+ * Liefert den Directory-Eintrag einer Datei oder Ordner in 'entry'.
+ *)
+PROCEDURE GetDirEntry ( REF fileName: ARRAY OF CHAR;
                         VAR entry: DirEntry; VAR result: INTEGER );
-  (*
-   * Liefert den Directory-Eintrag einer Datei oder Ordner in 'entry'.
-   *)
 
-(*$H+*)
+(*
+ * Liefert alle Dateien/Ordnernamen aus einem Ordner.
+ *
+ * Ruft 'dirProc' wiederholt fuer alle zu 'wildcard' passenden Directory-
+ * eintraegen auf, solange 'dirProc' TRUE liefert.
+ * Wegen $H+ koennen auch lokale Prozeduren an 'dirProc' uebergeben werden.
+ * Beispiele fuer 'wildcard' siehe Funktion 'NameMatching' weiter unten.
+ * Fuer 'select' bieten sich v.A. die folg. Konstanten an:
+ *  'QueryFiles' findet alle Dateien, keine Ordner und keine Volume-Labels;
+ *  'QueryAll' findet alle Dateien und Ordner, keine Volume-Labels;
+ *  'FileAttrSet {volLabelAttr}' findet nur Volume-Labels (uninteressant);
+ *
+ * Ist das Verzeichnis leer bzw. treffen keine Dateien auf den 'wildcard'
+ * zu, liefert 'result' den positiven Wert 'fNoMatchingFiles'.
+ *
+ * Diese Funktion ist Re-entrant-faehig, sie kann also innerhalb der 'dirProc'
+ * wiederum aufgerufen werden.
+ *)
 PROCEDURE DirQuery (REF wildcard: ARRAY OF CHAR;
                         select  : FileAttrSet;
                         dirProc : DirQueryProc;
                     VAR result  : INTEGER);
-  (*
-   * Liefert alle Dateien/Ordnernamen aus einem Ordner.
-   *
-   * Ruft 'dirProc' wiederholt fuer alle zu 'wildcard' passenden Directory-
-   * eintraegen auf, solange 'dirProc' TRUE liefert.
-   * Wegen $H+ koennen auch lokale Prozeduren an 'dirProc' uebergeben werden.
-   * Beispiele fuer 'wildcard' siehe Funktion 'NameMatching' weiter unten.
-   * Fuer 'select' bieten sich v.A. die folg. Konstanten an:
-   *  'QueryFiles' findet alle Dateien, keine Ordner und keine Volume-Labels;
-   *  'QueryAll' findet alle Dateien und Ordner, keine Volume-Labels;
-   *  'FileAttrSet {volLabelAttr}' findet nur Volume-Labels (uninteressant);
-   *
-   * Ist das Verzeichnis leer bzw. treffen keine Dateien auf den 'wildcard'
-   * zu, liefert 'result' den positiven Wert 'fNoMatchingFiles'.
-   *
-   * Diese Funktion ist Re-entrant-faehig, sie kann also innerhalb der 'dirProc'
-   * wiederum aufgerufen werden.
-   *)
 
 
+(*
+ * Setzt den Default-Pfad des aktuellen Laufwerks. Ist in 'path' eine
+ * Laufwerkskennung enthalten, wird dieses Laufwerk auch zum Aktuellen.
+ *)
 PROCEDURE SetDefaultPath ( REF path: ARRAY OF CHAR; VAR result: INTEGER );
-  (*
-   * Setzt den Default-Pfad des aktuellen Laufwerks. Ist in 'path' eine
-   * Laufwerkskennung enthalten, wird dieses Laufwerk auch zum Aktuellen.
-   *)
 
+(*
+ * Beide Funktionen liefert den Default-Pfad, also Laufwerkskennung
+ * (wie bei 'DefaultDrive') und aktuellen Pfad des Laufwerks (wie bei
+ * 'GetCurrentDir').
+ *)
 PROCEDURE GetDefaultPath ( VAR path: ARRAY OF CHAR );
 PROCEDURE DefaultPath (): PathStr;
-  (*
-   * Beide Funktionen liefert den Default-Pfad, also Laufwerkskennung
-   * (wie bei 'DefaultDrive') und aktuellen Pfad des Laufwerks (wie bei
-   * 'GetCurrentDir').
-   *)
 
 
+(*
+ * Legt einen neuen Ordner an.
+ *)
 PROCEDURE CreateDir ( REF path: ARRAY OF CHAR; VAR result: INTEGER );
-  (*
-   * Legt einen neuen Ordner an.
-   *)
 
+(*
+ * Loescht einen Ordner. Er muss dazu leer sein!
+ *)
 PROCEDURE DeleteDir ( REF path: ARRAY OF CHAR; VAR result: INTEGER );
-  (*
-   * Loescht einen Ordner. Er muss dazu leer sein!
-   *)
 
 
+(*
+ * Liefert den aktuellen Pfad eines Laufwerks.
+ *
+ * Liefert den Pfadnamen des Laufwerks 'driveNo', der angesprochen wird,
+ * wenn in einem Pfadnamen nicht vom Root-Directory ausgegangen wird
+ * (also wenn ein Pfadname z.B. "HU.GO" oder "B:ABC.E", aber nicht
+ * "\HU.GO" bzw. "B:\ABC.E" ist).
+ * Der Pfad wird immer mit einem '\' (Backslash) abgeschlossen, beim
+ * Root-Dir (Hauptverzeichnis) wird nur '\' geliefert.
+ * Entgegen der Angaben im Handbuch wird nie der Laufwerksbuchstabe
+ * mitgeliefert. Dieser kann einfach durch Aufruf von 'DriveToStr (driveno)'
+ * ermittelt werden (Beim akt. Laufwerk nehme man die einfachere Funktion
+ * 'GetDefaultPath').
+ * 'path' sollte mindestens 128 Zeichen gross sein.
+ *)
 PROCEDURE GetCurrentDir ( driveNo: Drive; VAR path: ARRAY OF CHAR );
-  (*
-   * Liefert den aktuellen Pfad eines Laufwerks.
-   *
-   * Liefert den Pfadnamen des Laufwerks 'driveNo', der angesprochen wird,
-   * wenn in einem Pfadnamen nicht vom Root-Directory ausgegangen wird
-   * (also wenn ein Pfadname z.B. "HU.GO" oder "B:ABC.E", aber nicht
-   * "\HU.GO" bzw. "B:\ABC.E" ist).
-   * Der Pfad wird immer mit einem '\' (Backslash) abgeschlossen, beim
-   * Root-Dir (Hauptverzeichnis) wird nur '\' geliefert.
-   * Entgegen der Angaben im Handbuch wird nie der Laufwerksbuchstabe
-   * mitgeliefert. Dieser kann einfach durch Aufruf von 'DriveToStr (driveno)'
-   * ermittelt werden (Beim akt. Laufwerk nehme man die einfachere Funktion
-   * 'GetDefaultPath').
-   * 'path' sollte mindestens 128 Zeichen gross sein.
-   *)
 
+(*
+ * Setzt den aktuellen Pfad eines Laufwerks.
+ *
+ * Anm.: Der Fehler des GEMDOS, dass nur der Pfad des aktuellen Laufwerks
+ *       bestimmbar ist, tritt bei dieser Funktion nicht in Erscheinung.
+ *)
 PROCEDURE SetCurrentDir ( driveNo: Drive; REF path: ARRAY OF CHAR;
                           VAR result: INTEGER );
-  (*
-   * Setzt den aktuellen Pfad eines Laufwerks.
-   *
-   * Anm.: Der Fehler des GEMDOS, dass nur der Pfad des aktuellen Laufwerks
-   *       bestimmbar ist, tritt bei dieser Funktion nicht in Erscheinung.
-   *)
 
 
+(*
+ * Liefert ein SET aller ansprechbaren Laufwerke.
+ *)
 PROCEDURE DrivesOnline (): DriveSet;
-  (*
-   * Liefert ein SET aller ansprechbaren Laufwerke.
-   *)
 
+(*
+ * Setzt das Laufwerk, das angesprochen wird, wenn in einem Pfadnamen
+ * kein Laufwerk angegeben wird (= Default-Laufwerk).
+ * 'driveNo':='defaultDrv' wird ignoriert.
+ *)
 PROCEDURE SetDefaultDrive ( driveNo: Drive );
-  (*
-   * Setzt das Laufwerk, das angesprochen wird, wenn in einem Pfadnamen
-   * kein Laufwerk angegeben wird (= Default-Laufwerk).
-   * 'driveNo':='defaultDrv' wird ignoriert.
-   *)
 
+(*
+ * Liefert das Default-Laufwerk, liefert nie 'defaultDrv'.
+ *)
 PROCEDURE DefaultDrive (): Drive;
-  (*
-   * Liefert das Default-Laufwerk, liefert nie 'defaultDrv'.
-   *)
 
-PROCEDURE FreeSpace ( driveNo: Drive ): LONGCARD;
-  (*
-   * Liefert noch freien Platz des Laufwerks in Bytes.
-   * Liefert Null, wenn Laufwerk nicht ansprechbar.
-   * Durchfuehrung kann u.U. mehrere Sekunden dauern.
-   *)
+(*
+ * Liefert noch freien Platz des Laufwerks in Bytes.
+ * Liefert Null, wenn Laufwerk nicht ansprechbar.
+ * Durchfuehrung kann u.U. mehrere Sekunden dauern.
+ *)
+PROCEDURE FreeSpace ( driveNo: Drive ): CARDINAL32;
 
 
-PROCEDURE MakeFullPath ( VAR pathOrFileName: ARRAY OF CHAR;
+(*
+ * prueft, ob der angegebene Pfad existiert und vervollstaendigt ihn
+ * ggf. zu einem kompletten Pfadnamen aus Laufwerksbuchstaben und
+ * ganzem Pfad.
+ * Zudem wird der Name ggf. in Grossbuchstaben umgewandelt.
+ *
+ * Tritt ein Fehler auf ('result' < 0), bleibt 'pathOrFileName' unveraendert.
+ *
+ * Es kann wahlweise nur der Pfad (muss dann mit '\' oder ':' abschliessen,
+ * z.B., indem vorher 'ValidatePath' aufgerufen wird) oder ein Dateiname
+ * (mit oder ohne Pfad) angegeben werden.
+ * Der Pfad muss beim Aufruf tatsaechlich erreichbar (vorhanden) sein, da
+ * in jedem Fall dieser Pfad zur Pruefung angesprochen wird. Wird ein
+ * Dateiname angegeben, braucht diese nicht zu existieren - auf sie wird
+ * nicht zugegriffen.
+ * Ist der Pfad nicht erreichbar, liefert 'result' entsprechend einen
+ * negativen Wert als Fehlerkennung.
+ *
+ * Beispiele (der aktuelle Pfad sei "D:\TEST\DATEN\"):
+ *   'D001.DAT'           ergibt  'D:\TEST\DATEN\D001.DAT'
+ *   '..\D001.DAT'        ergibt  'D:\TEST\D001.DAT'
+ *   'D:\D001.DAT'        ergibt  'D:\D001.DAT'
+ *   ''                   ergibt  'D:\TEST\DATEN\'
+ *   'BIN\'               ergibt  'D:\TEST\DATEN\BIN\'
+ *   'D:\BLA\D001.DAT'    liefert -34 in 'result', falls der Ordner 'BLA'
+ *                          nicht existiert.
+ *)
+PROCEDURE MakeFullPath ( VAR filename: ARRAY OF CHAR;
                          VAR result: INTEGER );
-  (*
-   * prueft, ob der angegebene Pfad existiert und vervollstaendigt ihn
-   * ggf. zu einem kompletten Pfadnamen aus Laufwerksbuchstaben und
-   * ganzem Pfad.
-   * Zudem wird der Name ggf. in Grossbuchstaben umgewandelt.
-   *
-   * Tritt ein Fehler auf ('result' < 0), bleibt 'pathOrFileName' unveraendert.
-   *
-   * Es kann wahlweise nur der Pfad (muss dann mit '\' oder ':' abschliessen,
-   * z.B., indem vorher 'ValidatePath' aufgerufen wird) oder ein Dateiname
-   * (mit oder ohne Pfad) angegeben werden.
-   * Der Pfad muss beim Aufruf tatsaechlich erreichbar (vorhanden) sein, da
-   * in jedem Fall dieser Pfad zur Pruefung angesprochen wird. Wird ein
-   * Dateiname angegeben, braucht diese nicht zu existieren - auf sie wird
-   * nicht zugegriffen.
-   * Ist der Pfad nicht erreichbar, liefert 'result' entsprechend einen
-   * negativen Wert als Fehlerkennung.
-   *
-   * Beispiele (der aktuelle Pfad sei "D:\TEST\DATEN\"):
-   *   'D001.DAT'           ergibt  'D:\TEST\DATEN\D001.DAT'
-   *   '..\D001.DAT'        ergibt  'D:\TEST\D001.DAT'
-   *   'D:\D001.DAT'        ergibt  'D:\D001.DAT'
-   *   ''                   ergibt  'D:\TEST\DATEN\'
-   *   'BIN\'               ergibt  'D:\TEST\DATEN\BIN\'
-   *   'D:\BLA\D001.DAT'    liefert -34 in 'result', falls der Ordner 'BLA'
-   *                          nicht existiert.
-   *)
 
-
+(*
+ * Ermittelt die aktuelle DTA
+ *)
 PROCEDURE GetDTA ( VAR dta: DTA );
-  (*
-   * Ermittelt die aktuelle DTA
-   *)
 
+(*
+ * Setzt eine neue DTA. Dazu muss 'dta' auf einen Puffer von mind. 44 Byte
+ * ('SearchRec') zeigen.
+ *)
 PROCEDURE SetDTA ( dta: DTA );
-  (*
-   * Setzt eine neue DTA. Dazu muss 'dta' auf einen Puffer von mind. 44 Byte
-   * ('SearchRec') zeigen.
-   *)
 
 PROCEDURE SearchFirst ( REF wildcard: ARRAY OF CHAR;
                             select  : FileAttrSet;
                         VAR result  : INTEGER );
 
+(*
+ * Funktionen wie 'Dirquery'. Hierbei wird jedoch keine Prozedur angegeben,
+ * die fuer alle Directory-Eintraege aufgerufen wird, sondern es muss selbst
+ * eine Schleife gebildet werden und auch die DTA ggf. neu gesetzt werden
+ * (s.o.).
+ *
+ * Sobald keine auf 'wildcard' zutreffenden Dateien mehr gefunden werden,
+ * wird 'fNoMoreFiles' (-49) in 'result' geliefert. Dieser Wert wird also
+ * auch schon bei 'SearchFirst' geliefert, wenn ueberhaupt keine Dateien
+ * zutreffen. Dem gegenueber liefert die Original-GEMDOS-Funktion "Fsfirst"
+ * dann den Wert 'fFileNotFound' (-33) und erst "Fsnext" wuerde -49 liefern.
+ *
+ * Beispiel:
+ *   VAR  dta: DTA;  entry: DirEntry;
+ *   BEGIN
+ *     NEW (dta);
+ *     SetDTA (dta);
+ *     SearchFirst ('*.*', QueryFiles, result);
+ *     WHILE result # fNoMoreFiles DO
+ *       GetDTAEntry (dta, entry);
+ *       ... Operationen mit 'entry'...
+ *       SearchNext (result)
+ *     END;
+ *)
 PROCEDURE SearchNext  ( VAR result  : INTEGER );
-  (*
-   * Funktionen wie 'Dirquery'. Hierbei wird jedoch keine Prozedur angegeben,
-   * die fuer alle Directory-Eintraege aufgerufen wird, sondern es muss selbst
-   * eine Schleife gebildet werden und auch die DTA ggf. neu gesetzt werden
-   * (s.o.).
-   *
-   * Sobald keine auf 'wildcard' zutreffenden Dateien mehr gefunden werden,
-   * wird 'fNoMoreFiles' (-49) in 'result' geliefert. Dieser Wert wird also
-   * auch schon bei 'SearchFirst' geliefert, wenn ueberhaupt keine Dateien
-   * zutreffen. Dem gegenueber liefert die Original-GEMDOS-Funktion "Fsfirst"
-   * dann den Wert 'fFileNotFound' (-33) und erst "Fsnext" wuerde -49 liefern.
-   *
-   * Beispiel:
-   *   VAR  dta: DTA;  entry: DirEntry;
-   *   BEGIN
-   *     NEW (dta);
-   *     SetDTA (dta);
-   *     SearchFirst ('*.*', QueryFiles, result);
-   *     WHILE result # fNoMoreFiles DO
-   *       GetDTAEntry (dta, entry);
-   *       ... Operationen mit 'entry'...
-   *       SearchNext (result)
-   *     END;
-   *)
 
+(*
+ * Wandelt die 'SearchRec'-Daten einer DTA in einen 'DirEntry'.
+ * Es ist jedoch ebenso moeglich, auf die SearchRec-Daten direkt zuzugreifen,
+ * Datum und Zeit ('date', 'time') koennen dann beispielsweise mit Hilfe
+ * von 'Clock.UnpackDate/Time' in die ueblichen Records umgewandelt werden.
+ *)
 PROCEDURE GetDTAEntry ( dta: DTA; VAR entry: DirEntry );
-  (*
-   * Wandelt die 'SearchRec'-Daten einer DTA in einen 'DirEntry'.
-   * Es ist jedoch ebenso moeglich, auf die SearchRec-Daten direkt zuzugreifen,
-   * Datum und Zeit ('date', 'time') koennen dann beispielsweise mit Hilfe
-   * von 'Clock.UnpackDate/Time' in die ueblichen Records umgewandelt werden.
-   *)
 
 
+(*
+ * Simuliert einen Disk-Wechsel auf dem angegebenen Laufwerk,
+ * sodass beim naechsten Disk-Zugriff mit Sicherheit alle Daten
+ * neu von der Disk eingelesen werden (die evtl. vom TOS/GEMDOS
+ * gepufferten Daten werden ignoriert).
+ * Diese Funktion wurde nach einer Anleitung von Atari
+ * (TOS Release Notes v. 20. Mai 1988) implementiert und ist
+ * damit verlaesslich fuer alle TOS-Versionen anwendbar.
+ *)
 PROCEDURE ForceMediaChange ( driveNo: Drive );
-  (*
-   * Simuliert einen Disk-Wechsel auf dem angegebenen Laufwerk,
-   * sodass beim naechsten Disk-Zugriff mit Sicherheit alle Daten
-   * neu von der Disk eingelesen werden (die evtl. vom TOS/GEMDOS
-   * gepufferten Daten werden ignoriert).
-   * Diese Funktion wurde nach einer Anleitung von Atari
-   * (TOS Release Notes v. 20. Mai 1988) implementiert und ist
-   * damit verlaesslich fuer alle TOS-Versionen anwendbar.
-   *)
 
 
+(*
+ * Liefert in 'msg' einen String (Hoechstlaenge 32 Zeichen), der eine
+ * Beschreibung der zugehoerigen Fehlernummer 'number' enthaelt.
+ * Funktion ist identisch mit 'Files.GetStateMsg'.
+ *)
 PROCEDURE GetErrMsg ( number: INTEGER; VAR errMsg: ARRAY OF CHAR );
-  (*
-   * Liefert in 'msg' einen String (Hoechstlaenge 32 Zeichen), der eine
-   * Beschreibung der zugehoerigen Fehlernummer 'number' enthaelt.
-   * Funktion ist identisch mit 'Files.GetStateMsg'.
-   *)
 
 END Directory.

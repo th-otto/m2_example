@@ -32,10 +32,13 @@ TYPE
         PfxStr   = ARRAY [0..8] OF CHAR;   (* Prefix (Name ohne Extension) *)
         SfxStr   = ARRAY [0..3] OF CHAR;   (* Suffix (Extension) ohne '.' *)
 
-        Drive = ( defaultDrv, drvA, drvB, drvC, drvD, drvE, drvF, drvG,
-                  drvH, drvI, drvJ, drvK, drvL, drvM, drvN, drvO, drvP);
+        Drive = ( defaultDrv,
+                  drvA, drvB, drvC, drvD, drvE, drvF, drvG, drvH,
+                  drvI, drvJ, drvK, drvL, drvM, drvN, drvO, drvP,
+                  drvQ, drvR, drvS, drvT, drvU, drvV, drvW, drvX,
+                  drvY, drvZ);
 
-        DriveSet = SET OF [drvA..drvP];
+        DriveSet = SET OF [drvA..drvZ]; (* beware: conflicts with BIOS.DriveSet *)
 
 
         Date = RECORD

@@ -18,9 +18,6 @@ BEGIN
   (* Import-Suffix fuer 'Load/CallModule' *)
   ImpSfx := 'imp';
   
-  (* max. Anzahl der gleichzeitig startbaren Module bei 'CallModule' *)
-  MaxModExec := 100;
-  
   (* Abzufangende Exceptions: *)
   CaughtExceptions := ExcSet{TRAP6,CHKExc,TRAPVExc,BusError,AddrError,IllInstr};
   (*    Die folgende Anweisung darf bei einer 68020 (z.B. Atari TT) nicht

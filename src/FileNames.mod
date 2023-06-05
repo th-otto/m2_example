@@ -7,7 +7,7 @@ IMPLEMENTATION MODULE FileNames;
             eins zu hoch, was ggf. ein Byte zuviel kopierte und damit den
             Stack ueberschrieb).
   31.01.91  ValidatePath verwendet "fileUpper" statt Strings.Upper
-  29.03.93  StrToDrv erlaubt nun Drives v. A-Z (bisher A-P)
+  29.03.93  StrToDrive erlaubt nun Drives v. A-Z (bisher A-P)
   03.06.23: Port to gm2
 *)
 
@@ -17,8 +17,6 @@ FROM MOSGlobals IMPORT FileStr, PathStr, DriveStr, NameStr, SfxStr, PfxStr,
                        OutOfStack, StringOverflow, fNotDeleted, fPathNotFound, fFileNotFound,
                        Drive, DriveSet;
 FROM ErrBase IMPORT DoTRAP6, TRAP6_SELF, TRAP6_CONT;
-
-CONST drvZ = 26;
 
 
 (* "Upper" fuer Dateinamen: beruecksichtigt nur die unteren 128 Zeichen *)
@@ -37,6 +35,7 @@ END fileUpper;
            String, s. -1 is returned if, ch, does not exist.
            The search starts at position, o.
 *)
+(* FIXME: should be in Strings.Index? *)
 
 PROCEDURE Index(REF s: ARRAY OF CHAR; ch: CHAR; o: CARDINAL) : INTEGER ;
 VAR

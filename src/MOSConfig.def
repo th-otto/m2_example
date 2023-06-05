@@ -8,7 +8,7 @@ DEFINITION MODULE MOSConfig;
  * dies mitgelinkt wird.
  *)
 
-FROM SYSTEM     IMPORT ADDRESS, CSIZE_T;
+FROM SYSTEM     IMPORT ADDRESS, CSIZE_T, INTEGER16;
 FROM SysTypes   IMPORT CHARSET, ExcSet;
 FROM MOSGlobals IMPORT SfxStr;
 
@@ -18,10 +18,9 @@ VAR DftSfx: SfxStr; (* Default Suffix bei 'CallModule' ("MOD") *)
 
     ImpSfx: SfxStr; (* Suffix der importierten Module  ("IMP") *)
 
-    MaxModExec: CARDINAL; (* Max. Anzahl gleichz. startbarer Module (100) *)
 
-    LoaderMsg: POINTER TO ARRAY [0..24] OF ARRAY [0..49] OF CHAR;
-      (* Texte fuer Loader-Fehlermeld., wird z.B. in 'GEMError' init. *)
+(* max. Anzahl der gleichzeitig startbaren Module bei 'CallModule' *)
+CONST MaxModExec = 100; (* Max. Anzahl gleichz. startbarer Module (100) *)
 
 
 (* Convert: *)
@@ -66,12 +65,18 @@ VAR Separators: CHARSET;
 
 (* Exceptions, ErrBase, HdlError *)
 
+TYPE ConfigErrMsg = RECORD
+   errNo: INTEGER16;
+   errMsg: ARRAY[0..31] OF CHAR;
+END;
+ConfigErrMsgPtr = POINTER TO ConfigErrMsg;
+
 (*
  * Zeigt auf ein dynamisch grosses Feld mit Texten fuer moeglichst alle
  * in 'MOSGlobals' definierten Laufzeitfehler.
  * Format siehe 'FileErrMsg'.
  *)
-VAR RuntimeErrMsg: ADDRESS;
+VAR RuntimeErrMsg: ConfigErrMsgPtr;
 
 
 (* Files, Directories *)
@@ -93,10 +98,7 @@ VAR RuntimeErrMsg: ADDRESS;
  * Ein Beispiel fuer ein solches Textfeld findet sich in dem Modulsource
  * 'GEMError.I'.
  *)
-VAR FileErrMsg: ADDRESS;   (* POINTER TO ARRAY [0..65535] OF RECORD
-                                errNo: INTEGER;
-                                errMsg: ARRAY [0..31] OF CHAR
-                              END; *)
+VAR FileErrMsg: ConfigErrMsgPtr;
 
 
 (* ErrBase: *)

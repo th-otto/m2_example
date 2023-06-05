@@ -361,7 +361,7 @@ BEGIN
 END GetDrv;
 
 
-PROCEDURE SetDTA (addr: ADDRESS);
+PROCEDURE SetDTA (addr: DTAPtr);
 BEGIN
   trap_1_wl(26, INTEGER32(addr))
 END SetDTA;
@@ -397,7 +397,7 @@ BEGIN
 END SetTime;
 
 
-PROCEDURE GetDTA (VAR addr: ADDRESS);
+PROCEDURE GetDTA (VAR addr: DTAPtr);
 BEGIN
   addr := ADDRESS(trap_1_w(47));
 END GetDTA;
@@ -428,27 +428,27 @@ BEGIN
 END DFree;
 
 
-PROCEDURE DirCreate (REF path: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE DirCreate (REF path: ARRAY OF CHAR): [ INTEGER32 ];
 VAR s: strtmp;
 BEGIN
   str0(s, path);
-  RETURN trap_1_wl(57, INTEGER32(ADR(s))) >= 0;
+  RETURN trap_1_wl(57, INTEGER32(ADR(s)));
 END DirCreate;
 
 
-PROCEDURE DirDelete (REF path: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE DirDelete (REF path: ARRAY OF CHAR): [ INTEGER32 ];
 VAR s: strtmp;
 BEGIN
   str0(s, path);
-  RETURN trap_1_wl(58, INTEGER32(ADR(s))) >= 0;
+  RETURN trap_1_wl(58, INTEGER32(ADR(s)));
 END DirDelete;
 
 
-PROCEDURE SetPath (REF path: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE SetPath (REF path: ARRAY OF CHAR): [ INTEGER32 ];
 VAR s: strtmp;
 BEGIN
   str0(s, path);
-  RETURN trap_1_wl(59, INTEGER32(ADR(s))) >= 0;
+  RETURN trap_1_wl(59, INTEGER32(ADR(s)));
 END SetPath;
 
 
@@ -468,7 +468,7 @@ BEGIN
 END Open;
 
 
-PROCEDURE Close (handle: INTEGER): BOOLEAN;
+PROCEDURE Close (handle: INTEGER): [ BOOLEAN ];
 BEGIN
   RETURN trap_1_ww(62, handle) >= 0;
 END Close;
@@ -498,11 +498,11 @@ BEGIN
 END Write;
 
 
-PROCEDURE Delete (REF fname: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE Delete (REF fname: ARRAY OF CHAR): [ INTEGER32 ];
 VAR s: strtmp;
 BEGIN
   str0(s, fname);
-  RETURN trap_1_wl(65, INTEGER32(ADR(s))) >= 0;
+  RETURN trap_1_wl(65, INTEGER32(ADR(s)));
 END Delete;
 
 
@@ -512,14 +512,14 @@ BEGIN
 END Seek;
 
 
-PROCEDURE Attrib (REF fname: ARRAY OF CHAR; getOrSet: TimeAccessMode; VAR attr: CARDINAL) : [ BOOLEAN ];
+PROCEDURE Attrib (REF fname: ARRAY OF CHAR; getOrSet: TimeAccessMode; VAR attr: CARDINAL) : [ INTEGER32 ];
 VAR r: INTEGER32;
 VAR s: strtmp;
 BEGIN
   str0(s, fname);
   r := trap_1_wlww(67, INTEGER32(ADR(s)), INTEGER(getOrSet), attr);
   IF getOrSet = getTime THEN attr := r; END;
-  RETURN r >= 0;
+  RETURN r;
 END Attrib;
 
 
@@ -592,12 +592,12 @@ BEGIN
 END SNext;
 
 
-PROCEDURE Rename (REF oldname, newname: ARRAY OF CHAR);
+PROCEDURE Rename (REF oldname, newname: ARRAY OF CHAR) : [ INTEGER32 ];
 VAR s, s2: strtmp;
 BEGIN
   str0(s, oldname);
   str0(s2, newname);
-  RETURN trap_1_wwll(86, 0, INTEGER32(ADR(s)), INTEGER32(ADR(s2))) >= 0;
+  RETURN trap_1_wwll(86, 0, INTEGER32(ADR(s)), INTEGER32(ADR(s2)));
 END Rename;
 
 
