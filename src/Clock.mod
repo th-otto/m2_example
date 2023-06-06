@@ -8,6 +8,7 @@ IMPORT GEMDOS;
 (*
   06.08.89  TT  Uebernahme der DateUtil-Funktionen (V2.00) von Markus Kilbinger
   10.11.90  TT  $L+ bei DateUtil-Funktionen - sollten nun laufen
+  06.06.23  THO Port to gm2
 *)
 
 PROCEDURE PackDate(d: Date): CARDINAL;

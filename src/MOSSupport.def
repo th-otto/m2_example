@@ -1,5 +1,7 @@
 DEFINITION MODULE MOSSupport;
 
+FROM SYSTEM IMPORT INTEGER32;
+
 (*
  * Internes Modul!
  * Sollte nur von MOS-Modulen importiert werden!
@@ -11,14 +13,14 @@ DEFINITION MODULE MOSSupport;
  * Mode erlaubt.
  * Liefert D0 zurueck.
  *)
-PROCEDURE CallSuper;
+PROCEDURE CallSuper(p: PROC): [ INTEGER32 ];
 
 (*
  * ToSuper benutzt GEMDOS.Super, erwartet dazu auf dem Stack ein
  * reserviertes LONGWORD, worin der alte SSP abgelegt wird (0 bedeutet,
  * dass CPU schon vorher im Supervisor-Mode war).
  *)
-PROCEDURE ToSuper;
-PROCEDURE ToUser;
+PROCEDURE ToSuper(): INTEGER32;
+PROCEDURE ToUser(oldsp: INTEGER32);
 
 END MOSSupport.

@@ -25,9 +25,10 @@ IMPLEMENTATION MODULE Excepts;
              'ExcDesc' enthaelt nicht mehr das Felder 'parm'.
 12.12.90 TT  Pre/Post-Handler definiert, InstallPostExc fehlt aber noch!
 14.02.92 TT  GEMDOS.Super-Aufrufe statt Supexec wg. MinT.
+06.06.23 THO Port to gm2
 *)
 
-FROM SYSTEM IMPORT CARDINAL16, CARDINAL32, ADDRESS, TSIZE, ADR, CSIZE_T;
+FROM SYSTEM IMPORT CARDINAL16, CARDINAL32, INTEGER32, ADDRESS, TSIZE, ADR, CSIZE_T;
 FROM MOSGlobals IMPORT MemArea, IllegalCall;
 FROM MOSSupport IMPORT ToSuper, ToUser;
 FROM Storage IMPORT ALLOCATE, DEALLOCATE;
@@ -323,8 +324,9 @@ END SetVec;
 PROCEDURE ResetVec (no: CARDINAL; entry: PtrXBRA_Entry);
 VAR pprev: POINTER TO PtrXBRA_Entry;
     prev: PtrXBRA_Entry;
+    oldsp: INTEGER32;
 BEGIN
-  ToSuper();
+  oldsp := ToSuper();
   pprev := ADDRESS(no * 4);
   LOOP
     (* 'entry' gefunden? *)
@@ -345,7 +347,7 @@ BEGIN
     END;
     pprev := ADR(prev^.prev.prev);
   END;
-  ToUser();
+  ToUser(oldsp);
 END ResetVec;
 
 
