@@ -139,9 +139,9 @@ PROCEDURE LRWAbs(mode: RW; buffer: ADDRESS; count, dev: CARDINAL; lrecno: INTEGE
   END LRWAbs;
 
 
-PROCEDURE SetException (excno: CARDINAL; vec: ADDRESS);
+PROCEDURE SetException (excno: CARDINAL; vec: ADDRESS): [ ADDRESS ];
   BEGIN
-    trap_13_wwl(5, excno, INTEGER32(vec));
+    RETURN ADDRESS(trap_13_wwl(5, excno, INTEGER32(vec)));
   END SetException;
 
 

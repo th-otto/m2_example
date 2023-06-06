@@ -80,7 +80,12 @@ PROCEDURE InstallPostExc (REF traps: ExcSet;
 PROCEDURE DeInstallExc (VAR hdl: ADDRESS);
 
 
-TYPE    HardExceptions = [2..255];
+(*
+Following would occupy the largest available integral type in GNU Modula-2
+(8 bytes).
+TYPE HardExceptions = [2..255];
+*)
+TYPE HardExceptions = INTEGER;
 
 (*
  * Simuliert die gewuenschte Exception 'excNo' an der Stelle hinter

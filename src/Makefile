@@ -30,6 +30,7 @@ OBJS = \
 	ResCtrl.o \
 	Directory.o \
 	Clock.o \
+	Excepts.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -61,6 +62,8 @@ ErrBase.o: ErrBase.mod ErrBase.def
 MOSConfig.o: MOSConfig.mod MOSConfig.def
 ResCtrl.o: ResCtrl.mod ResCtrl.def
 Directory.o: Directory.mod Directory.def
+Clock.o: Clock.mod Clock.def
+Excepts.o: Excepts.mod Excepts.def
 
 clean::
 	rm -f *.o *.a

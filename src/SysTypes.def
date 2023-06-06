@@ -98,9 +98,15 @@ CONST   (* Alle relevanten Exception-Vektornummern des ST *)
         Etv106 = 262;       (* unused, reserved by Atari for future use *)
         Etv107 = 263;       (* unused, reserved by Atari for future use *)
 
-TYPE    Exceptions = [2..263];
+(*
+Following would occupy the largest available integral type in GNU Modula-2
+(8 bytes).
+TYPE Exceptions = [2..263];
+TYPE    ExcSet = SET OF Exceptions;
+*)
+TYPE    Exceptions = INTEGER;
 
-        ExcSet = SET OF Exceptions;
+TYPE    ExcSet = SET OF [2..263];
 
         ExcDescPtr = POINTER TO ExcDesc;
         ExcDesc = RECORD (* enthaelt alle wichtigen Daten einer Exception *)
@@ -119,15 +125,15 @@ TYPE    Exceptions = [2..263];
                     regA4 : CARDINAL32;
                     regA5 : CARDINAL32;
                     regA6 : CARDINAL32;
-                    regSSP: ADDRESS;     (* SR/PC bereits abgeraeumt *)
-                    regUSP: ADDRESS;
-                    regPC : POINTER TO CARDINAL16;
-                    regSR : CARDINAL16;
-                    CASE excNo: Exceptions OF
+(* 60 *)            regSSP: ADDRESS;     (* SR/PC bereits abgeraeumt *)
+(* 64 *)            regUSP: ADDRESS;
+(* 68 *)            regPC : POINTER TO CARDINAL16;
+(* 72 *)            regSR : CARDINAL16;
+(* 82 *)            CASE excNo: Exceptions OF
                       BusError, AddrError:   (* zusaetzlich bei Bus/Adr-Error:*)
-                       accessAddr : ADDRESS; (* Zugriffsadresse *)
-                       superSR    : CARDINAL16;    (* Super-Status-Word *)
-                       instruction: CARDINAL16 |  (* Fehler erzeugende Anweisung *)
+(* 74 *)               accessAddr : ADDRESS; (* Zugriffsadresse *)
+(* 78 *)               superSR    : CARDINAL16;    (* Super-Status-Word *)
+(* 80 *)               instruction: CARDINAL16 |  (* Fehler erzeugende Anweisung *)
                     ELSE
                     END
                   END;
