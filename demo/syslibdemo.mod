@@ -304,7 +304,7 @@ FROM SYSTEM IMPORT ADR;
 FROM SysLibSkeleton IMPORT Handle, OpenIt, SysOpenIt, DoIt, CloseIt;
 FROM MOSGlobals IMPORT MemArea;
 FROM ModCtrl IMPORT CallProcess;
-FROM ResCtrl IMPORT CatchRemoval, RemovalCarrier;
+FROM MOSCtrl IMPORT CatchRemoval, RemovalEntry;
 FROM PrgCtrl IMPORT CatchProcessTerm, TermCarrier;
 IMPORT InOut;
 
@@ -374,7 +374,7 @@ VAR ok: BOOLEAN;
     exitCode: INTEGER;                  (* Exit-Code von 2. Prozess *)
     stack: ARRAY [1..4096] OF CARDINAL; (* Stack fuer 2. Prozess: 8 KB *)
     wsp: MemArea;
-    rCarrier: RemovalCarrier;
+    rCarrier: RemovalEntry;
     tCarrier: TermCarrier;
 
     hdl: ARRAY [1..2] OF Handle;        (* 'Handles' fuer zwei Zugriffe *)

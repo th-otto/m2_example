@@ -1,5 +1,4 @@
 IMPLEMENTATION MODULE GrafBase;
-(*$L-, R-, Y+*)
 
 
 (*  Definition der grundlegenden Typen fuer die Grafikbibliotheken des
@@ -27,6 +26,7 @@ IMPLEMENTATION MODULE GrafBase;
 FROM SYSTEM IMPORT ADDRESS, CARDINAL16, SHIFT;
 IMPORT XBIOS;
 FROM LineA IMPORT LineAVariables, PtrLineAVars, NegLineAVariables, PtrNegLineAVars;
+IMPORT MOSGlobals;
 
  
 PROCEDURE Pnt (x, y: INTEGER16): Point;
@@ -332,4 +332,6 @@ BEGIN
 END ColorNumber;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END GrafBase.

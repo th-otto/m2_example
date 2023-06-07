@@ -4,6 +4,7 @@ IMPLEMENTATION MODULE CookieJar;
 FROM SYSTEM IMPORT ADDRESS, CARDINAL32;
 FROM SysVars IMPORT _p_cookies;
 FROM BIOS IMPORT GetException;
+IMPORT MOSGlobals;
 
 TYPE Cookie = RECORD
   id: CARDINAL32;
@@ -72,4 +73,6 @@ BEGIN
   END;
 END QueryCookies;
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END CookieJar.

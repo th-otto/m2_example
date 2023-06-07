@@ -19,8 +19,8 @@ FROM GrafBase IMPORT Point, Rectangle;
 FROM GEMGlobals IMPORT TEffectSet;
 
 
-                        (*  Kontroll Funktionen  *)
-                        (*  ===================  *)
+(*  Kontroll Funktionen  *)
+(*  ===================  *)
                 
                 
 FROM GEMShare IMPORT GemHandle, DeviceHandle;
@@ -33,263 +33,248 @@ CONST   NoDevice        = DeviceHandle (NIL);   (* Wert fuer ein nicht besetz-
         RC              = 2;             (*  Raster Koordinaten  *)
 
 
+(*  Anmeldung einer Application beim GEM und Eroeffnen einer
+ *  virtuellen Bildschirmarbeitsstation.
+ *
+ *  'sysKoor' -- Bestimmt das zu benutzenden Koordinatensystem,
+ *               dabei steht 'RC' fuer Rasterkoordinaten und NDC
+ *               fuer normalisierte Koordinaten.
+ *  'handle'  -- Liefert die Geraetereferenz der virtuellen Bild-
+ *               schirmarbeitsstation. Diese Referenz muss bei
+ *               jedem VDI-Aufruf als erster Parameter angege-
+ *               ben werden.
+ *  'success' -- Meldet ob die Anmeldung erfolgreich verlaufen
+ *               ist. Ist dies nicht der Fall, so ist auch der
+ *               Wert von 'handle' ungueltig.
+ *
+ *  Ein Aufruf dieser Prozedur sollte am Anfang jeder Benutzung
+ *  der GEM Bibliothek stehen. Wird er nicht durchgefuehrt, so
+ *  kann es zum Absturz des Systems kommen.
+ *  Alternativ kann aber, wenn keine VDI-Funktionen benoetigt
+ *  werden, 'InitApplication' (s.u.) aufgerufen werden.
+ *
+ *  Falls die Prozedur 'GemActive' den Wert 'TRUE' liefert,
+ *  sind AES-Aufruf ohne jede Vorbereitung und VDI-Aufruf nach
+ *  dem Erzeugen einer (virtuellen) Arbeitstation mit 'OpenDevice'
+ *  ohne Benutzung von 'InitGem' moeglich. Doch sollte
+ *  diese Vorgehensweise nur in Ausnahmefaellen gewaehlt werden,
+ *  da dann z.B. keine autom. Abmeldung von Fenstern u.ae. bei
+ *  Prozessende durchgefuehrt wird.
+ *
+ *  Die Variablen des Moduls 'PathEnv' werden zudem initialisiert:
+ *
+ *  'HomePath' wird in der Regel mit dem Pfad besetzt, von dem dies
+ *  Programm stammt. Dies erlaubt dann z.B. die Verwendung von '*'
+ *  (HomeSymbol) in Pfadlisten fuer 'Paths.SearchFile'. Siehe dazu
+ *  die Hinweise im PathEnv-Modul!
+ *
+ *  'SelectFile' erhaelt je nach GEM-Version die Funktion 'SelectFile'
+ *  bzw. 'SelectFileExtended' aus dem Modul 'AESMisc' zugewiesen.
+ *
+ *  ACHTUNG: Alle bisherigen GEM Versionen unterstuetzen nur
+ *           Rasterkoordinaten um normalisierte Koordinaten
+ *           benutzen zu koennen, muss das GDOS geladen werden.
+ *)
 PROCEDURE InitGem (    sysKoor: CARDINAL;
                    VAR handle : DeviceHandle;
                    VAR success: BOOLEAN);
 
-        (*  Anmeldung einer Application beim GEM und Eroeffnen einer
-         *  virtuellen Bildschirmarbeitsstation.
-         *
-         *  'sysKoor' -- Bestimmt das zu benutzenden Koordinatensystem,
-         *               dabei steht 'RC' fuer Rasterkoordinaten und NDC
-         *               fuer normalisierte Koordinaten.
-         *  'handle'  -- Liefert die Geraetereferenz der virtuellen Bild-
-         *               schirmarbeitsstation. Diese Referenz muss bei
-         *               jedem VDI-Aufruf als erster Parameter angege-
-         *               ben werden.
-         *  'success' -- Meldet ob die Anmeldung erfolgreich verlaufen
-         *               ist. Ist dies nicht der Fall, so ist auch der
-         *               Wert von 'handle' ungueltig.
-         *
-         *  Ein Aufruf dieser Prozedur sollte am Anfang jeder Benutzung
-         *  der GEM Bibliothek stehen. Wird er nicht durchgefuehrt, so
-         *  kann es zum Absturz des Systems kommen.
-         *  Alternativ kann aber, wenn keine VDI-Funktionen benoetigt
-         *  werden, 'InitApplication' (s.u.) aufgerufen werden.
-         *
-         *  Falls die Prozedur 'GemActive' den Wert 'TRUE' liefert,
-         *  sind AES-Aufruf ohne jede Vorbereitung und VDI-Aufruf nach
-         *  dem Erzeugen einer (virtuellen) Arbeitstation mit 'OpenDevice'
-         *  ohne Benutzung von 'InitGem' moeglich. Doch sollte
-         *  diese Vorgehensweise nur in Ausnahmefaellen gewaehlt werden,
-         *  da dann z.B. keine autom. Abmeldung von Fenstern u.ae. bei
-         *  Prozessende durchgefuehrt wird.
-         *
-         *  Die Variablen des Moduls 'PathEnv' werden zudem initialisiert:
-         *
-         *  'HomePath' wird in der Regel mit dem Pfad besetzt, von dem dies
-         *  Programm stammt. Dies erlaubt dann z.B. die Verwendung von '*'
-         *  (HomeSymbol) in Pfadlisten fuer 'Paths.SearchFile'. Siehe dazu
-         *  die Hinweise im PathEnv-Modul!
-         *
-         *  'SelectFile' erhaelt je nach GEM-Version die Funktion 'SelectFile'
-         *  bzw. 'SelectFileExtended' aus dem Modul 'AESMisc' zugewiesen.
-         *
-         *  ACHTUNG: Alle bisherigen GEM Versionen unterstuetzen nur
-         *           Rasterkoordinaten um normalisierte Koordinaten
-         *           benutzen zu koennen, muss das GDOS geladen werden.
-         *)
-
+(*  Erfragt, ob ein anderes Modul schon einen 'InitGem'- oder
+ *  'InitApplication'-Aufruf getaetigt hat, d.h. ob ein benutz-
+ *  barer 'GemHandle' vorhanden ist. (Siehe auch 'InitGem')
+ *)
 PROCEDURE GemActive (): BOOLEAN;
 
-        (*  Erfragt, ob ein anderes Modul schon einen 'InitGem'- oder
-         *  'InitApplication'-Aufruf getaetigt hat, d.h. ob ein benutz-
-         *  barer 'GemHandle' vorhanden ist. (Siehe auch 'InitGem')
-         *)
 
+(*  Dient zum Abmelden einer Application beim GEM.
+ *
+ *  Es werden autom. alle noch offenen Fenster geschlossen, alle
+ *  angemeldeten Geraete beim VDI abgemeldet und eventuell noch
+ *  nicht rueckgaenig gemachte 'HideCursor', 'WindowUpdate' etc.
+ *  Aufrufe zurueckgesetzt.
+ *  Sobald ein Modul terminiert wird fuer jedes auf dieser Modul-
+ *  ebene durchgefuehrten 'InitGem', welches noch nicht rueckgaengig
+ *  gemacht wurde, ein 'ExitGem' durchgefuehrt, dies gilt insbe-
+ *  sondere fuer Laufzeitfehler.
+ *)
 PROCEDURE ExitGem (VAR handle: GemHandle);
 
-        (*  Dient zum Abmelden einer Application beim GEM.
-         *
-         *  Es werden autom. alle noch offenen Fenster geschlossen, alle
-         *  angemeldeten Geraete beim VDI abgemeldet und eventuell noch
-         *  nicht rueckgaenig gemachte 'HideCursor', 'WindowUpdate' etc.
-         *  Aufrufe zurueckgesetzt.
-         *  Sobald ein Modul terminiert wird fuer jedes auf dieser Modul-
-         *  ebene durchgefuehrten 'InitGem', welches noch nicht rueckgaengig
-         *  gemacht wurde, ein 'ExitGem' durchgefuehrt, dies gilt insbe-
-         *  sondere fuer Laufzeitfehler.
-         *)
 
-
+(*  Wie 'InitGem', jedoch werden weder eine virtuelle "Workstation"
+ *  mit 'OpenDevice' geoeffnet, noch die PathEnv-Variablen initiali-
+ *  siert. Diese Funktion kann statt 'InitGem' aufgerufen werden,
+ *  wenn keine VDI-Funktionen benutzt werden. Dies ist beispielsweise
+ *  bei vielen Accessories der Fall. Die Abmeldung kann mit
+ *  'ExitGem (gemHandle)', wobei 'gemHandle' die mit 'CurrGemHandle'
+ *  erfragte Referenz enthalten muss oder mit 'ExitApplication'
+ *  durchgefuehrt werden.
+ *)
 PROCEDURE InitApplication (VAR success: BOOLEAN);  (* "appl_init" *)
 
-        (*  Wie 'InitGem', jedoch werden weder eine virtuelle "Workstation"
-         *  mit 'OpenDevice' geoeffnet, noch die PathEnv-Variablen initiali-
-         *  siert. Diese Funktion kann statt 'InitGem' aufgerufen werden,
-         *  wenn keine VDI-Funktionen benutzt werden. Dies ist beispielsweise
-         *  bei vielen Accessories der Fall. Die Abmeldung kann mit
-         *  'ExitGem (gemHandle)', wobei 'gemHandle' die mit 'CurrGemHandle'
-         *  erfragte Referenz enthalten muss oder mit 'ExitApplication'
-         *  durchgefuehrt werden.
-         *)
 
+(*  Abmeldung der mit 'InitApplication' durchgefuehrten AES-Anmeldung.
+ *)
 PROCEDURE ExitApplication ();  (* "appl_exit" *)
 
-        (*  Abmeldung der mit 'InitApplication' durchgefuehrten AES-Anmeldung.
-         *)
 
-
+(*  Ermittelt die VDI-Referenz, welche das AES bei seinem 'Open
+ *  Workstation' Aufruf erhalten hat. Zusaetzlich werden noch die
+ *  Ausmasse eines Zeichens des Systemzeichensatzes zurueckgegeben.
+ *
+ *  'charW', 'charH',
+ *  'cellW', 'cellH'  -- Ausmasse eines Zeichens des Systemzeichen-
+ *                       satzes.
+ *  'hdl'             -- VDI-Referenz des AES. Hiermit kann man
+ *                       mit 'OpenDevice' weitere virtuelle Bild-
+ *                       schirmarbeitsstationen eroeffnen.
+ *
+ *  ACHTUNG: Die Werte von 'charW', 'charH', 'cellW', cellH'
+ *           werden vom GEM nicht korrekt geliefert. Daher
+ *           ist von ihrer Verwendung abzuraten.
+ *)
 PROCEDURE GrafHandle (VAR charW, charH,
                           cellW, cellH: CARDINAL;
                       VAR hdl         : CARDINAL);
-
-        (*  Ermittelt die VDI-Referenz, welche das AES bei seinem 'Open
-         *  Workstation' Aufruf erhalten hat. Zusaetzlich werden noch die
-         *  Ausmasse eines Zeichens des Systemzeichensatzes zurueckgegeben.
-         *
-         *  'charW', 'charH',
-         *  'cellW', 'cellH'  -- Ausmasse eines Zeichens des Systemzeichen-
-         *                       satzes.
-         *  'hdl'             -- VDI-Referenz des AES. Hiermit kann man
-         *                       mit 'OpenDevice' weitere virtuelle Bild-
-         *                       schirmarbeitsstationen eroeffnen.
-         *
-         *  ACHTUNG: Die Werte von 'charW', 'charH', 'cellW', cellH'
-         *           werden vom GEM nicht korrekt geliefert. Daher
-         *           ist von ihrer Verwendung abzuraten.
-         *)
 
 
 CONST   NonVirtual      = 0;    (*  Geraet soll mit Open Workstation geoeffnet
                                  *  werden.
                                  *)
 
+(*  Dient zum Oeffnen einer (virtuellen) Arbeitsstation.
+ *
+ *  Eingabeparameter:
+ *  -----------------
+ *
+ *  'dev'     -- Gibt das zu oeffnende Geraet an. Entspricht der
+ *               in 'ASSIGN.SYS' angegebenen Geraetenummer.
+ *  'sysKoor' -- Bestimmt das zu benutzenden Koordinatensystem,
+ *               dabei steht 'RC' fuer Rasterkoordinaten und NDC
+ *               fuer normalisierte Koordinaten.
+ *  'mode'    -- Wird hier 'NonVirtual' angegeben, so wird ein
+ *               eine neue Arbeitsstation eroeffnet. Wird aber
+ *               das VDI-Handle einer Arbeitsstation (z.B. mit
+ *               'GrafHandle' ermittelt) uebergeben, so wird zu
+ *               dieser Arbeitsstation eine virtuelle Arbeits-
+ *               station geoeffnet.
+ *
+ *  Ausgabeparameter:
+ *  -----------------
+ *
+ *  'hdl'     -- Die neue Geraetereferenz. Sie muss bei jedem VDI-
+ *               Aufruf, der an dieses Geraet gehen soll als erster
+ *               Parameter uebergeben werden.
+ *
+ *  ACHTUNG: Das Oeffnen weitere nicht virtueller Arbeitsstationen
+ *           ist nur mit geledenem GDOS moeglich.
+ *)
 PROCEDURE OpenDevice (dev, sysKoor, newMode: CARDINAL; VAR hdl: DeviceHandle);
-
-        (*  Dient zum Oeffnen einer (virtuellen) Arbeitsstation.
-         *
-         *  Eingabeparameter:
-         *  -----------------
-         *
-         *  'dev'     -- Gibt das zu oeffnende Geraet an. Entspricht der
-         *               in 'ASSIGN.SYS' angegebenen Geraetenummer.
-         *  'sysKoor' -- Bestimmt das zu benutzenden Koordinatensystem,
-         *               dabei steht 'RC' fuer Rasterkoordinaten und NDC
-         *               fuer normalisierte Koordinaten.
-         *  'mode'    -- Wird hier 'NonVirtual' angegeben, so wird ein
-         *               eine neue Arbeitsstation eroeffnet. Wird aber
-         *               das VDI-Handle einer Arbeitsstation (z.B. mit
-         *               'GrafHandle' ermittelt) uebergeben, so wird zu
-         *               dieser Arbeitsstation eine virtuelle Arbeits-
-         *               station geoeffnet.
-         *
-         *  Ausgabeparameter:
-         *  -----------------
-         *
-         *  'hdl'     -- Die neue Geraetereferenz. Sie muss bei jedem VDI-
-         *               Aufruf, der an dieses Geraet gehen soll als erster
-         *               Parameter uebergeben werden.
-         *
-         *  ACHTUNG: Das Oeffnen weitere nicht virtueller Arbeitsstationen
-         *           ist nur mit geledenem GDOS moeglich.
-         *)
          
-PROCEDURE CloseDevice (handle: DeviceHandle);
 
-        (*  Die (virtuelle) Arbeitsstation wird geschlossen.
-         *
-         *  Bei einem Aufruf von 'ExitGem', werden alle Geraete, die unter
-         *  dem abgemeldeten 'GemHandle' geoeffnet wurden autom. geschlossen.
-         *)
+(*  Die (virtuelle) Arbeitsstation wird geschlossen.
+ *
+ *  Bei einem Aufruf von 'ExitGem', werden alle Geraete, die unter
+ *  dem abgemeldeten 'GemHandle' geoeffnet wurden autom. geschlossen.
+ *)
+PROCEDURE CloseDevice (handle: DeviceHandle);
          
         
+(*  Liefert die Geraeteparameter eines geoeffneten Geraetes.
+ *
+ *  'handle' -- Geraetereferenz des Geraetes von dem die Parameter
+ *              ermittelt werden sollen.
+ *)
 PROCEDURE DeviceParameter (handle: DeviceHandle): PtrDevParm;
 
-        (*  Liefert die Geraeteparameter eines geoeffneten Geraetes.
-         *
-         *  'handle' -- Geraetereferenz des Geraetes von dem die Parameter
-         *              ermittelt werden sollen.
-         *)
 
-
+(*  Ermittelt die aktuelle GEM-Referenz ('GemHandle').
+ *)
 PROCEDURE CurrGemHandle (): GemHandle;
 
-        (*  Ermittelt die aktuelle GEM-Referenz ('GemHandle').
-         *)
 
+(*  Setzt die aktuelle GEM-Refrenz.
+ *
+ *  'handle'  -- Neu zu setzende GEM-Referenz.
+ *  'success' -- Wird hier 'FALSE' geliefert, so ist 'handle'
+ *               keine gueltige GEM-Referenz und die aktuelle
+ *               Refrenz wurde nicht veraendert.
+ *)
 PROCEDURE SetCurrGemHandle (handle: GemHandle): [ BOOLEAN ];
-
-        (*  Setzt die aktuelle GEM-Refrenz.
-         *
-         *  'handle'  -- Neu zu setzende GEM-Referenz.
-         *  'success' -- Wird hier 'FALSE' geliefert, so ist 'handle'
-         *               keine gueltige GEM-Referenz und die aktuelle
-         *               Refrenz wurde nicht veraendert.
-         *)
          
 
-                        (*  Fehlerbehandlung  *)
-                        (*  ================  *)
+(*  Fehlerbehandlung  *)
+(*  ================  *)
 
 VAR     ErrorProc: PROC;
 
+(*  Ermittelt, ob beim letzten Aufruf einer GEM-Routine ein
+ *  Fehler aufgetretten ist.
+ *
+ *  Tritt ein Fehler auf, der nicht mittels dieser Prozedur
+ *  erfragt wird, so ruft die GEM-Bibliothek beim naechsten
+ *  Aufruf einer GEM-Routine die Prozedur 'ErrorProc' auf.
+ *  Ist letztere von der Applikation nicht veraendert worden,
+ *  so wird die Modula-Standardprozedur 'HALT' aufgerufen.
+ *)
 PROCEDURE GemError (): BOOLEAN;
 
-        (*  Ermittelt, ob beim letzten Aufruf einer GEM-Routine ein
-         *  Fehler aufgetretten ist.
-         *
-         *  Tritt ein Fehler auf, der nicht mittels dieser Prozedur
-         *  erfragt wird, so ruft die GEM-Bibliothek beim naechsten
-         *  Aufruf einer GEM-Routine die Prozedur 'ErrorProc' auf.
-         *  Ist letztere von der Applikation nicht veraendert worden,
-         *  so wird die Modula-Standardprozedur 'HALT' aufgerufen.
-         *)
-
+(*  Ermittelt im Fehlerfall den Fehler ausloesenden Wert.
+ *
+ *  Ist 'GemError () = TRUE', so liefert diese Funktion
+ *  den INTEGER-Wert, der von der zuletzt benutzten ROM-
+ *  Routine geliefert wurde, um den Fehler anzuzeigen.
+ *)
 PROCEDURE ErrorNumber (): INTEGER;
 
-        (*  Ermittelt im Fehlerfall den Fehler ausloesenden Wert.
-         *
-         *  Ist 'GemError () = TRUE', so liefert diese Funktion
-         *  den INTEGER-Wert, der von der zuletzt benutzten ROM-
-         *  Routine geliefert wurde, um den Fehler anzuzeigen.
-         *)
-
+(*  Wird bei Auftreten eines Fehlers aufgerufen.
+ *  Die normalerweise hier installierte Routine tut nichts.
+ *  Wenn aber ueber die 'ErrorProc' der Fehler gemeldet wird,
+ *  kann hierueber herausgefunden werden, _wo_ der Fehler
+ *  auftrat.
+ *)
 VAR ErrHdlProc: PROC;
 
-        (*  Wird bei Auftreten eines Fehlers aufgerufen.
-         *  Die normalerweise hier installierte Routine tut nichts.
-         *  Wenn aber ueber die 'ErrorProc' der Fehler gemeldet wird,
-         *  kann hierueber herausgefunden werden, _wo_ der Fehler
-         *  auftrat.
-         *)
 
-
-                        (*   Nachfragefunktionen  *)
-                        (*   ===================  *)
+(*   Nachfragefunktionen  *)
+(*   ===================  *)
          
+(*  Erfragt, ob das GEM schon initalisiert ist.
+ *
+ *  Dies ist zum Beispiel bei Auto-Ordner-Programmen nicht der
+ *  Fall.
+ *  Solange diese Routine kein 'TRUE' liefert ist eine Anmeldung
+ *  mittels 'InitGem' sinnlos.
+ *)
 PROCEDURE GEMAvailable (): BOOLEAN;
 
-        (*  Erfragt, ob das GEM schon initalisiert ist.
-         *
-         *  Dies ist zum Beispiel bei Auto-Ordner-Programmen nicht der
-         *  Fall.
-         *  Solange diese Routine kein 'TRUE' liefert ist eine Anmeldung
-         *  mittels 'InitGem' sinnlos.
-         *)
-
+(*  Liefert 'TRUE', sobald ein GDOS-Treiber vorhanden ist.
+ *  Beruecksichtigt auch das GEM 2.1 (liefert dort immer TRUE).
+ *)
 PROCEDURE GDOSAvailable (): BOOLEAN;
 
-        (*  Liefert 'TRUE', sobald ein GDOS-Treiber vorhanden ist.
-         *  Beruecksichtigt auch das GEM 2.1 (liefert dort immer TRUE).
-         *)
-
+(*  Liefert die Versionsnummer, die das GEM beim Anmelden einer
+ *  Applikation zurueckgibt.
+ *
+ *  Das zuerst von Atari ausgelieferte TOS und das Blitter-TOS
+ *  liefern den Wert $120, das TOS 1.4 den Wert $140.
+ *
+ *  ACHTUNG: Damit diese Routine funktionieren kann muss die
+ *           Funktionsprozedur 'GemActive' den Wert 'TRUE'
+ *           liefern, also schon ein 'InitGem' durchgefuehrt
+ *           sein.
+ *)
 PROCEDURE GEMVersion (): CARDINAL;
 
-        (*  Liefert die Versionsnummer, die das GEM beim Anmelden einer
-         *  Applikation zurueckgibt.
-         *
-         *  Das zuerst von Atari ausgelieferte TOS und das Blitter-TOS
-         *  liefern den Wert $120, das TOS 1.4 den Wert $140.
-         *
-         *  ACHTUNG: Damit diese Routine funktionieren kann muss die
-         *           Funktionsprozedur 'GemActive' den Wert 'TRUE'
-         *           liefern, also schon ein 'InitGem' durchgefuehrt
-         *           sein.
-         *)
-
+(*  Liefert die GEM-Identifikationsnummer der aktuellen
+ *  GEM-Refrenz.
+ *)
 PROCEDURE ApplicationID (): CARDINAL;
 
-        (*  Liefert die GEM-Identifikationsnummer der aktuellen
-         *  GEM-Refrenz.
-         *)
-
+(*  Liefert die maximale Anzahl der Punkte, die in einem Aufruf
+ *  von 'PolyLine', 'PolyMarker', etc. verarbeitet werden koennen.
+ *  Ein Wert von 0 bedeutet, dass die Anzahl nicht begrenzt ist.
+ *)
 PROCEDURE MaxPoints (): CARDINAL;
-
-        (*  Liefert die maximale Anzahl der Punkte, die in einem Aufruf
-         *  von 'PolyLine', 'PolyMarker', etc. verarbeitet werden koennen.
-         *  Ein Wert von 0 bedeutet, dass die Anzahl nicht begrenzt ist.
-         *)
          
          
 (*   Jede der nachfolgenden Routinen erlaubtes einen Status abzufragen,
@@ -299,43 +284,38 @@ PROCEDURE MaxPoints (): CARDINAL;
  *   entsprechende Anzahl von 'UpdateWindow (FALSE)' durchfuehren.
  *)
          
+(*  Liefert die Anzahl der 'HideCursor'-Aufrufe, die noch nicht
+ *  mit 'ShowCursor' rueckgaenig gemacht wurden.
+ *)
 PROCEDURE NoHideCursor (device: DeviceHandle): CARDINAL;
 
-        (*  Liefert die Anzahl der 'HideCursor'-Aufrufe, die noch nicht
-         *  mit 'ShowCursor' rueckgaenig gemacht wurden.
-         *)
-
+(*  Liefert die Anzahl der 'GrafMouse (mouseOff, NIL)'-Aufrufe,
+ *  die noch nicht mit 'GrafMouse (mouseOn, NIL)' rueckgaenig ge-
+ *  macht wurden.
+ *)
 PROCEDURE NoGrafMouseOff (): CARDINAL;
 
-        (*  Liefert die Anzahl der 'GrafMouse (mouseOff, NIL)'-Aufrufe,
-         *  die noch nicht mit 'GrafMouse (mouseOn, NIL)' rueckgaenig ge-
-         *  macht wurden.
-         *)
-
+(*  Liefert die Anzahl der 'UpdateWindow (TRUE)'-Aufrufe, die noch
+ *  nicht mit 'UpdateWindow (FALSE)' rueckgaenig gemacht wurden.
+ *)
 PROCEDURE NoUpdateWindow (): CARDINAL;
 
-        (*  Liefert die Anzahl der 'UpdateWindow (TRUE)'-Aufrufe, die noch
-         *  nicht mit 'UpdateWindow (FALSE)' rueckgaenig gemacht wurden.
-         *)
-
+(*  Liefert die Anzahl der 'MouseControl (TRUE)-Aufrufe, die noch
+ *  nicht mit 'MouseControl (FALSE)' rueckgaenig gemacht wurden.
+ *)
 PROCEDURE NoMouseControl (): CARDINAL;
 
-        (*  Liefert die Anzahl der 'MouseControl (TRUE)-Aufrufe, die noch
-         *  nicht mit 'MouseControl (FALSE)' rueckgaenig gemacht wurden.
-         *)
-
+(*  Sorgt dafuer, dass der Mauszeiger, unabhaenig von seinem aktuellen
+ *  Zustand, sichtbar wird. Dies ist zum Beispiel vor dem Benutzen
+ *  einer Dialogbox sinnvoll.
+ *
+ *  TRUE  -- Der Mauszeiger wird sichtbar
+ *  FALSE -- Der Mauszeiger erhaelt seinen alten Status wieder
+ *
+ *  HINWEIS: Diese Routine sollte normallerweise nicht benutzt
+ *           werden. Sie ist systeminternen Funktionen vorbehalten.
+ *)
 PROCEDURE MouseInput (start: BOOLEAN);
-
-        (*  Sorgt dafuer, dass der Mauszeiger, unabhaenig von seinem aktuellen
-         *  Zustand, sichtbar wird. Dies ist zum Beispiel vor dem Benutzen
-         *  einer Dialogbox sinnvoll.
-         *
-         *  TRUE  -- Der Mauszeiger wird sichtbar
-         *  FALSE -- Der Mauszeiger erhaelt seinen alten Status wieder
-         *
-         *  HINWEIS: Diese Routine sollte normallerweise nicht benutzt
-         *           werden. Sie ist systeminternen Funktionen vorbehalten.
-         *)
 
 
 

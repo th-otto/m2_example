@@ -26,7 +26,7 @@ PROCEDURE RaiseError (    no    : INTEGER;       (* Fehlernummer *)
                           cont  : RtnCond );
 
 TYPE TRAP6Msg = ARRAY[0..31] OF CHAR;
-PROCEDURE DoTRAP6(no: INTEGER; [REF msg: TRAP6Msg = '' ]);
+PROCEDURE DoTRAP6(no: INTEGER);
 CONST TRAP6_SELF = 04000H;
       TRAP6_CONT = 02000H;
 

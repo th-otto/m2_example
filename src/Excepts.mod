@@ -29,12 +29,12 @@ IMPLEMENTATION MODULE Excepts;
 *)
 
 FROM SYSTEM IMPORT CARDINAL16, CARDINAL32, INTEGER32, ADDRESS, TSIZE, ADR, CSIZE_T;
-FROM MOSGlobals IMPORT MemArea, IllegalCall;
+IMPORT MOSGlobals;
 FROM MOSSupport IMPORT ToSuper, ToUser;
 FROM Storage IMPORT ALLOCATE, DEALLOCATE;
 FROM SysTypes IMPORT ExcSet, ExcDesc, Exceptions;
 FROM PrgCtrl IMPORT EnvlpCarrier, SetEnvelope, CatchProcessTerm, TermCarrier;
-FROM ResCtrl IMPORT RemovalCarrier, CatchRemoval;
+FROM MOSCtrl IMPORT RemovalEntry, CatchRemoval;
 FROM ErrBase IMPORT DoTRAP6;
 FROM libc IMPORT memcpy;
 FROM BIOS IMPORT SetException;
@@ -83,7 +83,6 @@ END;
 
 VAR root: User;
 VAR Level: INTEGER;
-VAR has020, useSF: BOOLEAN;
 VAR raiseV: PROCEDURE(HardExceptions);
 VAR busHdl: PROC;
 
@@ -424,8 +423,10 @@ END linkOut;
 
 
 PROCEDURE Install ( REF traps: ExcSet; call0: PROC;
-userMode: BOOLEAN; workSpace: MemArea;
+userMode: BOOLEAN; workSpace: MOSGlobals.MemArea;
 VAR hdl: ADDRESS; mylevel: INTEGER; post: BOOLEAN );
+
+VAR useSF: BOOLEAN;
 
   PROCEDURE entryLen (n:CARDINAL; VAR procS: PROC): CSIZE_T;
   VAR procE: PROC;
@@ -455,6 +456,7 @@ pEntry: PtrEntry;
 pData: POINTER TO EntryData;
 
 BEGIN
+  useSF := SysInfo.UseStackFrame();
   hdl := NIL;
   IF post THEN
     HALT (* noch nicht impl. *);
@@ -466,7 +468,7 @@ BEGIN
   FOR i := MIN(ExcSet) TO MAX(ExcSet) DO
     IF i IN traps THEN
       IF NOT(userMode) AND (i<4) THEN
-        DoTRAP6(IllegalCall);
+        DoTRAP6(MOSGlobals.IllegalCall);
         RETURN;
       END;
       l := l + entryLen(i, procS) + TSIZE(Entry) + 4;
@@ -513,7 +515,7 @@ END Install;
 
 PROCEDURE InstallPreExc (REF traps: ExcSet;
 call: PreExcProc; usermode: BOOLEAN;
-workSpace: MemArea; VAR hdl: ADDRESS);
+workSpace: MOSGlobals.MemArea; VAR hdl: ADDRESS);
 BEGIN
   Install(traps, PROC(call), usermode, workSpace, hdl, Level, FALSE);
 END InstallPreExc;
@@ -521,7 +523,7 @@ END InstallPreExc;
 
 PROCEDURE InstallPostExc (REF traps: ExcSet;
 call: PostExcProc; usermode: BOOLEAN;
-workSpace: MemArea; VAR hdl: ADDRESS);
+workSpace: MOSGlobals.MemArea; VAR hdl: ADDRESS);
 BEGIN
   Install(traps, PROC(call), usermode, workSpace, hdl, Level, TRUE);
 END InstallPostExc;
@@ -529,7 +531,7 @@ END InstallPostExc;
 
 PROCEDURE SysInstallPreExc (REF traps: ExcSet;
 call: PreExcProc; usermode: BOOLEAN;
-workSpace: MemArea; VAR hdl: ADDRESS);
+workSpace: MOSGlobals.MemArea; VAR hdl: ADDRESS);
 BEGIN
   Install(traps, PROC(call), usermode, workSpace, hdl, -1, FALSE);
 END SysInstallPreExc;
@@ -537,7 +539,7 @@ END SysInstallPreExc;
 
 PROCEDURE SysInstallPostExc (REF traps: ExcSet;
 call: PostExcProc; usermode: BOOLEAN;
-workSpace: MemArea; VAR hdl: ADDRESS);
+workSpace: MOSGlobals.MemArea; VAR hdl: ADDRESS);
 BEGIN
   Install(traps, PROC(call), usermode, workSpace, hdl, -1, TRUE);
 END SysInstallPostExc;
@@ -813,24 +815,23 @@ END freeSys;
 
 VAR eHdl: EnvlpCarrier;
 tHdl: TermCarrier;
-rHdl: RemovalCarrier;
-wsp: MemArea;
+rHdl: RemovalEntry;
+wsp: MOSGlobals.MemArea;
 
 BEGIN
-	useSF := SysInfo.UseStackFrame();
-	has020 := SysInfo.Has020();
-	IF useSF THEN
-		busHdl := busHdl20;
-		raiseV := RaiseExc20;
-	ELSE
-		busHdl := busHdl0;
-		raiseV := RaiseExc0;
-	END;
-	root.next := ADR(root);
-	root.prev := ADR(root);
-	SetEnvelope(eHdl, chgLevel, wsp);
-	wsp.bottom := NIL;
-	wsp.length := 0;
-	CatchProcessTerm(tHdl, releaseLevel, wsp);
-	CatchRemoval(rHdl, freeSys, wsp);
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
+  IF SysInfo.UseStackFrame() THEN
+    busHdl := busHdl20;
+    raiseV := RaiseExc20;
+  ELSE
+    busHdl := busHdl0;
+    raiseV := RaiseExc0;
+  END;
+  root.next := ADR(root);
+  root.prev := ADR(root);
+  SetEnvelope(eHdl, chgLevel, wsp);
+  wsp.bottom := NIL;
+  wsp.length := 0;
+  CatchProcessTerm(tHdl, releaseLevel, wsp);
+  CatchRemoval(rHdl, freeSys, wsp);
 END Excepts.

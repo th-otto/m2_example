@@ -64,13 +64,12 @@ FROM    SYSTEM          IMPORT ADDRESS, ADR, INTEGER16, CARDINAL16, CARDINAL32, 
 
 FROM    SysStorage      IMPORT ALLOCATE, DEALLOCATE;
 
-FROM    MOSGlobals      IMPORT MemArea, IllegalPointer, GeneralErr, OutOfMemory,
-                               GemErr, FileStr;
+IMPORT MOSGlobals;
 
 FROM    PrgCtrl         IMPORT EnvlpCarrier, TermCarrier,
                                Accessory, SetEnvelope, CatchProcessTerm;
 
-FROM    ResCtrl         IMPORT RemovalCarrier, CatchRemoval;
+FROM    MOSCtrl         IMPORT RemovalEntry, CatchRemoval;
 
 FROM    GEMGlobals      IMPORT TEffectSet;
 
@@ -132,7 +131,7 @@ END VDI_CTRL_CODE;
 
 PROCEDURE outOfMemory();
 BEGIN
-  DoTRAP6(OutOfMemory - TRAP6_SELF - TRAP6_CONT);
+  DoTRAP6(MOSGlobals.OutOfMemory - TRAP6_SELF - TRAP6_CONT);
 END outOfMemory;
 
 
@@ -164,7 +163,7 @@ VAR     oldpts: PtrPtsoutArray;
 VAR cb: GemHandle;
 BEGIN
   IF HIGH(param)<maxParm THEN        (* Nicht genug Platz fuer die Parameter *)
-    DoTRAP6(GeneralErr - TRAP6_CONT);
+    DoTRAP6(MOSGlobals.GeneralErr - TRAP6_CONT);
     RETURN 0;
   END;
   cb := our_cb;
@@ -219,7 +218,7 @@ VAR     oldpts: PtrPtsoutArray;
 VAR cb: GemHandle;
 BEGIN
   IF HIGH(param)<maxParm THEN        (* Nicht genug Platz fuer die Parameter *)
-    DoTRAP6(GeneralErr - TRAP6_CONT);
+    DoTRAP6(MOSGlobals.GeneralErr - TRAP6_CONT);
     RETURN;
   END;
   cb := our_cb;
@@ -393,7 +392,7 @@ BEGIN
       END;
       last := ADR(last^^.next);
     END;
-    DoTRAP6(IllegalPointer);
+    DoTRAP6(MOSGlobals.IllegalPointer);
   END;
 END CloseDevice;
 
@@ -576,7 +575,7 @@ VAR   oldc                            : GemHandle;
       wrkStation                      : CARDINAL;
       charH, charW, cellW, cellH      : CARDINAL;
       args                            : ARRAY[0..127] OF CHAR;
-      name                            : FileStr;
+      name                            : MOSGlobals.FileStr;
 VAR cb: GemHandle;
 
 BEGIN
@@ -654,7 +653,7 @@ PROCEDURE isValidGemHandle (handle: GemHandle): BOOLEAN;
 BEGIN
   IF handle = NIL THEN RETURN FALSE; END;
   IF handle^.MAGIC <> cbMagic THEN
-    DoTRAP6(IllegalPointer - TRAP6_SELF);
+    DoTRAP6(MOSGlobals.IllegalPointer - TRAP6_SELF);
     RETURN FALSE;
   END;
   RETURN TRUE;
@@ -891,7 +890,7 @@ END ApplicationID;
 PROCEDURE GEMVersion (): CARDINAL;
 BEGIN
   IF our_cb = NIL THEN
-    DoTRAP6(GeneralErr - TRAP6_CONT - TRAP6_SELF (* , 'GEM NOT INIT.' *) );
+    DoTRAP6(MOSGlobals.GeneralErr - TRAP6_CONT - TRAP6_SELF (* , 'GEM NOT INIT.' *) );
     RETURN 0;
   END;
   RETURN our_cb^.GLOBAL.ap_version;
@@ -1016,12 +1015,13 @@ PROCEDURE emptyProc;
 END emptyProc;
 
 
-VAR     wsp             : MemArea;
+VAR     wsp             : MOSGlobals.MemArea;
         envlpHandle     : EnvlpCarrier;
         termHandle      : TermCarrier;
-        removalHandle   : RemovalCarrier;
+        removalHandle   : RemovalEntry;
 
 BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
   (*  Anmeldung der Modulueberwachung
    *)
   wsp.bottom := NIL;
@@ -1038,5 +1038,4 @@ BEGIN
   ptrToErrHdler := ADR (ErrHdlProc);
 
   gemStatus := unknown;
-
 END GEMEnv.

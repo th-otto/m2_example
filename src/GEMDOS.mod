@@ -7,6 +7,7 @@ THO 25.05.23: Port to gm2
 *)
 
 FROM SYSTEM IMPORT BYTE, ADDRESS, ADR, INTEGER16, INTEGER32, CARDINAL32, SHIFT;
+IMPORT MOSGlobals;
 
 CONST nul = CHR(0);
 
@@ -607,4 +608,6 @@ BEGIN
 END DaTime;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END GEMDOS.

@@ -35,7 +35,7 @@ IMPLEMENTATION MODULE GEMBase;
 
 FROM    SYSTEM          IMPORT ADDRESS;
 
-FROM    MOSGlobals      IMPORT IllegalPointer;
+IMPORT MOSGlobals;
 
 FROM GEMShare IMPORT cbMagic, deviceMagic;
 
@@ -66,7 +66,7 @@ BEGIN
   IF gemHdl <> NIL THEN
     (* ueberpruefe magic number *)
     IF (gemHdl^.MAGIC <> cbMagic) THEN
-      DoTRAP6(IllegalPointer - TRAP6_SELF);
+      DoTRAP6(MOSGlobals.IllegalPointer - TRAP6_SELF);
     ELSE
       (* kopiere VDI- und AES-Parameterblock *)
       vdipb := gemHdl^.vdipb;
@@ -80,7 +80,7 @@ PROCEDURE VDIHandle (dev: DeviceHandle): INTEGER16;
 BEGIN
   IF dev = NIL THEN RETURN 0; END;
   IF dev^.magic <> deviceMagic THEN
-    DoTRAP6(IllegalPointer - TRAP6_SELF);
+    DoTRAP6(MOSGlobals.IllegalPointer - TRAP6_SELF);
     RETURN 0;
   END;
   RETURN dev^.handle;
@@ -107,4 +107,6 @@ BEGIN
     );
 END CallAES;
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END GEMBase.

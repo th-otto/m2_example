@@ -6,6 +6,7 @@ IMPLEMENTATION MODULE MOSSupport;
 *)
 
 FROM GEMDOS IMPORT Super;
+IMPORT MOSGlobals;
 
 
 
@@ -38,4 +39,7 @@ BEGIN
   RETURN r;
 END CallSuper;
 
+
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END MOSSupport.

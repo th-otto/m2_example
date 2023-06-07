@@ -1,5 +1,6 @@
 IMPLEMENTATION MODULE BIOS;
-(*$Z-,Y+,S-,N+,R-,L-*)
+
+IMPORT MOSGlobals;
 
 (*
    TT 21.07.89  BConOut loescht High-Byte der auszugebenden Zeichen, weil
@@ -193,4 +194,6 @@ PROCEDURE GetKBShift (): KBShifts;
   END GetKBShift;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END BIOS.

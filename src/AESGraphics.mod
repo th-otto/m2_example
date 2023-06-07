@@ -23,6 +23,7 @@ FROM    GrafBase        IMPORT Point, Rectangle, PtrMouseFormDef;
 FROM    GEMGlobals      IMPORT MButtonSet, SpecialKeySet, OStateSet, PtrObjTree;
 
 IMPORT  GEMShare;
+IMPORT MOSGlobals;
 
 PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
 BEGIN
@@ -144,4 +145,6 @@ BEGIN
 END WatchBox;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END AESGraphics.

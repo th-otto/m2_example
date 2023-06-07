@@ -1,5 +1,7 @@
 IMPLEMENTATION MODULE Characters;
 
+IMPORT MOSGlobals;
+
 PROCEDURE IsASCII7 (c: CHAR): BOOLEAN;
   BEGIN
     RETURN ORD(c) < 128
@@ -20,4 +22,6 @@ PROCEDURE IsAlphaNum (c: CHAR): BOOLEAN;
     RETURN ((c>='a') AND (c<='z')) OR ((c>='A') AND (c<='Z')) OR ((c>='0') AND (c<='9'))
   END IsAlphaNum;
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END Characters.

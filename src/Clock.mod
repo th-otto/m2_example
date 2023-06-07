@@ -4,6 +4,7 @@ IMPLEMENTATION MODULE Clock;
 FROM SYSTEM IMPORT CARDINAL16, SHIFT;
 
 IMPORT GEMDOS;
+IMPORT MOSGlobals;
 
 (*
   06.08.89  TT  Uebernahme der DateUtil-Funktionen (V2.00) von Markus Kilbinger
@@ -214,6 +215,7 @@ END DaysAdded;
   
   
 BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
   off[January] := 0;
   off[February] := 31;    (* + 31 *)
   off[March] := 59;       (* + 28 *)

@@ -29,6 +29,7 @@ FROM Strings IMPORT Delete, Insert;
 IMPORT GEMOps;
 FROM GEMShare IMPORT our_cb, stringIntoCFormat, stringFromCFormat, aes_if, testINTOUT0;
 FROM GEMGlobals IMPORT MaxStr, PtrMaxStr;
+IMPORT MOSGlobals;
 
 
 PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
@@ -215,4 +216,6 @@ BEGIN
 END ShellEnvironment;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END AESMisc.

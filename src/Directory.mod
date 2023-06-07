@@ -34,9 +34,7 @@ FROM NumberIO IMPORT IntToStr;
 FROM Clock IMPORT Time, Date, UnpackTime, UnpackDate;
 FROM MOSConfig IMPORT FileErrMsg, ConfigErrMsgPtr;
 FROM FileNames IMPORT SplitPath, DriveToStr, StrToDrive;
-FROM MOSGlobals IMPORT FileStr, PathStr, DriveStr, NameStr, SfxStr, PfxStr,
-     OutOfStack, StringOverflow, fNotDeleted,
-     fNoMatchingFiles, Drive, DriveSet, IllegalProcVar;
+IMPORT MOSGlobals;
 IMPORT GEMDOS;
 FROM XBIOS IMPORT SuperExec;
 IMPORT BIOS;
@@ -200,7 +198,7 @@ END fileUpper;
 
 
 PROCEDURE MakeFullPath( VAR filename: ARRAY OF CHAR; VAR result: INTEGER );
-VAR oldpath, path: PathStr; dummy: INTEGER; name: NameStr;
+VAR oldpath, path: MOSGlobals.PathStr; dummy: INTEGER; name: MOSGlobals.NameStr;
 BEGIN
   fileUpper(filename);
   SplitPath(filename, path, name);
@@ -262,7 +260,7 @@ BEGIN
     result := 0;
   ELSE
     IF (r = GEMDOS.EFilNF) OR (r = GEMDOS.EPthNF) THEN
-      result := fNotDeleted;
+      result := MOSGlobals.fNotDeleted;
     ELSE
       result := r;
     END;
@@ -274,8 +272,8 @@ PROCEDURE DirQuery(REF wildcard: ARRAY OF CHAR; select: FileAttrSet; dirProc: Di
 VAR dta: SearchRec;
     olddta: DTA;
     err: INTEGER;
-    path: PathStr;
-    name: NameStr;
+    path: MOSGlobals.PathStr;
+    name: MOSGlobals.NameStr;
     entry: DirEntry;
 BEGIN
   (* get old DTA *)
@@ -287,11 +285,11 @@ BEGIN
   IF err < 0 THEN
     (* wenn leeres Dir, dann 'fNoMatchingFiles' liefern. *)
     IF err = GEMDOS.EFilNF THEN
-      err := fNoMatchingFiles;
+      err := MOSGlobals.fNoMatchingFiles;
     END;
   ELSE
     IF dirProc = DirQueryProc(0) THEN
-      DoTRAP6(IllegalProcVar);
+      DoTRAP6(MOSGlobals.IllegalProcVar);
       err := -1;
     ELSE
       LOOP
@@ -413,13 +411,13 @@ BEGIN
 END DeleteDir;
 
 
-PROCEDURE DrivesOnline(): DriveSet;
+PROCEDURE DrivesOnline(): MOSGlobals.DriveSet;
 VAR drives: BIOS.DriveSet;
 BEGIN
   drives := BIOS.DriveMap();
   (* adjust for defaultDrv *)
   drives := SHIFT(drives, 1);
-  RETURN DriveSet(drives);
+  RETURN MOSGlobals.DriveSet(drives);
 END DrivesOnline;
 
 
@@ -458,9 +456,9 @@ END FileExists;
  * funktioniert.
  *)
 PROCEDURE PathExists( REF path: ARRAY OF CHAR ): BOOLEAN;
-VAR buf: PathStr;
-    dir: PathStr;
-    name: NameStr;
+VAR buf: MOSGlobals.PathStr;
+    dir: MOSGlobals.PathStr;
+    name: MOSGlobals.NameStr;
     r: INTEGER;
     dummy: INTEGER;
 BEGIN
@@ -479,8 +477,8 @@ BEGIN
 END SetDefaultPath;
 
 
-PROCEDURE DefaultPath(): PathStr;
-VAR path: PathStr;
+PROCEDURE DefaultPath(): MOSGlobals.PathStr;
+VAR path: MOSGlobals.PathStr;
 BEGIN
   GetDefaultPath(path);
   RETURN path
@@ -589,4 +587,5 @@ END GetErrMsg;
 
 
 BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END Directory.

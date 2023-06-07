@@ -50,7 +50,7 @@ IMPLEMENTATION MODULE GEMShare;
 
 FROM SYSTEM     IMPORT BYTE, ADR, INTEGER32, SHIFT;
 
-FROM MOSGlobals IMPORT OutOfStack, IllegalPointer, StringOverflow;
+IMPORT MOSGlobals;
 
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
 FROM ErrBase IMPORT DoTRAP6, TRAP6_SELF, TRAP6_CONT;
@@ -176,7 +176,7 @@ BEGIN
     IF errorProcPtr <> NIL THEN
       errorProcPtr^()
     ELSE
-      DoTRAP6(IllegalPointer - TRAP6_SELF);
+      DoTRAP6(MOSGlobals.IllegalPointer - TRAP6_SELF);
     END;
   END;
 END testErrorCheck;
@@ -200,7 +200,7 @@ BEGIN
     RETURN FALSE
   ELSE
     IF handle^.magic <> deviceMagic THEN
-      DoTRAP6(IllegalPointer);
+      DoTRAP6(MOSGlobals.IllegalPointer);
       RETURN FALSE
     ELSE
       our_cb^.CURDEVICE := handle;
@@ -511,6 +511,7 @@ END removeCurChgVector;
 
 
 BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
   (*  Liste initalisieren
    *)
   root_cb := NIL;

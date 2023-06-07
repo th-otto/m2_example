@@ -72,7 +72,7 @@ IMPLEMENTATION MODULE MOSCtrl; (* V#0193 *)
 
 FROM SYSTEM IMPORT ADR, ADDRESS, BYTE, INTEGER32, CARDINAL32, CSIZE_T;
 
-FROM MOSGlobals IMPORT MemArea, IllegalCall, IllegalPointer, OutOfStack;
+IMPORT MOSGlobals;
 FROM GEMDOS IMPORT TermRes, Term, Super;
 FROM SysVars IMPORT _sysbase, etv_term;
 FROM XBIOS IMPORT SuperExec;
@@ -117,7 +117,6 @@ END;
 
 VAR termVectorInstalled: BOOLEAN;
 VAR MagXavail, MiNTavail: BOOLEAN;
-TOSHdr: PtrOSHeader;
 
 VAR PtermSSP, mySSP: ADDRESS;
 didPterm: BOOLEAN;
@@ -126,9 +125,80 @@ didPterm: BOOLEAN;
 makeResident: BOOLEAN;
 
 VAR rem408carrier: RemovalEntry;
+VAR RemovalRoot: RemovalEntry;
+
+VAR initialized: BOOLEAN;
+
+
+PROCEDURE getTOSHdr(): INTEGER32;
+TYPE PPtrOSHeader = POINTER TO PtrOSHeader;
+VAR sysbase : PPtrOSHeader;
+BEGIN
+   sysbase := PPtrOSHeader(_sysbase);
+   RETURN INTEGER32(sysbase^^.beg); (* wg. altem AHDI *)
+END getTOSHdr;
+
+
+PROCEDURE Init();
+VAR TOSHdr: PtrOSHeader;
+BEGIN
+  IF NOT(initialized) THEN
+    initialized := TRUE;
+
+    TOSHdr := SuperExec(getTOSHdr);
+    IF TOSHdr^.version <= 0102H THEN
+      (* Spanisches TOS? *)
+      IF TOSHdr^.conf = 8 THEN
+        ProcessID := ADDRESS(0873CH);
+      ELSE
+        ProcessID := ADDRESS(0602CH);
+      END;
+    ELSE
+      ProcessID := TOSHdr^.run;
+    END;
+    BaseIsAccessory := FALSE;
+    BaseProcess := NIL;
+    BaseResident := FALSE;
+    ActMOSProcess := NIL;
+    ActPDB := NIL;
+    ModLevel := 0;
+    termVectorInstalled := FALSE;
+    makeResident := FALSE;
+    RemovalRoot.next := ADR(RemovalRoot);
+    RemovalRoot.prev := ADR(RemovalRoot);
+  
+    didPterm := FALSE;
+    mySSP := NIL;
+    PtermSSP := NIL;
+  
+    IF MiNTaware THEN
+      MagXavail := FALSE;
+      MiNTavail := FALSE;
+    END;
+  END;
+END Init;
+
+
+
+PROCEDURE CatchRemoval ( VAR hdl: RemovalEntry; info: RemovalProc; wsp: MOSGlobals.MemArea );
+VAR next, prev: RemovalList;
+BEGIN
+  Init();
+  hdl.next := NIL;
+  hdl.call := info;
+  hdl.wsp := wsp;
+  next := ADR(RemovalRoot);
+  prev := next^.prev;
+  hdl.next := next;
+  hdl.prev := prev;
+  prev^.next := ADR(hdl);
+  next^.prev := ADR(hdl);
+END CatchRemoval;
+
 
 PROCEDURE GetPDB ( VAR pdb : PtrPDB; VAR process: ADDRESS );
 BEGIN
+  Init();
   process := ProcessID^;
   (* ist Programm ein ACC ? *)
   (* und ist Acc-Prozess aktiv? *)
@@ -146,7 +216,7 @@ END GetPDB;
 
 
 
-PROCEDURE CallSub ( subRoutine: PROC; VAR wsp: MemArea );
+PROCEDURE CallSub ( subRoutine: PROC; VAR wsp: MOSGlobals.MemArea );
 VAR sp, oldsp: ADDRESS;
 BEGIN
   (* alten SP laden zum Retten *)
@@ -154,7 +224,7 @@ BEGIN
   IF (wsp.bottom <> NIL) AND (wsp.length <> 0) THEN
     IF wsp.length < 20 THEN
       (* Stack zu klein*)
-      DoTRAP6(OutOfStack);
+      DoTRAP6(MOSGlobals.OutOfStack);
       RETURN;
     ELSE
       (* neuen SP verwenden *)
@@ -173,6 +243,7 @@ PROCEDURE CallTermProcs;
 VAR pdb: PtrPDB;
     term: TermList;
 BEGIN
+  Init();
   pdb := ActPDB;
   IF pdb <> NIL THEN
     LOOP
@@ -189,6 +260,7 @@ END CallTermProcs;
 PROCEDURE CallRemoveProcs;
 VAR prev: RemovalList;
 BEGIN
+  Init();
   LOOP
     prev := RemovalRoot.prev;
     IF prev = ADR(RemovalRoot) THEN EXIT END;
@@ -383,11 +455,12 @@ VAR base: PtrBP;
 VAR hdlterm: PtrXBRA_Entry;
     prev: RemovalList;
 BEGIN
+  Init();
   IF (INTEGER32(pdb) <= 0) OR (INTEGER32(process) <= 0) THEN
-    DoTRAP6(IllegalCall);
+    DoTRAP6(MOSGlobals.IllegalCall);
   ELSE
     IF pdb^.layout <> layout THEN
-      DoTRAP6(IllegalPointer);
+      DoTRAP6(MOSGlobals.IllegalPointer);
     ELSE
       ActMOSProcess := process;
       base := pdb^.basePageAddr;
@@ -448,7 +521,7 @@ VAR hdlterm: PtrXBRA_Entry;
 BEGIN
   prev := ActPDB;
   IF prev = NIL THEN
-    DoTRAP6(IllegalCall);
+    DoTRAP6(MOSGlobals.IllegalCall);
   ELSE
     ActPDB := prev^.prev;
     ASM VOLATILE("move.l #hdlterm,%0" : "=g"(hdlterm));
@@ -462,7 +535,7 @@ END PopPDB;
 PROCEDURE SetProcessState ( state: PState );
 BEGIN
   IF ActPDB = NIL THEN
-    DoTRAP6(IllegalCall);
+    DoTRAP6(MOSGlobals.IllegalCall);
   ELSE
     ActPDB^.processState := state;
     IF state = opening THEN
@@ -524,49 +597,8 @@ BEGIN
 END Pterm;
 
 
-PROCEDURE getTOSHdr(): INTEGER32;
-TYPE PPtrOSHeader = POINTER TO PtrOSHeader;
-VAR sysbase : PPtrOSHeader;
 BEGIN
-   sysbase := PPtrOSHeader(_sysbase);
-   RETURN INTEGER32(sysbase^^.beg); (* wg. altem AHDI *)
-END getTOSHdr;
-
-
-BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
   dummyHdlTerm(); (* must be referenced to not be optimized out *)
-
-  TOSHdr := SuperExec(getTOSHdr);
-  IF TOSHdr^.version <= 0102H THEN
-    (* Spanisches TOS? *)
-    IF TOSHdr^.conf = 8 THEN
-      ProcessID := ADDRESS(0873CH);
-    ELSE
-      ProcessID := ADDRESS(0602CH);
-    END;
-  ELSE
-    ProcessID := TOSHdr^.run;
-  END;
-  BaseIsAccessory := FALSE;
-  BaseProcess := NIL;
-  BaseResident := FALSE;
-  ActMOSProcess := NIL;
-  ActPDB := NIL;
-  ModLevel := 0;
-  termVectorInstalled := FALSE;
-  makeResident := FALSE;
-  EnvRoot.prev := ADR(EnvRoot);
-  EnvRoot.next := ADR(EnvRoot);
-  RemovalRoot.next := ADR(RemovalRoot);
-  RemovalRoot.prev := ADR(RemovalRoot);
-
-  didPterm := FALSE;
-  mySSP := NIL;
-  PtermSSP := NIL;
-
-  IF MiNTaware THEN
-    MagXavail := FALSE;
-    MiNTavail := FALSE;
-  END;
-
+  Init();
 END MOSCtrl.

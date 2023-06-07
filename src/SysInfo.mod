@@ -16,7 +16,7 @@ IMPLEMENTATION MODULE SysInfo;
  *)
 
 FROM SYSTEM IMPORT SHIFT, INTEGER32;
-FROM MOSGlobals IMPORT Date;
+IMPORT MOSGlobals;
 IMPORT CookieJar;
 FROM MOSSupport IMPORT CallSuper, ToSuper, ToUser;
 FROM SysVars IMPORT _sysbase;
@@ -24,8 +24,8 @@ FROM XBIOS IMPORT SuperExec;
 FROM SysTypes IMPORT PtrOSHeader;
 
 
-PROCEDURE UnpackDate ( d: CARDINAL ): Date;
-VAR pd: Date;
+PROCEDURE UnpackDate ( d: CARDINAL ): MOSGlobals.Date;
+VAR pd: MOSGlobals.Date;
 BEGIN
   pd.year := CARDINAL(SHIFT(BITSET(d), -9) * BITSET(127)) + 1980;
   pd.month := CARDINAL(SHIFT(BITSET(d), -5) * BITSET(15));
@@ -125,7 +125,7 @@ BEGIN
 END getTOSHdr;
 
 
-PROCEDURE GetTOSVersion (VAR version, revision: CARDINAL; VAR date: Date);
+PROCEDURE GetTOSVersion (VAR version, revision: CARDINAL; VAR date: MOSGlobals.Date);
 VAR TOSHdr: PtrOSHeader;
 BEGIN
   TOSHdr := SuperExec(getTOSHdr);
@@ -183,4 +183,6 @@ BEGIN
 END FPUModel;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END SysInfo.

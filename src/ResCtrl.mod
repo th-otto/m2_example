@@ -2,31 +2,16 @@ IMPLEMENTATION MODULE ResCtrl;
 
 FROM SYSTEM IMPORT ADDRESS, ADR, TSIZE, BYTE;
 
-FROM MOSCtrl IMPORT RemovalRoot, RemovalEntry, RemovalList, GetPDB, PDB, PtrPDB;
+IMPORT MOSCtrl;
 
-FROM MOSGlobals IMPORT MemArea;
-
-
-PROCEDURE CatchRemoval ( VAR hdl: RemovalCarrier; info: RemovalProc; wsp: MemArea );
-VAR next, prev: RemovalList;
-BEGIN
-  hdl.next := NIL;
-  hdl.call := info;
-  hdl.wsp := wsp;
-  next := ADR(RemovalRoot);
-  prev := next^.prev;
-  hdl.next := next;
-  hdl.prev := prev;
-  prev^.next := ADR(hdl);
-  next^.prev := ADR(hdl);
-END CatchRemoval;
+IMPORT MOSGlobals;
 
 
 PROCEDURE Resident (): BOOLEAN;
-VAR pdb: PtrPDB;
+VAR pdb: MOSCtrl.PtrPDB;
     process: ADDRESS;
 BEGIN
-  GetPDB(pdb, process);
+  MOSCtrl.GetPDB(pdb, process);
   IF pdb <> NIL THEN
     RETURN pdb^.resident;
   END;
@@ -40,4 +25,6 @@ BEGIN
   IF d[0] <> 0 THEN END;
 END Private;
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END ResCtrl.

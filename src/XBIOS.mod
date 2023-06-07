@@ -1,6 +1,4 @@
 IMPLEMENTATION MODULE XBIOS;
-(*$Z-,S-,N+,R-,L-*)
-(*$Y+*)
 
 (*
 TT 20.07.90: ConfigurePrinter: MOVE.W statt MOVE.L, SET muesste nun stimmen
@@ -13,6 +11,7 @@ THO 25.05.23: Port to gm2
 FROM SYSTEM IMPORT ADR, ADDRESS, CARDINAL8, INTEGER16, BYTE, WORD;
 FROM SysTypes IMPORT PtrOSHeader;
 FROM SysVars IMPORT _sysbase;
+IMPORT MOSGlobals;
 
 
 PROCEDURE trap_14_w(n: INTEGER16): [ INTEGER32 ];
@@ -602,4 +601,6 @@ PROCEDURE ExtRsConf(command, device: INTEGER16; param: INTEGER32): [ INTEGER32 ]
   END ExtRsConf;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END XBIOS.

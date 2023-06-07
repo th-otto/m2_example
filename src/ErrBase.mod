@@ -37,7 +37,7 @@ FROM SysTypes IMPORT ExcDesc, ExcDescPtr, ZeroDivide, CHKExc, TRAPVExc, ExcSet,
 
 FROM MOSConfig IMPORT CaughtExceptions, IgnoreExceptions;
 
-FROM ResCtrl IMPORT RemovalCarrier, CatchRemoval;
+FROM MOSCtrl IMPORT RemovalEntry, CatchRemoval;
 
 IMPORT MOSGlobals;
 
@@ -50,7 +50,7 @@ VAR hdl2, hdl1:ADDRESS;
     gl_msg: TRAP6Msg;
 
 
-PROCEDURE DoTRAP6(no: INTEGER; [REF msg: TRAP6Msg = '' ] );
+PROCEDURE DoTRAP6(no: INTEGER);
 VAR cont: RtnCond;
     resp: ErrResp;
     info: ExcDesc;
@@ -71,7 +71,7 @@ BEGIN
     no := INTEGER(BITSET(no) + BITSET(0FFFFF000H));
   END;
   info.excNo := TRAP6;
-  ErrHdl(no, msg, resp, cont, ADR(info));
+  ErrHdl(no, '', resp, cont, ADR(info));
 END DoTRAP6;
 
 
@@ -200,9 +200,8 @@ BEGIN
 END RemoveExc;
 
 
-VAR stk: ARRAY [1..1000] OF BYTE;
-    wsp: MOSGlobals.MemArea;
-    rHdl: RemovalCarrier;
+VAR wsp: MOSGlobals.MemArea;
+    rHdl: RemovalEntry;
 
 PROCEDURE InstallExc;
 BEGIN
@@ -221,11 +220,12 @@ END InstallExc;
 
 
 BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
   ExcInstalled := FALSE;
   ErrHdl := ErrHdlProc(0);
+  wsp.bottom := NIL;
+  wsp.length := 0;
   CatchRemoval(rHdl, RemoveExc, wsp);
-  wsp.bottom := ADR(stk);
-  wsp.length := SIZE(stk);
   gl_no := 0;
   gl_resp := selfCaused;
   gl_cont := mayContinue;

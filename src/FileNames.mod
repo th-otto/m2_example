@@ -13,9 +13,7 @@ IMPLEMENTATION MODULE FileNames;
 
 FROM SYSTEM IMPORT ADDRESS, ADR, TSIZE, BYTE;
 IMPORT Strings;
-FROM MOSGlobals IMPORT FileStr, PathStr, DriveStr, NameStr, SfxStr, PfxStr,
-                       OutOfStack, StringOverflow, fNotDeleted, fPathNotFound, fFileNotFound,
-                       Drive, DriveSet;
+IMPORT MOSGlobals;
 FROM ErrBase IMPORT DoTRAP6, TRAP6_SELF, TRAP6_CONT;
 
 
@@ -71,7 +69,7 @@ END RIndex;
 
 
 PROCEDURE ConcatName(REF prefix, suffix: ARRAY OF CHAR; VAR name: ARRAY OF CHAR);
-VAR s1, s2: SfxStr; n1: NameStr; app: BOOLEAN;
+VAR s1, s2: MOSGlobals.SfxStr; n1: MOSGlobals.NameStr; app: BOOLEAN;
 BEGIN
   (* aufpassen, da 'prefix'/'suffix' mit 'name' identisch sein koennen! *)
   app := suffix[0] <> 0C;
@@ -89,7 +87,7 @@ END ConcatName;
 
 
 PROCEDURE ConcatPath(REF path, name: ARRAY OF CHAR; VAR fullname: ARRAY OF CHAR);
-VAR p1: PathStr; n2, n1: NameStr;
+VAR p1: MOSGlobals.PathStr; n2, n1: MOSGlobals.NameStr;
 BEGIN
   (* aufpassen, da 'path'/'name' mit 'fullName' identisch sein koennen! *)
   SplitPath(name, p1, n1);
@@ -98,16 +96,16 @@ BEGIN
 END ConcatPath;
 
 
-PROCEDURE NameConc( REF prefix, suffix: ARRAY OF CHAR ): FileStr;
-VAR n1: FileStr;
+PROCEDURE NameConc( REF prefix, suffix: ARRAY OF CHAR ): MOSGlobals.FileStr;
+VAR n1: MOSGlobals.FileStr;
 BEGIN
   ConcatName(prefix, suffix, n1);
   RETURN n1
 END NameConc;
 
 
-PROCEDURE PathConc( REF path, name: ARRAY OF CHAR ): FileStr;
-VAR p1: FileStr;
+PROCEDURE PathConc( REF path, name: ARRAY OF CHAR ): MOSGlobals.FileStr;
+VAR p1: MOSGlobals.FileStr;
 BEGIN
   ConcatPath(path, name, p1);
   RETURN p1
@@ -117,20 +115,20 @@ END PathConc;
 PROCEDURE SplitName( VAR (* REF *) filename: ARRAY OF CHAR; VAR prfx, sfx: ARRAY OF CHAR );
 VAR lenp, lens: CARDINAL;
     dot: INTEGER;
-    VAR buf: FileStr;
+    VAR buf: MOSGlobals.FileStr;
 BEGIN
   (* Fehler melden, wenn 'prfx' zu klein *)
   lenp := HIGH(prfx);
   INC(lenp);
   IF lenp < 8 THEN
-    DoTRAP6(StringOverflow - TRAP6_SELF);
+    DoTRAP6(MOSGlobals.StringOverflow - TRAP6_SELF);
   END;
 
   (* Fehler melden, wenn 'sfx' zu klein *)
   lens := HIGH(sfx);
   INC(lens);
   IF lens < 3 THEN
-    DoTRAP6(StringOverflow - TRAP6_SELF);
+    DoTRAP6(MOSGlobals.StringOverflow - TRAP6_SELF);
   END;
 
   Strings.Assign(filename, buf);
@@ -147,7 +145,7 @@ END SplitName;
   
 PROCEDURE SplitPath( REF fullname: ARRAY OF CHAR; VAR path, name: ARRAY OF CHAR );
 VAR dot: INTEGER;
-VAR buf: FileStr;
+VAR buf: MOSGlobals.FileStr;
 VAR lens: CARDINAL;
 BEGIN
   path[0] := 0C;
@@ -169,24 +167,24 @@ BEGIN
 END SplitPath;
 
 
-PROCEDURE FileName  ( REF filename: ARRAY OF CHAR ): NameStr;
-VAR path: PathStr; name: NameStr;
+PROCEDURE FileName  ( REF filename: ARRAY OF CHAR ): MOSGlobals.NameStr;
+VAR path: MOSGlobals.PathStr; name: MOSGlobals.NameStr;
 BEGIN
   SplitPath(filename, path, name);
   RETURN name
 END FileName;
 
 
-PROCEDURE FilePath  ( REF filename: ARRAY OF CHAR ): PathStr;
-VAR path: PathStr; name: NameStr;
+PROCEDURE FilePath  ( REF filename: ARRAY OF CHAR ): MOSGlobals.PathStr;
+VAR path: MOSGlobals.PathStr; name: MOSGlobals.NameStr;
 BEGIN
   SplitPath(filename, path, name);
   RETURN path
 END FilePath;
 
 
-PROCEDURE FilePrefix( REF filename: ARRAY OF CHAR ): PfxStr;
-VAR path: PathStr; name: NameStr; pfx: PfxStr; sfx: SfxStr;
+PROCEDURE FilePrefix( REF filename: ARRAY OF CHAR ): MOSGlobals.PfxStr;
+VAR path: MOSGlobals.PathStr; name: MOSGlobals.NameStr; pfx: MOSGlobals.PfxStr; sfx: MOSGlobals.SfxStr;
 BEGIN
   SplitPath(filename, path, name);
   SplitName(name, pfx, sfx);
@@ -194,8 +192,8 @@ BEGIN
 END FilePrefix;
 
 
-PROCEDURE FileSuffix( REF filename: ARRAY OF CHAR ): SfxStr;
-VAR path: PathStr; name: NameStr; pfx: PfxStr; sfx: SfxStr;
+PROCEDURE FileSuffix( REF filename: ARRAY OF CHAR ): MOSGlobals.SfxStr;
+VAR path: MOSGlobals.PathStr; name: MOSGlobals.NameStr; pfx: MOSGlobals.PfxStr; sfx: MOSGlobals.SfxStr;
 BEGIN
   SplitPath(filename, path, name);
   SplitName(name, pfx, sfx);
@@ -203,8 +201,8 @@ BEGIN
 END FileSuffix;
 
 
-PROCEDURE DriveToStr( driveNo: Drive ): DriveStr;
-VAR drive: DriveStr;
+PROCEDURE DriveToStr( driveNo: MOSGlobals.Drive ): MOSGlobals.DriveStr;
+VAR drive: MOSGlobals.DriveStr;
 BEGIN
   IF driveNo = defaultDrv THEN
     drive := '';
@@ -217,8 +215,8 @@ BEGIN
 END DriveToStr;
 
 
-PROCEDURE StrToDrive( REF driveStr: ARRAY OF CHAR ): Drive;
-VAR drive: Drive;
+PROCEDURE StrToDrive( REF driveStr: ARRAY OF CHAR ): MOSGlobals.Drive;
+VAR drive: MOSGlobals.Drive;
     ch: CHAR;
 BEGIN
   drive := defaultDrv;
@@ -228,7 +226,7 @@ BEGIN
       ch := CHR(ORD(ch) - 32);
     END;
     IF (ch >= 'A') AND (ch <= 'Z') THEN
-      drive := Drive(ORD(ch) - ORD('A') + 1);
+      drive := MOSGlobals.Drive(ORD(ch) - ORD('A') + 1);
     END;
   END;
   RETURN drive;
@@ -246,8 +244,8 @@ BEGIN
 END ValidatePath;
 
 
-PROCEDURE PathValidated( REF path: ARRAY OF CHAR ): PathStr;
-VAR newpath: PathStr;
+PROCEDURE PathValidated( REF path: ARRAY OF CHAR ): MOSGlobals.PathStr;
+VAR newpath: MOSGlobals.PathStr;
 BEGIN
   Strings.Assign(path, newpath);
   ValidatePath(newpath);
@@ -271,8 +269,8 @@ END NameUnique;
 
 
 PROCEDURE NameMatching( REF fileName, wildcard: ARRAY OF CHAR ): BOOLEAN;
-VAR filenamePfx, wildcardPfx: NameStr;
-VAR filenameSfx, wildcardSfx: SfxStr;
+VAR filenamePfx, wildcardPfx: MOSGlobals.NameStr;
+VAR filenameSfx, wildcardSfx: MOSGlobals.SfxStr;
 VAR i, j: CARDINAL;
 VAR ch, ch2: CHAR;
 BEGIN
@@ -315,4 +313,6 @@ BEGIN
 END NameMatching;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END FileNames.

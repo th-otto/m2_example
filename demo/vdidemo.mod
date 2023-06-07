@@ -20,37 +20,31 @@ IMPORT GEMEnv;
 
 IMPORT GEMBase;
 
-IMPORT Terminal;
-
-
 VAR dev: GEMEnv.DeviceHandle;
     gemHdl: GEMEnv.GemHandle;
     vdiHdl: INTEGER;
     ok: BOOLEAN;
 
+(*
+ * Implementation von Line mit Hilfe von VDIBase.
+ *)
 PROCEDURE Line (x1, y1, x2, y2: INTEGER);
-  (*
-   * Implementation von Line mit Hilfe von VDIBase.
-   *)
-  VAR aespb: GEMBase.AESPB; vdipb: GEMBase.VDIPB;
-  BEGIN
-    GEMBase.GetPBs (gemHdl, vdipb, aespb);
-    WITH vdipb DO
-      WITH pblock^ DO
-        opcode:= 6;
-        sptsin:= 2;
-        sptsout:= 0;
-        sintin:= 0;
-        sintout:= 0;
-      END;
-      pblock^.handle:= vdiHdl;
-      pioff^[0]:= x1;
-      pioff^[1]:= y1;
-      pioff^[2]:= x2;
-      pioff^[3]:= y2;
-    END;
-    GEMBase.CallVDI (ADR (vdipb));
-  END Line;
+VAR aespb: GEMBase.AESPB; vdipb: GEMBase.VDIPB;
+BEGIN
+  GEMBase.GetPBs (gemHdl, vdipb, aespb);
+  vdipb.contrl^.opcode := 6;
+  vdipb.contrl^.nptsin := 2;
+  vdipb.contrl^.nptsout := 0;
+  vdipb.contrl^.nintin := 0;
+  vdipb.contrl^.nintout := 0;
+  vdipb.contrl^.handle := vdiHdl;
+  vdipb.ptsin^[0] := x1;
+  vdipb.ptsin^[1] := y1;
+  vdipb.ptsin^[2] := x2;
+  vdipb.ptsin^[3] := y2;
+  GEMBase.CallVDI (ADR (vdipb));
+END Line;
+
 
 BEGIN
   (* Beim GEM anmelden *)
@@ -58,10 +52,10 @@ BEGIN
   IF NOT ok THEN HALT END;
   
   (* GEM-Handle ermitteln *)
-  gemHdl:= GEMEnv.CurrGemHandle ();
+  gemHdl := GEMEnv.CurrGemHandle ();
 
   (* INTEGER-Wert des VDI-Handle ermitteln *)
-  vdiHdl:= GEMBase.VDIHandle (dev);
+  vdiHdl := GEMBase.VDIHandle (dev);
 
   (* Linie zeichnen *)
   Line (0, 0, 639, 399);

@@ -42,51 +42,6 @@ FROM MOSCtrl IMPORT RemovalEntry, RemovalProc;
  *      "Envelopes").
  *)
 
-TYPE  RemovalCarrier = RemovalEntry;
-
-(*
- * Meldet eine Prozedur an, die aufgerufen wird, wenn das Modul,
- * das die Prozedur enthaelt, nicht mehr benoetigt wird und aus dem
- * Speicher entfernt werden kann.
- *
- * 'wsp' ist der Stack, der 'info' beim Aufruf zugeteilt wird. 'wsp.bottom'
- * darf NIL sein, dann wird der normale Programm-Stack verwendet.
- *
- * Diese Funktion (und nicht etwa 'CatchProcessTerm') ist deshalb
- * das exakte Gegenstueck zum Aufruf des Modulkoerpers.
- *
- * Dies ist der Fall, wenn
- *  a) das Modul in einem Programm eingelinkt ist und das Programm
- *     normal beendet;
- *  b) das Modul durch einen Import vom Loader (also durch Load-Time
- *     Link) dazugeladen und gestartet wurde und nun wieder freigegeben
- *     werden kann, da der Prozess wieder endet;
- *  c) das Modul von einem Modul importiert wird, das sich mit
- *     'ModCtrl.InstallModule' resident gemacht hatte und nach
- *     einem Aufruf von 'ReleaseModule', wie unter b), entfert wird.
- *
- * Wird ein Modul lediglich vom Loader (mittels 'LoadModule') geladen,
- * aber nicht aufgerufen, zaehlt das entsprechende Ausladen des Moduls
- * nicht zu den obigen Faellen. Vielmehr wird bei geladenen Modulen
- * so verfahren, als wenn das Modul jedesmal neu geladen und wieder
- * entladen wird.
- *
- * Somit ist diese Funktion dann zu verwenden, wenn ein Modul Ressourcen
- * dynamisch bei seiner Initialisierung oeffnet, die genau dann wieder
- * geschlossen werden duerfen, wenn das Modul nicht mehr benoetigt wird.
- * Normalerweise koennte man das dann mit 'PrgCtrl.CatchProcessTerm'
- * bewerkstelligen. Nur ist es dann nicht moeglich, das Modul in Pro-
- * grammen zu verwenden, die sich mit 'InstallModule' resident machen.
- *
- * Wird also z.B. in einem Modul im Koerper Speicher angefordert, sollte
- * dieser mit der Sys-Funktion (SysAlloc) angefordert werden und ueber
- * 'CatchRemoval' der Speicher wieder freigegeben werden.
- *
- * WICHTIG: Das benutzende Modul muss mit der Directive "$Y+" uebersetzt
- *          werden!
- *)
-PROCEDURE CatchRemoval ( VAR hdl: RemovalCarrier; info: PROC; wsp: MemArea );
-
 (*
  * Liefert TRUE, wenn der akt. Prozess z.Zt. resident ist.
  * Es ist zu beachten, dass dieser Zustand nicht im Modulkoerper schon

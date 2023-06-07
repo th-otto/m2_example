@@ -14,9 +14,11 @@ FROM MOSGlobals IMPORT SfxStr;
 
 (* Loader: *)
 
-VAR DftSfx: SfxStr; (* Default Suffix bei 'CallModule' ("MOD") *)
+(* Default Suffix bei 'CallModule' ("MOD") *)
+CONST DftSfx = 'mod';
 
-    ImpSfx: SfxStr; (* Suffix der importierten Module  ("IMP") *)
+(* Suffix der importierten Module  ("IMP") *)
+CONST ImpSfx = 'imp';
 
 
 (* max. Anzahl der gleichzeitig startbaren Module bei 'CallModule' *)
@@ -25,31 +27,32 @@ CONST MaxModExec = 100; (* Max. Anzahl gleichz. startbarer Module (100) *)
 
 (* Convert: *)
 
-VAR RadixChar: CHAR;
-  (*
-   * Wird bei den REAL-Umwandlungen in Textform zur Trennung der
-   * Nachkommastellen verwendet. (",")
-   * US-Norm: RadixChar:='.' / Deutsch: RadixChar:=',';
-   *)
+(*
+ * Wird bei den REAL-Umwandlungen in Textform zur Trennung der
+ * Nachkommastellen verwendet. (",")
+ * US-Norm: RadixChar:='.' / Deutsch: RadixChar:=',';
+ *)
+CONST RadixChar = '.';
 
-VAR FixToFloatMax, FixToFloatMin: LONGREAL;
-  (*
-   * Diese Variablen waehlen die Darstellungsform von REAL-Zahlen bei
-   * Umwandlung mit 'ConvReal' oder Ausgabe mit 'WriteReal':
-   * Festkomma, falls FixToFloatMin<=ABS(v) und ABS(v)<=FixToFloatMax,
-   * sonst Fliesskomma.
-   *)
+(*
+ * Diese Variablen waehlen die Darstellungsform von REAL-Zahlen bei
+ * Umwandlung mit 'ConvReal' oder Ausgabe mit 'WriteReal':
+ * Festkomma, falls FixToFloatMin<=ABS(v) und ABS(v)<=FixToFloatMax,
+ * sonst Fliesskomma.
+ *)
+CONST FixToFloatMax = 1.0E-5;
+CONST FixToFloatMin = 1.0E+6;
 
 
 (* TimeConvert: *)
 
-VAR StdDateExp: CARDINAL;               (* (1) *)
+CONST StdDateExp = 1;                   (* 1: t-m-j, 2: m-t-j, 3: j-m-t, 4: j-t-m *)
 
-VAR StdDateMask: ARRAY [0..31] OF CHAR; (* ('DD.MM.YYYY') *)
+(* Ausgabeform des Datums bei 'TimeConvert.DateToText': *)
+CONST StdDateMask = 'DD.MM.YYYY';
 
-VAR StdTimeExp: CARDINAL;               (* noch unbenutzt *)
-
-VAR StdTimeMask: ARRAY [0..9] OF CHAR;  (* ('HH:MM:SS') *)
+CONST StdTimeExp = 0;               (* noch unbenutzt *)
+CONST StdTimeMask = 'HH:MM:SS';
 
 (*
  * Trennzeichen fuer ReadToken und die Read-Funktionen aus NumberIO.
@@ -60,7 +63,7 @@ VAR StdTimeMask: ARRAY [0..9] OF CHAR;  (* ('HH:MM:SS') *)
  * Standardwert:  CHARSET {0C..' '};
  *   (das sind alle Control-Zeichen sowie das Leerzeichen)
  *)
-VAR Separators: CHARSET;
+CONST Separators = CHARSET{0C..' '};
 
 
 (* Exceptions, ErrBase, HdlError *)
@@ -131,7 +134,7 @@ VAR MaxBlSize: CSIZE_T;                         (* (0) *)
  * Bestimmt, ob StorBase in die Speicherverwaltung des GEMDOS eingreifen
  * darf. Mehr dazu im Modul StorBase.
  *)
-VAR ExtendedMemoryAccess: BOOLEAN;              (* (TRUE) *)
+CONST ExtendedMemoryAccess = TRUE;              (* (TRUE) *)
 
 
 (* Runtime/Coroutinen: *)
@@ -153,6 +156,6 @@ VAR ExtendedMemoryAccess: BOOLEAN;              (* (TRUE) *)
  *
  * Bei Installation des TRAP-Vektors wird die XBRA-Kennung "MM2C" verwendet.
  *)
-VAR CoroutineTrapNo: [0..15];                   (* (4) *)
+CONST CoroutineTrapNo = 4;                   (* (4) *)
 
 END MOSConfig.

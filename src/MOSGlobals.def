@@ -1,4 +1,5 @@
 DEFINITION MODULE MOSGlobals;
+#define REF
 
 FROM SYSTEM IMPORT LOC, ADDRESS, CARDINAL16, CARDINAL32, INTEGER16;
 
@@ -6,6 +7,8 @@ TYPE    MemArea = RECORD                (* Definiert einen Speicherbereich: *)
                     bottom: ADDRESS;    (* Startadresse *)
                     length: CARDINAL32  (* Laenge in Bytes *)
                   END;
+
+CONST TraceInit = FALSE;
 
 PROCEDURE MEM (VAR data: ARRAY OF LOC): MemArea;
   (*
@@ -146,5 +149,7 @@ CONST
         fNameTooLarge = -140;     (* Dateiname zu lang *)
         fDiskFull = -141;         (* Kein Speicherplatz auf Disk mehr *)
         fIllegalCall = -142;      (* Unerlaubter Funktionsaufruf *)
+
+PROCEDURE traceInit(REF file: ARRAY OF CHAR);
 
 END MOSGlobals.

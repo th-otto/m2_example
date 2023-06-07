@@ -21,6 +21,7 @@ FROM    SYSTEM          IMPORT ADDRESS, ADR, INTEGER32, CARDINAL32;
 
 FROM    GrafBase        IMPORT Point, Rectangle, PtrMouseFormDef,
                                PtrMemFormDef;
+IMPORT MOSGlobals;
  
  
 VAR     jmpTable        : POINTER TO ARRAY[0..15] OF PROC;
@@ -298,6 +299,7 @@ END ContourFill;
  
 
 BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
   ASM VOLATILE(
 #ifdef __mcoldfire__
     (*

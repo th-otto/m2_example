@@ -11,14 +11,25 @@ IMPLEMENTATION MODULE PrgCtrl; (* V#053 *)
 
 FROM SYSTEM IMPORT ADR, ADDRESS, TSIZE;
 
-FROM MOSGlobals IMPORT MemArea, IllegalCall;
+IMPORT MOSGlobals;
 
 IMPORT MOSCtrl;
 FROM MOSCtrl IMPORT ProcessID, GetPDB, PtrPDB, TermEntry, EnvEntry, ModLevel, PDB,
-      ExitCode, ActMOSProcess, EnvRoot, Pterm, TermList, EnvList;
+      ExitCode, ActMOSProcess, Pterm, TermList, EnvList;
 FROM ErrBase IMPORT DoTRAP6, TRAP6_SELF, TRAP6_CONT;
 
 (* ! Storage darf nicht importiert werden ! *)
+
+VAR EnvRoot: EnvList;
+VAR initialized: BOOLEAN;
+
+PROCEDURE Init();
+BEGIN
+  IF NOT(initialized) THEN
+    initialized := TRUE;
+    EnvRoot := NIL;
+  END;
+END Init;
 
 
 PROCEDURE TermProcess ( exitCode: INTEGER );
@@ -27,14 +38,15 @@ BEGIN
 END TermProcess;
 
 
-PROCEDURE CatchProcessTerm ( VAR hdl: TermCarrier; call: PROC; wsp: MemArea );
+PROCEDURE CatchProcessTerm ( VAR hdl: TermCarrier; call: PROC; wsp: MOSGlobals.MemArea );
 VAR pdb: PtrPDB;
     dummy: ADDRESS;
     oldHdl: TermList;
 BEGIN
+  Init();
   GetPDB(pdb, dummy);
   IF pdb = NIL THEN
-    DoTRAP6(IllegalCall);
+    DoTRAP6(MOSGlobals.IllegalCall);
   ELSE
     oldHdl := pdb^.termProcs;
     pdb^.termProcs := ADR(hdl);
@@ -45,21 +57,18 @@ BEGIN
 END CatchProcessTerm;
 
 
-PROCEDURE SetEnvelope ( VAR hdl: EnvlpCarrier; call: EnvlpProc; wsp: MemArea );
-VAR prev: EnvList;
+PROCEDURE SetEnvelope ( VAR hdl: EnvlpCarrier; call: EnvlpProc; wsp: MOSGlobals.MemArea );
 BEGIN
-  hdl.next := ADR(EnvRoot);
-  prev := EnvRoot.prev;
-  hdl.prev := prev;
-  prev^.next := ADR(hdl);
-  EnvRoot.prev := ADR(hdl);
+  Init();
+  hdl.next := EnvRoot;
+  EnvRoot := ADR(hdl);
   hdl.level := 0;
   hdl.call := call;
   hdl.wsp := wsp;
 END SetEnvelope;
 
 
-PROCEDURE SysSetEnvelope (VAR hdl: EnvlpCarrier; call: EnvlpProc; wsp: MemArea);
+PROCEDURE SysSetEnvelope (VAR hdl: EnvlpCarrier; call: EnvlpProc; wsp: MOSGlobals.MemArea);
 BEGIN
   SetEnvelope(hdl, call, wsp);
   DEC(hdl.level); (* level:= -1 *)
@@ -67,12 +76,17 @@ END SysSetEnvelope;
 
 
 PROCEDURE RemoveEnvelope ( VAR hdl: EnvlpCarrier );
-VAR next, prev: EnvList;
+VAR last: POINTER TO EnvList;
 BEGIN
-  next := hdl.next;
-  prev := hdl.prev;
-  next^.prev := prev;
-  prev^.next := next;
+  last := ADR(EnvRoot);
+  LOOP
+    IF last^ = NIL THEN EXIT END;
+    IF last^ = ADR(hdl) THEN
+      last^ := hdl.next;
+      EXIT;
+    END;
+    last := ADR(last^^.next);
+  END;
 END RemoveEnvelope;
 
 
@@ -127,4 +141,7 @@ BEGIN
 END SetNewExitCode;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
+  Init();
 END PrgCtrl.

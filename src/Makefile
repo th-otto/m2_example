@@ -4,6 +4,7 @@ include $(top_srcdir)/config.mak
 all:: libm2gem.a
 
 OBJS = \
+	MOSGlobals.o \
 	SysTypes.o \
 	SysVars.o \
 	SysVars2.o \
@@ -40,6 +41,7 @@ libm2gem.a: $(OBJS)
 	@$(RM) $@
 	$(AR) rcs $@ $(OBJS)
 
+MOSGlobals.o: MOSGlobals.mod MOSGlobals.def
 SysTypes.o: SysTypes.mod SysTypes.def
 SysVars.o: SysVars.mod SysVars.def
 SysVars2.o: SysVars2.mod SysVars2.def

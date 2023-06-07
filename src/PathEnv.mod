@@ -2,7 +2,7 @@ IMPLEMENTATION MODULE PathEnv;
 #define REF
 
 FROM SYSTEM IMPORT ADDRESS;
-FROM MOSGlobals IMPORT PathStr, FileStr;
+IMPORT MOSGlobals;
 IMPORT Strings;
 
 PROCEDURE ReplaceHome ( VAR pathOrName: ARRAY OF CHAR );
@@ -21,10 +21,10 @@ BEGIN
 END ReplaceHome;
 
 
-PROCEDURE HomeReplaced ( REF pathOrName: ARRAY OF CHAR ): FileStr;
-VAR s: FileStr;
+PROCEDURE HomeReplaced ( REF pathOrName: ARRAY OF CHAR ): MOSGlobals.FileStr;
+VAR s: MOSGlobals.FileStr;
 BEGIN
-  Strings.Assign (s, pathOrName);
+  Strings.Assign (pathOrName, s);
   ReplaceHome (s);
   RETURN s
 END HomeReplaced;
@@ -45,6 +45,7 @@ END NoSelect;
 
 
 BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
   IF ADDRESS(SelectFilePtr) = NIL THEN
     (* wenn nicht NIL, wurde Wert von GEMEnv-EnvelopeProc schon gesetzt *)
     SelectFilePtr := NoSelect

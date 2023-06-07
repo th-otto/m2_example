@@ -63,11 +63,11 @@ BEGIN
   GEMEnv.InitGem (GEMEnv.RC, dev, ok);
   IF NOT ok THEN HALT END;
   (* GEM-Handle ermitteln *)
-  gemHdl:= GEMEnv.CurrGemHandle ();
+  gemHdl := GEMEnv.CurrGemHandle ();
 
   (* Weitere Initialisierungen *)
-  path:= '\*.*';
-  name:= '';
+  path := '\*.*';
+  name := '';
 
   (* File-Selector aufrufen *)
   FselExInput ('Dies ist der Titel', path, name, ok);
