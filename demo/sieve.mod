@@ -9,11 +9,9 @@ MODULE Sieve;
  * hier extra abgeschaltet ist.
  *)
 
-(*$S-,R-*)
-
-IMPORT TOSIO; (*$E MOS *)
-
-FROM InOut  IMPORT  Read, Write, WriteString, WriteCard, WriteLn;
+FROM StrIO IMPORT WriteString, WriteLn;
+FROM NumberIO IMPORT WriteCard;
+FROM StdIO IMPORT Read, Write;
 
 CONST Size = 8190;
       Iter = 100;  (* Anzahl der Durchlaeufe *)
@@ -55,5 +53,6 @@ BEGIN
     oneSieve
   END;
   Write (7C);
-  WriteString ("Fertig.")
+  WriteString ("Fertig.");
+  WriteLn;
 END Sieve.

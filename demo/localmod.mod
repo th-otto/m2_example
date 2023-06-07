@@ -1,4 +1,3 @@
-
 (*
  * Dies Modul hat keine Funktion. Es demonstriert lediglich, wie der
  * Megamax-Compiler den IMPORT & EXPORT bei lokalen Modulen behandelt.

@@ -30,28 +30,17 @@ MODULE KbdTest;
  *   bleiben.
  *)
 
-FROM MOSCtrl IMPORT
-  ModLevel;
-FROM PrgCtrl IMPORT
-  GetBasePageAddr;
-FROM SYSTEM IMPORT
-  ASSEMBLER, ADDRESS, ADR, TSIZE, BYTE, WORD, LONGWORD;
-FROM ModCtrl IMPORT
-  FirstModuleStart, ReleaseModule, InstallModule;
-FROM MOSGlobals IMPORT
-  MemArea, Key, CtrlKey, CtrlSet;
-FROM Strings IMPORT
-  Length;
-FROM XBIOS IMPORT
-  KeyboardVectors;
-FROM Calls IMPORT
-  DisposeCaller, SysNewCaller, CallExtRegs, Registers;
-FROM KbdCtrl IMPORT
-  LookKey, GetKey, PutKey, UnlockKeyBuffer, LockKeyBuffer, PushBackKey;
-FROM Keyboard IMPORT
-  KeyCap, undoCap, SpecialKey, f11;
-IMPORT
-  XBRA;
+FROM MOSCtrl IMPORT ModLevel;
+FROM PrgCtrl IMPORT GetBasePageAddr;
+FROM SYSTEM IMPORT ADDRESS, ADR, TSIZE, BYTE, WORD, LONGWORD;
+FROM ModCtrl IMPORT FirstModuleStart, ReleaseModule, InstallModule;
+FROM MOSGlobals IMPORT MemArea, Key, CtrlKey, CtrlSet;
+FROM Strings IMPORT Length;
+FROM XBIOS IMPORT KeyboardVectors;
+FROM Calls IMPORT DisposeCaller, SysNewCaller, CallExtRegs, Registers;
+FROM KbdCtrl IMPORT LookKey, GetKey, PutKey, UnlockKeyBuffer, LockKeyBuffer, PushBackKey;
+FROM Keyboard IMPORT KeyCap, undoCap, SpecialKey, f11;
+IMPORT XBRA;
 
 CONST
   f11macro = 'Hallo !';  (* Dieser Text wird fuer Shift-F1 (F11) ersetzt *)
@@ -75,8 +64,8 @@ PROCEDURE FormAlert (but: CARDINAL; msg: ADDRESS);
 (*
  * Ersatz fuer FormAlert aus GEM-Modul, um die Importe zum mindern.
  *)
-  (*$L-*)
   BEGIN
+(*
     ASSEMBLER
         MOVE.L  -(A3),A0        ; msg
         LEA     Data(PC),A1
@@ -103,8 +92,8 @@ PROCEDURE FormAlert (but: CARDINAL; msg: ADDRESS);
 Control DC.W    52,1,1,1,0,0
 Data    DS      52
     END
+*)
   END FormAlert;
-  (*$L=*)
 
 
 PROCEDURE term;
@@ -158,7 +147,7 @@ PROCEDURE hdlKbd (VAR r: Registers);
   END hdlKbd;
 
 BEGIN
-  kbdV:= ADDRESS (KeyboardVectors ()) + $20L; (* Vektor f. Kbd-Auswertung *)
+  kbdV:= ADDRESS (KeyboardVectors ()) + 32; (* Vektor f. Kbd-Auswertung *)
   IF XBRA.Installed (Kennung, kbdV, at) THEN
     (* Wenn Routine schon installiert ist, diese entfernen *)
     term

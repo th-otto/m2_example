@@ -1,4 +1,5 @@
 MODULE WLTest;
+#define REF
 
 (*
  * Dies Modul demonstiert die Anwendung des Moduls "WindowLists", das
@@ -8,7 +9,8 @@ MODULE WLTest;
 FROM SYSTEM IMPORT ADDRESS,
                    ADR;
 
-FROM InOut IMPORT WriteCard, WriteLn, WriteString;
+FROM StrIO IMPORT WriteLn, WriteString;
+FROM NumberIO IMPORT WriteCard;
 
 FROM Storage IMPORT ALLOCATE, DEALLOCATE;
 
@@ -16,7 +18,7 @@ FROM Strings IMPORT String, Relation,
                     Empty, Append, Assign, Concat, Length, PosLen, Delete,
                     Compare;
 
-IMPORT FastStrings;
+IMPORT Strings;
 
 FROM Lists IMPORT List,
                   ResetList, PrevEntry, DeleteList, CreateList, AppendEntry,
@@ -62,13 +64,6 @@ VAR     WEnv    : PtrWEnv;
         VoidO   : BOOLEAN;
 
 
-FORWARD EntryToStr (entry, env: ADDRESS; VAR str: MaxStr);
-
-FORWARD CloseWList (wl: WindowList; env: ADDRESS);
-
-FORWARD OpenFolder (wl: WindowList; env, entry: ADDRESS; selMode: LONGCARD);
-
-
 VAR     CurrList        : List;
 
 PROCEDURE InsertEntryInCurr (REF path: ARRAY OF CHAR; entry: DirEntry): BOOLEAN;
@@ -112,39 +107,6 @@ PROCEDURE InsertEntryInCurr (REF path: ARRAY OF CHAR; entry: DirEntry): BOOLEAN;
   END InsertEntryInCurr;
   
 
-PROCEDURE newList (wEnvPtr: PtrWEnv);
-
-  VAR   res     : INTEGER;
-        wildName: String;
-
-  BEGIN
-    ConcatPath (wEnvPtr^.path, '*.*', wildName);
-    CreateList (CurrList, VoidO);
-    DirQuery (wildName, FileAttrSet{subdirAttr}, InsertEntryInCurr, res);
-    SetListWL (wEnvPtr^.wl, CurrList, EntryToStr, CloseWList, OpenFolder,
-               wEnvPtr, 16, wEnvPtr^.path);
-  END newList;
-
-PROCEDURE killList (wEnvPtr: PtrWEnv);
-
-  VAR   l       : List;
-        entry   : Entry;
-
-  BEGIN
-    GetListWL (wEnvPtr^.wl, l);
-    
-    ResetList (l);
-    entry := PrevEntry (l);
-    WHILE entry # NIL DO
-      RemoveEntry (l, VoidO);
-      DISPOSE (entry);
-      entry := CurrentEntry (l);
-    END;
-    DeleteList (l, VoidO);
-    IF VoidO THEN HALT END;
-  END killList;
-  
-  
 PROCEDURE EntryToStr (entry, env: ADDRESS; VAR str: MaxStr);
 
   VAR   data    : Entry;
@@ -158,9 +120,10 @@ PROCEDURE EntryToStr (entry, env: ADDRESS; VAR str: MaxStr);
       Assign ('  ', str, VoidO);
     END;
     Append (' ', str, VoidO);
-    FastStrings.Append (data^.name, str);
+    Strings.Append (data^.name, str);
     Append (' ', str, VoidO);
   END EntryToStr;
+
 
 PROCEDURE CloseWList (wl: WindowList; env: ADDRESS);
 
@@ -198,6 +161,7 @@ PROCEDURE CloseWList (wl: WindowList; env: ADDRESS);
     END;
   END CloseWList;
   
+
 PROCEDURE OpenFolder (wl: WindowList; entry, env: ADDRESS; selMode: LONGCARD);
 
   VAR   wEnvPtr : PtrWEnv;
@@ -222,6 +186,39 @@ PROCEDURE OpenFolder (wl: WindowList; entry, env: ADDRESS; selMode: LONGCARD);
   END OpenFolder;
   
 
+  
+PROCEDURE newList (wEnvPtr: PtrWEnv);
+
+  VAR   res     : INTEGER;
+        wildName: String;
+
+  BEGIN
+    ConcatPath (wEnvPtr^.path, '*.*', wildName);
+    CreateList (CurrList, VoidO);
+    DirQuery (wildName, FileAttrSet{subdirAttr}, InsertEntryInCurr, res);
+    SetListWL (wEnvPtr^.wl, CurrList, EntryToStr, CloseWList, OpenFolder,
+               wEnvPtr, 16, wEnvPtr^.path);
+  END newList;
+
+PROCEDURE killList (wEnvPtr: PtrWEnv);
+
+  VAR   l       : List;
+        entry   : Entry;
+
+  BEGIN
+    GetListWL (wEnvPtr^.wl, l);
+    
+    ResetList (l);
+    entry := PrevEntry (l);
+    WHILE entry # NIL DO
+      RemoveEntry (l, VoidO);
+      DISPOSE (entry);
+      entry := CurrentEntry (l);
+    END;
+    DeleteList (l, VoidO);
+    IF VoidO THEN HALT END;
+  END killList;
+  
   
 PROCEDURE KeyHdler (VAR ch: GemChar; VAR k: SpecialKeySet): BOOLEAN;
 
@@ -248,7 +245,7 @@ PROCEDURE ButHdler (clicks: CARDINAL; loc: Point; buts: MButtonSet;
         env  : ADDRESS;
 
   BEGIN
-    DetectWindowWL (WEnv^.wl, 0, loc, selectWL, 0L, wl, entry, env, VoidO);
+    DetectWindowWL (WEnv^.wl, 0, loc, selectWL, 0, wl, entry, env, VoidO);
     RETURN FALSE
   END ButHdler;
   
@@ -276,7 +273,7 @@ BEGIN
       HandleEvents (2, MButtonSet{msBut1}, MButtonSet{msBut1},
                     lookForEntry, Rect (0,0,0,0),
                     lookForEntry, Rect (0,0,0,0),
-                    0L,
+                    0,
                     Worker, 0);
     UNTIL Quit;
     

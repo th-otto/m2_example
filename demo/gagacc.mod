@@ -1,5 +1,4 @@
 MODULE GagACC;
-(*$E MAC*)
 
 (*
  * Dies ist eine etwas komplexeres GEM- und Accessory-Demo.
@@ -19,7 +18,7 @@ MODULE GagACC;
  * programmiert.
  *)
 
-IMPORT Gag;
+IMPORT gag;
 
 FROM AESEvents          IMPORT  accClose,       accOpen,        Event,
                                 EventSet,       MessageBuffer,  MultiEvent,

@@ -83,9 +83,7 @@ TABLE Daten:
 PROCEDURE ReadData (VAR x: INTEGER);
   TYPE PtrInt = POINTER TO INTEGER;
   BEGIN
-    (*$A+*)
-    Data:= PtrInt (CADR (Daten) + VAL (LONGCARD, x*2))^;
-    (*$A=*)
+    Data:= PtrInt (ADR (Daten) + VAL (LONGCARD, x*2))^;
     INC (x)
   END ReadData;
 
@@ -97,7 +95,7 @@ BEGIN
   WITH vars^ DO
     writingMode:=replaceWrt;
     plane1:=TRUE;
-    lineMask:=$FFFF;
+    lineMask:=0FFFFH;
     lastLine:=TRUE;
     clipping:=TRUE;
     minClip:=Pnt(0,0);

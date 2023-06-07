@@ -51,7 +51,7 @@ BEGIN
       MultiEvent( EventSet {keyboard}, 0, MButtonSet {}, MButtonSet {},
                   lookForEntry, Rect( 0, 0, 0, 0),
                   lookForEntry, Rect( 0, 0, 0, 0),
-                  msg, 0L, mouseLoc, buttons, keyState,
+                  msg, 0, mouseLoc, buttons, keyState,
                   key, doneClicks, occuredEvents);
       IF keyboard IN occuredEvents THEN
         IF key.scan = CAST( BYTE, 97) THEN

@@ -12,19 +12,17 @@ MODULE HaTschi;
  *    installiert.
  *)
 
-FROM SYSTEM IMPORT ASSEMBLER;
-FROM SYSTEM IMPORT ADDRESS, LISTEN, TRANSFER, IOTRANSFER, NEWPROCESS, ADR;
+FROM SYSTEM IMPORT ADDRESS, ADR;
+FROM SYSTEM IMPORT LISTEN, TRANSFER, IOTRANSFER, NEWPROCESS;
 
 FROM Storage IMPORT ALLOCATE, DEALLOCATE;
 
-FROM InOut IMPORT KeyPressed, WriteString, WriteLn;
+FROM StrIO IMPORT WriteString, WriteLn;
+FROM Keyboard IMPORT KeyPressed;
 
-FROM RandomGen IMPORT RandomCard;
+FROM Random IMPORT RandomCard;
 
 IMPORT MOSGlobals, PrgCtrl; (* nur f. lokales Modul *)
-
-
-(*$J-  (fuer langsame FOR-Schleifen) *)
 
 
 MODULE IR [5];
@@ -53,7 +51,7 @@ MODULE IR [5];
     BEGIN
       i:= 0;
       LOOP
-        IOTRANSFER (server, main, $4DEL);  (* VBL-Queue *)
+        IOTRANSFER (server, main, 04DEH);  (* VBL-Queue *)
         IF terminate THEN
           TRANSFER (server, main);
         END;
@@ -93,7 +91,7 @@ MODULE IR [5];
   END IR;
 
 
-CONST StackSize = 2000L;
+CONST StackSize = 2000;
 
 VAR a1, a2: ADDRESS;
     Main, Ha, Tschi: ADDRESS;
@@ -105,16 +103,15 @@ PROCEDURE schreibeHa;
     LOOP
       IF RandomCard (1,5) # 5 THEN
         WriteString (" Ha ");
-        FOR l:= 1L TO 3000L DO END
+        FOR l:= 1 TO 3000 DO END
       ELSE
         IF Key THEN
           Key:= FALSE;
           WriteString (" <Key> ")
         END;
         TRANSFER (Ha, Tschi); (* direkter Transfer auf 'Tschi' *)
-        ASSEMBLER
-          TRAP #0             (* indirekter Transfer ueber TRAP #0 -> 'Tschi' *)
-        END;
+        (* indirekter Transfer ueber TRAP #0 -> 'Tschi' *)
+        ASM VOLATILE("trap #0" : : : );
         WriteLn;
       END;
       IF Count >= 50 THEN
@@ -134,7 +131,7 @@ PROCEDURE schreibeTschi;
     LOOP
       WriteString (" Tschi ");
       INC (Count);
-      IOTRANSFER (Tschi, Ha, $80L);  (* Installation auf TRAP #0 *)
+      IOTRANSFER (Tschi, Ha, 080H);  (* Installation auf TRAP #0 *)
     END;
   END schreibeTschi;
 

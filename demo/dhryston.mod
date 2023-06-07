@@ -63,9 +63,11 @@ MODULE DhryStone;
  *
  *)
 
-FROM SYSTEM     IMPORT ADR;
-FROM InOut      IMPORT WriteString, WriteLn, WriteCard, Read;
-FROM Strings    IMPORT Compare, Relation;
+FROM SYSTEM     IMPORT ADR, INTEGER32, CARDINAL32;
+FROM StrIO      IMPORT WriteString, WriteLn;
+FROM StdIO      IMPORT Read;
+FROM NumberIO   IMPORT WriteCard;
+FROM Strings    IMPORT Compare, CompareResults;
 FROM Storage    IMPORT ALLOCATE;
 
 (**** Compiler-/Library-abhaengige Importe ****)
@@ -93,16 +95,17 @@ FROM Storage    IMPORT ALLOCATE;
 
 (**** Compiler-/Library-abhaengige Funktionen ****)
 
-    VAR hz200: LONGCARD;
+    VAR hz200: CARDINAL32;
 
-    PROCEDURE readTimer;
-      VAR p: POINTER TO LONGCARD;
+    PROCEDURE readTimer(): INTEGER32;
+      VAR p: POINTER TO CARDINAL32;
       BEGIN
         p:= ADDRESS (04BAH);  (* Adr. des 200 Hz-Timers beim ST *)
-        hz200:= p^
+        hz200:= p^;
+        RETURN hz200;
       END readTimer;
 
-    PROCEDURE time (): LONGCARD;
+    PROCEDURE time (): CARDINAL32;
       (* Diese Funktion liest den 200 Hz-Timer des ST aus *)
       BEGIN
         SuperExec (readTimer);
@@ -112,9 +115,9 @@ FROM Storage    IMPORT ALLOCATE;
 (* fuer Systeme, die keine Compare-Funktion haben (z.B. FTL),
  * oder eine DEUTLICH zu langsame Compare-Funktion haben (z.B. SPC):
 
-    TYPE Relation = (less, equal, greater);
+    TYPE CompareResults = (less, equal, greater);
 
-    PROCEDURE Compare (VAR left, right: ARRAY OF CHAR): Relation;
+    PROCEDURE Compare (VAR left, right: ARRAY OF CHAR): CompareResults;
       (*
        * Die VAR-Parameter sind fuer eine individuell auf diese
        * Testanwendung erstellte Funktion legitim. Dafuer
@@ -361,14 +364,13 @@ PROCEDURE Proc0();
     IntLoc1    : OneToFifty;
     IntLoc2    : OneToFifty;
     IntLoc3    : OneToFifty;
-    CharLoc    : CHAR;
     CharIndex  : CHAR;
     EnumLoc    : Enumeration;
     String1Loc : String30;
     String2Loc : String30;
-    starttime  : LONGCARD;
-    benchtime  : LONGCARD;
-    nulltime   : LONGCARD;
+    starttime  : CARDINAL32;
+    benchtime  : CARDINAL32;
+    nulltime   : CARDINAL32;
     i          : [0..LOOPS];
 
   BEGIN
@@ -430,10 +432,10 @@ PROCEDURE Proc0();
     WriteString(") time for ");
     WriteCard(LOOPS,6);
     WriteString(" passes is ");
-    WriteCard(benchtime DIV VAL (LONGCARD, HZ), 5);
+    WriteCard(benchtime DIV VAL (CARDINAL32, HZ), 5);
     WriteLn;
     WriteString("This machine benchmarks at ");
-    WriteCard(VAL (LONGCARD, LOOPS) * VAL (LONGCARD, HZ) DIV benchtime,6);
+    WriteCard(VAL (CARDINAL32, LOOPS) * VAL (CARDINAL32, HZ) DIV benchtime,6);
     WriteString(" dhrystones/second");
     WriteLn;
   END Proc0;
