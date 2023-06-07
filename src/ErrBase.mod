@@ -150,10 +150,17 @@ BEGIN
   (* bei FPU-Exceptions (48-54) diese bei der FPU bestaetigen *)
   IF (info^.excNo >= BSUnExc) AND (info^.excNo <= NANExc) THEN
     (* Set Bit 27 in BIU *)
+#ifdef __mcoldfire__
+    ASM VOLATILE(".dc.w 0xf327; tst.b (%%a7); beq.s 1f; clr.l %%d0; move.b 1(%%sp),%%d0; lea 0(%%a7,%%d0.l),%%a0; bset #3,(%%a0);1: .dc.w 0xf35f"
+      :
+      :
+      : "d0", "a0");
+#else
     ASM VOLATILE(".dc.w 0xf327; tst.b (%%a7); beq.s 1f; clr.w %%d0; move.b 1(%%sp),%%d0; bset #3,0(%%a7,%%d0.w);1: .dc.w 0xf35f"
       :
       :
       : "d0");
+#endif
   END;
   ErrHdl(no, msg, resp, cont, info);
   RETURN FALSE;

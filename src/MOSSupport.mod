@@ -7,7 +7,6 @@ IMPLEMENTATION MODULE MOSSupport;
 
 FROM GEMDOS IMPORT Super;
 
-TYPE iPROC = PROCEDURE(): INTEGER32;
 
 
 PROCEDURE ToSuper(): INTEGER32;
@@ -29,14 +28,12 @@ BEGIN
 END ToUser;
 
 
-PROCEDURE CallSuper(p: PROC): [ INTEGER32 ];
+PROCEDURE CallSuper(p: SuperExecProc): [ INTEGER32 ];
 VAR oldsp: INTEGER32;
 r: INTEGER32;
-ip: iPROC;
 BEGIN
   oldsp := ToSuper();
-  ip := iPROC(p);
-  r := ip();
+  r := p();
   ToUser(oldsp);
   RETURN r;
 END CallSuper;

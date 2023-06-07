@@ -41,7 +41,7 @@ FROM SYSTEM IMPORT CARDINAL32;
  * kann eine Variable vom Typ "SysTypes.AnyLongType" uebergeben und
  * der SHORTCARD dann ueber das Record-Feld "c1" erreicht werden.
  *)
-PROCEDURE GetCookie (cookie: CARDINAL32; VAR value: CARDINAL32): BOOLEAN;
+PROCEDURE GetCookie (cookie: CARDINAL32; VAR value: CARDINAL32): [ BOOLEAN ];
 
 (*
  * Sucht, wie 'GetCookie', den Cookie und liefert FALSE, wenn er nicht

@@ -1,6 +1,7 @@
 DEFINITION MODULE MOSSupport;
 
 FROM SYSTEM IMPORT INTEGER32;
+TYPE SuperExecProc = PROCEDURE(): INTEGER32;
 
 (*
  * Internes Modul!
@@ -13,7 +14,7 @@ FROM SYSTEM IMPORT INTEGER32;
  * Mode erlaubt.
  * Liefert D0 zurueck.
  *)
-PROCEDURE CallSuper(p: PROC): [ INTEGER32 ];
+PROCEDURE CallSuper(p: SuperExecProc): [ INTEGER32 ];
 
 (*
  * ToSuper benutzt GEMDOS.Super, erwartet dazu auf dem Stack ein

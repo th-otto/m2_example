@@ -32,6 +32,7 @@ OBJS = \
 	Clock.o \
 	Excepts.o \
 	MOSSupport.o \
+	SysInfo.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -66,6 +67,7 @@ Directory.o: Directory.mod Directory.def
 Clock.o: Clock.mod Clock.def
 Excepts.o: Excepts.mod Excepts.def
 MOSSupport.o: MOSSupport.mod MOSSupport.def
+SysInfo.o: SysInfo.mod SysInfo.def
 
 clean::
 	rm -f *.o *.a

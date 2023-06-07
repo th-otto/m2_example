@@ -89,13 +89,23 @@ VAR busHdl: PROC;
 
 
 TYPE    EntryData = RECORD
-	d1: CARDINAL16;
+#ifdef __mcoldfire__
+	d1: CARDINAL16; (* move.l %%a0,-(%%a7) *)
+	d2: CARDINAL16; (* movem.l %%d0-%%a6 *)
+	pEntry1: PtrEntry; (* abs.l *)
+	d4: CARDINAL16; (* movem.l %%d0-%%a6,(%%a0) *)
+	d5: CARDINAL16;
+	d6: CARDINAL16; (* move.l (%%a7)+,32(%%a0)" *)
+	d7: CARDINAL16;
+#else
+	d1: CARDINAL16; (* movem.l %%d0-%%a6 *)
 	d2: CARDINAL16;
-	pEntry1: PtrEntry;
-	d3: CARDINAL16;
-	pEntry2: PtrEntry;
-	d4: CARDINAL16;
-	excNo: CARDINAL16
+	pEntry1: PtrEntry; (* abs.l *)
+	d3: CARDINAL16; (* move.l # *)
+	pEntry2: PtrEntry; (* abs.l *)
+#endif
+	d8: CARDINAL16; (* move.w # *)
+	excNo: CARDINAL16 (* abs.w *)
 	(* ... und noch beliebig mehr Bytes... *)
 END;
 
@@ -103,8 +113,15 @@ END;
 PROCEDURE busEntry;
 BEGIN
   (* instruction sequence here must match EntryData above *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("move.l %%a0,-(%%a7)" : : );
+  ASM VOLATILE("move.l #0x123456,%%a0" : : );
+  ASM VOLATILE("movem.l %%d0-%%a6,(%%a0)" : : );
+  ASM VOLATILE("move.l (%%a7)+,32(%%a0)" : : );
+#else
   ASM VOLATILE("movem.l %%d0-%%a6,0x123456" : : );
   ASM VOLATILE("move.l #0x123456,%%a0" : : );
+#endif
   ASM VOLATILE("move.w #1234,82(%%a0)" : : ); (* excNo *)
   ASM VOLATILE("move.l %0,-(%%a7)" : : "m"(busHdl) : );
   ASM VOLATILE("rts" : : );
@@ -115,8 +132,15 @@ END busEntry;
 PROCEDURE normEntry0;
 BEGIN
   (* instruction sequence here must match EntryData above *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("move.l %%a0,-(%%a7)" : : );
+  ASM VOLATILE("move.l #0x123456,%%a0" : : );
+  ASM VOLATILE("movem.l %%d0-%%a6,(%%a0)" : : );
+  ASM VOLATILE("move.l (%%a7)+,32(%%a0)" : : );
+#else
   ASM VOLATILE("movem.l %%d0-%%a6,0x123456" : : );
   ASM VOLATILE("move.l #0x123456,%%a0" : : );
+#endif
   ASM VOLATILE("move.w #1234,82(%%a0)" : : ); (* excNo *)
   ASM VOLATILE("move.w (%%a7)+,72(%%a0)" : : ); (* regSR *)
   ASM VOLATILE("move.l (%%a7)+,68(%%a0)" : : ); (* regPC *)
@@ -128,8 +152,15 @@ END normEntry0;
 PROCEDURE normEntry20;
 BEGIN
   (* instruction sequence here must match EntryData above *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("move.l %%a0,-(%%a7)" : : );
+  ASM VOLATILE("move.l #0x123456,%%a0" : : );
+  ASM VOLATILE("movem.l %%d0-%%a6,(%%a0)" : : );
+  ASM VOLATILE("move.l (%%a7)+,32(%%a0)" : : );
+#else
   ASM VOLATILE("movem.l %%d0-%%a6,0x123456" : : );
   ASM VOLATILE("move.l #0x123456,%%a0" : : );
+#endif
   ASM VOLATILE("move.w #1234,82(%%a0)" : : ); (* excNo *)
   ASM VOLATILE("move.w (%%a7)+,72(%%a0)" : : ); (* regSR *)
   ASM VOLATILE("move.l (%%a7)+,68(%%a0)" : : ); (* regPC *)
@@ -141,8 +172,15 @@ END normEntry20;
 PROCEDURE fastEntry;
 BEGIN
   (* instruction sequence here must match EntryData above *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("move.l %%a0,-(%%a7)" : : );
+  ASM VOLATILE("move.l #0x123456,%%a0" : : );
+  ASM VOLATILE("movem.l %%d0-%%a6,(%%a0)" : : );
+  ASM VOLATILE("move.l (%%a7)+,32(%%a0)" : : );
+#else
   ASM VOLATILE("movem.l %%d0-%%a6,0x123456" : : );
   ASM VOLATILE("move.l #0x123456,%%a0" : : );
+#endif
   ASM VOLATILE("move.w #1234,82(%%a0)" : : ); (* excNo *)
   ASM VOLATILE("move.w (%%a7)+,72(%%a0)" : : ); (* regSR *)
   ASM VOLATILE("move.l (%%a7)+,68(%%a0)" : : ); (* regPC *)
@@ -189,16 +227,16 @@ BEGIN
 	(* Adr. der Instruktion suchen (2 bis 10 Bytes vor PC) *)
 	ASM VOLATILE("moveq   #-2,%%d1" : : );
 ASM VOLATILE("1:");
-	ASM VOLATILE("cmp.w   0(%%a2,%%d1.w),%%d0" : : );   (* Instr. gefunden ? *)
+	ASM VOLATILE("cmp.w   0(%%a2,%%d1.l),%%d0" : : );   (* Instr. gefunden ? *)
 	ASM VOLATILE("beq.s   3f" : : );              (* Ja, PC (A2) auf die Adr. setzen *)
-	ASM VOLATILE("subq    #2,%%d1" : : );           (* weiter zurueck *)
+	ASM VOLATILE("subq.l  #2,%%d1" : : );           (* weiter zurueck *)
 	ASM VOLATILE("cmpi    #-10,%%d1" : : );         (* nicht mehr als 10 Bytes zurueck *)
 	ASM VOLATILE("bcc.s   1b" : : );              (* weitersuchen *)
 ASM VOLATILE("2:");
 	ASM VOLATILE("move.l  %%a2,68(%%a0)" : : ); (* regPC *)
 	ASM VOLATILE("jmp     %0" : : "m"(excHandler0) );     (* nicht gefunden, PC unveraendert lassen *)
 ASM VOLATILE("3:");
-	ASM VOLATILE("adda    %%d1,%%a2" : : );
+	ASM VOLATILE("adda.l  %%d1,%%a2" : : );
 	ASM VOLATILE("bra.s   2b" : : );
 END busHdl0;
 
@@ -228,7 +266,13 @@ BEGIN
 	ASM VOLATILE("move.l  %%a1,64(%%a0)" : : ); (* regUSP *)
 	
 	(* Routine aufrufen *)
+#ifdef __mcoldfire__
+	ASM VOLATILE("move.w  %%sr,%%d0" : : );
+	ASM VOLATILE("andi.l  #0xcfff,%%d0" : : );
+	ASM VOLATILE("move.w  %%d0,%%sr" : : );  (* User Mode *)
+#else
 	ASM VOLATILE("andi    #0xcfff,%%sr" : : );  (* User Mode *)
+#endif
 	ASM VOLATILE("move.l  94(%%a0),%%a3" : : ); (* Entry.stackLow *)
 	ASM VOLATILE("move.l  98(%%a0),%%a7" : : ); (* Entry.stackHigh *)
 	ASM VOLATILE("move.l  %%a0,-(%%a7)" : : );
@@ -259,8 +303,14 @@ BEGIN
 	ASM VOLATILE("rte" : : );
 	
 ASM VOLATILE("1:" : : );
+#ifdef __mcoldfire__
+	ASM VOLATILE("move.w  82(%%a2),%%d0" : : ); (* excNo *)
+	ASM VOLATILE("cmpi.w  #4,%%d0" : : );
+	ASM VOLATILE("bcc.s   2f" : : );
+#else
 	ASM VOLATILE("cmpi.w  #4,82(%%a2)" : : ); (* excNo *)
 	ASM VOLATILE("bcc.s   2f" : : );
+#endif
 	ASM VOLATILE("move.w  80(%%a2),-(%%a7)" : : ); (* instruction *)
 	ASM VOLATILE("move.l  74(%%a2),-(%%a7)" : : ); (* accessAddr *)
 	ASM VOLATILE("move.w  78(%%a2),-(%%a7)" : : ); (* superSR *)
@@ -279,7 +329,13 @@ BEGIN
 	ASM VOLATILE("move.l  %%a1,64(%%a0)" : : ); (* regUSP *)
 	
 	(* Routine aufrufen *)
-	ASM VOLATILE("andi    #0xCFFF,%%sr" : : );     (* User Mode *)
+#ifdef __mcoldfire__
+	ASM VOLATILE("move.w  %%sr,%%d0" : : );
+	ASM VOLATILE("andi.l  #0xcfff,%%d0" : : );
+	ASM VOLATILE("move.w  %%d0,%%sr" : : );  (* User Mode *)
+#else
+	ASM VOLATILE("andi    #0xcfff,%%sr" : : );     (* User Mode *)
+#endif
 	ASM VOLATILE("move.l  94(%%a0),%%a3" : : ); (* Entry.stackLow *)
 	ASM VOLATILE("move.l  98(%%a0),%%a7" : : ); (* Entry.stackHigh *)
 	ASM VOLATILE("move.l  %%a0,-(%%a7)" : : );
@@ -441,7 +497,9 @@ BEGIN
           memcpy(pData, ADDRESS(procS), procL);
           pData^.excNo := i;
           pData^.pEntry1 := pEntry;
+#ifndef __mcoldfire__
           pData^.pEntry2 := pEntry;
+#endif
           SetVec(i, pData, pEntry^.xbra.prev.prev);
           
           pEntry := ADDRESS(pData) + procL;
@@ -511,7 +569,11 @@ END DeInstallExc;
 PROCEDURE RaiseExc0 ( no: HardExceptions );
 BEGIN
   (* platz f. pc/sr bei supervisormode *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("subq.l  #6,%%a7; lea -24(%%a7),%%a7; movem.l %%d0-%%d2/%%a0-%%a2,(%%a7); move.l  %0,%%d2 " : : "d"(no));
+#else
   ASM VOLATILE("subq.l  #6,%%a7; movem.l %%d0-%%d2/%%a0-%%a2,-(%%a7); move.l  %0,%%d2 " : : "d"(no));
+#endif
   
   ASM VOLATILE("move.l  #1,-(%%a7)" : : );
   ASM VOLATILE("move.w  #32,-(%%a7)" : : );
@@ -530,7 +592,11 @@ BEGIN
   
   ASM VOLATILE("lea     -10(%%a7),%%a7" : : );       (* platz v. rts-adr/sr/pc *)
   ASM VOLATILE("move    %%sr,%%d0" : : );
-  ASM VOLATILE("andi    #0xcfff,%%d0" : : );        (* User Mode *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("andi.l  #0xcfff,%%d0" : : );        (* User Mode *)
+#else
+  ASM VOLATILE("andi.w  #0xcfff,%%d0" : : );        (* User Mode *)
+#endif
   ASM VOLATILE("move.w  %%d0,4(%%a7)" : : );        (* sr auf superv-stack *)
   ASM VOLATILE("move.l  %%usp,%%a0" : : );
   ASM VOLATILE("lea     24(%%a0),%%a0" : : );
@@ -544,27 +610,48 @@ BEGIN
   ASM VOLATILE("lea     24+10(%%a0),%%a0" : : );
   ASM VOLATILE("move.l  %%a0,%%usp" : : );
   
-  ASM VOLATILE("lsl     #2,%%d2" : : );             (* * 4 *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("lsl.l   #2,%%d2" : : );             (* * 4 *)
+#else
+  ASM VOLATILE("lsl.w   #2,%%d2" : : );             (* * 4 *)
+#endif
   ASM VOLATILE("move.w  %%d2,%%a0" : : );
   ASM VOLATILE("move.l  (%%a0),%%a0" : : );         (* vektor *)
   ASM VOLATILE("move.l  %%a0,24(%%a7)" : : );       (* als RTS-Wert hinter die 6 geretteten Regs *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("movem.l (%%a7),%%d0-%%d2/%%a0-%%a2; lea 24(%%a7),%%a7" : : );
+#else
   ASM VOLATILE("movem.l (%%a7)+,%%d0-%%d2/%%a0-%%a2" : : );
+#endif
   ASM VOLATILE("rts" : : );
 
 ASM VOLATILE("1:" : : );
-  ASM VOLATILE("lsl     #2,%%d2" : : );             (* * 4 *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("lsl.l   #2,%%d2" : : );             (* * 4 *)
+#else
+  ASM VOLATILE("lsl.w   #2,%%d2" : : );             (* * 4 *)
+#endif
   ASM VOLATILE("move.w  %%d2,%%a0" : : );
   ASM VOLATILE("move.l  (%%a0),%%a0" : : );         (* vektor *)
   ASM VOLATILE("move.l  %%a0,24(%%a7)" : : );       (* als RTS-Wert hinter die 6 geretteten Regs *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("move.w  %%sr,%%d0; move.w %%d0,24+4(%%a7)" : : );     (* SR auf Superv-Stack *)
+  ASM VOLATILE("movem.l (%%a7),%%d0-%%d2/%%a0-%%a2; lea 24(%%a7),%%a7" : : );
+#else
   ASM VOLATILE("move.w  %%sr,24+4(%%a7)" : : );     (* SR auf Superv-Stack *)
   ASM VOLATILE("movem.l (%%a7)+,%%d0-%%d2/%%a0-%%a2" : : );
+#endif
 END RaiseExc0;
 
 
 PROCEDURE RaiseExc20 ( no: HardExceptions );
 BEGIN
   (* space for format/offset word 68020 *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("subq.l  #8,%%a7; lea -24(%%a7),%%a7; movem.l %%d0-%%d2/%%a0-%%a2,(%%a7); move.l  %0,%%d2 " : : "d"(no));
+#else
   ASM VOLATILE("subq.l  #8,%%a7; movem.l %%d0-%%d2/%%a0-%%a2,-(%%a7); move.l  %0,%%d2 " : : "d"(no));
+#endif
   (*       ^  +30 W   Format/Offset (68020) *)
   (*       |  +28 W   SR *)
   (*       +  +24 L   PC for RTS *)
@@ -597,7 +684,11 @@ BEGIN
   ASM VOLATILE("move.l  %%usp,%%a0" : : );
   ASM VOLATILE("lea     24(%%a0),%%a0" : : );
   ASM VOLATILE("move    %%sr,%%d0" : : );
-  ASM VOLATILE("andi    #0xCFFF,%%d0" : : );        (* User Mode *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("andi.l  #0xcfff,%%d0" : : );        (* User Mode *)
+#else
+  ASM VOLATILE("andi.w  #0xcfff,%%d0" : : );        (* User Mode *)
+#endif
   ASM VOLATILE("move.w  %%d0,4(%%a7)" : : );        (* SR auf Superv-Stack *)
   ASM VOLATILE("move.l  6(%%a0),6(%%a7)" : : );     (* PC auf Superv-Stack *)
   ASM VOLATILE("move.w  10(%%a0),10(%%a7)" : : );   (* SF auf Superv-Stack *)
@@ -610,18 +701,30 @@ BEGIN
   ASM VOLATILE("lea     24+12(%%a0),%%a0" : : );
   ASM VOLATILE("move.l  %%a0,%%usp" : : );
   
-  ASM VOLATILE("lsl     #2,%%d2" : : );             (* * 4 *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("lsl.l   #2,%%d2" : : );             (* * 4 *)
+#else
+  ASM VOLATILE("lsl.w   #2,%%d2" : : );             (* * 4 *)
+#endif
   ASM VOLATILE("move.w  %%d2,%%a0" : : );
   ASM VOLATILE("move.l  (%%a0),%%a0" : : );         (* vektor *)
   ASM VOLATILE("move.l  %%a0,24(%%a7)" : : );       (* als RTS-Wert hinter die 6 geretteten Regs *)
   
   ASM VOLATILE("cmpi    #16,%%d2" : : );          (* Bus- o. Address error ? *)
   ASM VOLATILE("bcs     2f" : : );          (* ja *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("movem.l (%%a7),%%d0-%%d2/%%a0-%%a2; lea 24(%%a7),%%a7" : : );
+#else
   ASM VOLATILE("movem.l (%%a7)+,%%d0-%%d2/%%a0-%%a2" : : );
+#endif
   ASM VOLATILE("rts" : : );
 
 ASM VOLATILE("2:" : : );
+#ifdef __mcoldfire__
+  ASM VOLATILE("movem.l (%%a7),%%d0-%%d2/%%a0-%%a2; lea 24(%%a7),%%a7" : : );
+#else
   ASM VOLATILE("movem.l (%%a7)+,%%d0-%%d2/%%a0-%%a2" : : );
+#endif
   ASM VOLATILE("subq.l  #8,%%a7" : : );
   ASM VOLATILE("move.l  8(%%a7),(%%a7)" : : );
   ASM VOLATILE("clr.l   4(%%a7)" : : );
@@ -629,19 +732,35 @@ ASM VOLATILE("2:" : : );
   ASM VOLATILE("rts" : : );
 
 ASM VOLATILE("1:" : : );
-  ASM VOLATILE("lsl     #2,%%d2" : : );             (* * 4 *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("lsl.l   #2,%%d2" : : );             (* * 4 *)
+#else
+  ASM VOLATILE("lsl.w   #2,%%d2" : : );             (* * 4 *)
+#endif
   ASM VOLATILE("move.w  %%d2,%%a0" : : );
   ASM VOLATILE("move.l  (%%a0),%%a0" : : );         (* vektor *)
   ASM VOLATILE("move.l  %%a0,24(%%a7)" : : );       (* als RTS-Wert hinter die 6 geretteten Regs *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("move.w  %%sr,%%d0; move.w %%d0,24+4(%%a7)" : : );     (* SR auf Superv-Stack *)
+#else
   ASM VOLATILE("move.w  %%sr,24+4(%%a7)" : : );     (* SR auf Superv-Stack *)
+#endif
   
   ASM VOLATILE("cmpi    #16,%%d2" : : );          (* Bus- o. Address error ? *)
   ASM VOLATILE("bcs     3f" : : );          (* ja *)
+#ifdef __mcoldfire__
+  ASM VOLATILE("movem.l (%%a7),%%d0-%%d2/%%a0-%%a2; lea 24(%%a7),%%a7" : : );
+#else
   ASM VOLATILE("movem.l (%%a7)+,%%d0-%%d2/%%a0-%%a2" : : );
+#endif
   ASM VOLATILE("rts" : : );
 
 ASM VOLATILE("3:" : : );
+#ifdef __mcoldfire__
+  ASM VOLATILE("movem.l (%%a7),%%d0-%%d2/%%a0-%%a2; lea 24(%%a7),%%a7" : : );
+#else
   ASM VOLATILE("movem.l (%%a7)+,%%d0-%%d2/%%a0-%%a2" : : );
+#endif
   ASM VOLATILE("subq.l  #8,%%a7" : : );
   ASM VOLATILE("move.l  8(%%a7),(%%a7)" : : );
   ASM VOLATILE("clr.l   4(%%a7)" : : );

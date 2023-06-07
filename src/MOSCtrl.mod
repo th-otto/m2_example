@@ -78,6 +78,7 @@ FROM SysVars IMPORT _sysbase, etv_term;
 FROM XBIOS IMPORT SuperExec;
 FROM ErrBase IMPORT DoTRAP6;
 FROM CookieJar IMPORT GetCookie;
+FROM SysTypes IMPORT PtrOSHeader;
 
 
 (* ! Storage darf nicht importiert werden ! *)
@@ -276,7 +277,11 @@ BEGIN
       ASM VOLATILE("move.l %0,%%a7" : : "g"(mySSP));
     END;
     (* *** setup Stack Pointers & enter User Mode *** *)
+#ifdef __mcoldfire__
+    ASM VOLATILE("lea -512(%%a7),%%a0; move.l %%a0,%%usp; move.w %%sr,%%d0; andi.l #0xdfff,%%d0; move.w %%d0,%%sr" : : : "d0", "a0"); (* SupervisorStackAmount *)
+#else
     ASM VOLATILE("lea -512(%%a7),%%a0; move.l %%a0,%%usp; andi.w #0xdfff,%%sr" : : : "a0"); (* SupervisorStackAmount *)
+#endif
     (* *** call installed termination procedures *** *)
     (* last of them removes this handler from the etv_term vector *)
     callExitProcs();
@@ -494,7 +499,11 @@ BEGIN
   (* ... but must load exitCode into register first, because that changes sp *)
   ASM VOLATILE("move.l %1,%0" : "=r"(r) : "g"(exitCod) : "cc");
   IF Super(1) = -1 THEN
+#ifdef __mcoldfire__
+    ASM VOLATILE ("move.w %%sr,%%d0; andi.l #0xdfff,%%d0; move.w %%d0,%%sr" : : : "d0");
+#else
     ASM VOLATILE ("andi.w #0xdfff,%%sr" : : : );
+#endif
   END;
   setTermCode(pdb, r);
   IF pdb^.processState <> closing THEN

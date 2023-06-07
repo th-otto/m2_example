@@ -15,7 +15,7 @@ PROCEDURE trap_13_w(n: INTEGER16): [ INTEGER32 ];
 VAR
     retvalue: INTEGER32;
 BEGIN
-    ASM VOLATILE("move.w %1,-(%%sp); trap #13; addq.w #2,%%sp; move.l %%d0,%0"
+    ASM VOLATILE("move.w %1,-(%%sp); trap #13; addq.l #2,%%sp; move.l %%d0,%0"
        : "=r"(retvalue)
        : "g"(n)
        : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory"
@@ -28,7 +28,7 @@ PROCEDURE trap_13_ww(n: INTEGER16; a: INTEGER16): [ INTEGER32 ];
 VAR
     retvalue: INTEGER32;
 BEGIN
-    ASM VOLATILE("move.w %2,-(%%sp); move.w %1,-(%%sp); trap #13; addq.w #4,%%sp; move.l %%d0,%0"
+    ASM VOLATILE("move.w %2,-(%%sp); move.w %1,-(%%sp); trap #13; addq.l #4,%%sp; move.l %%d0,%0"
        : "=r"(retvalue)
        : "g"(n), "r"(a)
        : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory"
@@ -41,7 +41,7 @@ PROCEDURE trap_13_www(n: INTEGER16; a: INTEGER16; b: INTEGER16): [ INTEGER32 ];
 VAR
     retvalue: INTEGER32;
 BEGIN
-    ASM VOLATILE("move.w %3,-(%%sp); move.w %2,-(%%sp); move.w %1,-(%%sp); trap #13; addq.w #6,%%sp; move.l %%d0,%0"
+    ASM VOLATILE("move.w %3,-(%%sp); move.w %2,-(%%sp); move.w %1,-(%%sp); trap #13; addq.l #6,%%sp; move.l %%d0,%0"
        : "=r"(retvalue)
        : "g"(n), "r"(a), "r"(b)
        : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory"
@@ -54,7 +54,7 @@ PROCEDURE trap_13_wwl(n: INTEGER16; a: INTEGER16; b: INTEGER32): [ INTEGER32 ];
 VAR
     retvalue: INTEGER32;
 BEGIN
-    ASM VOLATILE("move.l %3,-(%%sp); move.w %2,-(%%sp); move.w %1,-(%%sp); trap #13; addq.w #8,%%sp; move.l %%d0,%0"
+    ASM VOLATILE("move.l %3,-(%%sp); move.w %2,-(%%sp); move.w %1,-(%%sp); trap #13; addq.l #8,%%sp; move.l %%d0,%0"
        : "=r"(retvalue)
        : "g"(n), "r"(a), "r"(b)
        : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory"
@@ -67,7 +67,7 @@ PROCEDURE trap_13_wl(n: INTEGER16; a: INTEGER32): [ INTEGER32 ];
 VAR
     retvalue: INTEGER32;
 BEGIN
-    ASM VOLATILE("move.l %2,-(%%sp); move.w %1,-(%%sp); trap #13; addq.w #6,%%sp; move.l %%d0,%0"
+    ASM VOLATILE("move.l %2,-(%%sp); move.w %1,-(%%sp); trap #13; addq.l #6,%%sp; move.l %%d0,%0"
        : "=r"(retvalue)
        : "g"(n), "r"(a)
        : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory"
