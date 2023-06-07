@@ -33,6 +33,7 @@ OBJS = \
 	Excepts.o \
 	MOSSupport.o \
 	SysInfo.o \
+	CookieJar.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -68,6 +69,7 @@ Clock.o: Clock.mod Clock.def
 Excepts.o: Excepts.mod Excepts.def
 MOSSupport.o: MOSSupport.mod MOSSupport.def
 SysInfo.o: SysInfo.mod SysInfo.def
+CookieJar.o: CookieJar.mod CookieJar.def
 
 clean::
 	rm -f *.o *.a

@@ -51,7 +51,7 @@ PROCEDURE GetCookie (cookie: CARDINAL32; VAR value: CARDINAL32): [ BOOLEAN ];
  * Hiermit werden also keine neuen Cookies eingetragen sondern nur
  * vorhandene modifiziert!
  *)
-PROCEDURE ModifyCookie (cookie: CARDINAL32; newvalue: CARDINAL32): BOOLEAN;
+PROCEDURE ModifyCookie (cookie: CARDINAL32; newvalue: CARDINAL32): [ BOOLEAN ];
 
 TYPE CookieProc = PROCEDURE (     (* cookie: *) CARDINAL32,
                               VAR (* value : *) CARDINAL32 ): BOOLEAN;
@@ -63,9 +63,6 @@ TYPE CookieProc = PROCEDURE (     (* cookie: *) CARDINAL32,
  * Die 'with'-Funktion muss einen BOOLEAN-Wert zurueckgeben. Ist er FALSE,
  * wird die Query-Funktion abgebrochen, bei TRUE werden weitere Cookies
  * durchgegangen.
- *
- * Wegen des $H+ (s.o.) ist es moeglich, auch lokale Prozeduren an 'with'
- * zu uebergeben (ist aber nicht portabel!).
  *
  * Das Modul 'ShowCookies' im UTILITY-Ordner zeigt die Anwendung dieser
  * Prozedur.
