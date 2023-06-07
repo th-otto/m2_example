@@ -86,6 +86,7 @@ FROM GEMShare IMPORT device, cb, deviceMagic, logInpDev, inputMode, our_cb, root
      aes_if, vdi_if, unloadFonts, setDevice,
      windowSet, PtrDevParm, intinMax, ptsinMax, MaxWinds, closeWindow, deleteWindow,
      showCursor, hideCursor;
+FROM GEMBase IMPORT PtrPtsoutArray, PtrIntoutArray;
 FROM AESMisc IMPORT ShellRead;
 FROM AESGraphics IMPORT GrafMouse, MouseForm;
 FROM Directory IMPORT GetDefaultPath;
@@ -112,6 +113,7 @@ VAR     noInits         : CARDINAL;  (*  Zaehlt die Anzahl der '(Sys)InitGem's *
                                                * ob schon appl_init() auf-
                                                * gerufen wurde. *)
 
+CONST   maxParm         = 56;
 
 (*  misc. internal proc.s  *)
 (*  =====================  *)
@@ -155,36 +157,37 @@ END GrafHandle;
 PROCEDURE opnwrk0(ctrlcode: CARDINAL32;
                   handle  : CARDINAL;
                   device, koorSys : CARDINAL;
-                  VAR param           : ARRAY OF INTEGER): CARDINAL;
-VAR     oldpts,oldint           :ADDRESS;
+                  VAR param           : ARRAY OF INTEGER16): CARDINAL;
+VAR     oldpts: PtrPtsoutArray;
+        oldint: PtrIntoutArray;
         i                       :CARDINAL;
+VAR cb: GemHandle;
 BEGIN
-  IF HIGH(param)<56 THEN        (* Nicht genug Platz fuer die Parameter *)
+  IF HIGH(param)<maxParm THEN        (* Nicht genug Platz fuer die Parameter *)
     DoTRAP6(GeneralErr - TRAP6_CONT);
     RETURN 0;
   END;
-  our_cb^.V_CONTRL.handle := handle;
-  WITH our_cb^ DO
-    oldpts := vdipb.ptsout;
-    oldint := vdipb.intout;
-    vdipb.intout := ADR (param[0]);
-    vdipb.ptsout := ADR (param[45]);
-    pubs.vINTIN[0] := device;
-    FOR i:=1 TO 9 DO pubs.vINTIN[i] := 1 END;   (* Wird vom GEM ignoriert *)
-    pubs.vINTIN[10] := koorSys;
-  END;
+  cb := our_cb;
+  cb^.V_CONTRL.handle := handle;
+  oldpts := cb^.vdipb.ptsout;
+  oldint := cb^.vdipb.intout;
+  cb^.vdipb.intout := ADR (param[0]);
+  cb^.vdipb.ptsout := ADR (param[45]);
+  cb^.pubs.vINTIN[0] := device;
+  FOR i:=1 TO 9 DO
+    cb^.pubs.vINTIN[i] := 1;
+  END;   (* Wird vom GEM ignoriert *)
+  cb^.pubs.vINTIN[10] := koorSys;
   vdi_if(NIL, ctrlcode);
-  WITH our_cb^ DO
-    vdipb.intout := oldint;
-    vdipb.ptsout := oldpts;
-    RETURN V_CONTRL.handle
-  END;
+  cb^.vdipb.intout := oldint;
+  cb^.vdipb.ptsout := oldpts;
+  RETURN cb^.V_CONTRL.handle;
 END opnwrk0;
 
 
 PROCEDURE v_opnwk (    device,
                        koorSys: CARDINAL;
-                   VAR param  : ARRAY OF INTEGER): CARDINAL;
+                   VAR param  : ARRAY OF INTEGER16): CARDINAL;
 BEGIN
   RETURN opnwrk0(VDI_CTRL_CODE(GEMOps.V_OPNWK, 0, 0, 11), 0, device, koorSys, param);
 END v_opnwk;
@@ -192,7 +195,7 @@ END v_opnwk;
 
 PROCEDURE v_opnvwk (    handle          : CARDINAL;
                         device, koorSys : CARDINAL;
-                    VAR param           : ARRAY OF INTEGER): CARDINAL;
+                    VAR param           : ARRAY OF INTEGER16): CARDINAL;
 BEGIN
   RETURN opnwrk0(VDI_CTRL_CODE(GEMOps.OPEN_V_WORK, 0, 0, 11), handle, device, koorSys, param);
 END v_opnvwk;
@@ -210,36 +213,35 @@ BEGIN
 END v_clsvwk;
 
 
-PROCEDURE extendedInquire (handle: DeviceHandle; VAR param: ARRAY OF INTEGER);
-VAR     oldpts,oldint           :ADDRESS;
+PROCEDURE extendedInquire (handle: DeviceHandle; VAR param: ARRAY OF INTEGER16);
+VAR     oldpts: PtrPtsoutArray;
+        oldint: PtrIntoutArray;
+VAR cb: GemHandle;
 BEGIN
-  IF HIGH(param)<56 THEN        (* Nicht genug Platz fuer die Parameter *)
+  IF HIGH(param)<maxParm THEN        (* Nicht genug Platz fuer die Parameter *)
     DoTRAP6(GeneralErr - TRAP6_CONT);
     RETURN;
   END;
-  WITH our_cb^ DO
-    oldpts := vdipb.ptsout;
-    oldint := vdipb.intout;
-    vdipb.intout := ADR (param[0]);
-    vdipb.ptsout := ADR (param[45]);
-    pubs.vINTIN[0] := 1;                     (* Erfrage erweiterte Parameter *)
-  END;
+  cb := our_cb;
+  oldpts := cb^.vdipb.ptsout;
+  oldint := cb^.vdipb.intout;
+  cb^.vdipb.intout := ADR (param[0]);
+  cb^.vdipb.ptsout := ADR (param[45]);
+  cb^.pubs.vINTIN[0] := 1;                     (* Erfrage erweiterte Parameter *)
   vdi_if(handle, VDI_CTRL_CODE(GEMOps.EXTENDED_INQUIRE, 0, 0, 1));
-  WITH our_cb^ DO
-    vdipb.intout := oldint;
-    vdipb.ptsout := oldpts;
-  END;
+  cb^.vdipb.intout := oldint;
+  cb^.vdipb.ptsout := oldpts;
 END extendedInquire;
 
 
 PROCEDURE OpenDevice (dev, sysKoor, newMode: CARDINAL; VAR hdl: DeviceHandle);
 
-CONST   maxParm         = 56;
 TYPE PtrDeviceHandle = POINTER TO DeviceHandle;
 
 VAR     i               : INTEGER;
+        numgdps         : INTEGER;
         current         : DeviceHandle;
-        parameters      : ARRAY[0..maxParm] OF INTEGER;
+        parameters      : ARRAY[0..maxParm] OF INTEGER16;
         j               : GDPFkt;
         last : PtrDeviceHandle;
 
@@ -283,8 +285,10 @@ BEGIN
   current^.params.cellHeight := 0;
   current^.params.cellWidth  := 0;
   current^.mode := newMode;
-  IF newMode = NonVirtual THEN current^.handle := v_opnwk (dev, sysKoor, parameters)
-  ELSE current^.handle := v_opnvwk (newMode, dev, sysKoor, parameters) END;
+  IF newMode = NonVirtual THEN
+    current^.handle := v_opnwk (dev, sysKoor, parameters)
+  ELSE
+    current^.handle := v_opnvwk (newMode, dev, sysKoor, parameters) END;
   IF current^.handle = 0
   THEN
     deleteLast (last);
@@ -319,8 +323,13 @@ BEGIN
   FOR j := MIN(GDPFkt) TO MAX(GDPFkt) DO
     current^.params.possibleGDPs[j] := notAvaible;
   END;
-  FOR i := 0 TO parameters[14]-1 DO
-    current^.params.possibleGDPs[VAL(GDPFkt, parameters[i+15]-1)] := VAL(GDPAttribute, parameters[i+25]);
+  numgdps := parameters[14];
+  IF numgdps > MAX(GDPFkt) THEN numgdps := MAX(GDPFkt) + 1; END;
+  FOR i := 0 TO numgdps-1 DO
+    j := VAL(GDPFkt, parameters[i+15] - 1);
+    IF (j >= MIN(GDPFkt)) AND (j <= MAX(GDPFkt)) THEN
+      current^.params.possibleGDPs[j] := VAL(GDPAttribute, parameters[i+25]);
+    END;
   END;
 
   current^.params.color := (parameters[35] <> 0);
@@ -336,7 +345,7 @@ BEGIN
 
   current^.params.screen := VAL(ScreenType, parameters[0]);
   current^.params.bgColors := parameters[1];
-  current^.params.useTEffects := TEffectSet(parameters[2]);
+  current^.params.useTEffects := VAL(TEffectSet, parameters[2]);
   current^.params.zooming := (parameters[3] <> 0);
   current^.params.maxRasterPls := parameters[4];
   current^.params.lookUpTab := (parameters[5] <> 0);
@@ -350,9 +359,9 @@ BEGIN
   current^.params.colorRibbon := (parameters[13] <> 0);
   current^.params.maxMarker := parameters[14];
   IF intinMax <= parameters[15] THEN
-    current^.params.maxStrLen := intinMax (* Unser Array ist eben nicht groesser *)
+    current^.params.maxStrLen := intinMax; (* Unser Array ist eben nicht groesser *)
   ELSE
-    current^.params.maxStrLen := parameters[15]
+    current^.params.maxStrLen := parameters[15];
   END;
   current^.params.noMButts := parameters[16];
   current^.params.thickLnTyps := (parameters[17] <> 0);
@@ -441,6 +450,7 @@ END selectFileTOSDependent;
 PROCEDURE initGem (VAR success: BOOLEAN;
                        sys    : BOOLEAN);
 VAR   oldc                            : GemHandle;
+VAR cb: GemHandle;
 BEGIN
 
   success := FALSE;
@@ -455,66 +465,63 @@ BEGIN
 
   (*  Init neue private Vars *)
 
-  WITH our_cb^ DO
+  cb := our_cb;
 
-    LASTCB := root_cb;     (*  Neuer 'cb' ist erster in der Liste  *)
+  cb^.LASTCB := root_cb;     (*  Neuer 'cb' ist erster in der Liste  *)
 
-   (*  Supervision-Parameter initialisieren
-    *)
-    WITH SUPERVISION DO
-      noGrafMouse := 0;
-      noUpWind := 0;
-      noMouseCtrl := 0;
-      openWinds := windowSet{};
-      createWinds := windowSet{};
-      timerChgd := FALSE;
-      butChgChgd := FALSE;
-      msMoveChgd := FALSE;
-      curChgChgd := FALSE;
+ (*  Supervision-Parameter initialisieren
+  *)
+  cb^.SUPERVISION.noGrafMouse := 0;
+  cb^.SUPERVISION.noUpWind := 0;
+  cb^.SUPERVISION.noMouseCtrl := 0;
+  cb^.SUPERVISION.openWinds := windowSet{};
+  cb^.SUPERVISION.createWinds := windowSet{};
+  cb^.SUPERVISION.timerChgd := FALSE;
+  cb^.SUPERVISION.butChgChgd := FALSE;
+  cb^.SUPERVISION.msMoveChgd := FALSE;
+  cb^.SUPERVISION.curChgChgd := FALSE;
+
+  cb^.A_CONTRL.naddrout := 0;
+
+  (*  AES-/VDI-Paramterbloecke mit Array-Adresse init.
+   *)
+  cb^.aespb.pcontrl  := ADR (cb^.A_CONTRL);
+  cb^.aespb.pglobal  := ADR (cb^.GLOBAL);
+  cb^.aespb.pintin   := ADR (cb^.pubs.aINTIN);
+  cb^.aespb.pintout  := ADR (cb^.pubs.aINTOUT);
+  cb^.aespb.paddrin  := ADR (cb^.pubs.ADDRIN);
+  cb^.aespb.paddrout := ADR (cb^.pubs.ADDROUT);
+  cb^.vdipb.contrl  := ADR (cb^.V_CONTRL);
+  cb^.vdipb.ptsin   := ADR (cb^.pubs.PTSIN);
+  cb^.vdipb.ptsout  := ADR (cb^.pubs.PTSOUT);
+  cb^.vdipb.intin   := ADR (cb^.pubs.vINTIN);
+  cb^.vdipb.intout  := ADR (cb^.pubs.vINTOUT);
+
+  (*  Anmeldung beim AES
+   *)
+  IF NOT appIsInit[modID] THEN
+    cb^.GLOBAL.ap_version := 0;
+    aes_if(AES_CTRL_CODE(GEMOps.APPL_INIT, 0, 1, 0));
+    cb^.GLOBAL.ap_id := cb^.pubs.aINTOUT[0];
+    IF cb^.GLOBAL.ap_version <> 0 THEN gemStatus := available END;
+    IF (gemStatus <> available) OR (cb^.GLOBAL.ap_id < 0)  (*  AES o.k.?  *) THEN
+      DEALLOCATE (our_cb, SIZE (our_cb^));
+      our_cb := oldc;
+      RETURN
     END;
-
-    A_CONTRL.naddrout := 0;
-
-    (*  AES-/VDI-Paramterbloecke mit Array-Adresse init.
-     *)
-    aespb.pcontrl  := ADR (A_CONTRL);
-    aespb.pglobal  := ADR (GLOBAL);
-    aespb.pintin   := ADR (pubs.aINTIN);
-    aespb.pintout  := ADR (pubs.aINTOUT);
-    aespb.paddrin  := ADR (pubs.ADDRIN);
-    aespb.paddrout := ADR (pubs.ADDROUT);
-    vdipb.contrl  := ADR (V_CONTRL);
-    vdipb.ptsin   := ADR (pubs.PTSIN);
-    vdipb.ptsout  := ADR (pubs.PTSOUT);
-    vdipb.intin   := ADR (pubs.vINTIN);
-    vdipb.intout  := ADR (pubs.vINTOUT);
-
-    (*  Anmeldung beim AES
-     *)
-    IF NOT appIsInit[modID] THEN
-      GLOBAL.ap_version := 0;
-      aes_if(AES_CTRL_CODE(GEMOps.APPL_INIT, 0, 1, 0));
-      GLOBAL.ap_id := pubs.aINTOUT[0];
-      IF GLOBAL.ap_version <> 0 THEN gemStatus := available END;
-      IF (gemStatus <> available) OR (GLOBAL.ap_id < 0)  (*  AES o.k.?  *) THEN
-        DEALLOCATE (our_cb, SIZE (our_cb^));
-        our_cb := oldc;
-        RETURN
-      END;
-      SelectFilePtr := selectFileTOSDependent;
-      DIDAPPLINIT := TRUE;
-      appIsInit[modID] := TRUE;
-      error := FALSE;
-    ELSE
-      DIDAPPLINIT := FALSE;
-      GLOBAL := root_cb^.GLOBAL
-    END;
-
-    (*  Geraeteliste := leere Liste
-     *)
-    DEVICES := NIL;
-    CURDEVICE := NIL;
+    SelectFilePtr := selectFileTOSDependent;
+    cb^.DIDAPPLINIT := TRUE;
+    appIsInit[modID] := TRUE;
+    error := FALSE;
+  ELSE
+    cb^.DIDAPPLINIT := FALSE;
+    cb^.GLOBAL := root_cb^.GLOBAL
   END;
+
+  (*  Geraeteliste := leere Liste
+   *)
+  cb^.DEVICES := NIL;
+  cb^.CURDEVICE := NIL;
 
   (*
     GetScanAddr (scan); InitChain (scan);
@@ -526,14 +533,14 @@ BEGIN
   *)
 
   IF sys THEN
-    our_cb^.OWNER_ID := -modID;   (* Merke ID des anmeldenden Moduls *)
+    cb^.OWNER_ID := -modID;   (* Merke ID des anmeldenden Moduls *)
   ELSE
-    our_cb^.OWNER_ID := modID;    (* Merke ID des anmeldenden Moduls *)
+    cb^.OWNER_ID := modID;    (* Merke ID des anmeldenden Moduls *)
   END;
-  root_cb := our_cb;            (*  Neuer cb bildet Listenanfang
+  root_cb := cb;            (*  Neuer cb bildet Listenanfang
                                  *  Listenordnung: historisch
                                  *)
-  our_cb^.MAGIC := cbMagic;
+  cb^.MAGIC := cbMagic;
   INC (noInits);                (* Anzahl der Level-Init's erhoehen *)
 
   success := TRUE;              (* Neuer Level erfolgreich angemeldet! *)
@@ -570,32 +577,29 @@ VAR   oldc                            : GemHandle;
       charH, charW, cellW, cellH      : CARDINAL;
       args                            : ARRAY[0..127] OF CHAR;
       name                            : FileStr;
+VAR cb: GemHandle;
 
 BEGIN
   oldc := our_cb;                 (* Alte private Vars merken *)
   initGem (success, sys);
   IF success THEN
-    WITH our_cb^ DO
+    cb := our_cb;
 
-      (* Standardgeraet (Screen) anmelden *)
-      GrafHandle (charH, charW, cellH, cellW, wrkStation);
-      OpenDevice (screen, sysKoor, wrkStation, handle);
-      IF handle = NIL THEN
-        DEALLOCATE (our_cb, SIZE (our_cb^));
-        our_cb := oldc;
-        success := FALSE;
-        RETURN
-      END;
-
-      WITH DEVICES^.params DO
-        charHeight := charH;
-        charWidth := charW;
-        cellHeight := cellH;
-        cellWidth := cellH;
-      END;
-      CURDEVICE := DEVICES;
-
+    (* Standardgeraet (Screen) anmelden *)
+    GrafHandle (charH, charW, cellH, cellW, wrkStation);
+    OpenDevice (screen, sysKoor, wrkStation, handle);
+    IF handle = NIL THEN
+      DEALLOCATE (our_cb, SIZE (our_cb^));
+      our_cb := oldc;
+      success := FALSE;
+      RETURN
     END;
+
+    cb^.DEVICES^.params.charHeight := charH;
+    cb^.DEVICES^.params.charWidth := charW;
+    cb^.DEVICES^.params.cellHeight := cellH;
+    cb^.DEVICES^.params.cellWidth := cellH;
+    cb^.CURDEVICE := cb^.DEVICES;
 
     (* PathEnv-Vars / File-Selektor-Box init. *)
     IF NOT didShRead[modID] THEN
@@ -753,7 +757,7 @@ BEGIN
 
     our_cb := handle;
 
-    IF our_cb^.OWNER_ID <> 0 THEN
+    IF handle^.OWNER_ID <> 0 THEN
 
       (*
       RemoveSelector;     (* Alte File-Selektor-Box wieder einhaengen *)
@@ -765,41 +769,38 @@ BEGIN
       (*  'showCursor'-Aufrufe sind schon ausgefuehrt worden
        *)
       IF doSupervision THEN
-        WITH our_cb^.SUPERVISION DO    (* Melde alle GEM-IR-Vektoren ab *)
-          WHILE timerChgd DO
-            removeTimerVector (timerVecList^)
-          END;
-          WHILE butChgChgd DO
-            removeButChgVector (butChgVecList^)
-          END;
-          WHILE msMoveChgd DO
-            removeMsMoveVector (msMoveVecList^)
-          END;
-          WHILE curChgChgd DO
-            removeCurChgVector (curChgVecList^)
-          END;
+        (* Melde alle GEM-IR-Vektoren ab *)
+        WHILE handle^.SUPERVISION.timerChgd DO
+          removeTimerVector (timerVecList^)
+        END;
+        WHILE handle^.SUPERVISION.butChgChgd DO
+          removeButChgVector (butChgVecList^)
+        END;
+        WHILE handle^.SUPERVISION.msMoveChgd DO
+          removeMsMoveVector (msMoveVecList^)
+        END;
+        WHILE handle^.SUPERVISION.curChgChgd DO
+          removeCurChgVector (curChgVecList^)
         END;
       END;
 
       (* Devices abmelden *)
 
-      WHILE our_cb^.DEVICES <> NIL DO
-        CloseDevice (our_cb^.DEVICES);
+      WHILE handle^.DEVICES <> NIL DO
+        CloseDevice (handle^.DEVICES);
       END;
 
       (* AES zuruecksetzen und eventuell Obj. abmelden *)
 
       IF doSupervision THEN
-        WITH our_cb^.SUPERVISION DO
-          WHILE noUpWind > 0 DO updateWindow (EndUpdate) END;
-          WHILE noMouseCtrl > 0 DO updateWindow (EndMctrl) END;
-          closeDelWinds; (* Schliesse und loesche alle Fenster dieser Modulebene *)
-        END;
+        WHILE handle^.SUPERVISION.noUpWind > 0 DO updateWindow (EndUpdate) END;
+        WHILE handle^.SUPERVISION.noMouseCtrl > 0 DO updateWindow (EndMctrl) END;
+        closeDelWinds; (* Schliesse und loesche alle Fenster dieser Modulebene *)
       END;
 
-      IF our_cb^.DIDAPPLINIT THEN
+      IF handle^.DIDAPPLINIT THEN
         aes_if (AES_CTRL_CODE(GEMOps.APPL_EXIT, 0, 1, 0));
-        our_cb^.DIDAPPLINIT:= FALSE;
+        handle^.DIDAPPLINIT := FALSE;
         appIsInit[modID] := FALSE;
         error := FALSE
       END
@@ -808,10 +809,10 @@ BEGIN
     (* Kette our_cb aus der cb-Liste aus *)
 
     IF remove THEN
-      oldc := our_cb^.LASTCB;
-      whipFromList (root_cb, our_cb);
-      our_cb^.MAGIC := 0;
-      DEALLOCATE (our_cb, SIZE (our_cb^));
+      oldc := handle^.LASTCB;
+      whipFromList (root_cb, handle);
+      handle^.MAGIC := 0;
+      DEALLOCATE (handle, SIZE (handle^));
       our_cb := oldc; (* our_cb should point to the cb of the calling module *)
       DEC (noInits);
       handle := NIL;

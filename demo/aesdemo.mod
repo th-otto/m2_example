@@ -31,6 +31,8 @@ IMPORT GEMBase;
 IMPORT GEMEnv;
 
 IMPORT StrIO, StdIO;
+FROM IOChan IMPORT Flush;
+FROM StdChans IMPORT StdOutChan;
 
 VAR dev: GEMEnv.DeviceHandle;
     gemHdl: GEMEnv.GemHandle;
@@ -48,12 +50,10 @@ PROCEDURE FselExInput(  REF ftitle: ARRAY OF CHAR;
   VAR aespb: GEMBase.AESPB; vdipb: GEMBase.VDIPB;
   BEGIN
     GEMBase.GetPBs (gemHdl, vdipb, aespb);
-    WITH aespb DO
-      paddrin^[0]:= ADR (fpath);
-      paddrin^[1]:= ADR (fname);
-      paddrin^[2]:= ADR (ftitle);
-      pcontrl ^:= GEMBase.AESContrlArray {91, 0, 2, 3, 0};
-    END;
+    aespb.paddrin^[0]:= ADR (fpath);
+    aespb.paddrin^[1]:= ADR (fname);
+    aespb.paddrin^[2]:= ADR (ftitle);
+    aespb.pcontrl^ := GEMBase.AESContrlArray {91, 0, 2, 3, 0};
     GEMBase.CallAES (ADR (aespb));
     fok:= (aespb.pintout^[1] = 1)
   END FselExInput;
