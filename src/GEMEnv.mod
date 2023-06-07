@@ -110,7 +110,7 @@ VAR     noInits         : CARDINAL;  (*  Zaehlt die Anzahl der '(Sys)InitGem's *
         didShRead: ARRAY [-1..15] OF BOOLEAN; (* 'ShellRead' durchgefuehrt? *)
         appIsInit: ARRAY [-1..15] OF BOOLEAN; (* appIsInit[modID] zeigt an,
                                                * ob schon appl_init() auf-
-                                               * gerugen wurde. *)
+                                               * gerufen wurde. *)
 
 
 (*  misc. internal proc.s  *)
@@ -868,10 +868,11 @@ BEGIN
 END GEMAvailable;
 
 
+(* vq_gdos *)
 PROCEDURE GDOSAvailable (): BOOLEAN;
 VAR retvalue: INTEGER16;
 BEGIN
-  ASM VOLATILE("moveq #-2,%%d0; trap #1; move.w %%d0,%0"
+  ASM VOLATILE("moveq #-2,%%d0; trap #2; move.w %%d0,%0"
      : "=r"(retvalue)
      :
      : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory"

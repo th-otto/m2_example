@@ -215,7 +215,7 @@ END setDevice;
 
 PROCEDURE aes_call (pb: GemHandle);
 BEGIN
-  ASM VOLATILE("move.l %0,%%d1; move.w #200,%%d0; trap #1"
+  ASM VOLATILE("move.l %0,%%d1; move.w #200,%%d0; trap #2"
      :
      : "g"(ADR(pb^.aespb))
      : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory"
@@ -241,7 +241,7 @@ END aes_if;
 
 PROCEDURE vdi_call (para: GemHandle);
 BEGIN
-  ASM VOLATILE("move.l %0,%%d1; move.w #115,%%d0; trap #1"
+  ASM VOLATILE("move.l %0,%%d1; move.w #115,%%d0; trap #2"
      :
      : "g"(ADR(para^.vdipb))
      : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory"

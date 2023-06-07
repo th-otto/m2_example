@@ -90,7 +90,7 @@ END VDIHandle;
 (*  Aufrufroutinen  *)
 PROCEDURE CallVDI (ptrpb: PtrVDIPB);
 BEGIN
-    ASM VOLATILE("move.l %0,%%d1; move.w #115,%%d0; trap #1"
+    ASM VOLATILE("move.l %0,%%d1; move.w #115,%%d0; trap #2"
        :
        : "g"(ptrpb)
        : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory"
@@ -100,7 +100,7 @@ END CallVDI;
 
 PROCEDURE CallAES (ptrpb: PtrAESPB);
 BEGIN
-    ASM VOLATILE("move.l %0,%%d1; move.w #200,%%d0; trap #1"
+    ASM VOLATILE("move.l %0,%%d1; move.w #200,%%d0; trap #2"
        :
        : "g"(ptrpb)
        : "d0", "d1", "d2", "a0", "a1", "a2", "cc", "memory"
