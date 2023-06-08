@@ -41,7 +41,7 @@ IMPLEMENTATION MODULE KbdEvents;
  * 25.11.90   2.5   TT: InitApplication statt InitGem-Aufruf, TRAP #6 statt
  *                  RaiseError-Aufruf
  * 15.02.91   2.6   Fehler bei der Tastatursynchronisation behoben.
- * 97.06.23 THO     Port to gm2
+ * 07.06.23 THO     Port to gm2
  *------------------------------------------------------------------------------
  *)
 

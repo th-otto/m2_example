@@ -263,7 +263,7 @@ X       DC.B    2, 1, 1            ; func 014  tplay
 X       DC.B    1, 1, 1            ; func 015  trec
         DC.B    0, 0, 0            ; func 016
         DC.B    0, 0, 0            ; func 017
-        DC.B    0, 0, 0            ; func 008
+        DC.B    0, 0, 0            ; func 018
 X       DC.B    0, 1, 0            ; func 019  exit
     ;                             Event Manager
 X       DC.B    0, 1, 0            ; func 020  evnt keybd
@@ -275,18 +275,18 @@ X       DC.B    16, 7, 1           ; func 025  e multi
 X       DC.B    2, 1, 0            ; func 026  dclick
         DC.B    0, 0, 0            ; func 027
         DC.B    0, 0, 0            ; func 028
-        DC.B    0, 0, 0            ; func 009
+        DC.B    0, 0, 0            ; func 029
     ;                             Menu Manager
         DC.B    1, 1, 1            ; func 030  bar
         DC.B    2, 1, 1            ; func 031  icheck
         DC.B    2, 1, 1            ; func 032  ienable
         DC.B    2, 1, 1            ; func 033  tnormal
         DC.B    1, 1, 2            ; func 034  text
-        DC.B    1, 1, 1            ; func 005  register
-        DC.B    0, 0, 0            ; func 006
-        DC.B    0, 0, 0            ; func 007
-        DC.B    0, 0, 0            ; func 008
-        DC.B    0, 0, 0            ; func 009
+        DC.B    1, 1, 1            ; func 035  register
+        DC.B    0, 0, 0            ; func 036
+        DC.B    0, 0, 0            ; func 037
+        DC.B    0, 0, 0            ; func 038
+        DC.B    0, 0, 0            ; func 039
     ;                             Object Manager
         DC.B    2, 1, 1            ; func 040  add
         DC.B    1, 1, 1            ; func 041  del
@@ -299,27 +299,27 @@ X       DC.B    2, 1, 0            ; func 026  dclick
         DC.B    0, 0, 0            ; func 048
         DC.B    0, 0, 0            ; func 049
     ;                             Form Manager
-        DC.B    1, 1, 1            ; func 050  do
-        DC.B    9, 1, 1            ; func 051  dial
-        DC.B    1, 1, 1            ; func 002  alert
-        DC.B    1, 1, 0            ; func 003  error
-        DC.B    0, 5, 1            ; func 004  center
-        DC.B    3, 3, 1            ; func 005  keyboard
-        DC.B    2, 2, 1            ; func 006  button
-        DC.B    0, 0, 0            ; func 007
-        DC.B    0, 0, 0            ; func 008
-        DC.B    0, 0, 0            ; func 009
+X       DC.B    1, 1, 1            ; func 050  do
+X       DC.B    9, 1, 0            ; func 051  dial
+X       DC.B    1, 1, 1            ; func 052  alert
+X       DC.B    1, 1, 0            ; func 053  error
+X       DC.B    0, 5, 1            ; func 054  center
+X       DC.B    3, 3, 1            ; func 055  keyboard
+X       DC.B    2, 2, 1            ; func 056  button
+        DC.B    0, 0, 0            ; func 057
+        DC.B    0, 0, 0            ; func 058
+        DC.B    0, 0, 0            ; func 059
     ;                             Dialog Manager
         DC.B    0, 0, 0            ; func 060
         DC.B    0, 0, 0            ; func 061
         DC.B    0, 0, 0            ; func 062
-        DC.B    0, 0, 0            ; func 003
-        DC.B    0, 0, 0            ; func 004
-        DC.B    0, 0, 0            ; func 005
-        DC.B    0, 0, 0            ; func 006
-        DC.B    0, 0, 0            ; func 007
-        DC.B    0, 0, 0            ; func 008
-        DC.B    0, 0, 0            ; func 009
+        DC.B    0, 0, 0            ; func 063
+        DC.B    0, 0, 0            ; func 064
+        DC.B    0, 0, 0            ; func 065
+        DC.B    0, 0, 0            ; func 066
+        DC.B    0, 0, 0            ; func 067
+        DC.B    0, 0, 0            ; func 068
+        DC.B    0, 0, 0            ; func 069
     ;                            Graphics Manager
 X       DC.B    4, 3, 0            ; func 070  rubber
 X       DC.B    8, 3, 0            ; func 071  drag
@@ -330,29 +330,29 @@ X       DC.B    4, 1, 1            ; func 075  watch
 X       DC.B    3, 1, 1            ; func 076  slide
 X       DC.B    0, 5, 0            ; func 077  handle
 X       DC.B    1, 1, 1            ; func 078  mouse
-X       DC.B    0, 5, 0            ; func 009  mkstate
+X       DC.B    0, 5, 0            ; func 079  mkstate
     ;                            Scrap Manager
         DC.B    0, 1, 1            ; func 080  read
         DC.B    0, 1, 1            ; func 081  write
         DC.B    0, 0, 0            ; func 082
         DC.B    0, 0, 0            ; func 083
         DC.B    0, 0, 0            ; func 084
-        DC.B    0, 0, 0            ; func 005
-        DC.B    0, 0, 0            ; func 006
-        DC.B    0, 0, 0            ; func 007
-        DC.B    0, 0, 0            ; func 008
-        DC.B    0, 0, 0            ; func 009
+        DC.B    0, 0, 0            ; func 085
+        DC.B    0, 0, 0            ; func 086
+        DC.B    0, 0, 0            ; func 087
+        DC.B    0, 0, 0            ; func 088
+        DC.B    0, 0, 0            ; func 089
     ;                            fseler Manager
 X       DC.B    0, 2, 2            ; func 090  input
 X       DC.B    0, 2, 3            ; func 091           (*  Ab TOS 1.4  *)
         DC.B    0, 0, 0            ; func 092
-        DC.B    0, 0, 0            ; func 003
-        DC.B    0, 0, 0            ; func 004
-        DC.B    0, 0, 0            ; func 005
-        DC.B    0, 0, 0            ; func 006
-        DC.B    0, 0, 0            ; func 007
-        DC.B    0, 0, 0            ; func 008
-        DC.B    0, 0, 0            ; func 009
+        DC.B    0, 0, 0            ; func 093
+        DC.B    0, 0, 0            ; func 094
+        DC.B    0, 0, 0            ; func 095
+        DC.B    0, 0, 0            ; func 096
+        DC.B    0, 0, 0            ; func 097
+        DC.B    0, 0, 0            ; func 098
+        DC.B    0, 0, 0            ; func 099
     ;                            Window Manager
         DC.B    5, 1, 0            ; func 100
         DC.B    5, 1, 0            ; func 101
@@ -371,10 +371,10 @@ X       DC.B    1, 1, 0            ; func 107 update
         DC.B    2, 1, 1            ; func 113  saddr
         DC.B    1, 1, 1            ; func 114  obfix
         DC.B    0, 0, 0            ; func 115
-        DC.B    0, 0, 0            ; func 006
-        DC.B    0, 0, 0            ; func 007
-        DC.B    0, 0, 0            ; func 008
-        DC.B    0, 0, 0            ; func 009
+        DC.B    0, 0, 0            ; func 116
+        DC.B    0, 0, 0            ; func 117
+        DC.B    0, 0, 0            ; func 118
+        DC.B    0, 0, 0            ; func 119
     ;                            Shell Manager
 X       DC.B    0, 1, 2            ; func 120  read
 X       DC.B    3, 1, 2            ; func 121  write
