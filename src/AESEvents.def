@@ -1,0 +1,263 @@
+DEFINITION MODULE AESEvents;
+
+
+(*  Megamax Modula-2 GEM-Library:  Die AES Ereignisfunktionen
+ *
+ *  Autor: Manuel Chakravarty           Erstellt:  05.11.87
+ *
+ *  Version   2.3     V#0018
+ *)
+ 
+
+(*      In diesem Modul sind die vom AES zur Verfuegung gestellten Eingabe-
+ *      funktionen zusammengefasst.
+ *      Jedes einzelne Ereigniss kann entweder allein erfragt werden, oder
+ *      es kann auf eine ganze Reihe von Ereignissen gleichzeitig gewartet
+ *      werden ('MultiEvent').
+ *)
+ 
+FROM SYSTEM     IMPORT CARDINAL16, CARDINAL32, INTEGER16;
+ 
+FROM GrafBase   IMPORT Point, Rectangle;
+ 
+FROM GEMGlobals IMPORT GemChar, MButtonSet, SpecialKeySet;
+
+
+CONST   (*  Identifikationen der einzelnen Nachrichtenereignisse
+         *)
+        unspecMessage   = 0;
+        menuSelected    = 10;
+        windRedraw      = 20;
+        windTopped      = 21;
+        windClosed      = 22;
+        windFulled      = 23;
+        windArrowed     = 24;
+        windHSlid       = 25;
+        windVSlid       = 26;
+        windSized       = 27;
+        windMoved       = 28;
+        windNewTop      = 29;
+        accOpen         = 40;
+        accClose        = 41;
+
+
+(*  Eine Variable folgenden Typs wird bei der AES-Nachricht
+ *  'windArrowed' geliefert. Es bedeutet:
+ *
+ *  'pageUp'      -- Fensterinhalt soll um eine Seite nach oben ge-
+ *                   schoben werden.
+ *  'pageDown'    -- Fensterinhalt eine Seite nach unten.
+ *  'rowUp'       -- Eine Zeile nach oben.
+ *  'rowDown'     -- Eine Zeile nach unten.
+ *  'pageLeft'    -- Eine Seite nach links.
+ *  'pageRight'   -- Eine Seite nach rechts.
+ *  'columnLeft'  -- Eine Spalte nach links.
+ *  'columnRight' -- Eine Spalte nach rechts.
+ *)
+TYPE    ArrowedMode = (pageUp, pageDown, rowUp, rowDown, pageLeft,
+                     pageRight, columnLeft, columnRight);
+
+      MessageBuffer = RECORD CASE : BOOLEAN OF FALSE:
+                        CASE msgType: CARDINAL16 OF
+                          unspecMessage : uMsgId   : CARDINAL16;
+                                          uMsgRmd  : CARDINAL16;
+                                          uMsgData : ARRAY[0..4] OF CARDINAL16|
+                          menuSelected  : mSelId   : CARDINAL16;
+                                          mSelRmd  : CARDINAL16;
+                                          selTitle : CARDINAL16;
+                                          selItem  : CARDINAL16|
+                          windRedraw    : rdrwId   : CARDINAL16;
+                                          rdrwRmd  : CARDINAL16;
+                                          rdrwHdl  : CARDINAL16;
+                                          rdrwFrame: Rectangle|
+                          windTopped    : topId    : CARDINAL16;
+                                          topRmd   : CARDINAL16;
+                                          topHdl   : CARDINAL16|
+                          windClosed    : clsId    : CARDINAL16;
+                                          clsRmd   : CARDINAL16;
+                                          clsHdl   : CARDINAL16|
+                          windFulled    : fullId   : CARDINAL16;
+                                          fullRmd  : CARDINAL16;
+                                          fullHdl  : CARDINAL16|
+                          windArrowed   : arrwId   : CARDINAL16;
+                                          arrwRmd  : CARDINAL16;
+                                          arrwHdl  : CARDINAL16;
+                                          arrwMode : CARDINAL16 (* ArrowedMode *) |
+                          windHSlid     : hSldId   : CARDINAL16;
+                                          hSldRmd  : CARDINAL16;
+                                          hSldHdl  : CARDINAL16;
+                                          horPos   : CARDINAL16|
+                          windVSlid     : vSldId   : CARDINAL16;
+                                          vSldRmd  : CARDINAL16;
+                                          vSldHdl  : CARDINAL16;
+                                          vertPos  : CARDINAL16|
+                          windSized     : sizeId   : CARDINAL16;
+                                          sizeRmd  : CARDINAL16;
+                                          sizeHdl  : CARDINAL16;
+                                          sizeFrame: Rectangle|
+                          windMoved     : moveId   : CARDINAL16;
+                                          moveRmd  : CARDINAL16;
+                                          moveHdl  : CARDINAL16;
+                                          moveFrame: Rectangle|
+                          windNewTop    : nwTpId   : CARDINAL16;
+                                          nwTpRmd  : CARDINAL16;
+                                          nwTpHdl  : CARDINAL16|
+                          accOpen       : aOpnId   : CARDINAL16;
+                                          aOpnRmd  : CARDINAL16;
+                                          aOpnVoid : CARDINAL16;
+                                          aOpnMId  : CARDINAL16|
+                          accClose      : aClsId   : CARDINAL16;
+                                          aClsRmd  : CARDINAL16;
+                                          aClsMId  : CARDINAL16|
+                          ELSE
+                        END| TRUE:
+                          int: ARRAY [0..7] OF INTEGER16;
+                        END
+                      END;
+
+
+(*  Event-Manager-Prozeduren  *)
+(*  ========================  *)
+
+(*  Wartet auf ein Tastaturereignis (Tastendruck).
+ *
+ *  In 'ch' wird der Scancode und falls vorhanden der zugehoerige
+ *  ASCII-Code geliefert.
+ *)
+PROCEDURE KeyboardEvent (VAR ch: GemChar);
+
+(*  Wartet auf ein Maustastenereignis (d.h. darauf, das die Maus-
+ *  tasten auf eine bestimmte Art gedrueckt oder losgelassen werden).
+ *
+ *  Eingabeparameter:
+ *  -----------------
+ *
+ *  'clicks'    -- Ist der Wert groesser als 1, so prueft die Routine,
+ *                 ob der gewuenschte Zustand der Maustasten, inner-
+ *                 halb einer festgelegten Zeit nocheinmal eintritt.
+ *                 Diese Zeit kann mit 'SetDClickSpeed' gesetzt und
+ *                 mit 'DClickSpeed' erfragt werden.
+ *  'mask'      -- Alle in dieser Menge enthaltenen Maustasten wer-
+ *                 den von der Routine beruecksichtigt (Ist 'mask'
+ *                 die leere Menge, so kehrt die Routine, unabhaenig
+ *                 vom aktuellen Zustand der Maustasten, sofort zu-
+ *                 rueck).
+ *  'state'     -- Bestimmt den Zustand (gedrueckt oder nicht), in
+ *                 dem sich die einzelnen Maustasten befinden mues-
+ *                 sen, damit die Routine zurueckkehrt (Nur die in
+ *                 'mask bezeichneten Tasten sind interessant).
+ *                 Die Tasten die gedrueckt sein muessen, werden in
+ *                 die Menge eingetragen.
+ *
+ *   Ausgabeparameter:
+ *   -----------------
+ *
+ *  'mouseLoc'  -- Liefert die Mausposition zum Zeitpunkt des
+ *                 Ereignisses.
+ *  'buttons'   -- Liefert die Menge der zum Zeitpunkt des Ereignis-
+ *                 ses gedrueckten Maustasten.
+ *  'keyState'  -- Liefert die Menge der zum Zeitpunkt des Ereignis-
+ *                 ses gedrueckten Sondertasten.
+ *  'doneclicks'-- Liefert wie oft der gewuenschte Zustand der Maus-
+ *                 tasten waehrend der Abfrage erreicht wurde.
+ *)
+PROCEDURE ButtonEvent (    clicks     : CARDINAL;
+                           mask, state: MButtonSet;
+                       VAR mouseLoc   : Point;
+                       VAR buttons    : MButtonSet;
+                       VAR keyState   : SpecialKeySet;
+                       VAR doneClicks : CARDINAL);
+                      
+
+TYPE    RectEnterMode   = (lookForEntry, lookForExit);
+                     
+(*  Wartet auf ein Mausereignis (d.h. darauf, dass der Mauszeiger
+ *  einen bestimmten Bildschirmbereich betritt oder verlaesst).
+ *
+ *  Eingabeparameter:
+ *  -----------------
+ *
+ *  'moveDirec' -- Legt fest, ob der Mauszeiger den Bereich be-
+ *                 tretten oder verlassen muss.
+ *  'frame'     -- Legt den zu ueberwachenden Bereich fest.
+ *
+ *   Ausgabeparameter:
+ *   -----------------
+ *
+ *  'buttons'   -- Liefert die Menge der zum Zeitpunkt des Ereignis-
+ *                 ses gedrueckten Maustasten.
+ *  'keyState'  -- Liefert die Menge der zum Zeitpunkt des Ereignis-
+ *                 ses gedrueckten Sondertasten.
+ *  'mouseLoc'  -- Liefert die Mausposition, zum Zeitpunkt des Er-
+ *                 eingnisses.
+ *)
+PROCEDURE MouseEvent (    moveDirec: RectEnterMode;
+                          frame    : Rectangle;
+                      VAR buttons  : MButtonSet;
+                      VAR keyState : SpecialKeySet;
+                      VAR mouseLoc : Point);
+             
+(*  Wartet auf ein Zeitereignis (d.h. bis eine bestimmte Zeitspanne
+ *  vergangen ist).
+ *
+ *  'time' -- Zeitspanne in Millisekunden.
+ *)
+PROCEDURE TimerEvent (time: CARDINAL32);
+
+(*  Wartet auf ein Nachrichtenereignis (sowohl vom AES als auch von
+ *  einer anderen Applikation).
+ *
+ *  'msg' -- Liefert die empfangene Nachricht.
+ *
+ *  Hinweis: Da das GEM nur sehr eingeschraenkte Multitaskingfaehig-
+ *           keiten besitzt, muss eine von zwei Applikationen, die
+ *           miteinander kommunizieren wollen, ein Accessory sein.
+ *)
+PROCEDURE MessageEvent (VAR msg: MessageBuffer);
+
+
+TYPE    Event           = (keyboard, mouseButton, firstRect, secondRect,
+                           message, timer);
+        EventSet        = SET OF Event;
+        
+(*  Wartet auf eine beliebige Kombination von Ereignissen.
+ *
+ *  Dabei gibt 'events' an auf welche Ereignisse gewartet wird und
+ *  'occuredEvents' liefert die Menge der tatsaechlich aufgetrettenen
+ *  Ereignistypen.
+ *  Alle anderen Parameter entsprechen den namensgleichen Parametern
+ *  der fuenf vorangegangenen '...Event'-Prozeduren.
+ *
+ *  Besondere Beachtung verdient aber 'keyState': Es liefert den
+ *  Wert der Sondertasten zum Zeitpunkt der Abfrage und nicht etwa
+ *  den Wert, der beim Druck der Taste anstand! Wenn Sie dies naeher
+ *  interessiert, beachten Sie das Modul "KbdEvent".
+ *)
+PROCEDURE MultiEvent (    events       : EventSet;
+                          noClicks     : CARDINAL;
+                          butMask,
+                          butState     : MButtonSet;
+                          moveDirec1   : RectEnterMode; rect1Size: Rectangle;
+                          moveDirec2   : RectEnterMode; rect2Size: Rectangle;
+                      VAR msg          : MessageBuffer;
+                          time         : CARDINAL32;
+                      VAR mouseLoc     : Point;
+                      VAR buttons      : MButtonSet;
+                      VAR keyState     : SpecialKeySet;
+                      VAR key          : GemChar;
+                      VAR doneClicks   : CARDINAL;
+                      VAR occuredEvents: EventSet);
+                     
+(*  Legt die Zeitspanne fest, innerhalb derer zwei Klicks als Doppel-
+ *  klick gewertet werden.
+ *
+ *  'speed' -- Zeitspanne (Wertebereich: [0..4])
+ *)
+PROCEDURE SetDClickSpeed (speed: CARDINAL);
+
+(*  Erfragt die mit 'SetDClickSpeed' gesetzte Zeitspanne.
+ *)
+PROCEDURE DClickSpeed (): CARDINAL;
+                     
+                     
+END AESEvents.

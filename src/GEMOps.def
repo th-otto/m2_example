@@ -266,13 +266,13 @@ X       DC.B    1, 1, 1            ; func 015  trec
         DC.B    0, 0, 0            ; func 008
 X       DC.B    0, 1, 0            ; func 019  exit
     ;                             Event Manager
-        DC.B    0, 1, 0            ; func 020  evnt keybd
-        DC.B    3, 5, 0            ; func 021  evnt but
-        DC.B    5, 5, 0            ; func 022  e mouse
-        DC.B    0, 1, 1            ; func 023  e msg
-        DC.B    2, 1, 0            ; func 024  e timer
-        DC.B    16, 7, 1           ; func 025  e multi
-        DC.B    2, 1, 0            ; func 026
+X       DC.B    0, 1, 0            ; func 020  evnt keybd
+X       DC.B    3, 5, 0            ; func 021  evnt but
+X       DC.B    5, 5, 0            ; func 022  e mouse
+X       DC.B    0, 1, 1            ; func 023  e msg
+X       DC.B    2, 1, 0            ; func 024  e timer
+X       DC.B    16, 7, 1           ; func 025  e multi
+X       DC.B    2, 1, 0            ; func 026  dclick
         DC.B    0, 0, 0            ; func 027
         DC.B    0, 0, 0            ; func 028
         DC.B    0, 0, 0            ; func 009

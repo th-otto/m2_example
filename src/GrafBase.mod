@@ -71,182 +71,180 @@ END LRect;
 
 PROCEDURE ShortPoint (p: LongPnt): Point;
 VAR sp: Point;
-  BEGIN
-    sp.x := p.x;
-    sp.y := p.y;
-    RETURN sp;
-  END ShortPoint;
+BEGIN
+  sp.x := p.x;
+  sp.y := p.y;
+  RETURN sp;
+END ShortPoint;
   
 
 PROCEDURE LongPoint  (p: Point): LongPnt;
 VAR lp: LongPnt;
-  BEGIN
-    lp.x := p.x;
-    lp.y := p.y;
-    RETURN lp;
-  END LongPoint;
+BEGIN
+  lp.x := p.x;
+  lp.y := p.y;
+  RETURN lp;
+END LongPoint;
 
   
 PROCEDURE ShortFrame (frame: LongRect): Rectangle;
 VAR r: Rectangle;
-  BEGIN
-    r.x := frame.x;
-    r.y := frame.y;
-    r.w := frame.w;
-    r.h := frame.h;
-    RETURN r;
-  END ShortFrame;
+BEGIN
+  r.x := frame.x;
+  r.y := frame.y;
+  r.w := frame.w;
+  r.h := frame.h;
+  RETURN r;
+END ShortFrame;
 
   
 PROCEDURE LongFrame  (frame: Rectangle): LongRect;
 VAR r: LongRect;
-  BEGIN
-    r.x := frame.x;
-    r.y := frame.y;
-    r.w := frame.w;
-    r.h := frame.h;
-    RETURN r;
-  END LongFrame;
+BEGIN
+  r.x := frame.x;
+  r.y := frame.y;
+  r.w := frame.w;
+  r.h := frame.h;
+  RETURN r;
+END LongFrame;
   
 
 PROCEDURE AbsZoomRect(frame:Rectangle;xDelta,yDelta:INTEGER16):Rectangle;
-  BEGIN
-    frame.x:=frame.x-xDelta;frame.y:=frame.y-yDelta;
-    frame.w:=frame.w+xDelta*2;frame.h:=frame.h+yDelta*2;
-    RETURN frame;
-  END AbsZoomRect;
+BEGIN
+  frame.x:=frame.x-xDelta;frame.y:=frame.y-yDelta;
+  frame.w:=frame.w+xDelta*2;frame.h:=frame.h+yDelta*2;
+  RETURN frame;
+END AbsZoomRect;
 
 PROCEDURE RelZoomRect(frame:Rectangle;xFactor,yFactor:INTEGER32):Rectangle;
-
-  VAR     newW, newH      : INTEGER16;
-  VAR wl: INTEGER32;
-  VAR wh: INTEGER32;
-  
-  BEGIN
-    wl := frame.w;
-    newW := wl * xFactor DIV 1000;
-    wh := frame.h;
-    newH := wh * yFactor DIV 1000;
-    frame.x:=frame.x+frame.w DIV 2 -newW DIV 2;
-    frame.y:=frame.y+frame.h DIV 2 -newH DIV 2;
-    frame.w:=newW;
-    frame.h:=newH;
-    RETURN frame;
-  END RelZoomRect;
+VAR     newW, newH      : INTEGER16;
+VAR wl: INTEGER32;
+VAR wh: INTEGER32;
+BEGIN
+  wl := frame.w;
+  newW := wl * xFactor DIV 1000;
+  wh := frame.h;
+  newH := wh * yFactor DIV 1000;
+  frame.x:=frame.x+frame.w DIV 2 -newW DIV 2;
+  frame.y:=frame.y+frame.h DIV 2 -newH DIV 2;
+  frame.w:=newW;
+  frame.h:=newH;
+  RETURN frame;
+END RelZoomRect;
 
 
 PROCEDURE TransRect (frame: Rectangle; p: Point): Rectangle;
-  BEGIN
-    RETURN Rect(p.x,p.y,frame.w,frame.h);
-  END TransRect;
+BEGIN
+  RETURN Rect(p.x,p.y,frame.w,frame.h);
+END TransRect;
 
   
 PROCEDURE LTransRect (frame: LongRect; p: LongPnt): LongRect;
-  BEGIN
-    RETURN LRect (p.x, p.y, frame.w, frame.h);
-  END LTransRect;
+BEGIN
+  RETURN LRect (p.x, p.y, frame.w, frame.h);
+END LTransRect;
 
   
 PROCEDURE MinPoint (frame: Rectangle): Point;
-  BEGIN
-    RETURN Pnt(frame.x,frame.y);
-  END MinPoint;
+BEGIN
+  RETURN Pnt(frame.x,frame.y);
+END MinPoint;
 
                          
 PROCEDURE LMinPoint (frame: LongRect): LongPnt;
-  BEGIN
-    RETURN LPnt(frame.x, frame.y);
-  END LMinPoint;
+BEGIN
+  RETURN LPnt(frame.x, frame.y);
+END LMinPoint;
 
                          
 PROCEDURE MaxPoint (frame: Rectangle): Point;
-  BEGIN
-    RETURN Pnt(frame.x+frame.w-1,frame.y+frame.h-1);
-  END MaxPoint;
+BEGIN
+  RETURN Pnt(frame.x+frame.w-1,frame.y+frame.h-1);
+END MaxPoint;
 
                          
 PROCEDURE LMaxPoint (frame: LongRect): LongPnt;
-  BEGIN
-    RETURN LPnt (frame.x + frame.w - 1, frame.y + frame.h - 1);
-  END LMaxPoint;
+BEGIN
+  RETURN LPnt (frame.x + frame.w - 1, frame.y + frame.h - 1);
+END LMaxPoint;
 
                          
 PROCEDURE ClipRect (frame: Rectangle; clip: Rectangle): Rectangle;
-  BEGIN
-    WITH frame DO
-      IF x<clip.x THEN w:=w-clip.x+x; x:=clip.x END;
-      IF y<clip.y THEN h:=h-clip.y+y; y:=clip.y END;
-      IF (w<=0) OR (h<=0) THEN w:=0;h:=0 END;
-      IF (x+w)>(clip.x+clip.w) THEN w:=clip.x+clip.w-x END;
-      IF (y+h)>(clip.y+clip.h) THEN h:=clip.y+clip.h-y END;
-      IF (w<=0) OR (h<=0) THEN w:=0;h:=0 END;
-    END;
-    RETURN frame;
-  END ClipRect;
+BEGIN
+  WITH frame DO
+    IF x<clip.x THEN w:=w-clip.x+x; x:=clip.x END;
+    IF y<clip.y THEN h:=h-clip.y+y; y:=clip.y END;
+    IF (w<=0) OR (h<=0) THEN w:=0;h:=0 END;
+    IF (x+w)>(clip.x+clip.w) THEN w:=clip.x+clip.w-x END;
+    IF (y+h)>(clip.y+clip.h) THEN h:=clip.y+clip.h-y END;
+    IF (w<=0) OR (h<=0) THEN w:=0;h:=0 END;
+  END;
+  RETURN frame;
+END ClipRect;
 
 
 PROCEDURE LClipRect (frame: LongRect; clip: LongRect): LongRect;
-  BEGIN
-    WITH frame DO
-      IF x<clip.x THEN w:=w-clip.x+x; x:=clip.x END;
-      IF y<clip.y THEN h:=h-clip.y+y; y:=clip.y END;
-      IF (w<=0) OR (h<=0) THEN w:=0;h:=0 END;
-      IF (x+w)>(clip.x+clip.w) THEN w:=clip.x+clip.w-x END;
-      IF (y+h)>(clip.y+clip.h) THEN h:=clip.y+clip.h-y END;
-      IF (w<=0) OR (h<=0) THEN w:=0;h:=0 END;
-    END;
-    RETURN frame;
-  END LClipRect;
+BEGIN
+  WITH frame DO
+    IF x<clip.x THEN w:=w-clip.x+x; x:=clip.x END;
+    IF y<clip.y THEN h:=h-clip.y+y; y:=clip.y END;
+    IF (w<=0) OR (h<=0) THEN w:=0;h:=0 END;
+    IF (x+w)>(clip.x+clip.w) THEN w:=clip.x+clip.w-x END;
+    IF (y+h)>(clip.y+clip.h) THEN h:=clip.y+clip.h-y END;
+    IF (w<=0) OR (h<=0) THEN w:=0;h:=0 END;
+  END;
+  RETURN frame;
+END LClipRect;
 
 
 PROCEDURE FrameRects (r1, r2: Rectangle): Rectangle;
-  VAR   r: Rectangle;
-  BEGIN
-    IF r1.x > r2.x THEN r.x := r2.x ELSE r.x := r1.x END;
-    IF r1.y > r2.y THEN r.y := r2.y ELSE r.y := r1.y END;
-    r1.w := r1.x + r1.w;
-    r2.w := r2.x + r2.w;
-    IF r1.w < r2.w THEN r.w := r2.w - r.x ELSE r.w := r1.w - r.x END;
-    r1.h := r1.y + r1.h;
-    r2.h := r2.y + r2.h;
-    IF r1.h < r2.h THEN r.h := r2.h - r.y ELSE r.h := r1.h - r.y END;
-    
-    RETURN r
-  END FrameRects;
+VAR   r: Rectangle;
+BEGIN
+  IF r1.x > r2.x THEN r.x := r2.x ELSE r.x := r1.x END;
+  IF r1.y > r2.y THEN r.y := r2.y ELSE r.y := r1.y END;
+  r1.w := r1.x + r1.w;
+  r2.w := r2.x + r2.w;
+  IF r1.w < r2.w THEN r.w := r2.w - r.x ELSE r.w := r1.w - r.x END;
+  r1.h := r1.y + r1.h;
+  r2.h := r2.y + r2.h;
+  IF r1.h < r2.h THEN r.h := r2.h - r.y ELSE r.h := r1.h - r.y END;
+  
+  RETURN r
+END FrameRects;
 
 
 PROCEDURE LFrameRects (r1, r2: LongRect): LongRect;
-  VAR   r: LongRect;
-  BEGIN
-    IF r1.x > r2.x THEN r.x := r2.x ELSE r.x := r1.x END;
-    IF r1.y > r2.y THEN r.y := r2.y ELSE r.y := r1.y END;
-    r1.w := r1.x + r1.w;
-    r2.w := r2.x + r2.w;
-    IF r1.w < r2.w THEN r.w := r2.w - r.x ELSE r.w := r1.w - r.x END;
-    r1.h := r1.y + r1.h;
-    r2.h := r2.y + r2.h;
-    IF r1.h < r2.h THEN r.h := r2.h - r.y ELSE r.h := r1.h - r.y END;
-    
-    RETURN r
-  END LFrameRects;
+VAR   r: LongRect;
+BEGIN
+  IF r1.x > r2.x THEN r.x := r2.x ELSE r.x := r1.x END;
+  IF r1.y > r2.y THEN r.y := r2.y ELSE r.y := r1.y END;
+  r1.w := r1.x + r1.w;
+  r2.w := r2.x + r2.w;
+  IF r1.w < r2.w THEN r.w := r2.w - r.x ELSE r.w := r1.w - r.x END;
+  r1.h := r1.y + r1.h;
+  r2.h := r2.y + r2.h;
+  IF r1.h < r2.h THEN r.h := r2.h - r.y ELSE r.h := r1.h - r.y END;
+  
+  RETURN r
+END LFrameRects;
 
 
 PROCEDURE FramePoints (p1, p2: Point): Rectangle;
 VAR r: Rectangle;
-  BEGIN
-    IF p1.x > p2.x THEN r.x := p2.x; r.w := p1.x - p2.x + 1 ELSE r.x := p1.x; r.w := p2.x - p1.x + 1 END;
-    IF p1.y > p2.y THEN r.y := p2.y; r.h := p1.y - p2.y + 1 ELSE r.y := p1.y; r.h := p2.y - p1.y + 1 END;
-    RETURN r;
-  END FramePoints;
+BEGIN
+  IF p1.x > p2.x THEN r.x := p2.x; r.w := p1.x - p2.x + 1 ELSE r.x := p1.x; r.w := p2.x - p1.x + 1 END;
+  IF p1.y > p2.y THEN r.y := p2.y; r.h := p1.y - p2.y + 1 ELSE r.y := p1.y; r.h := p2.y - p1.y + 1 END;
+  RETURN r;
+END FramePoints;
 
 
 PROCEDURE LFramePoints (p1, p2: LongPnt): LongRect;
 VAR r: LongRect;
-  BEGIN
-    IF p1.x > p2.x THEN r.x := p2.x; r.w := p1.x - p2.x + 1 ELSE r.x := p1.x; r.w := p2.x - p1.x + 1 END;
-    IF p1.y > p2.y THEN r.y := p2.y; r.h := p1.y - p2.y + 1 ELSE r.y := p1.y; r.h := p2.y - p1.y + 1 END;
-    RETURN r;
-  END LFramePoints;
+BEGIN
+  IF p1.x > p2.x THEN r.x := p2.x; r.w := p1.x - p2.x + 1 ELSE r.x := p1.x; r.w := p2.x - p1.x + 1 END;
+  IF p1.y > p2.y THEN r.y := p2.y; r.h := p1.y - p2.y + 1 ELSE r.y := p1.y; r.h := p2.y - p1.y + 1 END;
+  RETURN r;
+END LFramePoints;
 
 
 (*  calcFormSize -- Setzt eine MemFormDef auf ATARI-Screen Parameter *
@@ -256,33 +254,33 @@ PROCEDURE calcFormSize(VAR memForm:MemFormDef);
 VAR LineA: PtrLineAVars;
     NegLineA: PtrNegLineAVars;
     bytesPerLine: CARDINAL;
-  BEGIN
-    LineA := LineAVariables();
-    memForm.planes := LineA^.planes;
-    bytesPerLine := LineA^.bytesPerLine;
-    memForm.words := CARDINAL(SHIFT(BITSET(bytesPerLine), -1));
-    NegLineA := NegLineAVariables();
-    memForm.w := NegLineA^.screenWidth;
-    memForm.h := NegLineA^.screenHeight;
-    memForm.standardForm := ORD(FALSE);
-    memForm.res1 := 0;
-    memForm.res2 := 0;
-    memForm.res3 := 0;
-  END calcFormSize;
+BEGIN
+  LineA := LineAVariables();
+  memForm.planes := LineA^.planes;
+  bytesPerLine := LineA^.bytesPerLine;
+  memForm.words := CARDINAL(SHIFT(BITSET(bytesPerLine), -1));
+  NegLineA := NegLineAVariables();
+  memForm.w := NegLineA^.screenWidth;
+  memForm.h := NegLineA^.screenHeight;
+  memForm.standardForm := ORD(FALSE);
+  memForm.res1 := 0;
+  memForm.res2 := 0;
+  memForm.res3 := 0;
+END calcFormSize;
 
 
 PROCEDURE GetPhysMemForm(VAR memForm:MemFormDef);
-  BEGIN
-    memForm.start := XBIOS.ScreenPhysicalBase();
-    calcFormSize(memForm);
-  END GetPhysMemForm;
+BEGIN
+  memForm.start := XBIOS.ScreenPhysicalBase();
+  calcFormSize(memForm);
+END GetPhysMemForm;
 
 
 PROCEDURE GetLogMemForm(VAR memForm:MemFormDef);
-  BEGIN
-    memForm.start := XBIOS.ScreenLogicalBase();
-    calcFormSize(memForm);
-  END GetLogMemForm;
+BEGIN
+  memForm.start := XBIOS.ScreenLogicalBase();
+  calcFormSize(memForm);
+END GetLogMemForm;
 
 
 PROCEDURE GetBlitterMode(VAR available,active:BOOLEAN);

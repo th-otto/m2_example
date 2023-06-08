@@ -1,4 +1,3 @@
-
 DEFINITION MODULE GEMShare;
 #define REF
 
@@ -25,46 +24,46 @@ FROM AESGraphics IMPORT MouseForm;
 FROM GEMGlobals IMPORT GemChar, MButtonSet, SpecialKeySet, TEffectSet, MaxStr;
 
 FROM GEMBase IMPORT VDIContrlArray, AESContrlArray, GlobalArray, AESPB, PtrAESPB, VDIPB;
+FROM AESEvents IMPORT MessageBuffer;
 
 EXPORT  QUALIFIED DeviceHandle, device, GemHandle, cb, root_cb, our_cb, error,
-        intinMax, ptsinMax, keyboardPlugActive, buttonPlugActive,
-        firstRectPlugActive, secondRectPlugActive, messagePlugActive,
-        timerPlugActive, keyboardPlug, buttonPlug, firstRectPlug,
+        intinMax, ptsinMax,
+        keyboardPlug, buttonPlug, firstRectPlug,
         secondRectPlug, messagePlug, timerPlug, noErrorTrap, deviceMagic,
         cbMagic, GDPFkt, InputDev, DeviceType,
         ScreenType, TextRotType, GDPAttribute, logInpDev,
         inputMode, errNum, ptrToErrHdler, errorProcPtr, pubArrays,
         ptrPubArrays, DevParm, PtrDevParm,
-        
+
         aes_call, aes_if, vdi_call, vdi_if, testINTOUT0, testErrorCheck,
         setINT0attribut, getCalcedFrame, superData, stringIntoINTIN,
         stringIntoCFormat, stringFromCFormat, setDevice, gemErrorOccured,
-        
+
         ptrVectorList, vecListElem, timerVecList, butChgVecList, msMoveVecList,
         curChgVecList, orgTimerVec, orgButChgVec, orgMsMoveVec, orgCurChgVec,
         deltaT,
         GrafMouse, updateWindow, showCursor, closeWindow, deleteWindow,
         exchangeTimerVec, exchangeMouseVec, removeTimerVector,
         removeButChgVector, removeMsMoveVector, removeCurChgVector,
-        unloadFonts, hideCursor, UpdateWindowType, windowSet, MaxWinds;
-        
-        
-                         
+        unloadFonts, hideCursor, UpdateWindowType, windowSet, MaxWinds,
+		keyboardPlugProc, buttonPlugProc, rectPlugProc, messagePlugProc, timerPlugProc;
+
+
 
 CONST           (* Misc. private Const's *)
-        
+
         intinMax                = 128;   (* size of the INTIN-Array *)
         ptsinMax                = 512;   (* size of the PTSIN-Array *
                                           * GEM erlaubt nicht mehr.          *)
-        
+
         noErrorTrap             = 6;     (* Nummer des Trap's fuer Errorbehand.*)
-        
+
         deviceMagic             = 10765; (* Ein denkwuerdiges Datum *)
         cbMagic                 = 666;   (* Hae, Hae... *)
-        
+
         MaxWinds                = 31;
-        
-        
+
+
 TYPE    GDPAttribute = (lineOp, markerOp, textOp, fillOp, noAttribute,
                         notAvaible);
         GDPFkt       = (barGDP, arcGDP, pieGDP, circleGDP, ellipseGDP,
@@ -74,109 +73,109 @@ TYPE    GDPAttribute = (lineOp, markerOp, textOp, fillOp, noAttribute,
         ScreenType   = (noScreen, difCtrlDifScrn, difCtrlSamScrn,
                         samCtrlDifMem, samCtrlSamMem);
         TextRotType  = (noTextRot, step90, everyDirec);
-        
+
 TYPE    logInpDev       = (noDev, location, value, choice, str);
         inputMode       = (noMode, request, sample);
-        
+
         PtrDevParm   = POINTER TO DevParm;
         DevParm      = RECORD
-        
+
                          (*  Diese 4 Werte entsprechen den von
                           *  'GrafHandle' gelieferten Werten.
                           *)
                          charWidth, charHeight,
                          cellWidth, cellHeight,
-                         
+
                          (*  Breite und Hoehe des Pixelrasters
                           *  [0..rasterWidth] und [0..rasterHeight]
                           *)
                          rasterWidth, rasterHeight,
-                         
+
                          (*  Breite und Hoehe eines Pixels in mm/1000
                           *)
                          pointWidth, pointHeight,
-                         
+
                          (*  Anzahl der Schriftgroessen (0 bed. kontinuierlich)
                           *)
                          fontSizes,
-                         
+
                          (*  Anzahl der Linienarten und -staerken
                           *  (bei Letzterem bedeutet 0 kontinuierlich)
                           *)
                          lTypes, lWidths,
-                         
+
                          (*  Anzahl der Makierungsarten und -groessen
                           *  (bei Letzterem bedeutet 0 kontinuierlich)
                           *)
                          mTypes, mSizes,
-                         
+
                          (*  Anzahl der verfuegbaren Zeichensaetze
                           *)
                          fonts,
-                         
+
                          (*  Anzahl der Fuellmuster und Schraffuren
                           *)
                          fPatterns, fHatchings,
-                         
+
                          (*  Anzahl der gleichzeitig darstellbaren Farben
                           *)
                          noColors,
-                         
+
                          (*  Minimale und maximale Zeichenbreite und -hoehe
                           *)
                          minWChar, maxWChar,
                          minHChar, maxHChar,
-                         
+
                          (*  Minimale und maximale Zeilenbreite
                           *)
                          minWRow, maxWRow,
-                         
+
                          (*  Minimale und maximale Breite und Hoehe
                           *  von Makierungen
                           *)
                          minWMark, maxWMark,
                          minHMark, maxHMark,
-                         
+
                          (*  Anzahl der verfuegbaren Hintergrundfarben
                           *)
                          bgColors,
-                         
+
                          (*  Anzahl der Farbebenen (planes)
                           *)
                          maxRasterPls,
-                         
+
                          (*  Anzahl der 16x16 Pixel Rasteroperationen pro sec.
                           *)
                          op16PerSec,
-                         
+
                          (*  Anzahl der Schreibmodi
                           *)
                          noWrtModes,
-                         
+
                          (*  Hoechster Eingabemodus (0 ~ keine Eingabe,
                           *  1 ~ Nachfragemodus, 2 ~ Testmodus)
                           *)
                          maxInMode,
-                         
+
                          (*  Maximale Anzahl von Punkten in einem
                           *  Punkte-Array und maximale Anzahl von
                           *  Zeichen in einem Zeichen-Array
                           *)
                          maxMarker, maxStrLen,
-                         
+
                          (*  Anzahl der Mausknoepfe
                           *)
                          noMButts,
-                         
+
                          (*  Anzahl der Zeichenmodi fuer verbreiterte Linien
                           *)
                          thickLnModes : CARDINAL;
-                         
+
                          (*  Gibt die verfuegbaren grafischen
                           *  Grundfunktionen an
                           *)
                          possibleGDPs : ARRAY GDPFkt OF GDPAttribute;
-                         
+
                          (*  Folgende Flags bestimmen ob gewisse
                           *  Operationen mit dem beschriebenen
                           *  Geraet moeglich sind und zwar:
@@ -192,7 +191,7 @@ TYPE    logInpDev       = (noDev, location, value, choice, str);
                          colorRibbon,   (*  Farbband (Drucker)          *)
                          thickLnTyps    (*  verbreiterte Linientypen    *)
                                       : BOOLEAN;
-                         
+
                          (*  Folgende Variable bestimmen das Eingabegeraet
                           *  fuer diverse Arten der Eingabe und zwar fuer:
                           *)
@@ -201,25 +200,25 @@ TYPE    logInpDev       = (noDev, location, value, choice, str);
                          caseIn,        (*  Auswahleingaben           *)
                          alphanumIn     (*  alphanumerische Eingaben  *)
                                       : InputDev;
-                         
+
                          (*  Typ des beschriebenen Geraetes
                           *)
                          deviceType   : DeviceType;
-                         
+
                          (*  Art des Bildschirms
                           *)
                          screen       : ScreenType;
-                         
+
                          (*  Unterstuetzte Texteffekte
                           *)
                          useTEffects  : TEffectSet;
-                         
+
                          (*  Art der unterstuetzten Textrotation
                           *)
                          textRot      : TextRotType;
-                         
+
                        END;
-     
+
 (*  Dient zur Identifizierung eines VDI-Geraetes.
  *  Siehe auch 'OpenDevice'. (Geraete-Referenz)
  *)
@@ -228,19 +227,19 @@ TYPE    DeviceHandle    = POINTER TO device;
                             magic        : CARDINAL;
                             mode         : CARDINAL;
                             handle       : CARDINAL;
-                            
+
                             params       : DevParm;
-                            
+
                             noHdCurs     : CARDINAL;  (* FIXME: in VDI, this is shared for all screen workstation handles *)
                             oldHdCurs    : CARDINAL;
-                            
+
                             fontsLoaded  : BOOLEAN;
-                            
+
                             curInpMode   : ARRAY logInpDev OF inputMode;
-                            
+
                             next         : DeviceHandle;
                           END;
-        
+
         ptrVectorList   = POINTER TO vecListElem;
         vecListElem     = RECORD
                             newVec       : PROC; (*Die unterschiedlichen Para-
@@ -249,7 +248,7 @@ TYPE    DeviceHandle    = POINTER TO device;
                             next         : ptrVectorList;
                             futureAddr   : ADDRESS;
                           END;
-        
+
         windowSet = SET OF [0..MaxWinds];
 
         superData       = RECORD
@@ -257,10 +256,10 @@ TYPE    DeviceHandle    = POINTER TO device;
                             oldGrafMouse : CARDINAL; (* Number of mouse hides *)
                             noUpWind     : CARDINAL;
                             noMouseCtrl  : CARDINAL; (* No. wind. updates/ctrls*)
-                            
+
                             createWinds  : windowSet;
                             openWinds    : windowSet; (* Created/opened windows *)
-                            
+
                             timerChgd,
                             butChgChgd,
                             msMoveChgd,
@@ -270,7 +269,7 @@ TYPE    DeviceHandle    = POINTER TO device;
                             msMovePrev,      (* these Level. NIL ~ orig. Vec*)
                             curChgPrev   : ptrVectorList;
                           END;
-        
+
         pubArrays       = RECORD
                             vINTIN      : ARRAY[0..intinMax-1] OF INTEGER16;
                             aINTIN      : ARRAY[0..intinMax-1] OF INTEGER16;
@@ -282,58 +281,58 @@ TYPE    DeviceHandle    = POINTER TO device;
                             ADDROUT     : ARRAY[0..1] OF ADDRESS;
                           END;
         ptrPubArrays    = POINTER TO pubArrays;
-          
+
         (*  cb (control block) ist eine Struktur, die bei
          *  jedem 'InitGem' dynamisch erzeugt wird und ab
          *  dann die Parameter enthaelt, die dem, 'InitGem'
          *  aufrufenden Modul als Verbindung zum GEM die-
          *  nen. 'ExitGem' dealloc. die Struktur wieder.
          *)
-         
+
 (*  Dient zur Identifizierung einer kompletten
  *  Anmeldung (per 'InitGem') beim GEM.
  *  (GEM-Referenz)
  *)
 TYPE    GemHandle       = POINTER TO cb;
         cb      = RECORD
-                    
+
                     (*  AES-Control-Array
                      *)
                     A_CONTRL    : AESContrlArray;
-                                  
+
                     (*  VDI-Control-Array
                      *)
                     V_CONTRL    : VDIContrlArray;
-                             
+
                     (*  AES-Global-Array
                      *)
                     GLOBAL      : GlobalArray;
-                                  
+
                     (*  VDI-Parameterblock
                      *)
                     vdipb       : VDIPB;
-                                  
+
                     (*  AES-Parameterblock
                      *)
                     aespb       : AESPB;
-                           
+
                     pubs        : pubArrays;
 
                     HANDLE      : INTEGER;    (* AES Grafikhandle *)
-                    
+
                     DEVICES     : DeviceHandle; (* Liste der VDI-Geraete *)
                     CURDEVICE   : DeviceHandle; (* Aktuelles Geraet *)
-                    
+
                     FSEL        : PROC;       (* Selector vor Init. d. Levels *)
-                    
+
                     ISACC       : BOOLEAN;    (* = 'cb'-Besitzer ist ein Acc. *)
-                    
+
                     MAGIC       : CARDINAL;
                     SUPERVISION : superData;
                     OWNER_ID    : INTEGER;    (* ID des cb Besitzers *)
-                    
+
                     DIDAPPLINIT : BOOLEAN;    (* appl_init aufgerufen? *)
-                    
+
                     LASTCB      : GemHandle   (*  Zeigt auf alten (naechsten) cb
                                                *  NIL ~ Kein weiterer cb
                                                *)
@@ -346,7 +345,7 @@ VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
                                  *  our_cb  ~ Zeiger auf den momentan aktiven
                                  *            Kontr.block
                                  *)
-        
+
         error           : BOOLEAN;
         errNum          : INTEGER; (*  Ist 'error = TRUE', so steht in
                                     *  'errNum' der Wert der den Fehler aus-
@@ -357,7 +356,7 @@ VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
                                             *  wird, so wird 'errorProc^'
                                             *  ausgefuehrt, falls installiert.
                                             *)
-        
+
         (* Vector Variablen *)
         timerVecList: ptrVectorList;
         butChgVecList: ptrVectorList;
@@ -368,147 +367,116 @@ VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
         orgMsMoveVec: PROC;
         orgCurChgVec: PROC;
         deltaT                                          :CARDINAL;
-        
+
         (* Plugs for the event watch-dogs (see also 'EventHandler') *)
-        
-        keyboardPlugActive: BOOLEAN;
-        buttonPlugActive: BOOLEAN;
-        firstRectPlugActive: BOOLEAN;
-        secondRectPlugActive: BOOLEAN;
-        messagePlugActive: BOOLEAN;
-        timerPlugActive: BOOLEAN;
-        
-        keyboardPlug    : PROC;
-                       (* PROCEDURE(VAR (*char:*)GemChar,
-                                    VAR (*keys:*)SpecialKeySet):BOOLEAN;
-                        *)
-        
-        buttonPlug      : PROC;
-                       (* PROCEDURE((*clicks:*)CARDINAL,(*loc:*)Point,
-                                    (*buts:*)MButtonSet,(*keys:*)SpecialKeySet)
-                                   :BOOLEAN;
-                        *)
-                                            
-        firstRectPlug   : PROC;
-                       (* PROCEDURE((*loc:*)Point,(*buts:*)MButtonSet,
-                                    (*keys:*)SpecialKeySet):BOOLEAN;
-                        *)
-                        
-        secondRectPlug  : PROC;
-                       (* PROCEDURE((*loc:*)Point,(*buts:*)MButtonSet,
-                                    (*keys:*)SpecialKeySet):BOOLEAN;
-                        *)
-                        
-        messagePlug     : PROC;
-                       (* PROCEDURE((*buffer:*)MessageBuffer):BOOLEAN;
-                        *)
-                        
-        timerPlug       : PROC;
-                       (* PROCEDURE():BOOLEAN;
-                        *)
-                        
-    
-        (*  Misc. subroutines  *)
-        (*  =================  *)
-        
-PROCEDURE stringIntoINTIN(REF str:ARRAY OF CHAR; offset: CARDINAL):CARDINAL;
+
+TYPE keyboardPlugProc = PROCEDURE(VAR (*char:*)GemChar, VAR (*keys:*)SpecialKeySet):BOOLEAN;
+VAR keyboardPlug: keyboardPlugProc;
+TYPE buttonPlugProc = PROCEDURE((*clicks:*)CARDINAL,(*loc:*)Point, (*buts:*)MButtonSet,(*keys:*)SpecialKeySet):BOOLEAN;
+VAR buttonPlug: buttonPlugProc;
+TYPE rectPlugProc = PROCEDURE((*loc:*)Point,(*buts:*)MButtonSet, (*keys:*)SpecialKeySet):BOOLEAN;
+VAR firstRectPlug: rectPlugProc;
+VAR secondRectPlug: rectPlugProc;
+TYPE messagePlugProc = PROCEDURE(VAR (*buffer:*)MessageBuffer):BOOLEAN;
+VAR messagePlug: messagePlugProc;
+TYPE timerPlugProc = PROCEDURE():BOOLEAN;
+VAR timerPlug: timerPlugProc;
+
+
+(*  Misc. subroutines  *)
+(*  =================  *)
 
 (*  stringIntoINTIN -- geg.: Open Array of CHAR 'str', Offset fuer INTIN   *
  *                           Indizierung in D4 ( in Elementen )           *
  *                     ges.: Die CHAR's des Array befinden sich im INTIN- *
  *                           Array und als Rueckgabewert die Stringlaenge   *
- 
+
  *                !! Aufruf nur von Assemblerteilen !!                    *)
+PROCEDURE stringIntoINTIN(REF str:ARRAY OF CHAR; offset: CARDINAL):CARDINAL;
 
 
-PROCEDURE getCalcedFrame(frame:Rectangle; VAR pxy: PXY4);
-        
 (*  getCalcedFrame -- geg.: Ein Rechteck 'frame' auf dem Param.stack und die *
  *                          Zieladdresse+8 in A1                             *
  *                    ges.: (A1-8).W = frame.x, 2(A1-8).W = frame.y          *
  *                          4(A1-8).W = frame.x+frame.w-1,                   *
  *                          6(A1-8).W = frame.y+frame.h-1                    *
- 
+
  *              Aufruf nur aus Assemblerteilen!!                             *)
+PROCEDURE getCalcedFrame(frame:Rectangle; VAR pxy: PXY4);
 
 
-PROCEDURE stringIntoCFormat(REF str:ARRAY OF CHAR; VAR dst: MaxStr);
-PROCEDURE stringFromCFormat(REF str: MaxStr; VAR dst:ARRAY OF CHAR);
-        
 (*  stringIntoCFormat -- geg.: 'str' ein String                           *
  *                       ges.: Kopiert 'str' auf den Stack und haengt eine *
  *                             $0 dran. Danach zeigt D2 auf den Stringanf.*
  *                             und mit 'MOVE.L  (A7),A7' wird der String  *
  *                             wieder vom Stack entfernt.                 *
- 
- *              Aufruf nur von Assembler!                                 *)
- 
- 
-PROCEDURE setDevice(handle:DeviceHandle): BOOLEAN;
-        (* Legt das aktuelle VDI-Device fest. 'success=FALSE' falls das *
-         * 'handle' ungueltig war.                                       *)
-         
 
-        (*  global error handling  *)
-        (*  =====================  *)
- 
-PROCEDURE testINTOUT0();
+ *              Aufruf nur von Assembler!                                 *)
+PROCEDURE stringIntoCFormat(REF str:ARRAY OF CHAR; VAR dst: MaxStr);
+PROCEDURE stringFromCFormat(REF str: MaxStr; VAR dst:ARRAY OF CHAR);
+
+
+(* Legt das aktuelle VDI-Device fest. 'success=FALSE' falls das *
+ * 'handle' ungueltig war.                                       *)
+
+
+(*  global error handling  *)
+(*  =====================  *)
+PROCEDURE setDevice(handle:DeviceHandle): BOOLEAN;
 
 (*  testINTOUT0  - geg.: Fehlerrueckmeldung in INTOUT[0]  *
  *                 ges.: 'error'=(our_cb.INTOUT[0]=0)    *)
- 
+PROCEDURE testINTOUT0();
 
-PROCEDURE testErrorCheck;
 
 (*  testErrorCheck - Loest ein HALT aus, falls der User versaeumt hat einen *
  *                   Fehler abzufragen!                                   *)
- 
- 
-PROCEDURE gemErrorOccured;
+PROCEDURE testErrorCheck;
+
 
 (*  gemErrorOccured - Loest Fehlerbehandlung aus *)
- 
+PROCEDURE gemErrorOccured;
 
 
-        (* A E S *)
-        
+
+(* A E S *)
+
+(* Ruft Application Enviroment Services mit dem Parameterblock *
+ * 'pb' auf.                                                   *)
 PROCEDURE aes_call(pb: GemHandle);
-        (* Ruft Application Enviroment Services mit dem Parameterblock *
-         * 'pb' auf.                                                   *)
 
+(* Bereitet Aufruf der AES-Funktion mit der Nummer 'opcode' vor *
+ * und ruft danach 'aes-call' mit dem aktuellen Parameterblock  *
+ * auf.                                                         *)
 PROCEDURE aes_if(ctrlcode:CARDINAL32);
-        (* Bereitet Aufruf der AES-Funktion mit der Nummer 'opcode' vor *
-         * und ruft danach 'aes-call' mit dem aktuellen Parameterblock  *
-         * auf.                                                         *)
 
 
-        (* V D I *)
+(* V D I *)
 
 PROCEDURE vdi_call(para: GemHandle);
-        (* Ruft Virtual Display Interface mit dem Parameterblock 'para' auf. *)
+(* Ruft Virtual Display Interface mit dem Parameterblock 'para' auf. *)
 
 PROCEDURE vdi_if(handle:DeviceHandle; ctrlcode:CARDINAL32);
-        (* Bereitet Aufruf der VDI-Funktion mit der Nummer 'opcode' vor, *
-         * falls diese Unterfunktionsnummern besitzt werden diese in     *
-         * 'subcmd' uebergeben (, sonst setzt man 'subcmd=0'). Dann wird  *
-         * 'vdi_call' mit dem aktuellen Parameterblock aufgerufen.       *)
+(* Bereitet Aufruf der VDI-Funktion mit der Nummer 'opcode' vor, *
+ * falls diese Unterfunktionsnummern besitzt werden diese in     *
+ * 'subcmd' uebergeben (, sonst setzt man 'subcmd=0'). Dann wird  *
+ * 'vdi_call' mit dem aktuellen Parameterblock aufgerufen.       *)
 
 PROCEDURE setINT0attribut(handle:DeviceHandle; ctrlcode:CARDINAL32; intin0: INTEGER16);
-        
 (*  setINT0attribute -- geg.: D0 Wert eines Attributes und D1 VDI-Fktsopcode*
  *                      ges.: Aufruf der Funktion die dem Opcode entspricht *
  *                            wobei der Wert uebergeben wird. Die Globale    *
  *                            Var. 'error' wird 'TRUE', falls der Wert vom  *
  *                            VDI nicht angenommen wird.                    *
- 
+
  *      Aufruf nur von ASSEMBLER-Teilen!                                    *)
 
 
 
 
-        (*  Von mehreren Moduln genutzte GEM-Calls (for supervision)  *)
-        (*  ========================================================  *)
-       
+(*  Von mehreren Moduln genutzte GEM-Calls (for supervision)  *)
+(*  ========================================================  *)
+
 PROCEDURE GrafMouse (form: MouseForm;
                      mFormDefPtr:PtrMouseFormDef);
 
@@ -526,21 +494,19 @@ PROCEDURE closeWindow (handle:CARDINAL);
 PROCEDURE deleteWindow (handle:CARDINAL);
 
 
-PROCEDURE exchangeTimerVec(newproc: PROC;VAR time:CARDINAL): [ PROC ];
-
 (*  exchangeTimeVec -- geg.: 'newproc' der neue Timerinterrupt vector *
  *                     ges.: In 'time' steht die Zeit die zwischen 2 *
  *                           Timerinter. vergeht(in ms), der neue    *
  *                           Vector ist beim VDI angemeldet und der  *
  *                           alte Vector ist Rueckgabewert.           *)
- 
-        
-PROCEDURE exchangeMouseVec(opcode:CARDINAL; newproc:PROC): [ PROC ];
+PROCEDURE exchangeTimerVec(newproc: PROC;VAR time:CARDINAL): [ PROC ];
+
 
 (*  exchangeMouseVec -- geg.: 'opcode' der VDI-Opcode fuer einen Mouse- *
  *                            vector exchange und 'newproc' die neue Proc. *
  *                      ges.: neue Proc. bei VDI angemeldet und alter  *
  *                            Vector als Rueckgabewert                  *)
+PROCEDURE exchangeMouseVec(opcode:CARDINAL; newproc:PROC): [ PROC ];
 
 
 PROCEDURE removeTimerVector(VAR hdl:vecListElem);

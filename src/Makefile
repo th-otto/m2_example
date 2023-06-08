@@ -21,6 +21,7 @@ OBJS = \
 	AESFile.o \
 	GEMOps.o \
 	AESMisc.o \
+	AESEvents.o \
 	PathEnv.o \
 	AESGraphics.o \
 	PrgCtrl.o \
@@ -58,6 +59,7 @@ GEMEnv.o: GEMEnv.mod GEMEnv.def GEMConf.def GEMOps.def
 AESFile.o: AESFile.mod AESFile.def GEMOps.def
 GEMOps.o: GEMOps.mod GEMOps.def
 AESMisc.o: AESMisc.mod AESMisc.def GEMOps.def
+AESEvents.o: AESEvents.mod AESEvents.def GEMOps.def
 PathEnv.o: PathEnv.mod PathEnv.def
 AESGraphics.o: AESGraphics.mod AESGraphics.def
 PrgCtrl.o: PrgCtrl.mod PrgCtrl.def

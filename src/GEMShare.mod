@@ -523,11 +523,11 @@ BEGIN
 
   (*  'Plugs' zuruecksetzen  *)
 
-  keyboardPlugActive := FALSE;
-  buttonPlugActive := FALSE;
-  firstRectPlugActive := FALSE;
-  secondRectPlugActive := FALSE;
-  messagePlugActive := FALSE;
-  timerPlugActive := FALSE;
+  keyboardPlug := keyboardPlugProc(0);
+  buttonPlug := buttonPlugProc(0);
+  firstRectPlug := rectPlugProc(0);
+  secondRectPlug := rectPlugProc(0);
+  messagePlug := messagePlugProc(0);
+  timerPlug := timerPlugProc(0);
 
 END GEMShare.
