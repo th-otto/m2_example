@@ -1,0 +1,130 @@
+DEFINITION MODULE AESMenus;
+#define REF
+
+
+(*  Megamax-Modula 2 GEM-Library :  Die AES Menuefunktionen
+ *
+ *  Autor: Manuel Chakravarty           Erstellt :  05.11.87
+ *
+ *  Version   2.2     V#0007
+ *)
+
+
+(*      Dieses Modul stellt die Routinen zur Verfuegung, die zum
+ *      Arbeiten mit Menuzeilen noetig sind. Darunter auch eine,
+ *      die es einem Programm erlaubt, sich als Accessory anzumelden.
+ *)
+
+
+FROM GEMGlobals IMPORT PtrObjTree, PtrMaxStr;
+
+
+(*  Menu Manager  *)
+(*  ============  *)
+
+(*  Diese Prozedur meldet eine Menuezeile an oder ab.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'show'      -- 'TRUE': das Menue wird angemeldet. Das bedeutet
+ *                 dass die Zeile am oberen Rand des Bildschirms
+ *                 dargestellt wird und dass bei einem folgende
+ *                 Aufruf einer Eventprozedur (siehe AESEvents)
+ *                 vom AES darauf geachtet wird, ob der Mauszei-
+ *                 ger die Menuezeile betritt.
+ *                 'FALSE': das Menue wird zwar nicht vom Bild-
+ *                 schirm geloescht, aber es kann vom Anwender
+ *                 nicht mehr benutzt werden.
+ * 'tree'       -- muss einen Zeiger auf die Definition der Menue-
+ *                 zeile in Form eines Objektbaumes beinhalten.
+ *)
+PROCEDURE MenuBar(tree: PtrObjTree; show: BOOLEAN);
+
+(*  Diese Prozedur setzt oder loescht den Haken links neben
+ *  dem Menueeintrag.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'tree'      -- die Menuezeile in der der Eintrag steht.
+ *  'item'      -- der Eintrag
+ *  'check'     -- 'TRUE' : der Haken wird gesetzt.
+ *                 'FALSE': der Haken wird geloescht.
+ *)
+PROCEDURE CheckItem(tree: PtrObjTree; item: CARDINAL; check: BOOLEAN);
+
+(*  Der Eintrag einer Menuezeile wird aktiviert oder deakti-
+ *  viert. Der Schriftzug eines deativierten Eintrages wird
+ *  aufgehellt dargestellt und kann vom Anwender nicht mehr
+ *  angewaehlt werden.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'item'      -- der Eintrag
+ *  'tree'      -- die Menuezeile, in der der Eintrag steht.
+ *  'enable'    -- 'TRUE' : Eintrag wird aktiviert
+ *                 'FALSE': Eintrag wird deaktiviert
+ *)
+PROCEDURE EnableItem(tree: PtrObjTree; item: CARDINAL; enable: BOOLEAN);
+
+(*  Der Titel in einer Menuezeile wird normal oder invers
+ *  dargestellt. Die inverse Darstellung bedeutet, dass der
+ *  Title angwaehlt wurde.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'title'     -- Der Titel, der normal oder invers darge-
+ *                 stellt werden soll.
+ *  'tree'      -- Die Menuezeile, in der der Titel steht
+ *  'normal'    -- 'TRUE' : Titel normal darstellen
+ *                 'FALSE': Titel invers darstellen
+ *
+ *)
+PROCEDURE NormalTitle(tree: PtrObjTree; title: CARDINAL; normal: BOOLEAN);
+
+(*  Diese Routine erlaubt es, einem Menueeintrag einen neuen
+ *  Text zuzuweisen.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'item'      -- Der Menueeintrag
+ *  'text'      -- Der neue Text
+ *
+ *  Es ist darauf zu achten, dass die neue Zeichenkette nicht
+ *  laenger als die Alte ist. Der Text sollte durch zwei Leer-
+ *  zeichen eingeleitet werden und am Ende mit Leerzeichen
+ *  aufgefuellt werden. Am Ende sollte mindestens ein Leerzei-
+ *  chen stehen.
+ *)
+PROCEDURE MenuText(tree: PtrObjTree; item: CARDINAL; REF text: ARRAY OF CHAR);
+
+(*  Diese Prozedur darf nur von Accessories verwendet werden.
+ *  Sie traegt ein Accesory im Menue ein.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'title'     --'title^' ist die Zeichenkette des Accesory's
+ *                das in das Menue eingetragen werden soll.
+ *
+ *  Ausgabeparameter
+ *  ----------------
+ *
+ *  'success'   --'TRUE' : die Anmeldung war erfolgreich
+ *                'FALSE': Anmeldung war nicht erfolgreich
+ *  'id'        -- enthaelt, falls die Anmeldung erfolgreich war
+ *                 die Identifikationsnummer des Accesorry's
+ *                 die bei jeder 'accOpen' und 'accClose' Nach-
+ *                 richt angegeben wird. (Siehe AESEvents)
+ *
+ *  Es ist darauf zu achten, dass title^ eine globale Variable
+ *  ist!
+ *)
+PROCEDURE RegisterAcc(title: PtrMaxStr; VAR id: CARDINAL; VAR success: BOOLEAN);
+
+
+END AESMenus.

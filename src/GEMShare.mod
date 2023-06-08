@@ -105,7 +105,7 @@ PROCEDURE stringIntoCFormat (REF str: ARRAY OF CHAR; VAR dst: MaxStr);
 VAR i, count: CARDINAL;
 BEGIN
   count := HIGH(str);
-  IF count > HIGH(dst) THEN count := HIGH(dst); END;
+  IF count >= HIGH(dst) THEN count := HIGH(dst) - 1; END;
   i := 0;
   (* Kopiere bis 0C oder max. Arrayindex *)
   LOOP
@@ -160,7 +160,7 @@ END signalGemError;
  *)
 PROCEDURE testINTOUT0();
 BEGIN
-  errNum := our_cb^.aespb.pintin^[0];
+  errNum := our_cb^.aespb.pintout^[0];
   IF errNum = 0 THEN signalGemError; END;
 END testINTOUT0;
 

@@ -277,12 +277,12 @@ X       DC.B    2, 1, 0            ; func 026  dclick
         DC.B    0, 0, 0            ; func 028
         DC.B    0, 0, 0            ; func 029
     ;                             Menu Manager
-        DC.B    1, 1, 1            ; func 030  bar
-        DC.B    2, 1, 1            ; func 031  icheck
-        DC.B    2, 1, 1            ; func 032  ienable
-        DC.B    2, 1, 1            ; func 033  tnormal
-        DC.B    1, 1, 2            ; func 034  text
-        DC.B    1, 1, 1            ; func 035  register
+X       DC.B    1, 1, 1            ; func 030  bar
+X       DC.B    2, 1, 1            ; func 031  icheck
+X       DC.B    2, 1, 1            ; func 032  ienable
+X       DC.B    2, 1, 1            ; func 033  tnormal
+X       DC.B    1, 1, 2            ; func 034  text
+X       DC.B    1, 1, 1            ; func 035  register
         DC.B    0, 0, 0            ; func 036
         DC.B    0, 0, 0            ; func 037
         DC.B    0, 0, 0            ; func 038
