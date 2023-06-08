@@ -98,4 +98,6 @@ BEGIN
 END RegisterAcc;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END AESMenus.

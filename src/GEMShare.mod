@@ -104,8 +104,8 @@ END stringIntoINTIN;
 PROCEDURE stringIntoCFormat (REF str: ARRAY OF CHAR; VAR dst: MaxStr);
 VAR i, count: CARDINAL;
 BEGIN
-  count := HIGH(str);
-  IF count >= HIGH(dst) THEN count := HIGH(dst) - 1; END;
+  count := HIGH(str) + 1;
+  IF count >= HIGH(dst) THEN count := HIGH(dst); END;
   i := 0;
   (* Kopiere bis 0C oder max. Arrayindex *)
   LOOP
