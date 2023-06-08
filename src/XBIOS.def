@@ -14,8 +14,60 @@ EXPORT QUALIFIED
 	GetResolution,
 	SetScreenBase,
 	SetPalette,
+	FloppyRead,
+	FloppyWrite,
+	FloppyFormat,
+	MIDIWS,
+	MFPint,
+	IORec,
+	ConfigureRS232,
+	SetKeyTable,
+	Random,
+	PrototypeBootSector,
+	FloppyVerify,
+	ScreenDump,
+	ConfigureCursor,
+	SetDateTime,
+	GetDateTime,
+	BiosKeys,
+	KeyboardWS,
+	DisableInterrupt,
+	EnableInterrupt,
+	GIRead,
+	GIWrite,
+	GIOffBit,
+	GIOnBit,
+	SetTimerInterrupt,
+	DoSound,
+	ConfigurePrinter,
+	KeyboardVectors,
+	KeyboardRate,
+	VSync,
+	SuperExec,
+	PuntAES,
+	FlopRate,
 	BlitMode,
-	SuperExec;
+	Bconmap,
+	DMAread,
+	DMAwrite,
+	NVMaccess,
+	Waketime,
+	EsetShift,
+	EgetShift,
+	EsetBank,
+	EsetColor,
+	EsetPalette,
+	EgetPalette,
+	EsetGray,
+	EsetSmear,
+	CacheCtrl,
+	WdgCtrl,
+	ExtRsConf,
+	MouseType,
+	SerialDevice,
+	SerialSpeed,
+	IOREC,
+	IORECPTR;
 
 TYPE SuperExecProc = PROCEDURE(): INTEGER32;
 
@@ -242,7 +294,7 @@ PROCEDURE FloppyVerify(buffer: ADDRESS; drive: CARDINAL16;
                        count: CARDINAL16): INTEGER16;
 
 (* dump screen to printer. *)
-PROCEDURE ScreenDump;
+PROCEDURE ScreenDump();
 
 (* configure cursor blink rate and attributes.
    mode: based on video scan rate; -1 => no change.

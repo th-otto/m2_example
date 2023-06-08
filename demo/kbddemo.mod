@@ -9,24 +9,25 @@ MODULE KbdDemo;
  *------------------------------------------------------------------------------
  *)
 
-FROM SYSTEM IMPORT CAST, BYTE;
+FROM SYSTEM IMPORT BYTE;
 
 FROM GEMGlobals IMPORT MButtonSet, GemChar, SpecialKeySet, SpecialKey;
 
-FROM GEMEnv IMPORT RC, DeviceHandle, InitGem;
+FROM GEMEnv IMPORT RC, InitGem;
 
 FROM AESEvents IMPORT Event, RectEnterMode, MultiEvent, MessageBuffer,
                       EventSet;
 
 FROM GrafBase IMPORT Rectangle, Rect, Point;
+IMPORT GEMShare;
 
-IMPORT InOut;
-
-IMPORT StrConv;
+FROM StrIO IMPORT WriteString, WriteLn;
+FROM NumberIO IMPORT WriteCard;
+FROM StdIO IMPORT Write;
 
 IMPORT KbdEvents;
 
-VAR DevHdl: DeviceHandle;                   (* VDI-Handle *)
+VAR DevHdl: GEMShare.DeviceHandle;                   (* VDI-Handle *)
     success: BOOLEAN;
     mouseLoc: Point;                        (* Variablen fuer MultiEvent *)
     buttons: MButtonSet;
@@ -39,12 +40,12 @@ VAR DevHdl: DeviceHandle;                   (* VDI-Handle *)
 BEGIN
   InitGem( RC, DevHdl, success);    (* beim GEM anmelden *)
   IF success THEN
-    InOut.WriteString( "Modul 'KbdDemo' zum Austesten von 'KbdEvents'");
-    InOut.WriteLn;
-    InOut.WriteString( 'Copyright ½ 1989 by Michael Seyfried');
-    InOut.WriteLn; InOut.WriteLn;
-    InOut.WriteString( "'Esc' beenden, 'Undo' KbdEvents (de)aktivieren");
-    InOut.WriteLn; InOut.WriteLn;
+    WriteString( "Modul 'KbdDemo' zum Austesten von 'KbdEvents'");
+    WriteLn;
+    WriteString( 'Copyright ½ 1989 by Michael Seyfried');
+    WriteLn; WriteLn;
+    WriteString( "'Esc' beenden, 'Undo' KbdEvents (de)aktivieren");
+    WriteLn; WriteLn;
 
     (* Ereignisschleife *)
     LOOP
@@ -54,44 +55,44 @@ BEGIN
                   msg, 0, mouseLoc, buttons, keyState,
                   key, doneClicks, occuredEvents);
       IF keyboard IN occuredEvents THEN
-        IF key.scan = CAST( BYTE, 97) THEN
-          InOut.WriteString( 'KbdEvents wurde ');
+        IF key.scan = VAL( BYTE, 97) THEN
+          WriteString( 'KbdEvents wurde ');
           IF KbdEvents.KbdEventsInstalled() THEN
             KbdEvents.DeInstallKbdEvents;
-            InOut.WriteString( 'deaktiviert.');
+            WriteString( 'deaktiviert.');
           ELSE
             KbdEvents.InstallKbdEvents;
-            InOut.WriteString( 'aktiviert.');
+            WriteString( 'aktiviert.');
           END;
-          InOut.WriteLn;
+          WriteLn;
         ELSIF key.ascii = CHR( 27) THEN
           (* Bei Esc terminieren *)
           EXIT
         ELSE
-          InOut.WriteString( 'Das GEM meldet folgendes Tastaturereignis:');
-          InOut.WriteLn;
-          InOut.WriteString( 'ascii: ');
-          InOut.Write( key.ascii);
-          InOut.WriteLn;
-          InOut.WriteString( 'scan: ');
-          InOut.WriteString( StrConv.CardToStr( CAST( CARDINAL, key.scan), 5));
-          InOut.WriteLn;
-          InOut.WriteString( 'keyState: { ');
+          WriteString( 'Das GEM meldet folgendes Tastaturereignis:');
+          WriteLn;
+          WriteString( 'ascii: ');
+          Write( key.ascii);
+          WriteLn;
+          WriteString( 'scan: ');
+          WriteCard(VAL( CARDINAL, key.scan), 5);
+          WriteLn;
+          WriteString( 'keyState: { ');
           IF rightShiftKey IN keyState THEN
-            InOut.WriteString( 'rightShiftKey ')
+            WriteString( 'rightShiftKey ')
           END;
           IF leftShiftKey IN keyState THEN
-            InOut.WriteString( 'leftShiftKey ')
+            WriteString( 'leftShiftKey ')
           END;
           IF controlKey IN keyState THEN
-            InOut.WriteString( 'controlKey ')
+            WriteString( 'controlKey ')
           END;
           IF alternateKey IN keyState THEN
-            InOut.WriteString( 'alternateKey ')
+            WriteString( 'alternateKey ')
           END;
-          InOut.WriteString( '}');
-          InOut.WriteCard( CAST( CARDINAL, keyState), 6);
-          InOut.WriteLn;
+          WriteString( '}');
+          WriteCard( VAL( CARDINAL, keyState), 6);
+          WriteLn;
         END;
       END;
     END

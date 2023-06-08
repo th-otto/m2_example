@@ -17,6 +17,7 @@ DEFINITION MODULE GEMEnv;
 FROM GrafBase IMPORT Point, Rectangle;
 
 FROM GEMGlobals IMPORT TEffectSet;
+FROM GEMShare IMPORT PtrDevParm;
 
 
 (*  Kontroll Funktionen  *)

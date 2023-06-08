@@ -36,6 +36,8 @@ OBJS = \
 	MOSSupport.o \
 	SysInfo.o \
 	CookieJar.o \
+	KbdEvents.o \
+	XBRA.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -74,6 +76,8 @@ Excepts.o: Excepts.mod Excepts.def
 MOSSupport.o: MOSSupport.mod MOSSupport.def
 SysInfo.o: SysInfo.mod SysInfo.def
 CookieJar.o: CookieJar.mod CookieJar.def
+KbdEvents.o: KbdEvents.mod KbdEvents.def
+XBRA.o: XBRA.mod XBRA.def
 
 clean::
 	rm -f *.o *.a
