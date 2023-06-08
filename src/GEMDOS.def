@@ -159,82 +159,81 @@ TYPE    (* Kennzeichen (Attribut) fuer einen Directory-Eintrag *)
                        END;
         DTAPtr = POINTER TO DTA;
 
-PROCEDURE OldTerm () <* noreturn *>;
 (* Pterm0: Achtung: In der Regel stattdessen 'TermProcess(0)' benutzen! *)
+PROCEDURE OldTerm () <* noreturn *>;
 
-PROCEDURE ConIn ( VAR ch: CHAR );
 (* 'Cconin': Read character from standard input *)
+PROCEDURE ConIn ( VAR ch: CHAR );
 
-PROCEDURE ConScanIn ( VAR ch, scan: CHAR );
 (* 'Cconin': Read character and scan code from standard input *)
+PROCEDURE ConScanIn ( VAR ch, scan: CHAR );
 
-PROCEDURE ConOut ( ch: CHAR );
 (* 'Cconout': Write character to standard output *)
+PROCEDURE ConOut ( ch: CHAR );
 
-PROCEDURE AuxIn ( VAR ch: CHAR );
 (* 'Cauxin': Read character from auxiliary port *)
+PROCEDURE AuxIn ( VAR ch: CHAR );
 
-PROCEDURE AuxOut ( ch: CHAR );
 (* 'Cauxout': Write character to auxiliary port *)
+PROCEDURE AuxOut ( ch: CHAR );
 
-PROCEDURE PrnOut ( ch: CHAR );
 (* 'Cprnout': Write character to printer port *)
+PROCEDURE PrnOut ( ch: CHAR );
 
-PROCEDURE RawIO ( VAR ch: CHAR; rw: IOMode );
 (* 'Crawio': Raw IO to standard input/output device *)
+PROCEDURE RawIO ( VAR ch: CHAR; rw: IOMode );
 
-PROCEDURE RawIn ( VAR ch: CHAR );
 (* 'Crawcin': Raw input from standard input *)
+PROCEDURE RawIn ( VAR ch: CHAR );
 
-PROCEDURE RawScanIn ( VAR ch, scan: CHAR );
 (* 'Crawcin': Raw input of character and scan code from standard input *)
+PROCEDURE RawScanIn ( VAR ch, scan: CHAR );
 
-PROCEDURE NecIn ( VAR ch: CHAR );
 (* 'Cnecin': Read character from standard input with no echo *)
+PROCEDURE NecIn ( VAR ch: CHAR );
 
-PROCEDURE ConWS ( REF str: ARRAY OF CHAR );
 (* 'Cconws': Write null terminated string to standard output device *)
+PROCEDURE ConWS ( REF str: ARRAY OF CHAR );
 
-PROCEDURE ConRS ( VAR str: ARRAY OF BYTE );
 (* 'Cconws': Read edited string from standard input device *)
+PROCEDURE ConRS ( VAR str: ARRAY OF BYTE );
 
-PROCEDURE ConIS (): BOOLEAN;
 (* 'Cconis': Return status of standard input *)
+PROCEDURE ConIS (): BOOLEAN;
 
-PROCEDURE SetDrv ( drive: CARDINAL; VAR DriveMap: CARDINAL32 );
 (* 'Dsetdrv': Set default drive *)
+PROCEDURE SetDrv ( drive: CARDINAL; VAR DriveMap: CARDINAL32 );
 
-PROCEDURE ConOS (): BOOLEAN;
 (* 'Cconos': Return output status of standard output *)
+PROCEDURE ConOS (): BOOLEAN;
 
-PROCEDURE PrnOS (): BOOLEAN;
 (* 'Cprnos': Return output status of standard printer *)
+PROCEDURE PrnOS (): BOOLEAN;
 
-PROCEDURE AuxIS (): BOOLEAN;
 (* 'Cauxis': Return status of standard auxiliary *)
+PROCEDURE AuxIS (): BOOLEAN;
 
-PROCEDURE AuxOS (): BOOLEAN;
 (* 'Cauxos': Return output status of standard auxiliary *)
+PROCEDURE AuxOS (): BOOLEAN;
 
-PROCEDURE Maddalt ( start: ADDRESS; size: INTEGER32 ) : [ INTEGER32 ];
 (* Register 'Alternative' RAM with GEMDOS *)
+PROCEDURE Maddalt ( start: ADDRESS; size: INTEGER32 ) : [ INTEGER32 ];
 
-PROCEDURE Srealloc ( size: INTEGER32 ) : [ INTEGER32 ];
 (* Allocate screen memory *)
+PROCEDURE Srealloc ( size: INTEGER32 ) : [ INTEGER32 ];
 
-PROCEDURE Slbopen(REF name: ARRAY OF CHAR; REF path: ARRAY OF CHAR; min_ver: INTEGER32; VAR sl: SHARED_LIB; VAR fn: SLB_EXEC): INTEGER32;
 (* Open a shared library *)
+PROCEDURE Slbopen(REF name: ARRAY OF CHAR; REF path: ARRAY OF CHAR; min_ver: INTEGER32; VAR sl: SHARED_LIB; VAR fn: SLB_EXEC): INTEGER32;
 
-PROCEDURE Slbclose(sl: SHARED_LIB) : [ INTEGER32 ];
 (* Close a shared library *)
+PROCEDURE Slbclose(sl: SHARED_LIB) : [ INTEGER32 ];
 
-PROCEDURE GetDrv ( VAR drive: CARDINAL );
 (* 'Dgetdrv': Get default drive *)
+PROCEDURE GetDrv ( VAR drive: CARDINAL );
 
-PROCEDURE SetDTA ( addr: DTAPtr );
 (* 'Fsetdta': Set disk transfer address *)
+PROCEDURE SetDTA ( addr: DTAPtr );
 
-PROCEDURE Super (stack: INTEGER32): [ INTEGER32 ];
 (* 'Super':
  * Ist 'stack' Null, wird in den Supervisormode gelangt und ein Wert
  * geliefert, der beim Zurueckschalten in den Usermode hier wieder angegeben
@@ -242,110 +241,109 @@ PROCEDURE Super (stack: INTEGER32): [ INTEGER32 ];
  * Ist 'stack' Eins, wird der aktuelle Modus geliefert: Null fuer den
  * Usermode, -1 fuer den Supervisormode.
  *)
+PROCEDURE Super (stack: INTEGER32): [ INTEGER32 ];
 
-PROCEDURE GetDate ( VAR packeddate: CARDINAL16 );
 (* 'Tgetdate': Get Date *)
+PROCEDURE GetDate ( VAR packeddate: CARDINAL16 );
 
-PROCEDURE SetDate ( packeddate: CARDINAL16 );
 (* 'Tsetdate': Set Date *)
+PROCEDURE SetDate ( packeddate: CARDINAL16 );
 
-PROCEDURE GetTime ( VAR packedtime: CARDINAL16 );
 (* 'Tgettime': Get Date *)
+PROCEDURE GetTime ( VAR packedtime: CARDINAL16 );
 
-PROCEDURE SetTime ( packedtime: CARDINAL16 );
 (* 'Tsettime': Set Date *)
+PROCEDURE SetTime ( packedtime: CARDINAL16 );
 
-PROCEDURE GetDTA ( VAR addr: DTAPtr );
 (* 'Fgetdta': Get disk transfer address *)
+PROCEDURE GetDTA ( VAR addr: DTAPtr );
 
-PROCEDURE Version ( VAR versionNo: CARDINAL );
 (* 'Sversion': Get version number *)
+PROCEDURE Version ( VAR versionNo: CARDINAL );
 
-PROCEDURE TermRes ( keepAmount: CARDINAL32; exitcode: INTEGER ) <* noreturn *>;
 (* 'Ptermres': Terminate and stay resident *)
+PROCEDURE TermRes ( keepAmount: CARDINAL32; exitcode: INTEGER ) <* noreturn *>;
 
-PROCEDURE Sconfig(mode: INTEGER16; flags: INTEGER32) : [ INTEGER32 ];
 (* Configuration of parts of the operating system *)
+PROCEDURE Sconfig(mode: INTEGER16; flags: INTEGER32) : [ INTEGER32 ];
 
-PROCEDURE DFree (VAR infoblock: DiskInfoBuffer; drive: CARDINAL ) : [ INTEGER32 ];
 (* 'Dfree': Get drive free space *)
+PROCEDURE DFree (VAR infoblock: DiskInfoBuffer; drive: CARDINAL ) : [ INTEGER32 ];
 
-PROCEDURE DirCreate ( REF path: ARRAY OF CHAR ): [ INTEGER32 ];
 (* 'Dcreate': Create a subdirectory *)
+PROCEDURE DirCreate ( REF path: ARRAY OF CHAR ): [ INTEGER32 ];
 
-PROCEDURE DirDelete ( REF path: ARRAY OF CHAR ): [ INTEGER32 ];
 (* 'Ddelete': Delete a subdirectory *)
+PROCEDURE DirDelete ( REF path: ARRAY OF CHAR ): [ INTEGER32 ];
 
-PROCEDURE SetPath ( REF path: ARRAY OF CHAR ): [ INTEGER32 ];
 (* 'Dsetpath': Set current directory *)
+PROCEDURE SetPath ( REF path: ARRAY OF CHAR ): [ INTEGER32 ];
 
 PROCEDURE Create ( REF fname: ARRAY OF CHAR; attr: CARDINAL;
                    VAR handle: INTEGER  );
 (* 'Fcreate': Create a file *)
 
+(* 'Fopen': Open a file *)
 PROCEDURE Open ( REF fname: ARRAY OF CHAR; mode: CARDINAL;
                  VAR handle: INTEGER );
-(* 'Fopen': Open a file *)
 
-PROCEDURE Close ( handle: INTEGER ): [ BOOLEAN ];
 (* 'Fclose': Close a file *)
+PROCEDURE Close ( handle: INTEGER ): [ BOOLEAN ];
 
-PROCEDURE Read ( handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS );
 (* 'Fread': Read file *)
+PROCEDURE Read ( handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS );
 
-PROCEDURE Write ( handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS );
 (* 'Fwrite': Write file *)
+PROCEDURE Write ( handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS );
 
-PROCEDURE Delete ( REF fname: ARRAY OF CHAR ): [ INTEGER32 ];
 (* 'Fdelete': Delete file *)
+PROCEDURE Delete ( REF fname: ARRAY OF CHAR ): [ INTEGER32 ];
 
+(* 'Fseek': Seek file pointer *)
 PROCEDURE Seek ( offset: INTEGER32; handle: INTEGER; mode: SeekMode;
                  VAR newPosFromBeginning: INTEGER32 );
-(* 'Fseek': Seek file pointer *)
 
+(* 'Fattrib': Get/Set file attributes *)
 PROCEDURE Attrib ( REF fname: ARRAY OF CHAR; getOrSet: TimeAccessMode;
                    VAR attr: CARDINAL ) : [ INTEGER32 ];
-(* 'Fattrib': Get/Set file attributes *)
 
-PROCEDURE Dup ( stdHandle: INTEGER; VAR newHandle: INTEGER );
 (* 'Fdup': Liefert eine Kopie eines Standard-Handles (0-5) *)
+PROCEDURE Dup ( stdHandle: INTEGER; VAR newHandle: INTEGER );
 
-PROCEDURE Force ( stdHandle, newHandle: INTEGER ): BOOLEAN;
 (* 'Fforce': Laesst 'stdHandle' auf 'newHandle' verweisen *)
+PROCEDURE Force ( stdHandle, newHandle: INTEGER ): BOOLEAN;
 
-PROCEDURE GetPath ( VAR path: ARRAY OF CHAR; driveno: CARDINAL ) : [ BOOLEAN ];
 (* 'Dgetpath': Get current directory *)
+PROCEDURE GetPath ( VAR path: ARRAY OF CHAR; driveno: CARDINAL ) : [ BOOLEAN ];
 
-PROCEDURE Alloc ( amount: INTEGER32; VAR Addr: ADDRESS );
 (* 'Malloc': Allocate memory, 'bytes = -1' returns amount of largest block *)
+PROCEDURE Alloc ( amount: INTEGER32; VAR Addr: ADDRESS );
 
-PROCEDURE Free ( Addr: ADDRESS ): [ BOOLEAN ];
 (* 'Mfree': Free memory *)
+PROCEDURE Free ( Addr: ADDRESS ): [ BOOLEAN ];
 
-PROCEDURE Shrink ( Addr: ADDRESS; NewSize: CARDINAL32 ): [ BOOLEAN ];
 (* 'Mshrink': Shrink size of allocated memory *)
+PROCEDURE Shrink ( Addr: ADDRESS; NewSize: CARDINAL32 ): [ BOOLEAN ];
 
-PROCEDURE Pexec ( Mode: CARDINAL; Name, Arguments, Environment: ADDRESS;
-                  VAR Result: INTEGER32 );
 (* 'Pexec': Load or execute a process *)
+PROCEDURE Pexec ( Mode: CARDINAL; Name, Arguments, Environment: ADDRESS; VAR Result: INTEGER32 );
 
-PROCEDURE Term ( exitcode: INTEGER ) <* noreturn *>;
 (* Achtung: In der Regel stattdessen 'TermProcess(exitcode)' benutzen! *)
+PROCEDURE Term ( exitcode: INTEGER ) <* noreturn *>;
 
-PROCEDURE SFirst ( REF fname: ARRAY OF CHAR; Attr: CARDINAL;
-                   VAR Result: INTEGER );
 (* 'Fsfirst': Search for first file *)
+PROCEDURE SFirst ( REF fname: ARRAY OF CHAR; Attr: CARDINAL; VAR Result: INTEGER );
 
-PROCEDURE SNext ( VAR Result: INTEGER );
 (* 'Fsnext': Search for next file *)
+PROCEDURE SNext ( VAR Result: INTEGER );
 
-PROCEDURE Rename ( REF oldname, newname: ARRAY OF CHAR ) : [ INTEGER32 ];
 (* 'Frename': Rename a file *)
+PROCEDURE Rename ( REF oldname, newname: ARRAY OF CHAR ) : [ INTEGER32 ];
 
-PROCEDURE DaTime ( handle: INTEGER; Buffer: ADDRESS; getOrSet: TimeAccessMode ) : [ BOOLEAN ];
 (* 'Fdatime': Get/Set file date and time stamp *)
+PROCEDURE DaTime ( handle: INTEGER; Buffer: ADDRESS; getOrSet: TimeAccessMode ) : [ BOOLEAN ];
 
-PROCEDURE Xalloc ( Bytes: INTEGER32; mode: CARDINAL; VAR Addr: ADDRESS );
 (* 'Mxalloc': Erweiterte Alloc-Funktion fuer den Atari TT. *)
+PROCEDURE Xalloc ( Bytes: INTEGER32; mode: CARDINAL; VAR Addr: ADDRESS );
 
 END GEMDOS.

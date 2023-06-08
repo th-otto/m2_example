@@ -104,94 +104,94 @@ END trap_13_wwlwwwl;
 
 
 PROCEDURE Getmpb(VAR mpb: MPB);
-  BEGIN
-    trap_13_wl(0, INTEGER32(ADR(mpb)));
-  END Getmpb;
+BEGIN
+  trap_13_wl(0, INTEGER32(ADR(mpb)));
+END Getmpb;
 
 
 PROCEDURE BConStat (dev: Device): BOOLEAN;
-  BEGIN
-    RETURN trap_13_ww(1, INTEGER(dev)) <> 0;
-  END BConStat;
+BEGIN
+  RETURN trap_13_ww(1, INTEGER(dev)) <> 0;
+END BConStat;
 
 
 PROCEDURE BConIn (dev: Device): CARDINAL32;
-  BEGIN
-    RETURN trap_13_ww(2, INTEGER(dev));
-  END BConIn;
+BEGIN
+  RETURN trap_13_ww(2, INTEGER(dev));
+END BConIn;
 
 
 PROCEDURE BConOut (dev: Device; ch: CHAR): [ INTEGER32 ];
-  BEGIN
-    RETURN trap_13_www(3, INTEGER(dev), ORD(ch));
-  END BConOut;
+BEGIN
+  RETURN trap_13_www(3, INTEGER(dev), ORD(ch));
+END BConOut;
 
 
 PROCEDURE RWAbs (mode: RW; buffer: ADDRESS;
                  count, recno, dev: CARDINAL): INTEGER32;
-  BEGIN
-    RETURN trap_13_wwlwww(4, INTEGER(mode), INTEGER32(buffer), count, recno, dev);
-  END RWAbs;
+BEGIN
+  RETURN trap_13_wwlwww(4, INTEGER(mode), INTEGER32(buffer), count, recno, dev);
+END RWAbs;
 
 
 PROCEDURE LRWAbs(mode: RW; buffer: ADDRESS; count, dev: CARDINAL; lrecno: INTEGER32): INTEGER32;
-  BEGIN
-    RETURN trap_13_wwlwwwl(4, INTEGER(mode), INTEGER32(buffer), count, -1, dev, lrecno);
-  END LRWAbs;
+BEGIN
+  RETURN trap_13_wwlwwwl(4, INTEGER(mode), INTEGER32(buffer), count, -1, dev, lrecno);
+END LRWAbs;
 
 
 PROCEDURE SetException (excno: CARDINAL; vec: ADDRESS): [ ADDRESS ];
-  BEGIN
-    RETURN ADDRESS(trap_13_wwl(5, excno, INTEGER32(vec)));
-  END SetException;
+BEGIN
+  RETURN ADDRESS(trap_13_wwl(5, excno, INTEGER32(vec)));
+END SetException;
 
 
 PROCEDURE GetException (excno: CARDINAL): ADDRESS;
-  BEGIN
-    RETURN ADDRESS(trap_13_wwl(5, excno, -1));
-  END GetException;
+BEGIN
+  RETURN ADDRESS(trap_13_wwl(5, excno, -1));
+END GetException;
 
 
 PROCEDURE TimerCalibration (): CARDINAL32;
-  BEGIN
-    RETURN trap_13_w(6);
-  END TimerCalibration;
+BEGIN
+  RETURN trap_13_w(6);
+END TimerCalibration;
 
 
 PROCEDURE GetBPB (dev: CARDINAL): BPBPtr;
-  BEGIN
-    RETURN BPBPtr(trap_13_ww(7, dev));
-  END GetBPB;
+BEGIN
+  RETURN BPBPtr(trap_13_ww(7, dev));
+END GetBPB;
 
 
 PROCEDURE BCosStat (dev: Device): BOOLEAN;
-  BEGIN
-    RETURN trap_13_ww(8, INTEGER(dev)) <> 0;
-  END BCosStat;
+BEGIN
+  RETURN trap_13_ww(8, INTEGER(dev)) <> 0;
+END BCosStat;
 
 
 PROCEDURE MediaChange (dev: CARDINAL): MCState;
-  BEGIN
-    RETURN MCState(trap_13_ww(9, dev));
-  END MediaChange;
+BEGIN
+  RETURN MCState(trap_13_ww(9, dev));
+END MediaChange;
 
 
 PROCEDURE DriveMap (): DriveSet;
-  BEGIN
-    RETURN DriveSet(trap_13_w(10));
-  END DriveMap;
+BEGIN
+  RETURN DriveSet(trap_13_w(10));
+END DriveMap;
 
 
 PROCEDURE SetKBShift (keys: KBShifts);
-  BEGIN
-    trap_13_ww(11, INTEGER(keys));
-  END SetKBShift;
+BEGIN
+  trap_13_ww(11, INTEGER(keys));
+END SetKBShift;
 
 
 PROCEDURE GetKBShift (): KBShifts;
-  BEGIN
-    RETURN KBShifts(trap_13_ww(11, -1));
-  END GetKBShift;
+BEGIN
+  RETURN KBShifts(trap_13_ww(11, -1));
+END GetKBShift;
 
 
 BEGIN
