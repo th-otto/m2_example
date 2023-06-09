@@ -32,6 +32,7 @@ FROM GEMGlobals IMPORT MaxStr, PtrMaxStr;
 IMPORT MOSGlobals;
 FROM AESScraps IMPORT ScrapRead, ScrapWrite;
 IMPORT AESShells;
+IMPORT AESApplications;
 
 
 PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
@@ -60,21 +61,13 @@ END getNoElements;
 
 PROCEDURE ReadFromAppl(id:CARDINAL;VAR buffer:ARRAY OF BYTE;noBytes:CARDINAL);
 BEGIN
-  our_cb^.pubs.aINTIN[1] := getNoElements(HIGH(buffer), noBytes);
-  our_cb^.pubs.aINTIN[0] := id;
-  our_cb^.pubs.ADDRIN[0] := ADR(buffer);
-  aes_if(AES_CTRL_CODE(GEMOps.APPL_READ, 2, 1, 1));
-  testINTOUT0();
+  AESApplications.ApplRead(id, getNoElements(HIGH(buffer), noBytes), ADR(buffer));
 END ReadFromAppl;
 
 
 PROCEDURE WriteToAppl(id:CARDINAL; REF message:ARRAY OF BYTE; noBytes: CARDINAL);
 BEGIN
-  our_cb^.pubs.aINTIN[1] := getNoElements(HIGH(message), noBytes);
-  our_cb^.pubs.aINTIN[0] := id;
-  our_cb^.pubs.ADDRIN[0] := ADR(message);
-  aes_if(AES_CTRL_CODE(GEMOps.APPL_WRITE, 2, 1, 1));
-  testINTOUT0();
+  AESApplications.ApplWrite(id, getNoElements(HIGH(message), noBytes), ADR(message));
 END WriteToAppl;
 
 
@@ -98,9 +91,7 @@ BEGIN
     INC(i);
   END;
   name[8] := 0C;
-  our_cb^.pubs.ADDRIN[0] := ADR(name);
-  aes_if(AES_CTRL_CODE(GEMOps.APPL_FIND, 0, 1, 1));
-  id := our_cb^.pubs.aINTOUT[0];
+  id := AESApplications.ApplFind(name);
   success := our_cb^.pubs.aINTOUT[0] >= 0;
 END FindApplication;
 
@@ -108,19 +99,14 @@ END FindApplication;
 PROCEDURE PlayEvents (REF buffer:ARRAY OF RecordedEvent; no:CARDINAL;
                       scale:CARDINAL);
 BEGIN
-  our_cb^.pubs.aINTIN[0] := getNoElements(HIGH(buffer), no);
-  our_cb^.pubs.aINTIN[1] := scale;
-  our_cb^.pubs.ADDRIN[0] := ADR(buffer);
-  aes_if(AES_CTRL_CODE(GEMOps.APPL_TPLAY, 2, 1, 1));
+  AESApplications.ApplTPlayback(ADR(buffer), getNoElements(HIGH(buffer), no), scale);
 END PlayEvents;
 
 
-PROCEDURE RecordEvents (VAR buffer:ARRAY OF RecordedEvent; no:CARDINAL;
+PROCEDURE RecordEvents(VAR buffer:ARRAY OF RecordedEvent; no:CARDINAL;
                         VAR recorded: CARDINAL);
 BEGIN
-  our_cb^.pubs.aINTIN[0] := getNoElements(HIGH(buffer), no);
-  aes_if(AES_CTRL_CODE(GEMOps.APPL_TRECORD, 1, 1, 1));
-  recorded := our_cb^.pubs.aINTOUT[0];
+  recorded := AESApplications.ApplTRecord(ADR(buffer), getNoElements(HIGH(buffer), no));
 END RecordEvents;
 
 
