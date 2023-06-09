@@ -57,8 +57,8 @@ FROM ErrBase IMPORT DoTRAP6, TRAP6_SELF, TRAP6_CONT;
 FROM GEMConf IMPORT doSupervision;
 IMPORT GEMOps;
 
-              (*  Misc. subroutines  *)
-              (*  =================  *)
+(*  Misc. subroutines  *)
+(*  =================  *)
 
 PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
 BEGIN
@@ -101,7 +101,7 @@ BEGIN
 END stringIntoINTIN;
 
 
-PROCEDURE stringIntoCFormat (REF str: ARRAY OF CHAR; VAR dst: MaxStr);
+PROCEDURE stringIntoCFormat(REF str: ARRAY OF CHAR; VAR dst: MaxStr);
 VAR i, count: CARDINAL;
 BEGIN
   count := HIGH(str) + 1;
@@ -135,8 +135,8 @@ BEGIN
   dst[i] := 0C;
 END stringFromCFormat;
 
-                      (*  global error handling  *)
-                      (*  =====================  *)
+(*  global error handling  *)
+(*  =====================  *)
 
 (*
  * Hier wird "error" auf TRUE gesetzt, so dass der User den Fehler
@@ -213,7 +213,7 @@ END setDevice;
 (*  A E S  *)
 (*  =====  *)
 
-PROCEDURE aes_call (pb: GemHandle);
+PROCEDURE aes_call(pb: GemHandle);
 BEGIN
   ASM VOLATILE("move.l %0,%%d1; move.w #200,%%d0; trap #2"
      :
@@ -227,7 +227,7 @@ PROCEDURE aes_if(ctrlcode:CARDINAL32);
 BEGIN
   testErrorCheck();
   our_cb^.pubs.aINTOUT[0] := 0;
-  our_cb^.A_CONTRL.opcode := INTEGER(SHIFT(BITSET(ctrlcode), -24));
+  our_cb^.A_CONTRL.opcode := INTEGER(SHIFT(BITSET(ctrlcode), -24) * BITSET(255));
   our_cb^.A_CONTRL.nintin := INTEGER(SHIFT(BITSET(ctrlcode), -16) * BITSET(255));
   our_cb^.A_CONTRL.nintout := INTEGER(SHIFT(BITSET(ctrlcode), -8) * BITSET(255));
   our_cb^.A_CONTRL.naddrin := INTEGER(SHIFT(BITSET(ctrlcode), 0) * BITSET(255));
@@ -239,7 +239,7 @@ END aes_if;
 (*  V D I  *)
 (*  =====  *)
 
-PROCEDURE vdi_call (para: GemHandle);
+PROCEDURE vdi_call(para: GemHandle);
 BEGIN
   ASM VOLATILE("move.l %0,%%d1; move.w #115,%%d0; trap #2"
      :
@@ -249,10 +249,10 @@ BEGIN
 END vdi_call;
 
 
-PROCEDURE vdi_if (handle:DeviceHandle;ctrlcode:CARDINAL32);
+PROCEDURE vdi_if(handle:DeviceHandle;ctrlcode:CARDINAL32);
 BEGIN
   testErrorCheck();
-  our_cb^.V_CONTRL.opcode := INTEGER(SHIFT(BITSET(ctrlcode), -24));
+  our_cb^.V_CONTRL.opcode := INTEGER(SHIFT(BITSET(ctrlcode), -24) * BITSET(255));
   our_cb^.V_CONTRL.subcmd := INTEGER(SHIFT(BITSET(ctrlcode), -16) * BITSET(255));
   our_cb^.V_CONTRL.nptsin := INTEGER(SHIFT(BITSET(ctrlcode), -8) * BITSET(255));
   our_cb^.V_CONTRL.nintin := INTEGER(SHIFT(BITSET(ctrlcode), 0) * BITSET(255));
@@ -304,7 +304,7 @@ END GrafMouse;
 
 
 
-PROCEDURE showCursor (device:DeviceHandle; force:BOOLEAN);
+PROCEDURE showCursor(device:DeviceHandle; force:BOOLEAN);
 BEGIN
   IF setDevice(device) THEN
     IF NOT force THEN
@@ -319,7 +319,7 @@ BEGIN
 END showCursor;
 
 
-PROCEDURE hideCursor (device:DeviceHandle);
+PROCEDURE hideCursor(device:DeviceHandle);
 BEGIN
   IF setDevice(device) THEN
     DEC(device^.noHdCurs);
@@ -338,7 +338,7 @@ BEGIN
 END unloadFonts;
 
 
-PROCEDURE updateWindow (update: UpdateWindowType);
+PROCEDURE updateWindow(update: UpdateWindowType);
 BEGIN
   CASE update OF
   | EndUpdate:
@@ -397,7 +397,7 @@ BEGIN
 END exchangeTimerVec;
 
 
-PROCEDURE exchangeMouseVec (opcode:CARDINAL; newproc:PROC): [ PROC ];
+PROCEDURE exchangeMouseVec(opcode:CARDINAL; newproc:PROC): [ PROC ];
 BEGIN
   our_cb^.V_CONTRL.ptr1.proc := newproc;
   vdi_if(our_cb^.CURDEVICE, VDI_CTRL_CODE(opcode, 0, 0, 0));
@@ -512,8 +512,7 @@ END removeCurChgVector;
 
 BEGIN
   IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
-  (*  Liste initalisieren
-   *)
+  (*  Liste initalisieren *)
   root_cb := NIL;
   our_cb := NIL;
 

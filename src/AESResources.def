@@ -1,0 +1,117 @@
+DEFINITION MODULE AESResources;
+#define REF
+
+
+(*  Megamax-Modula 2 GEM-Library :  Die AES Resourcefunktionen
+ *
+ *  Autor: Manuel Chakravarty           Erstellt :  05.11.87
+ *
+ *  Version   2.2     V#0009
+ *)
+
+(*      Dieses Modul ist zum Bearbeiten von Resourcen gedacht, die mit
+ *      dem Resource Construction Set (Programm zum Erstellen von Re-
+ *      sourcen) erstellt wurden.
+ *      Dazu wird das Resource-File einmal von Diskette geladen und
+ *      daraufhin arbeiten alle Funktionen dieses Moduls auf genau
+ *      dieser Resource, bis sie freigegeben oder eine andere gela-
+ *      den wird.
+ *)
+
+
+FROM    SYSTEM     IMPORT ADDRESS, CARDINAL16;
+
+FROM    GEMGlobals IMPORT PtrObjTree;
+
+
+(*  Resource Manager  *)
+(*  ================  *)
+
+TYPE    ResourcePart  = (treeRsrc,    objectRsrc,  tEdInfo,   iconBlk, bitBlk,
+                 textString,  imageData,   objSpec,   tEdTextPtr,
+                 tEdTmpltPtr, tEdValidPtr, ibMaskPtr, ibDataPtr,
+                 ibTextPtr,   biDataPtr,   frStrPtr,  frImgPtr);
+
+TYPE RSHDR = RECORD
+       rsh_vrsn: CARDINAL16;      /* Null                              */
+       rsh_object: CARDINAL16;    /* Position of the object field      */
+       rsh_tedinfo: CARDINAL16;   /* Position of the TEDINFO structs   */
+       rsh_iconblk: CARDINAL16;   /* Position of the ICONBLK structs   */
+       rsh_bitblk: CARDINAL16;    /* Position of the BITBLK structs    */
+       rsh_frstr: CARDINAL16;     /* Position of the free strings      */
+       rsh_string: CARDINAL16;    /* Unused                            */
+       rsh_imdata: CARDINAL16;    /* Position of image data            */
+       rsh_frimg: CARDINAL16;     /* Position of the free images       */
+       rsh_trindex: CARDINAL16;   /* Position of the object tree table */
+       rsh_nobs: CARDINAL16;      /* Total number of objects           */
+       rsh_ntree: CARDINAL16;     /* Total number of trees             */
+       rsh_nted: CARDINAL16;      /* Total number of TEDINFO structs   */
+       rsh_nib: CARDINAL16;       /* Total number of ICONBLK structs   */
+       rsh_nbb: CARDINAL16;       /* Total number of BITBLK structs    */
+       rsh_nstring: CARDINAL16;   /* Total number of strings           */
+       rsh_nimages: CARDINAL16;   /* Total number of images            */
+       rsh_rssize: CARDINAL16;    /* Total bytes in resource           */
+     END;
+     PtrRSHDR = POINTER TO RSHDR;
+
+(*  Liest eine Resource.
+ *
+ *  'pathname'  -- Pfadname der Resource. Ist diese auf dem an-
+ *                 gegebenen Pfad nicht zu finden, wird zusaetz-
+ *                 lich auf Laufwerk A: gesucht. Ist auch diese
+ *                 Suche nicht erfolgreich, so kehrt die Routine
+ *                 zurueck und 'GemError' liefert den Wert 'TRUE'.
+ *)
+PROCEDURE LoadResource(REF pathname: ARRAY OF CHAR): [ BOOLEAN ];
+
+(*  Damit wird der Speicherplatz der zuletzt geladenen Resource
+ *  wieder freigegeben.
+ *)
+PROCEDURE FreeResource;
+
+
+(*  Es wird die Adresse eines Resource-Elementes geliefert.
+ *  Dabei ist 'index' der, vom Resource Construction Set
+ *  fuer dieses Element vergebene Index. Diese Indizes werden
+ *  von dem Construction Set in einem Definitionsmodul abge-
+ *  legt.
+ *
+ *  'typ' gibt an von welchem Typ das gesuchte Element ist:
+ *
+ *  'treeRsrc'    -- Objektbaum             ('GEMGlobals.PtrObjTree')
+ *  'objectRsrc'  -- Objekt                 ('GEMGlobals.PtrObject')
+ *  'tEdInfo'     -- TedInfo-RECORD         ('GEMGlobals.PtrTedInfo')
+ *  'iconBlk'     -- IconBlock-RECORD       ('GEMGlobals.PtrIconBlock')
+ *  'bitBlk'      -- BitBlock-RECORD        ('GEMGlobals.PtrBitBlock')
+ *  'textString'  -- Zeiger auf freie Zeichenkette
+ *  'imageData'   -- Zeiger auf freie Bitmuster
+ *  'objSpec'     -- ObjSpec-RECORD         ('GEMGlobals.PtrObjSpec')
+ *  'tEdTextPtr'  -- Zeiger auf 'GEMGlobals.TedInfo.textPtr'
+ *  'tEdTmpltPtr' -- Zeiger auf 'GEMGlobals.TedInfo.tmpltPtr'
+ *  'tEdValidPtr' -- Zeiger auf 'GEMGlobals.TedInfo.validPtr'
+ *  'ibMaskPtr'   -- Zeiger auf 'GEMGlobals.IconBlock.mask'
+ *  'ibDataPtr'   -- Zeiger auf 'GEMGlobals.IconBlock.data'
+ *  'ibTextPtr'   -- Zeiger auf 'GEMGlobals.IconBlock.text'
+ *  'biDataPtr'   -- Zeiger auf 'GEMGlobals.BitBlock.data'
+ *  'frStrPtr'    -- Adresse eines Zeigers auf einen String
+ *  'frImgPtr'    -- Adresse eines Zeigers auf ein Bitmuster
+ *)
+PROCEDURE ResourceAddr(typ: ResourcePart; index: CARDINAL): ADDRESS;
+
+(*  Mit dieser Routine kann man Adressen in eine Resource eintragen.
+ *
+ *  'typ'       -- muss entweder den Wert 'frStrPtr' oder 'frImgPtr'
+ *                 annehmen.
+ *
+ *  Siehe auch 'ResourceAddr'.
+ *)
+PROCEDURE SetResourceAddr(typ: ResourcePart; index: CARDINAL; objAddr: ADDRESS);
+
+(*  Die Koordinaten des Objektes 'index' im Baum 'tree' werden
+ *  von Zeichenkoordinaten in Pixelkoordinaten umgewandelt.
+ *)
+PROCEDURE ConvertCoor(tree: PtrObjTree; index: CARDINAL);
+
+PROCEDURE ResourceFix(hdr: PtrRSHDR): [ BOOLEAN ];
+
+END AESResources.

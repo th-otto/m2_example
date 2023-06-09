@@ -40,6 +40,12 @@ CONST
     MENU_TNORMAL            = 33;
     MENU_TEXT               = 34;
     MENU_REGISTER           = 35;
+    MENU_UNREGISTER         = 36;
+    MENU_POPUP              = 36;
+    MENU_CLICK              = 37;
+    MENU_IATTACH            = 37;
+    MENU_ISTART             = 38;
+    MENU_SETTINGS           = 39;
     
     (*  Object Manager
      *)
@@ -79,6 +85,7 @@ CONST
      *)
     SCRP_READ               = 80;
     SCRP_WRITE              = 81;
+    SCRP_CLEAR              = 82;
     
     (*  File Selector Manager
      *)
@@ -105,6 +112,7 @@ CONST
     RSRC_GADDR              = 112;
     RSRC_SADDR              = 113;
     RSRC_OBFIX              = 114;
+    RSRC_RCFIX              = 115;
     
     (*  Shell Manager
      *)
@@ -283,10 +291,10 @@ X       DC.B    2, 1, 1            ; func 032  ienable
 X       DC.B    2, 1, 1            ; func 033  tnormal
 X       DC.B    1, 1, 2            ; func 034  text
 X       DC.B    1, 1, 1            ; func 035  register
-        DC.B    0, 0, 0            ; func 036
-        DC.B    0, 0, 0            ; func 037
-        DC.B    0, 0, 0            ; func 038
-        DC.B    0, 0, 0            ; func 039
+        DC.B    0, 0, 0            ; func 036  unregister/popup
+        DC.B    0, 0, 0            ; func 037  click/iattach
+        DC.B    0, 0, 0            ; func 038  istart
+        DC.B    0, 0, 0            ; func 039  settings
     ;                             Object Manager
 X       DC.B    2, 1, 1            ; func 040  add
 X       DC.B    1, 1, 1            ; func 041  del
@@ -332,9 +340,9 @@ X       DC.B    0, 5, 0            ; func 077  handle
 X       DC.B    1, 1, 1            ; func 078  mouse
 X       DC.B    0, 5, 0            ; func 079  mkstate
     ;                            Scrap Manager
-        DC.B    0, 1, 1            ; func 080  read
-        DC.B    0, 1, 1            ; func 081  write
-        DC.B    0, 0, 0            ; func 082
+X       DC.B    0, 1, 1            ; func 080  read
+X       DC.B    0, 1, 1            ; func 081  write
+X       DC.B    0, 1, 0            ; func 082  clear
         DC.B    0, 0, 0            ; func 083
         DC.B    0, 0, 0            ; func 084
         DC.B    0, 0, 0            ; func 085
@@ -365,12 +373,12 @@ X       DC.B    1, 1, 0            ; func 107 update
         DC.B    6, 5, 0            ; func 108
         DC.B    0, 0, 0            ; func 109           (*  Ab TOS 1.4  *)
     ;                            Resource Manger
-        DC.B    0, 1, 1            ; func 110  load
-        DC.B    0, 1, 0            ; func 111  free
-        DC.B    2, 1, 0            ; func 112  gaddr
-        DC.B    2, 1, 1            ; func 113  saddr
-        DC.B    1, 1, 1            ; func 114  obfix
-        DC.B    0, 0, 0            ; func 115
+X       DC.B    0, 1, 1            ; func 110  load
+X       DC.B    0, 1, 0            ; func 111  free
+X       DC.B    2, 1, 0            ; func 112  gaddr
+X       DC.B    2, 1, 1            ; func 113  saddr
+X       DC.B    1, 1, 1            ; func 114  obfix
+X       DC.B    0, 1, 1            ; func 115  rcfix
         DC.B    0, 0, 0            ; func 116
         DC.B    0, 0, 0            ; func 117
         DC.B    0, 0, 0            ; func 118

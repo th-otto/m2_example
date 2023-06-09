@@ -33,8 +33,6 @@ BEGIN
 END AES_CTRL_CODE;
 
 
-
- 
 PROCEDURE DrawObject(tree:PtrObjTree;start,depth:CARDINAL;frame:Rectangle);
 BEGIN
   GEMShare.our_cb^.pubs.ADDRIN[0] := tree;
