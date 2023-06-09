@@ -1,0 +1,30 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCB23H6963H*)
+DEFINITION MODULE AESApplications;
+
+
+  (*module key = 2102HCB23H6963H*)
+  MODULE AESApplications;
+
+    IMPORT SYSTEM;
+
+    PROCEDURE ApplInitialise(* ProcNum:1 *)() : INTEGER;
+    
+    PROCEDURE ApplRead(* ProcNum:2 *)(INTEGER; INTEGER; SYSTEM.ADDRESS);
+    
+    PROCEDURE ApplWrite(* ProcNum:3 *)(INTEGER; INTEGER; SYSTEM.ADDRESS);
+    
+    PROCEDURE ApplFind(* ProcNum:4 *)(VAR ARRAY CHAR) : INTEGER;
+    
+    PROCEDURE ApplTPlayback(* ProcNum:5 *)(SYSTEM.ADDRESS; INTEGER; INTEGER)
+;
+    
+    PROCEDURE ApplTRecord(* ProcNum:6 *)(SYSTEM.ADDRESS; INTEGER);
+    
+    PROCEDURE ApplExit(* ProcNum:7 *)();
+    
+  END AESApplications;
+
+END AESApplications.
+

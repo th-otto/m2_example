@@ -1,0 +1,105 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCAE1H2388H*)
+DEFINITION MODULE GEMVDIbase;
+
+
+  (*module key = 2102HCAE1H2388H*)
+  MODULE GEMVDIbase;
+
+    IMPORT SYSTEM;
+
+    TYPE
+      VDIWorkInType = ARRAY [0H(*CARDINAL*)..AH(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      VDIWorkOutType = ARRAY [0H(*CARDINAL*)..39H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      PxyArrayType = ARRAY [0H(*CARDINAL*)..3H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      BigPxyArrayType = ARRAY [0H(*CARDINAL*)..7H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      MouseArrayType = ARRAY [0H(*CARDINAL*)..26H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      SmallArrayType = ARRAY [0H(*CARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      RGBArrayType = ARRAY [0H(*CARDINAL*)..2H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      TextAttrArrayType = ARRAY [0H(*CARDINAL*)..9H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      FontNameType = ARRAY [0H(*CARDINAL*)..1FH(*CARDINAL*)] OF CHAR;
+    
+    TYPE
+      DistanceArrayType = ARRAY [0H(*CARDINAL*)..4H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      FilmNameType = ARRAY [0H(*CARDINAL*)..7CH(*CARDINAL*)] OF CHAR;
+    
+    TYPE
+      FilmIndexType = ARRAY [0H(*CARDINAL*)..7H(*CARDINAL*)] OF ARRAY [0H(*C
+ARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      CtrlArrayType = ARRAY [0H(*CARDINAL*)..7FH(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      177777B = ARRAY [0H(*CARDINAL*)..BH(*CARDINAL*)] OF INTEGER;
+    
+    VAR
+      contrl (* reladdr: 0H*)  : 177777B;
+    
+    VAR
+      intin (* reladdr: 18H*)  : CtrlArrayType;
+    
+    VAR
+      ptsin (* reladdr: 118H*)  : CtrlArrayType;
+    
+    VAR
+      intout (* reladdr: 218H*)  : CtrlArrayType;
+    
+    VAR
+      ptsout (* reladdr: 318H*)  : CtrlArrayType;
+    
+    VAR
+      i (* reladdr: 418H*)  : INTEGER;
+    
+    VAR
+      h (* reladdr: 41AH*)  : INTEGER;
+    
+    VAR
+      ADRintin (* reladdr: 41CH*)  : SYSTEM.ADDRESS;
+    
+    VAR
+      ADRptsin (* reladdr: 420H*)  : SYSTEM.ADDRESS;
+    
+    VAR
+      ADRintout (* reladdr: 424H*)  : SYSTEM.ADDRESS;
+    
+    VAR
+      ADRptsout (* reladdr: 428H*)  : SYSTEM.ADDRESS;
+    
+    VAR
+      ADRParams (* reladdr: 42CH*)  : SYSTEM.ADDRESS;
+    
+    TYPE
+      177776B = ARRAY [0H(*CARDINAL*)..4H(*CARDINAL*)] OF SYSTEM.ADDRESS;
+    
+    VAR
+      parameterBlock (* reladdr: 430H*)  : 177776B;
+    
+    PROCEDURE CallVDI(* ProcNum:1 *)();
+    
+    PROCEDURE SetContrl(* ProcNum:2 *)(INTEGER; INTEGER; INTEGER; INTEGER; I
+NTEGER);
+    
+  END GEMVDIbase;
+
+END GEMVDIbase.
+

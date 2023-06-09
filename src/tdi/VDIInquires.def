@@ -1,0 +1,81 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCAEFH1D77H*)
+DEFINITION MODULE VDIInquires;
+
+
+  (*module key = 2102HCAE1H2388H*)
+  MODULE GEMVDIbase;
+
+    IMPORT SYSTEM;
+
+    TYPE
+      VDIWorkOutType = ARRAY [0H(*CARDINAL*)..39H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      RGBArrayType = ARRAY [0H(*CARDINAL*)..2H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      PxyArrayType = ARRAY [0H(*CARDINAL*)..3H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      TextAttrArrayType = ARRAY [0H(*CARDINAL*)..9H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      BigPxyArrayType = ARRAY [0H(*CARDINAL*)..7H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      FontNameType = ARRAY [0H(*CARDINAL*)..1FH(*CARDINAL*)] OF CHAR;
+    
+    TYPE
+      DistanceArrayType = ARRAY [0H(*CARDINAL*)..4H(*CARDINAL*)] OF INTEGER;
+    
+  END GEMVDIbase;
+
+  (*module key = 2102HCAEFH1D77H*)
+  MODULE VDIInquires;
+
+    IMPORT SYSTEM, GEMVDIbase;
+
+    PROCEDURE ExtendedInquire(* ProcNum:1 *)(INTEGER; INTEGER; VAR GEMVDIbas
+e.VDIWorkOutType);
+    
+    PROCEDURE InquireColour(* ProcNum:2 *)(INTEGER; INTEGER; INTEGER; VAR GE
+MVDIbase.RGBArrayType);
+    
+    PROCEDURE InquireLineAttributes(* ProcNum:3 *)(INTEGER; VAR GEMVDIbase.P
+xyArrayType);
+    
+    PROCEDURE InquireMarkerAttributes(* ProcNum:4 *)(INTEGER; VAR GEMVDIbase
+.PxyArrayType);
+    
+    PROCEDURE InquireFillAttributes(* ProcNum:5 *)(INTEGER; VAR GEMVDIbase.P
+xyArrayType);
+    
+    PROCEDURE InquireTextAttributes(* ProcNum:6 *)(INTEGER; VAR GEMVDIbase.T
+extAttrArrayType);
+    
+    PROCEDURE InquireTextExtent(* ProcNum:7 *)(INTEGER; VAR ARRAY CHAR; GEMV
+DIbase.BigPxyArrayType);
+    
+    PROCEDURE InquireCharWidth(* ProcNum:8 *)(INTEGER; CHAR; VAR INTEGER; VA
+R INTEGER; VAR INTEGER) : INTEGER;
+    
+    PROCEDURE InquireFaceName(* ProcNum:9 *)(INTEGER; INTEGER; VAR GEMVDIbas
+e.FontNameType) : INTEGER;
+    
+    PROCEDURE InquireCellArray(* ProcNum:10 *)(INTEGER; VAR GEMVDIbase.PxyAr
+rayType; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR ARRAY 
+INTEGER);
+    
+    PROCEDURE InquireInputMode(* ProcNum:11 *)(INTEGER; INTEGER; VAR INTEGER
+);
+    
+    PROCEDURE InquireFaceInfo(* ProcNum:12 *)(INTEGER; VAR INTEGER; VAR INTE
+GER; VAR GEMVDIbase.DistanceArrayType; VAR INTEGER; VAR GEMVDIbase.RGBArrayT
+ype);
+    
+  END VDIInquires;
+
+END VDIInquires.
+

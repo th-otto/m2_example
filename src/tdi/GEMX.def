@@ -1,0 +1,166 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCABEH345EH*)
+DEFINITION MODULE GEMX;
+
+
+  (*module key = 2102HCABEH345EH*)
+  MODULE GEMX;
+
+    IMPORT SYSTEM;
+
+    PROCEDURE NEWPROCESS(* ProcNum:4 *)(PROC; SYSTEM.ADDRESS; LONGCARD; VAR 
+SYSTEM.PROCESS; LONGCARD);
+    
+    PROCEDURE TRANSFER(* ProcNum:5 *)();
+    
+    PROCEDURE IOTRANSFER(* ProcNum:6 *)();
+    
+    TYPE
+      ErrorCause = (XError(*0*),
+      XRaise(*1*),
+      XPropagate(*2*));
+    
+    TYPE
+      ErrorType = (EM1111TRAP(*0*),
+      EM1010TRAP(*1*),
+      PrivilegeViolationTRAP(*2*),
+      ArithOverflowTRAP(*3*),
+      OutOfRangeTRAP(*4*),
+      ZeroDivideTRAP(*5*),
+      IllegalInstrTRAP(*6*),
+      AdrErrorTRAP(*7*),
+      BusErrorTRAP(*8*),
+      ProgramHalt(*9*),
+      NoFunctionReturn(*10*),
+      CaseIndexRange(*11*),
+      StackOverflow(*12*),
+      OutOfRange(*13*),
+      ArithOverflow(*14*),
+      NewprocessWorkspace(*15*),
+      ProcessTerminated(*16*),
+      UnimlpementedRoutine(*17*),
+      NormalReturn(*18*),
+      User1(*19*),
+      User2(*20*),
+      User3(*21*),
+      User4(*22*));
+    
+    TYPE
+      177777B = ARRAY [0H(*CARDINAL*)..16H(*CARDINAL*)] OF CHAR;
+    
+    TYPE
+      ErrorContextType = RECORD
+                           Error(*offset: 0H*)  : INTEGER;
+                           CameFrom(*offset: 2H*)  : ErrorCause;
+                           PC(*offset: 4H*)  : SYSTEM.ADDRESS;
+                           SR(*offset: 8H*)  : CARDINAL;
+                           A5(*offset: AH*)  : SYSTEM.ADDRESS;
+                           A6(*offset: EH*)  : SYSTEM.ADDRESS;
+                           A7(*offset: 12H*)  : SYSTEM.ADDRESS;
+                           LastMP(*offset: 16H*)  : SYSTEM.ADDRESS;
+                           DumpToDo(*offset: 1AH*)  : BOOLEAN;
+                           FileToDump(*offset: 1CH*)  : 177777B;
+                         END;(*size: 34H*);
+                       
+    TYPE
+      ErrorProcessorType = PROCEDURE ();
+    
+    TYPE
+      177776B = POINTER TO 177775B;
+    
+    TYPE
+      177774B = ARRAY [30H(*CARDINAL*)..7FH(*CARDINAL*)] OF CHAR;
+    
+    TYPE
+      177773B = ARRAY [0H(*CARDINAL*)..4FH(*CARDINAL*)] OF CHAR;
+    
+    TYPE
+      BasePageType = RECORD
+                       LowTPA(*offset: 0H*)  : SYSTEM.ADDRESS;
+                       HiTPA(*offset: 4H*)  : SYSTEM.ADDRESS;
+                       CodeBase(*offset: 8H*)  : SYSTEM.ADDRESS;
+                       CodeLen(*offset: CH*)  : LONGCARD;
+                       DataBase(*offset: 10H*)  : SYSTEM.ADDRESS;
+                       DataLen(*offset: 14H*)  : LONGCARD;
+                       BssBase(*offset: 18H*)  : SYSTEM.ADDRESS;
+                       BssLen(*offset: 1CH*)  : LONGCARD;
+                       DtaPtr(*offset: 20H*)  : SYSTEM.ADDRESS;
+                       ParentBasePage(*offset: 24H*)  : SYSTEM.ADDRESS;
+                       resvd1(*offset: 28H*)  : LONGCARD;
+                       EnvPtr(*offset: 2CH*)  : 177776B;
+                       resvd2(*offset: 30H*)  : 177774B;
+                       CmdLine(*offset: 80H*)  : 177773B;
+                     END;(*size: D0H*);
+                   
+    TYPE
+      177772B = POINTER TO BasePageType;
+    
+    VAR
+      BasePageAddress (* reladdr: 0H*)  : 177772B;
+    
+    VAR
+      ErrorProcessor (* reladdr: 4H*)  : ErrorProcessorType;
+    
+    VAR
+      ErrorContext (* reladdr: 8H*)  : ErrorContextType;
+    
+    PROCEDURE CASEX(* ProcNum:1 *)();
+    
+    PROCEDURE HALTX(* ProcNum:2 *)();
+    
+    PROCEDURE STACKTEST(* ProcNum:3 *)();
+    
+    PROCEDURE SYSCALL(* ProcNum:7 *)();
+    
+    PROCEDURE MULU32(* ProcNum:8 *)(LONGCARD; LONGCARD);
+    
+    PROCEDURE DIVU32(* ProcNum:9 *)(LONGCARD; LONGCARD);
+    
+    PROCEDURE MULS32(* ProcNum:10 *)(LONGINT; LONGINT);
+    
+    PROCEDURE DIVS32(* ProcNum:11 *)(LONGINT; LONGINT);
+    
+    PROCEDURE FADD(* ProcNum:12 *)(REAL; REAL);
+    
+    PROCEDURE FSUB(* ProcNum:13 *)(REAL; REAL);
+    
+    PROCEDURE FMUL(* ProcNum:14 *)(REAL; REAL);
+    
+    PROCEDURE FDIV(* ProcNum:15 *)(REAL; REAL);
+    
+    PROCEDURE FCMP(* ProcNum:16 *)(REAL; REAL);
+    
+    PROCEDURE FTST(* ProcNum:17 *)(REAL);
+    
+    PROCEDURE FLOATX(* ProcNum:18 *)(SYSTEM.LONGWORD);
+    
+    PROCEDURE TRUNCX(* ProcNum:19 *)(REAL);
+    
+    PROCEDURE LFADD(* ProcNum:20 *)(LONGREAL; LONGREAL);
+    
+    PROCEDURE LFSUB(* ProcNum:21 *)(LONGREAL; LONGREAL);
+    
+    PROCEDURE LFMUL(* ProcNum:22 *)(LONGREAL; LONGREAL);
+    
+    PROCEDURE LFDIV(* ProcNum:23 *)(LONGREAL; LONGREAL);
+    
+    PROCEDURE LFCMP(* ProcNum:24 *)(LONGREAL; LONGREAL);
+    
+    PROCEDURE LFTST(* ProcNum:25 *)(LONGREAL);
+    
+    PROCEDURE LFLOATX(* ProcNum:26 *)(SYSTEM.LONGWORD);
+    
+    PROCEDURE LTRUNCX(* ProcNum:27 *)(LONGREAL);
+    
+    PROCEDURE LENGTHEN(* ProcNum:28 *)(REAL);
+    
+    PROCEDURE SHORTEN(* ProcNum:29 *)(LONGREAL);
+    
+    TYPE
+      177775B = ARRAY [0H(*CARDINAL*)..4FH(*CARDINAL*)] OF CHAR;
+    
+  END GEMX;
+
+END GEMX.
+

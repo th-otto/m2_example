@@ -1,0 +1,59 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCB5AH47FCH*)
+DEFINITION MODULE GEMFont;
+
+
+  (*module key = 2102HCB5AH47FCH*)
+  MODULE GEMFont;
+
+    IMPORT SYSTEM;
+
+    TYPE
+      177777B = ARRAY [0H(*CARDINAL*)..1FH(*CARDINAL*)] OF CHAR;
+    
+    TYPE
+      177776B = POINTER TO 177775B;
+    
+    TYPE
+      177774B = POINTER TO 177773B;
+    
+    TYPE
+      GEMFontType = RECORD
+                      FaceID(*offset: 0H*)  : CARDINAL;
+                      FontSize(*offset: 2H*)  : CARDINAL;
+                      FaceName(*offset: 4H*)  : 177777B;
+                      LowADE(*offset: 24H*)  : CARDINAL;
+                      HighADE(*offset: 26H*)  : CARDINAL;
+                      TopLine(*offset: 28H*)  : CARDINAL;
+                      AscentLine(*offset: 2AH*)  : CARDINAL;
+                      HalfLine(*offset: 2CH*)  : CARDINAL;
+                      DescentLine(*offset: 2EH*)  : CARDINAL;
+                      BottomLine(*offset: 30H*)  : CARDINAL;
+                      MaxFontWidth(*offset: 32H*)  : CARDINAL;
+                      MaxFaceWidth(*offset: 34H*)  : CARDINAL;
+                      LeftOffset(*offset: 36H*)  : CARDINAL;
+                      RightOffset(*offset: 38H*)  : CARDINAL;
+                      Thickening(*offset: 3AH*)  : CARDINAL;
+                      UnderlineSize(*offset: 3CH*)  : CARDINAL;
+                      LightMask(*offset: 3EH*)  : BITSET;
+                      SkewMask(*offset: 40H*)  : BITSET;
+                      Flags(*offset: 42H*)  : BITSET;
+                      HorizOffsetTab(*offset: 44H*)  : 177776B;
+                      CharOffsetTab(*offset: 48H*)  : 177774B;
+                      FontData(*offset: 4CH*)  : SYSTEM.ADDRESS;
+                      FormWidth(*offset: 50H*)  : CARDINAL;
+                      FormHeight(*offset: 52H*)  : CARDINAL;
+                      NextFont(*offset: 54H*)  : SYSTEM.ADDRESS;
+                    END;(*size: 58H*);
+                  
+    TYPE
+      177773B = ARRAY [0H(*CHAR*)..FFH(*CHAR*)] OF CARDINAL;
+    
+    TYPE
+      177775B = ARRAY [0H(*CHAR*)..FFH(*CHAR*)] OF CARDINAL;
+    
+  END GEMFont;
+
+END GEMFont.
+

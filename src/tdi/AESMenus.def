@@ -1,0 +1,32 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCB25H45DCH*)
+DEFINITION MODULE AESMenus;
+
+
+  (*module key = 2102HCB25H45DCH*)
+  MODULE AESMenus;
+
+    IMPORT SYSTEM;
+
+    PROCEDURE MenuBar(* ProcNum:1 *)(SYSTEM.ADDRESS; INTEGER);
+    
+    PROCEDURE MenuItemCheck(* ProcNum:2 *)(SYSTEM.ADDRESS; INTEGER; INTEGER)
+;
+    
+    PROCEDURE MenuItemEnable(* ProcNum:3 *)(SYSTEM.ADDRESS; INTEGER; INTEGER
+);
+    
+    PROCEDURE MenuTitleNormal(* ProcNum:4 *)(SYSTEM.ADDRESS; INTEGER; INTEGE
+R);
+    
+    PROCEDURE MenuText(* ProcNum:5 *)(SYSTEM.ADDRESS; INTEGER; SYSTEM.ADDRES
+S);
+    
+    PROCEDURE MenuRegister(* ProcNum:6 *)(INTEGER; VAR ARRAY CHAR) : INTEGER
+;
+    
+  END AESMenus;
+
+END AESMenus.
+

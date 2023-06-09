@@ -1,0 +1,19 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCB1CH124BH*)
+DEFINITION MODULE AESScraps;
+
+
+  (*module key = 2102HCB1CH124BH*)
+  MODULE AESScraps;
+
+    IMPORT SYSTEM;
+
+    PROCEDURE ScrapRead(* ProcNum:1 *)(SYSTEM.ADDRESS);
+    
+    PROCEDURE ScrapWrite(* ProcNum:2 *)(SYSTEM.ADDRESS);
+    
+  END AESScraps;
+
+END AESScraps.
+

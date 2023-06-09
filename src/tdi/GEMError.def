@@ -1,0 +1,13 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCABCH2F97H*)
+DEFINITION MODULE GEMError;
+
+
+  (*module key = 2102HCABCH2F97H*)
+  MODULE GEMError;
+
+  END GEMError;
+
+END GEMError.
+

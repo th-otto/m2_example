@@ -1,0 +1,53 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCAE5H E12H*)
+DEFINITION MODULE VDIRasters;
+
+
+  (*module key = 2102HCAE1H2388H*)
+  MODULE GEMVDIbase;
+
+    IMPORT SYSTEM;
+
+    TYPE
+      BigPxyArrayType = ARRAY [0H(*CARDINAL*)..7H(*CARDINAL*)] OF INTEGER;
+    
+    TYPE
+      SmallArrayType = ARRAY [0H(*CARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
+    
+  END GEMVDIbase;
+
+  (*module key = 2102HCAE5H E12H*)
+  MODULE VDIRasters;
+
+    IMPORT SYSTEM, GEMVDIbase;
+
+    TYPE
+      MFDBType = RECORD
+                   pointer(*offset: 0H*)  : SYSTEM.ADDRESS;
+                   width(*offset: 4H*)  : CARDINAL;
+                   height(*offset: 6H*)  : CARDINAL;
+                   widthW(*offset: 8H*)  : CARDINAL;
+                   format(*offset: AH*)  : CARDINAL;
+                   planes(*offset: CH*)  : CARDINAL;
+                   rsrvd1(*offset: EH*)  : CARDINAL;
+                   rsrvd2(*offset: 10H*)  : CARDINAL;
+                 END;(*size: 12H*);
+               
+    PROCEDURE CopyRasterOpaque(* ProcNum:1 *)(INTEGER; INTEGER; VAR GEMVDIba
+se.BigPxyArrayType; SYSTEM.ADDRESS; SYSTEM.ADDRESS);
+    
+    PROCEDURE CopyRasterTransparent(* ProcNum:2 *)(INTEGER; INTEGER; VAR GEM
+VDIbase.BigPxyArrayType; VAR SYSTEM.ADDRESS; VAR SYSTEM.ADDRESS; VAR GEMVDIb
+ase.SmallArrayType);
+    
+    PROCEDURE TransformForm(* ProcNum:3 *)(INTEGER; SYSTEM.ADDRESS; SYSTEM.A
+DDRESS);
+    
+    PROCEDURE GetPixel(* ProcNum:4 *)(INTEGER; INTEGER; INTEGER; VAR INTEGER
+; VAR INTEGER);
+    
+  END VDIRasters;
+
+END VDIRasters.
+

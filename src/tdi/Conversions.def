@@ -1,0 +1,28 @@
+DEFINITION MODULE Conversions;
+
+  CONST
+    Hex = 16;  (* hexadecimal; base 16 *)
+    Dec = 10;  (* decimal; base 10     *)
+    Oct = 8;   (* octal; base 8        *)
+    Bin = 2;   (* binary; base 2       *)
+
+
+  PROCEDURE ConvertToString(n: LONGCARD; b: CARDINAL; neg: BOOLEAN;
+                            VAR s: ARRAY OF CHAR; VAR done: BOOLEAN);
+
+
+  PROCEDURE ConvertFromString(VAR s: ARRAY OF CHAR; base: CARDINAL;
+                              neg: BOOLEAN; max: LONGCARD;
+                              VAR result: LONGCARD; VAR done: BOOLEAN);
+
+  PROCEDURE ConvertRealToString(r: REAL; VAR s: ARRAY OF CHAR; n: CARDINAL;
+                                VAR done: BOOLEAN);
+  PROCEDURE ConvertRealFromString(VAR r: REAL; VAR s: ARRAY OF CHAR;
+                                  VAR done: BOOLEAN);
+  PROCEDURE ConvertRealToStringOct(x: REAL; VAR s: ARRAY OF CHAR;
+                                   VAR done: BOOLEAN);
+  PROCEDURE ConvertLongRealToString(x : LONGREAL ; VAR s : ARRAY OF CHAR ;
+                                    n : CARDINAL ; VAR done : BOOLEAN) ;
+  PROCEDURE ConvertLongRealFromString(VAR r : LONGREAL ; VAR s : ARRAY OF CHAR;
+                                      VAR done : BOOLEAN) ;
+END Conversions.

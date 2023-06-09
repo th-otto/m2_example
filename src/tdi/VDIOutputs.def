@@ -1,0 +1,73 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCAE8H783BH*)
+DEFINITION MODULE VDIOutputs;
+
+
+  (*module key = 2102HCAE1H2388H*)
+  MODULE GEMVDIbase;
+
+    IMPORT SYSTEM;
+
+    TYPE
+      PxyArrayType = ARRAY [0H(*CARDINAL*)..3H(*CARDINAL*)] OF INTEGER;
+    
+  END GEMVDIbase;
+
+  (*module key = 2102HCAE8H783BH*)
+  MODULE VDIOutputs;
+
+    IMPORT SYSTEM, GEMVDIbase;
+
+    PROCEDURE PolyLine(* ProcNum:1 *)(INTEGER; INTEGER; VAR ARRAY INTEGER);
+    
+    PROCEDURE PolyMarker(* ProcNum:2 *)(INTEGER; INTEGER; VAR ARRAY INTEGER)
+;
+    
+    PROCEDURE GraphicText(* ProcNum:3 *)(INTEGER; INTEGER; INTEGER; VAR ARRA
+Y CHAR);
+    
+    PROCEDURE FillArea(* ProcNum:4 *)(INTEGER; INTEGER; VAR ARRAY INTEGER);
+    
+    PROCEDURE CellArray(* ProcNum:5 *)(INTEGER; VAR GEMVDIbase.PxyArrayType;
+ INTEGER; INTEGER; INTEGER; INTEGER; VAR ARRAY INTEGER);
+    
+    PROCEDURE ContourFill(* ProcNum:6 *)(INTEGER; INTEGER; INTEGER; INTEGER)
+;
+    
+    PROCEDURE FillRectangle(* ProcNum:7 *)(INTEGER; VAR GEMVDIbase.PxyArrayT
+ype);
+    
+    PROCEDURE DrawBar(* ProcNum:8 *)(INTEGER; VAR GEMVDIbase.PxyArrayType);
+    
+    PROCEDURE DrawArc(* ProcNum:9 *)(INTEGER; INTEGER; INTEGER; INTEGER; INT
+EGER; INTEGER);
+    
+    PROCEDURE DrawPieSlice(* ProcNum:10 *)(INTEGER; INTEGER; INTEGER; INTEGE
+R; INTEGER; INTEGER);
+    
+    PROCEDURE DrawCircle(* ProcNum:11 *)(INTEGER; INTEGER; INTEGER; INTEGER)
+;
+    
+    PROCEDURE DrawEllipticalArc(* ProcNum:12 *)(INTEGER; INTEGER; INTEGER; I
+NTEGER; INTEGER; INTEGER; INTEGER);
+    
+    PROCEDURE DrawEllipticalPie(* ProcNum:13 *)(INTEGER; INTEGER; INTEGER; I
+NTEGER; INTEGER; INTEGER; INTEGER);
+    
+    PROCEDURE DrawEllipse(* ProcNum:14 *)(INTEGER; INTEGER; INTEGER; INTEGER
+; INTEGER);
+    
+    PROCEDURE DrawRoundedBox(* ProcNum:15 *)(INTEGER; VAR GEMVDIbase.PxyArra
+yType);
+    
+    PROCEDURE DrawRoundedFilledBox(* ProcNum:16 *)(INTEGER; VAR GEMVDIbase.P
+xyArrayType);
+    
+    PROCEDURE JustifiedText(* ProcNum:17 *)(INTEGER; INTEGER; INTEGER; VAR A
+RRAY CHAR; INTEGER; INTEGER; INTEGER);
+    
+  END VDIOutputs;
+
+END VDIOutputs.
+

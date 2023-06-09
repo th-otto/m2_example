@@ -1,0 +1,24 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCB33H324FH*)
+DEFINITION MODULE AESShells;
+
+
+  (*module key = 2102HCB33H324FH*)
+  MODULE AESShells;
+
+    IMPORT SYSTEM;
+
+    PROCEDURE ShellRead(* ProcNum:1 *)(SYSTEM.ADDRESS; SYSTEM.ADDRESS);
+    
+    PROCEDURE ShellWrite(* ProcNum:2 *)(INTEGER; INTEGER; INTEGER; SYSTEM.AD
+DRESS; SYSTEM.ADDRESS);
+    
+    PROCEDURE ShellFind(* ProcNum:3 *)(SYSTEM.ADDRESS);
+    
+    PROCEDURE ShellEnvrn(* ProcNum:4 *)(SYSTEM.ADDRESS; SYSTEM.ADDRESS);
+    
+  END AESShells;
+
+END AESShells.
+

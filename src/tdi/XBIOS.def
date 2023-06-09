@@ -1,0 +1,240 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCACDH48A7H*)
+DEFINITION MODULE XBIOS;
+
+
+  (*module key = 2102HCACDH48A7H*)
+  MODULE XBIOS;
+
+    IMPORT SYSTEM;
+
+    TYPE
+      MouseType = (DisableMouse(*0*),
+      RelativeMouse(*1*),
+      AbsoluteMouse(*2*),
+      UnusedMouse(*3*),
+      KeycodeMouse(*4*));
+    
+    TYPE
+      177777B = (OriginBottom(*0*),
+      OriginTop(*1*));
+    
+    TYPE
+      ParamBlk = RECORD
+                   topMode(*offset: 0H*)  : 177777B;
+                   buttons(*offset: 1H*)  : SYSTEM.BYTE;
+                   xParam(*offset: 2H*)  : SYSTEM.BYTE;
+                   yParam(*offset: 3H*)  : SYSTEM.BYTE;
+                   xMax(*offset: 4H*)  : CARDINAL;
+                   yMax(*offset: 6H*)  : CARDINAL;
+                   xinitial(*offset: 8H*)  : CARDINAL;
+                   yInitial(*offset: AH*)  : CARDINAL;
+                 END;(*size: CH*);
+               
+    TYPE
+      Palette = ARRAY [0H(*CARDINAL*)..FH(*CARDINAL*)] OF CARDINAL;
+    
+    TYPE
+      FlowFlavor = (NONE(*0*),
+      XONXOFF(*1*),
+      RTSCTS(*2*),
+      XONXOFFRTSCTS(*3*));
+    
+    TYPE
+      SerialDevice = (RS232(*0*),
+      Keyboard(*1*),
+      MIDI(*2*));
+    
+    TYPE
+      SerialSpeed = (BPS19200(*0*),
+      BPS9600(*1*),
+      BPS4800(*2*),
+      BPS3600(*3*),
+      BPS2400(*4*),
+      BPS2000(*5*),
+      BPS1800(*6*),
+      BPS1200(*7*),
+      BPS600(*8*),
+      BPS300(*9*),
+      BPS200(*10*),
+      BPS150(*11*),
+      BPS134(*12*),
+      BPS110(*13*),
+      BPS75(*14*),
+      BPS50(*15*));
+    
+    TYPE
+      IORECPTR = POINTER TO IOREC;
+    
+    TYPE
+      IOREC = RECORD
+                ibuf(*offset: 0H*)  : SYSTEM.ADDRESS;
+                ibufsize(*offset: 4H*)  : CARDINAL;
+                ibufhd(*offset: 6H*)  : CARDINAL;
+                ibuftl(*offset: 8H*)  : CARDINAL;
+                ibuflow(*offset: AH*)  : CARDINAL;
+                ibufhi(*offset: CH*)  : CARDINAL;
+              END;(*size: EH*);
+            
+    TYPE
+      PrtConfig = (DaisyWheel(*0*),
+      Monochrome(*1*),
+      EpsonPrinter(*2*),
+      Final(*3*),
+      RS232Port(*4*),
+      SingleSheet(*5*),
+      PC6(*6*),
+      PC7(*7*),
+      PC8(*8*),
+      PC9(*9*),
+      PC10(*10*),
+      PC11(*11*),
+      PC12(*12*),
+      PC13(*13*),
+      PC14(*14*),
+      PC15(*15*));
+    
+    TYPE
+      PrtConfigSet = SET OF PrtConfig;
+    
+    CONST
+      NoAlter = FFFFH(*PrtConfigSet*);
+    
+    TYPE
+      KeyTransPtr = POINTER TO KeyTrans;
+    
+    TYPE
+      KeyTrans = ARRAY [0H(*CARDINAL*)..7FH(*CARDINAL*)] OF SYSTEM.BYTE;
+    
+    TYPE
+      KeyTablePtr = POINTER TO KeyTable;
+    
+    TYPE
+      KeyTable = RECORD
+                   unshift(*offset: 0H*)  : KeyTransPtr;
+                   shift(*offset: 4H*)  : KeyTransPtr;
+                   capslock(*offset: 8H*)  : KeyTransPtr;
+                 END;(*size: CH*);
+               
+    CONST
+      Low = 0H(*LONGINT-CARD*);
+    
+    CONST
+      Medium = 1H(*LONGINT-CARD*);
+    
+    CONST
+      High = 2H(*LONGINT-CARD*);
+    
+    CONST
+      VirginMedia = E5E5H(*LONGINT-CARD*);
+    
+    TYPE
+      Timer = (TimerA(*0*),
+      TimerB(*1*),
+      TimerC(*2*),
+      TimerD(*3*));
+    
+    TYPE
+      KBVectorPtr = POINTER TO KBVector;
+    
+    TYPE
+      KBVector = RECORD
+                   midi(*offset: 0H*)  : SYSTEM.ADDRESS;
+                   kbderr(*offset: 4H*)  : SYSTEM.ADDRESS;
+                   midierr(*offset: 8H*)  : SYSTEM.ADDRESS;
+                   statvec(*offset: CH*)  : SYSTEM.ADDRESS;
+                   mousevec(*offset: 10H*)  : SYSTEM.ADDRESS;
+                   clockvec(*offset: 14H*)  : SYSTEM.ADDRESS;
+                   joyvec(*offset: 18H*)  : SYSTEM.ADDRESS;
+                 END;(*size: 1CH*);
+               
+    PROCEDURE InitMouse(* ProcNum:1 *)(MouseType; VAR ParamBlk; PROC);
+    
+    PROCEDURE ScreenPhysicalBase(* ProcNum:2 *)() : SYSTEM.ADDRESS;
+    
+    PROCEDURE ScreenLogicalBase(* ProcNum:3 *)() : SYSTEM.ADDRESS;
+    
+    PROCEDURE GetResolution(* ProcNum:4 *)() : INTEGER;
+    
+    PROCEDURE SetScreenBase(* ProcNum:5 *)(SYSTEM.ADDRESS; SYSTEM.ADDRESS; I
+NTEGER);
+    
+    PROCEDURE SetPalette(* ProcNum:6 *)(VAR Palette);
+    
+    PROCEDURE SetColour(* ProcNum:7 *)(CARDINAL; CARDINAL) : CARDINAL;
+    
+    PROCEDURE FloppyRead(* ProcNum:8 *)(SYSTEM.ADDRESS; CARDINAL; CARDINAL; 
+CARDINAL; CARDINAL; CARDINAL) : INTEGER;
+    
+    PROCEDURE FloppyWrite(* ProcNum:9 *)(SYSTEM.ADDRESS; CARDINAL; CARDINAL;
+ CARDINAL; CARDINAL; CARDINAL) : INTEGER;
+    
+    PROCEDURE FloppyFormat(* ProcNum:10 *)(SYSTEM.ADDRESS; CARDINAL; CARDINA
+L; CARDINAL; CARDINAL; CARDINAL; CARDINAL) : INTEGER;
+    
+    PROCEDURE MIDIWS(* ProcNum:11 *)(VAR ARRAY SYSTEM.BYTE; CARDINAL);
+    
+    PROCEDURE MFPint(* ProcNum:12 *)(CARDINAL; PROC);
+    
+    PROCEDURE IORec(* ProcNum:13 *)(SerialDevice) : IORECPTR;
+    
+    PROCEDURE ConfigureRS232(* ProcNum:14 *)(SerialSpeed; FlowFlavor; INTEGE
+R; INTEGER; INTEGER; INTEGER);
+    
+    PROCEDURE SetKeyTable(* ProcNum:15 *)(VAR KeyTransPtr; VAR KeyTransPtr; 
+VAR KeyTransPtr) : KeyTablePtr;
+    
+    PROCEDURE Random(* ProcNum:16 *)() : LONGCARD;
+    
+    PROCEDURE PrototypeBootSector(* ProcNum:17 *)(SYSTEM.ADDRESS; LONGINT; I
+NTEGER; INTEGER);
+    
+    PROCEDURE FloppyVerify(* ProcNum:18 *)(SYSTEM.ADDRESS; CARDINAL; CARDINA
+L; CARDINAL; CARDINAL; CARDINAL) : INTEGER;
+    
+    PROCEDURE ScreenDump(* ProcNum:19 *)();
+    
+    PROCEDURE ConfigureCursor(* ProcNum:20 *)(INTEGER; INTEGER) : INTEGER;
+    
+    PROCEDURE SetDateTime(* ProcNum:21 *)(LONGCARD);
+    
+    PROCEDURE GetDateTime(* ProcNum:22 *)() : LONGCARD;
+    
+    PROCEDURE BiosKeys(* ProcNum:23 *)();
+    
+    PROCEDURE KeyboardWS(* ProcNum:24 *)(VAR ARRAY SYSTEM.BYTE; CARDINAL);
+    
+    PROCEDURE DisableInterrupt(* ProcNum:25 *)(CARDINAL);
+    
+    PROCEDURE EnableInterrupt(* ProcNum:26 *)(CARDINAL);
+    
+    PROCEDURE GIRead(* ProcNum:27 *)(CARDINAL) : CARDINAL;
+    
+    PROCEDURE GIWrite(* ProcNum:28 *)(CARDINAL; CARDINAL);
+    
+    PROCEDURE GIOffBit(* ProcNum:29 *)(CARDINAL);
+    
+    PROCEDURE GIOnBit(* ProcNum:30 *)(CARDINAL);
+    
+    PROCEDURE SetTimerInterrupt(* ProcNum:31 *)(Timer; CARDINAL; CARDINAL; P
+ROC);
+    
+    PROCEDURE DoSound(* ProcNum:32 *)(SYSTEM.ADDRESS);
+    
+    PROCEDURE ConfigurePrinter(* ProcNum:33 *)(PrtConfigSet) : PrtConfigSet;
+    
+    PROCEDURE KeyboardVectors(* ProcNum:34 *)() : KBVectorPtr;
+    
+    PROCEDURE KeyboardRate(* ProcNum:35 *)(INTEGER; INTEGER) : CARDINAL;
+    
+    PROCEDURE VSync(* ProcNum:36 *)();
+    
+    PROCEDURE SuperExec(* ProcNum:37 *)(PROC);
+    
+    PROCEDURE PuntAES(* ProcNum:38 *)();
+    
+  END XBIOS;
+
+END XBIOS.
+

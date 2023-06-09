@@ -1,0 +1,16 @@
+DEFINITION MODULE RealInOut;
+
+  VAR Done: BOOLEAN;
+  
+  PROCEDURE ReadLongReal(VAR x: LONGREAL) ;
+
+  PROCEDURE ReadReal(VAR x: REAL);
+
+  PROCEDURE WriteLongReal(x: LONGREAL ; n: CARDINAL) ;
+     
+  PROCEDURE WriteReal(x: REAL; n: CARDINAL);
+
+  PROCEDURE WriteRealOct(x: REAL);
+
+
+END RealInOut.

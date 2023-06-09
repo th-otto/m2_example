@@ -1,0 +1,71 @@
+DEFINITION MODULE LongMathLib0;
+
+VAR dpi, de : LONGREAL;         (* Double pi and e values *)
+                                (* VAR until LONGREAL Constants available *)
+                                (* Set by implementation module *)
+
+
+(* Conversions  *)
+
+PROCEDURE dRadToDeg (RadianAngle : LONGREAL) : LONGREAL;
+  (* Convert the given angle in radians to degrees *)
+
+PROCEDURE dDegToRad (DegreeAngle : LONGREAL) : LONGREAL;
+  (* Convert the given angle in degrees to radians *)
+
+PROCEDURE longreal (x : LONGINT) : LONGREAL;
+  (* Convert an integer value to a real value *)
+
+PROCEDURE dentier (x : LONGREAL) : LONGINT;
+  (* Convert a real value to an integer value by truncation *)
+
+
+(* Transcendentals  *)
+
+PROCEDURE dsin (x : LONGREAL) : LONGREAL;
+  (* Evaluate the sine of x radians *)
+
+PROCEDURE dcos (x : LONGREAL) : LONGREAL;
+  (* Evaluate the cosine of x radians *)
+
+PROCEDURE dtan (x : LONGREAL) : LONGREAL;
+  (* Evaluate the tangent of x radians *)
+
+(*********** Inverse trigonometric functions ***********)
+
+PROCEDURE darcsin(x : LONGREAL) : LONGREAL ;
+  (* Return the radian angle from the inverse sin of x *) 
+
+
+PROCEDURE darccos(x : LONGREAL) : LONGREAL ;
+  (* Return the radian angle from the inverse cos of x *) 
+
+
+PROCEDURE darctan (x : LONGREAL) : LONGREAL;
+  (* Evaluate the inverse tangent of x radians *)
+
+(* Logarithms  *)
+
+PROCEDURE dexp (x : LONGREAL) : LONGREAL;
+  (* Evaluate the exponential of x *)
+
+PROCEDURE dln (x : LONGREAL) : LONGREAL;
+  (* Evaluate the natural logarithm of x *)
+
+PROCEDURE dlog (x : LONGREAL) : LONGREAL;
+  (* Evaluate the common logarithm of x (to the base 10) *)
+
+
+(* Power functions  *)
+
+PROCEDURE dpoweri(x : LONGREAL ; p : INTEGER) : LONGREAL ;
+  (* Raise x to the integer power p *)
+
+PROCEDURE dpower (x, y : LONGREAL) : LONGREAL;
+  (* Raise x to the y th power *)
+
+PROCEDURE dsqrt (x : LONGREAL) : LONGREAL;
+  (* Evaluate the square root of x using range reduction *)
+
+
+END (* DEFINITION MODULE *) LongMathLib0.

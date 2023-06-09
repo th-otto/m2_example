@@ -1,0 +1,30 @@
+(*syntax version =    4H*)
+
+(*module key = 2102HCB16H5DF5H*)
+DEFINITION MODULE AESForms;
+
+
+  (*module key = 2102HCB16H5DF5H*)
+  MODULE AESForms;
+
+    IMPORT SYSTEM;
+
+    PROCEDURE FormDo(* ProcNum:1 *)(SYSTEM.ADDRESS; INTEGER) : INTEGER;
+    
+    PROCEDURE FormDialogue(* ProcNum:2 *)(INTEGER; INTEGER; INTEGER; INTEGER
+; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+    
+    PROCEDURE FormAlert(* ProcNum:3 *)(INTEGER; VAR ARRAY CHAR) : INTEGER;
+    
+    PROCEDURE FormError(* ProcNum:4 *)(INTEGER) : INTEGER;
+    
+    PROCEDURE FormCenter(* ProcNum:5 *)(SYSTEM.ADDRESS; VAR INTEGER; VAR INT
+EGER; VAR INTEGER; VAR INTEGER);
+    
+    PROCEDURE FileSelectorInput(* ProcNum:6 *)(SYSTEM.ADDRESS; SYSTEM.ADDRES
+S; VAR INTEGER);
+    
+  END AESForms;
+
+END AESForms.
+
