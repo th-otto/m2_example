@@ -8,6 +8,7 @@ import GEMAESbase, key =  2102H  CAD6H  2E6DH, modnum =  2  checksum: o.k.
 data size, number of bytes = 0  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 58
+ShellRead
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        23EE 000C 0000 0072      MOVE.L  000C(A6),00000072H
@@ -18,7 +19,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 58
     1CH        3F3C 0001                MOVE.W  #0001H,-(A7)
     20H        3F3C 0002                MOVE.W  #0002H,-(A7)
     24H        4267                     CLR.W   -(A7)
-    26H        4EB9 0000 0000           JSR     00000000H
+    26H        4EB9 0000 0000           JSR     GemCall
     2CH        4FEF 000A                LEA     000A(A7),A7
     30H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
     36H        4E5E                     UNLK    A6
@@ -34,11 +35,12 @@ ref ext proc call at    28H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    32H, modnum =  2  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 84
+ShellWrite:
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 0014                MOVE.W  0014(A6),-(A7)
      8H        3F2E 0012                MOVE.W  0012(A6),-(A7)
-     CH        4EB9 0000 0000           JSR     00000000H
+     CH        4EB9 0000 0000           JSR     IntIn2
     12H        588F                     ADDQ.L  #4,A7
     14H        33EE 0010 0000 0044      MOVE.W  0010(A6),00000044H
     1CH        23EE 000C 0000 0072      MOVE.L  000C(A6),00000072H
@@ -49,7 +51,7 @@ proc code, procnum =  2, entrypoint =     0H, number of bytes = 84
     36H        3F3C 0001                MOVE.W  #0001H,-(A7)
     3AH        3F3C 0002                MOVE.W  #0002H,-(A7)
     3EH        4267                     CLR.W   -(A7)
-    40H        4EB9 0000 0000           JSR     00000000H
+    40H        4EB9 0000 0000           JSR     GemCall
     46H        4FEF 000A                LEA     000A(A7),A7
     4AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
     50H        4E5E                     UNLK    A6
@@ -69,6 +71,7 @@ ref ext proc call at    42H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    4CH, modnum =  2  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 50
+ShellFind:
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        23EE 0008 0000 0072      MOVE.L  0008(A6),00000072H
@@ -78,7 +81,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 50
     14H        3F3C 0001                MOVE.W  #0001H,-(A7)
     18H        3F3C 0001                MOVE.W  #0001H,-(A7)
     1CH        4267                     CLR.W   -(A7)
-    1EH        4EB9 0000 0000           JSR     00000000H
+    1EH        4EB9 0000 0000           JSR     GemCall
     24H        4FEF 000A                LEA     000A(A7),A7
     28H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
     2EH        4E5E                     UNLK    A6
@@ -92,6 +95,7 @@ ref ext proc call at    20H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    2AH, modnum =  2  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 58
+ShellEnvrn
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        23EE 000C 0000 0072      MOVE.L  000C(A6),00000072H
@@ -102,7 +106,7 @@ proc code, procnum =  4, entrypoint =     0H, number of bytes = 58
     1CH        3F3C 0001                MOVE.W  #0001H,-(A7)
     20H        3F3C 0002                MOVE.W  #0002H,-(A7)
     24H        4267                     CLR.W   -(A7)
-    26H        4EB9 0000 0000           JSR     00000000H
+    26H        4EB9 0000 0000           JSR     GemCall
     2CH        4FEF 000A                LEA     000A(A7),A7
     30H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
     36H        4E5E                     UNLK    A6

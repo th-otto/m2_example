@@ -31,6 +31,7 @@ FROM GEMShare IMPORT our_cb, stringIntoCFormat, stringFromCFormat, aes_if, testI
 FROM GEMGlobals IMPORT MaxStr, PtrMaxStr;
 IMPORT MOSGlobals;
 FROM AESScraps IMPORT ScrapRead, ScrapWrite;
+IMPORT AESShells;
 
 
 PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
@@ -142,50 +143,36 @@ END WriteScrapDir;
 (*  Shell Manager  *)
 (*  =============  *)
 
-PROCEDURE ShellRead (VAR cmd, tail: ARRAY OF CHAR);
+PROCEDURE ShellRead(VAR cmd, tail: ARRAY OF CHAR);
 VAR s, s2: MaxStr;
 BEGIN
-  our_cb^.pubs.ADDRIN[0] := ADR(s);
-  our_cb^.pubs.ADDRIN[1] := ADR(s2);
-  aes_if(AES_CTRL_CODE(GEMOps.SHEL_READ, 0, 1, 2));
+  AESShells.ShellRead(ADR(s), ADR(s2));
   stringFromCFormat(s, cmd);
   stringFromCFormat(s2, tail);
   Delete(tail, 0, 1);
 END ShellRead;
 
 
-PROCEDURE ShellWrite(start: BOOLEAN; isGraf:ProgramType;
-                     REF cmd,tail:ARRAY OF CHAR);
+PROCEDURE ShellWrite(start: BOOLEAN; isGraf:ProgramType; REF cmd,tail:ARRAY OF CHAR);
 VAR s, s2: MaxStr;
 BEGIN
   stringIntoCFormat(cmd, s);
-  our_cb^.pubs.ADDRIN[0] := ADR(s);
   stringIntoCFormat(tail, s2);
   (* TAIL muss Laengenbyte am Anfang bekommen *)
   (* Insert('', 0, s2); *)
-  our_cb^.pubs.ADDRIN[1] := ADR(s2);
-  our_cb^.pubs.aINTIN[0] := ORD(start);
-  our_cb^.pubs.aINTIN[1] := ORD(isGraf);
-  our_cb^.pubs.aINTIN[2] := 1; (* unbenutzt - immer EINS! *)
-  aes_if(AES_CTRL_CODE(GEMOps.SHEL_WRITE, 3, 1, 2));
-  testINTOUT0();
+  AESShells.ShellWrite(ORD(start), ORD(isGraf), ORD(isGraf), ADR(s), ADR(s2));
 END ShellWrite;
 
 
-PROCEDURE ShellGet (VAR buffer:ARRAY OF BYTE; no:CARDINAL);
+PROCEDURE ShellGet(VAR buffer:ARRAY OF BYTE; no:CARDINAL);
 BEGIN
-  our_cb^.pubs.aINTIN[0] := getNoElements(HIGH(buffer), no);
-  our_cb^.pubs.ADDRIN[0] := ADR(buffer);
-  aes_if(AES_CTRL_CODE(GEMOps.SHEL_GET, 1, 1, 1));
-  testINTOUT0();
+  AESShells.ShellGet(ADR(buffer), getNoElements(HIGH(buffer), no));
 END ShellGet;
 
 
-PROCEDURE ShellPut (REF buffer:ARRAY OF BYTE; no:CARDINAL);
+PROCEDURE ShellPut(REF buffer:ARRAY OF BYTE; no:CARDINAL);
 BEGIN
-  our_cb^.pubs.aINTIN[0] := getNoElements(HIGH(buffer), no);
-  our_cb^.pubs.ADDRIN[0] := ADR(buffer);
-  aes_if(AES_CTRL_CODE(GEMOps.SHEL_PUT, 1, 1, 1));
+  AESShells.ShellPut(ADR(buffer), getNoElements(HIGH(buffer), no));
 END ShellPut;
 
 
@@ -193,9 +180,7 @@ PROCEDURE ShellFind(VAR name:ARRAY OF CHAR);
 VAR s: MaxStr;
 BEGIN
   stringIntoCFormat(name, s);
-  our_cb^.pubs.ADDRIN[0] := ADR(s);
-  aes_if(AES_CTRL_CODE(GEMOps.SHEL_FIND, 0, 1, 1));
-  testINTOUT0();
+  AESShells.ShellFind(ADR(s));
   stringFromCFormat(s, name);
 END ShellFind;
 
@@ -204,12 +189,9 @@ PROCEDURE ShellEnvironment(REF parm: ARRAY OF CHAR; VAR value:ARRAY OF CHAR);
 VAR s: MaxStr;
     p: PtrMaxStr;
 BEGIN
-  p := NIL;
-  our_cb^.pubs.ADDRIN[0] := ADR(p);
   stringIntoCFormat(parm, s);
-  our_cb^.pubs.ADDRIN[1] := ADR(s);
-  aes_if(AES_CTRL_CODE(GEMOps.SHEL_ENVRN, 0, 1, 2));
-  testINTOUT0();
+  p := NIL;
+  AESShells.ShellEnvrn(ADR(p), ADR(s));
   IF p <> NIL THEN stringFromCFormat(p^, value); ELSE value[0] := 0C; END;
 END ShellEnvironment;
 

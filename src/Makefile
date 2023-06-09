@@ -28,6 +28,7 @@ OBJS = \
 	AESResources.o \
 	AESWindows.o \
 	AESScraps.o \
+	AESShells.o \
 	PathEnv.o \
 	AESGraphics.o \
 	PrgCtrl.o \
@@ -74,6 +75,7 @@ AESObjects.o: AESObjects.mod AESObjects.def GEMOps.def
 AESResources.o: AESResources.mod AESResources.def GEMOps.def
 AESWindows.o: AESWindows.mod AESWindows.def GEMOps.def
 AESScraps.o: AESScraps.mod AESScraps.def GEMOps.def
+AESShells.o: AESShells.mod AESShells.def GEMOps.def
 PathEnv.o: PathEnv.mod PathEnv.def
 AESGraphics.o: AESGraphics.mod AESGraphics.def
 PrgCtrl.o: PrgCtrl.mod PrgCtrl.def

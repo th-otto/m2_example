@@ -1,0 +1,17 @@
+DEFINITION MODULE AESShells;
+
+FROM SYSTEM IMPORT ADDRESS;
+
+PROCEDURE ShellRead(cmd: ADDRESS; tail: ADDRESS);
+
+PROCEDURE ShellWrite(start: INTEGER; isGraf: INTEGER; iscr: INTEGER; cmd: ADDRESS; tail: ADDRESS);
+
+PROCEDURE ShellFind(name: ADDRESS);
+
+PROCEDURE ShellEnvrn(value: ADDRESS; parm: ADDRESS);
+
+PROCEDURE ShellGet(buffer: ADDRESS; no:CARDINAL);
+
+PROCEDURE ShellPut(buffer: ADDRESS; no:CARDINAL);
+
+END AESShells.

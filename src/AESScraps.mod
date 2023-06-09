@@ -3,6 +3,7 @@ IMPLEMENTATION MODULE AESScraps;
 FROM    SYSTEM  IMPORT BYTE, CARDINAL32, SHIFT, ADR;
 FROM GEMShare IMPORT our_cb, aes_if, testINTOUT0;
 IMPORT GEMOps;
+IMPORT MOSGlobals;
 
 (*  Scrap Manager  *)
 (*  =============  *)
@@ -29,4 +30,6 @@ BEGIN
 END ScrapWrite;
 
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END AESScraps.
