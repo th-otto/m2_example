@@ -1,0 +1,313 @@
+DEFINITION MODULE AESWindows;
+
+
+(*  Megemax-Module 2 GEM-Library :  Die AES Fensterfunktionen
+ *
+ *  Autor: Manuel Chakravarty           Erstellt :  05.11.87
+ *
+ *  Version   2.2     V#0016
+ *)
+
+
+FROM    MOSGlobals      IMPORT MemArea;
+
+FROM    GrafBase        IMPORT Point, Rectangle;
+
+FROM    GEMGlobals      IMPORT PtrMaxStr, PtrObjTree;
+
+
+
+(*  Window Manager  *)
+(*  ==============  *)
+
+
+CONST   NoWindow        = 65535;    (*  Dies ist der Wert fuer ein nicht be-
+                                     *  setztes Window-Handle
+                                     *)
+
+DeskHandle      = 0;        (*  Dies ist das Fensterkennung der
+                             *  Desktop-Oberflaeche
+                             *)
+
+
+TYPE    WindowElement   = (nameBar,    closer,    fuller,     mover,
+                   infoBar,    sizer,     upArrow,    downArrow,
+                   vertSlider, leftArrow, rightArrow, horSlider,
+                   menuBar, backdrop, iconifier, border);
+CONST hotCloseBox = menuBar;
+CONST smaller = iconifier;
+
+TYPE WElementSet     = SET OF WindowElement;
+
+
+CONST
+        WF_KIND              = 1;                      (* *< get     the actual window attributes (set supported by N.Aes only) *)
+        WF_NAME              = 2;                      (* *< get/set title name of the window *)
+        WF_INFO              = 3;                      (* *< get/set info line of the window *)
+        WF_WORKXYWH          = 4;                      (* *< get     the work area coordinates of the work area *)
+        WF_CURRXYWH          = 5;                      (* *< get/set current coordinates of the window (external area) *)
+        WF_PREVXYWH          = 6;                      (* *< get     the previous coordinates of the window (external area) *)
+        WF_FULLXYWH          = 7;                      (* *< get     the coordinates of the window when "fulled" the screen *)
+        WF_HSLIDE            = 8;                      (* *< get/set position of the horizontal slider *)
+        WF_VSLIDE            = 9;                      (* *< get/set position of the vertical slider *)
+        WF_TOP               = 10;                     (* *< get/set top window *)
+        WF_FIRSTXYWH         = 11;                     (* *< get     the first rectangle in the list of rectangles for this window *)
+        WF_NEXTXYWH          = 12;                     (* *< get     the next rectangle in the list of rectangles for this window *)
+        WF_FIRSTAREAXYWH     = 13;                     (* *< get     the first rectangle in the list of rectangles for this window *)
+        WF_NEWDESK           = 14;                     (* *< get/set OBJECT tree installed as desktop *)
+        WF_HSLSIZE           = 15;                     (* *< get/set size of the horizontal slider *)
+        WF_VSLSIZE           = 16;                     (* *< get/set size of the vertical slider *)
+        WF_SCREEN            = 17;                     (* *< get     current AES menu/alert buffer and its size *)
+        WF_COLOR             = 18;                     (* *< get/set current color of widget *)
+        WF_DCOLOR            = 19;                     (* *< get/set default color of widget *)
+        WF_OWNER             = 20;                     (* *< get     the owner of the window *)
+        WF_BEVENT            = 24;                     (* *< get/set window feature on mouse button event *)
+        WF_BOTTOM            = 25;                     (* *< get/set bottom window *)
+        WF_ICONIFY           = 26;                     (* *< get/set iconification of the window *)
+        WF_UNICONIFY         = 27;                     (* *< get/set un-iconification of the window *)
+        WF_UNICONIFYXYWH     = 28;                     (* *<     set window coordinates when uniconified *)
+        WF_TOOLBAR           = 30;                     (* *< get/set tool bar attached to a window *)
+        WF_FTOOLBAR          = 31;                     (* *< get     the first rectangle of the toolbar area *)
+        WF_NTOOLBAR          = 32;                     (* *< get     the next rectangle of the toolbar area *)
+        WF_MENU              = 33;                     (* *< get/set TODO (XaAES) *)
+        WF_WHEEL             = 40;                     (* *< get/set window feature on mouse wheel event *)
+        WF_OPTS              = 41;                     (* *< get/set window options *)
+        WF_CALCF2W           = 42;                     (* *< get     Convert FULL coordinates to WORK coordinates *)
+        WF_CALCW2F           = 43;                     (* *< get     Convert WORK coordinates to FULL coordinates *)
+        WF_CALCF2U           = 44;                     (* *< get     Convert FULL coordinates to USER coordinates *)
+        WF_CALCU2F           = 45;                     (* *< get     Convert USER coordinates to FULL coordinates *)
+        WF_MAXWORKXYWH       = 46;                     (* *< get     MAX coordinates for this window - WCOWORK mode only *)
+        WF_M_BACKDROP        = 100;                    (* *< get/set TODO (KAOS 1.4) *)
+        WF_M_OWNER           = 101;                    (* *< get     (KAOS 1.4); same as WF_OWNER *)
+        WF_M_WINDLIST        = 102;                    (* *< get     TODO (KAOS 1.4) *)
+        WF_MINXYWH           = 103;                    (* *< get/set TODO (MagiC 6) *)
+        WF_INFOXYWH          = 104;                    (* *< get     TODO (MagiC 6.10) *)
+        WF_WIDGETS           = 200;                    (* *< get/set actual positions of the slider widgets *)
+        WF_USER_POINTER      = 230;                    (* *< get/set MyAES - attach a 32 bit value to window *)
+        WF_WIND_ATTACH       = 231;                    (* *<     set MyAES - attach a window to another *)
+        WF_TOPMOST           = 232;                    (* *<     set MyAES    set actual window at TOPMOST level *)
+        WF_BITMAP            = 233;                    (* *< get     MyAES 0.96    get bitmap of the window *)
+        WF_OPTIONS           = 234;                    (* *<     set MyAES 0.96 at this time use only to request automaticaly close if application lost focus and appear when focus is back *)
+        WF_FULLSCREEN        = 235;                    (* *<     set MyAES 0.96 set window in fullscreen without widget *)
+        WF_OBFLAG            = 1001;                   (* *< get/set (doc: TODO) (FreeGEM) *)
+        WF_OBTYPE            = 1002;                   (* *< get     (doc: TODO) (FreeGEM) *)
+        WF_OBSPEC            = 1003;                   (* *< get/set (doc: TODO) (FreeGEM) *)
+        X_WF_MENU            = 1100H;                  (* *<     set (doc: TODO) (Geneva) *)
+        X_WF_DIALOG          = 1200H;                  (* *<     set (doc: TODO) (Geneva) *)
+        X_WF_DIALWID         = 1300H;                  (* *<     set (doc: TODO) (Geneva) *)
+        X_WF_DIALHT          = 1400H;                  (* *<     set (doc: TODO) (Geneva) *)
+        X_WF_DFLTDESK        = 1500H;                  (* *<     set (doc: TODO) (Geneva) *)
+        X_WF_MINMAX          = 1600H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_HSPLIT          = 1700H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_VSPLIT          = 1800H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_SPLMIN          = 1900H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_HSLIDE2         = 1A00H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_VSLIDE2         = 1B00H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_HSLSIZE2        = 1C00H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_VSLSIZE2        = 1D00H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_DIALFLGS        = 1E00H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_OBJHAND         = 1F00H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_DIALEDIT        = 2000H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        X_WF_DCOLSTAT        = 2100H;                  (* *< get/set (doc: TODO) (Geneva) *)
+        WF_WINX              = 22360;                  (* *< get     TODO *)
+        WF_WINXCFG           = 22361;                  (* *< get/set TODO *)
+        WF_DDELAY            = 22362;                  (* *< get/set TODO *)
+        WF_SHADE             = 22365;                  (* *< get/set TODO (WINX 2.3) *)
+        WF_STACK             = 22366;                  (* *<     set TODO (WINX 2.3) *)
+        WF_TOPALL            = 22367;                  (* *<     set TODO (WINX 2.3) *)
+        WF_BOTTOMALL         = 22368;                  (* *<     set TODO (WINX 2.3) *)
+        WF_XAAES             = 5841H;                  (* *< get     TODO (XaAES) : 'XA' *)
+
+
+(*  Es wird ein neues Fenster beim AES angemeldet.
+ *
+ *  'elems'     -- die Elemente, die das Fenster besitzt.
+ *  'max'       -- die maximalen Ausmasse des Fensters.
+ *  'handle'    -- liefert die Fensterkennung als Ergebnis.Be-
+ *                 sitzt es den Wert 'NoWindow', so konnte kein
+ *                 Fenster mehr erzeugt werden. (Das GEM ist nur
+ *                 fuer eine Verwaltung von hoechstens sieben
+ *                 Fenstern ausgelegt).
+ *)
+PROCEDURE CreateWindow(elems: WElementSet; max: Rectangle; VAR handle: CARDINAL);
+
+(*  Das Fenster mit der Kennung 'handle' wird in der Groesse 'frame'
+ *  auf den Bildschirm gebracht.
+ *)
+PROCEDURE OpenWindow(handle: CARDINAL; frame: Rectangle);
+
+(*  Das durch die Kennung 'handle' bezeichnete Fenster wird vom
+ *  Bildschirm entfernt. Es wird dabei nicht aus dem Speicher
+ *  geloescht.
+ *)
+PROCEDURE CloseWindow(handle: CARDINAL);
+
+(*  Das Fenster, das die Kennung 'handle' besitzt wird abgemeldet.
+ *  Das bedeutet, dass dieses Fenster nicht mehr angesprochen werden
+ *  darf, es ist geloescht.
+ *)
+PROCEDURE DeleteWindow(handle: CARDINAL);
+
+
+TYPE    WSizeMode       = (workSize, borderSize, previousSize, fullSize);
+
+(*  Diese Funktion liefert die Ausmasse eines Fensters. Es koennen
+ *  folgende Ausmasse erfragt werden:
+ *
+ *  'workSize'     -- Die Groesse des Arbeitsbereichs (ohne Fenster-
+ *                    elemente)
+ *  'borderSize'   -- Die Groesse des gesamten Fensters (mit Fenster-
+ *                    elementen)
+ *  'previousSize' -- Die letzte Groesse des Gesamtfensters
+ *  'fullSize'     -- Die maximale Groesse des Fensters
+ *
+ *  Insbesondere koennen, mit Hilfe der Kennung 'DeskHandle', die
+ *  Ausmasse des Desktop's erfragt werden.
+ *)
+PROCEDURE WindowSize(handle: CARDINAL; typ: WSizeMode): Rectangle;
+
+
+TYPE    WSliderMode     = (horPosition, vertPosition, horSize, vertSize);
+
+(*  Es wird die Position eines Fensterschiebers geliefert.
+ *  'handle' enthaelt die Fensterkennung und 'typ' kann fol-
+ *  gende Werte annehmen:
+ *
+ *  'horPosition'  -- Position des horizontalen Schiebers
+ *  'vertPosition' -- Position des vertikalen Schiebers
+ *  'horSize'      -- Ausmasse des horizontalen Schiebers
+ *  'vertSize'     -- Ausmasse des vertikalen Schiebers
+ *
+ *  Schieberposition und Schiebergroesse werden in Promille ange-
+ *  geben (Wertebereich: 0 - 1000), bei der Schiebergroesse ist
+ *  allerdings auch der Wert -1 zugelassen, der die kleinste
+ *  moegliche Groesse repraesentiert.
+ *)
+PROCEDURE WindowSliderValue(handle: CARDINAL; typ: WSliderMode): INTEGER;
+
+
+(*  Liefert die Fensterkennung des oben aufliegenden Fensters.
+ *)
+PROCEDURE TopWindow(): CARDINAL;
+
+
+TYPE    RListMode       = (firstElem, nextElem);
+
+(*  Zum Zeichnen innerhalb teilweiser verdeckter Fensterbereiche
+ *  ist es unerlaesslich, die nicht verdeckten Ausschnitte zu ken-
+ *  nen. Genau diese Ausschnitte sind in der so genannten Recht-
+ *  eckliste, die von dieser Funktion ausgelesen wird, festgehal-
+ *  ten. Das Ende der Liste ist durch ein Rechteck mit der Flaeche
+ *  Null gekennzeichnet.
+ *  Besitzt 'typ' den Wert 'firstElem', so wird das erste Element
+ *  der Rechteckliste gelesen. Bei jedem folgenden Aufruf mit
+ *  'nextElem' wird sukzessiv ein weiteres Element ermittelt.
+ *)
+PROCEDURE WindowRectList(handle: CARDINAL; typ: RListMode): Rectangle;
+
+(*  Es wird die Beschreibung eines Speicherbereichs geliefert,
+ *  der vom AES zur Zwischenspeicherung von Bildschirminhalten
+ *  benutzt wird.
+ *  Dieser Bereich kann ohne weiteres auch von Anwendungspro-
+ *  grammen mitverwendet werden. Allerdings sollte er nur fuer
+ *  kurzfristige Aufgaben benutzt werden. Sein Umfang betraegt
+ *  in der Regel circa 8 kByte.
+ *  Beim Aufruf der Funktion muss als Kennung ('handle') 'Desk
+ *  Handle' eingetragen werden.
+ *)
+PROCEDURE ScreenBuffer(handle: CARDINAL): MemArea;
+
+
+TYPE    WStringMode     = (nameStr, infoStr);
+
+(*  Einem Fenster wird eine Zeichenkette fuer einen Namen oder
+ *  eine Informationszeile zugewiesen.
+ *
+ *  'handle'    -- Die Kennung des Fensters
+ *  'typ'       -- '= nameStr': Name
+ *                 '= infoStr': Infozeile
+ *  'str'       -- Enthaelt einen Zeiger auf die Zeichenkette.
+ *)
+PROCEDURE SetWindowString(handle: CARDINAL; typ: WStringMode; str: PtrMaxStr);
+
+(*  Damit werden die Fensterausmasse des Fensters 'handle' auf
+ *  'frame' gesetzt.
+ *  Es muss immer die Groesse der Fensteraussenmasse angegeben werden.
+ *)
+PROCEDURE SetWindowSize(handle: CARDINAL; frame: Rectangle);
+
+(*  Setzt ein Fensterschieberparameter auf den Wert 'value'.
+ *  Die Parameterbeschreibung entspricht der von 'WindowSliderValue'.
+ *)
+PROCEDURE SetWindowSlider(handle: CARDINAL; typ: WSliderMode; value : INTEGER);
+
+(*  Das Fenster mit der Kennung 'handle' wird nach oben gebracht.
+ *)
+PROCEDURE SetTopWindow(handle: CARDINAL);
+
+(*  Diese Routine erlaubt es eine eigene Desktop-Oberfaeche anzu-
+ *  melden. Dadurch kann der Bildschirmhintergrund frei gestaltet
+ *  werden. Die Oberflaeche muss in Form eines Objektbaumes vor-
+ *  liegen.
+ *  'tree'      -- derObjektbaum
+ *  'first'     -- gibt das erste zu Zeichnende Objekt des
+ *                 Baumes an.
+ *
+ *  Hinweis: Durch das Anmelden wird der neue Hintergrund noch
+ *           nicht dargestellt, dafuer muss erst ein Neuzeichnen
+ *           veranlasst werden (Siehe 'AESForms.FormDial').
+ *)
+PROCEDURE SetNewDesk(tree: PtrObjTree; first: CARDINAL);
+
+(*  Diese Funktion ermittelt, welches Fenster sich an der Position
+ *  'loc' befindet. Als Ergebnis wird die Fensterkennung geliefert.
+ *)
+PROCEDURE FindWindow(loc: Point): CARDINAL;
+
+(*  Hiermit wird dem AES mitgeteilt, zu welchem Zeitpunkt eine An-
+ *  wendung Ausgaben in ein Fenster taetigen will. Waehrend dieser
+ *  Zeit reagiert das AES nicht auf Versuche des Anwenders die Menu-
+ *  zeile zu benutzen oder Fensterelemente zu bedienen.
+ *  Mit 'update = TRUE' werden die Ausgaben eingeleitet und mit
+ *  'FALSE' beendet.
+ *  Diese Routine hat einen internen Zaehler, so dass fuer zwei ge-
+ *  schachtelte Aufrufe mit 'TRUE' auch zwei mit 'FALSE' folgen
+ *  muessen.
+ *)
+PROCEDURE UpdateWindow(update: BOOLEAN);
+
+(*  Die Reaktion des AES auf diese Routine entspricht im wesentlichen
+ *  der auf 'UpdateWindow', nur ist dafuer vorgesehen, dass die Anwen-
+ *  dung die Kontrolle ueber alle Mausfunktionen selbst uebernimmt.
+ *)
+PROCEDURE MouseControl(user: BOOLEAN);
+
+
+TYPE    WCalcMode       = (calcBorder, calcWork);
+
+(*  Diese Funktion berechnet aus Fensteraussenmassen die Arbeitsbe-
+ *  reichsmasse und umgekehrt.
+ *
+ *  'elems'      -- enthaelt die Fensterelemente
+ *
+ *  Fuer 'typ' gilt:
+ *
+ *  'calcBorder' -- 'in' enthaelt Arbeitsbereichsgroesse und das Er-
+ *                   gebnis sind die Aussenmasse.
+ *  'calcWork'   -- 'in' enthaelt die Aussenmasse un das Ergebnis ist
+ *                   die Arbeitsbereichsgroesse.
+ *)
+PROCEDURE CalcWindow(typ: WCalcMode; elems: WElementSet; in: Rectangle  ): Rectangle;
+
+
+(*  Es werden alle noch offenen Fenster der Applikation geschlossen,
+ *  ausserdem wird 'UpdateWindow' und 'MouseControl' zurueckgesetzt.
+ *
+ *  ACHTUNG: Diese Prozedur ist erst ab TOS 1.4 funktionsfaehig.
+ *           Die TOS-Version kann mit 'GEMEnv.GEMVersion' erfragt
+ *           werden.
+ *)
+PROCEDURE ResetWindows();
+
+
+END AESWindows.

@@ -352,7 +352,7 @@ X       DC.B    0, 1, 0            ; func 082  clear
         DC.B    0, 0, 0            ; func 089
     ;                            fseler Manager
 X       DC.B    0, 2, 2            ; func 090  input
-X       DC.B    0, 2, 3            ; func 091           (*  Ab TOS 1.4  *)
+X       DC.B    0, 2, 3            ; func 091  exinput     (*  Ab TOS 1.4  *)
         DC.B    0, 0, 0            ; func 092
         DC.B    0, 0, 0            ; func 093
         DC.B    0, 0, 0            ; func 094
@@ -362,16 +362,16 @@ X       DC.B    0, 2, 3            ; func 091           (*  Ab TOS 1.4  *)
         DC.B    0, 0, 0            ; func 098
         DC.B    0, 0, 0            ; func 099
     ;                            Window Manager
-        DC.B    5, 1, 0            ; func 100
-        DC.B    5, 1, 0            ; func 101
+X       DC.B    5, 1, 0            ; func 100 create
+X       DC.B    5, 1, 0            ; func 101 open
 X       DC.B    1, 1, 0            ; func 102 close
 X       DC.B    1, 1, 0            ; func 103 delete
-        DC.B    2, 5, 0            ; func 104
-        DC.B    6, 1, 0            ; func 105
-        DC.B    2, 1, 0            ; func 106
+X       DC.B    2, 5, 0            ; func 104 get
+X       DC.B    6, 1, 0            ; func 105 set
+X       DC.B    2, 1, 0            ; func 106 find
 X       DC.B    1, 1, 0            ; func 107 update
-        DC.B    6, 5, 0            ; func 108
-        DC.B    0, 0, 0            ; func 109           (*  Ab TOS 1.4  *)
+X       DC.B    6, 5, 0            ; func 108 calc
+X       DC.B    0, 1, 0            ; func 109 new          (*  Ab TOS 1.4  *)
     ;                            Resource Manger
 X       DC.B    0, 1, 1            ; func 110  load
 X       DC.B    0, 1, 0            ; func 111  free
