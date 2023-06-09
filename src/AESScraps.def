@@ -1,0 +1,10 @@
+DEFINITION MODULE AESScraps;
+
+
+FROM SYSTEM IMPORT ADDRESS;
+
+PROCEDURE ScrapRead(dir: ADDRESS);
+    
+PROCEDURE ScrapWrite(dir: ADDRESS);
+    
+END AESScraps.

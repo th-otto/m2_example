@@ -10,15 +10,15 @@ DEFINITION MODULE AESMisc;
  *)
 
 
-FROM SYSTEM     IMPORT BYTE;
+FROM SYSTEM     IMPORT BYTE, CARDINAL16, CARDINAL32;
 
 FROM GrafBase   IMPORT Point, WordBitSet;
 
 FROM GEMGlobals IMPORT GemChar;
 
 
-                (*  Application Manager  *)
-                (*  ===================  *)
+(*  Application Manager  *)
+(*  ===================  *)
 
 (*      Die folgenden drei Routinen bieten die Moeglichkeit mit anderen
  *      Anwendungen zu kommunizieren.
@@ -37,95 +37,87 @@ FROM GEMGlobals IMPORT GemChar;
  *)
 
 
-PROCEDURE ReadFromAppl (    id     : CARDINAL;
-                        VAR buffer : ARRAY OF BYTE;
-                            noBytes: CARDINAL);
+(*  Diese Routine erlaubt es den ueber die 16 Standardbyte hinaus-
+ *  gehenden Rest einer Nachricht (Siehe 'AESEvents') zu lesen.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'id'        -- Die Identifikationsnummer der Anwendung aus
+ *                 Nachrichtenschlange gelesen werden soll.
+ *                 In der Regel ist dies wohl die eigne, die
+ *                 mit 'GEMEnv.ApplicationID' erfragt werden
+ *                 kann.
+ *  'noBytes'   -- Anzahl der zu lesenden Bytes. Ist die gleich
+ *                 Null, wird stattdessen der HIGH-Wert von
+ *                 'buffer' herangezogen.
+ *
+ *
+ *  Ausgabeparameter
+ *  ----------------
+ *
+ *  'buffer'    -- Hier steht die ausgelesene Nachricht.
+ *)
+PROCEDURE ReadFromAppl(id: CARDINAL; VAR buffer: ARRAY OF BYTE; noBytes: CARDINAL);
 
-        (*  Diese Routine erlaubt es den ueber die 16 Standardbyte hinaus-
-         *  gehenden Rest einer Nachricht (Siehe 'AESEvents') zu lesen.
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'id'        -- Die Identifikationsnummer der Anwendung aus
-         *                 Nachrichtenschlange gelesen werden soll.
-         *                 In der Regel ist dies wohl die eigne, die
-         *                 mit 'GEMEnv.ApplicationID' erfragt werden
-         *                 kann.
-         *  'noBytes'   -- Anzahl der zu lesenden Bytes. Ist die gleich
-         *                 Null, wird stattdessen der HIGH-Wert von
-         *                 'buffer' herangezogen.
-         *
-         *
-         *  Ausgabeparameter
-         *  ----------------
-         *
-         *  'buffer'    -- Hier steht die ausgelesene Nachricht.
-         *)
+
+(*  Diese Prozedur schickt einer Anwendung eine Nachricht
+ *  geschickt.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'id'        -- Die Identifikationsnummer der Anwendung
+ *  'message'   -- enthaelt die Nachricht
+ *  'noBytes'   -- Laenge der Nachricht. Enthaelt es Null, wird
+ *                 HIGH(message) eingesetzt.
+ *
+ *  Im Regelfall muessen die ersten 16 Byte der Nachricht das
+ *  'MessageBuffer'-Format haben, da die Nachricht normalerweise
+ *  als Nachrichtenereignis empfangen wird.
+ *)
+PROCEDURE WriteToAppl(id: CARDINAL; REF message: ARRAY OF BYTE; noBytes: CARDINAL);
         
-PROCEDURE WriteToAppl (    id     : CARDINAL;
-                       REF message: ARRAY OF BYTE;
-                           noBytes: CARDINAL);
-
-        (*  Diese Prozedur schickt einer Anwendung eine Nachricht
-         *  geschickt.
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'id'        -- Die Identifikationsnummer der Anwendung
-         *  'message'   -- enthaelt die Nachricht
-         *  'noBytes'   -- Laenge der Nachricht. Enthaelt es Null, wird
-         *                 HIGH(message) eingesetzt.
-         *
-         *  Im Regelfall muessen die ersten 16 Byte der Nachricht das
-         *  'MessageBuffer'-Format haben, da die Nachricht normalerweise
-         *  als Nachrichtenereignis empfangen wird.
-         *)
-        
-PROCEDURE FindApplication (REF fname  : ARRAY OF CHAR;
-                           VAR id     : CARDINAL;
-                           VAR success: BOOLEAN);
-
-        (*  Sucht nach einer bestimmten Anwendung
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'fname'     -- Name der gesuchten Anwendung (ohne Endung!),
-         *                 evtl. noetige Leerzeichen fuellt diese Funktion auf.
-         *
-         *  Ausgabeparameter
-         *  ----------------
-         *
-         *  'success'   --'TRUE' : Anwendung wurde gefunden
-         *                'FALSE': ..nicht gefunden
-         *  'id'        -- Falls die Suche erfolgreich war, liefert
-         *                 es die Identifikationsnummer der Anwendung.
-         *
-         *  Normalerweise kann damit ein Programm ein Accessory finden,
-         *  indem es dessen Dateinamen angibt.
-         *  Umgekehrt koennen Accessories auch die Hauptanwendung finden,
-         *  jedoch ist zu beachten, dass evtl. unter der Megamax-Shell
-         *  gestartete Programme nicht dem AES bekannt sind, sondern nur
-         *  das direkt vom GEM-Desktop gestartete Programm. Das kommt v.A.
-         *  vor bei TOS-Versionen vor 1.4. In diesem Fall muesste ein
-         *  Accessory nach dem Namen der Shell fragen, oder das Programm
-         *  muss gelinkt und dann vom GEM-Desktop gestartet werden.
-         *)
+(*  Sucht nach einer bestimmten Anwendung
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'fname'     -- Name der gesuchten Anwendung (ohne Endung!),
+ *                 evtl. noetige Leerzeichen fuellt diese Funktion auf.
+ *
+ *  Ausgabeparameter
+ *  ----------------
+ *
+ *  'success'   --'TRUE' : Anwendung wurde gefunden
+ *                'FALSE': ..nicht gefunden
+ *  'id'        -- Falls die Suche erfolgreich war, liefert
+ *                 es die Identifikationsnummer der Anwendung.
+ *
+ *  Normalerweise kann damit ein Programm ein Accessory finden,
+ *  indem es dessen Dateinamen angibt.
+ *  Umgekehrt koennen Accessories auch die Hauptanwendung finden,
+ *  jedoch ist zu beachten, dass evtl. unter der Megamax-Shell
+ *  gestartete Programme nicht dem AES bekannt sind, sondern nur
+ *  das direkt vom GEM-Desktop gestartete Programm. Das kommt v.A.
+ *  vor bei TOS-Versionen vor 1.4. In diesem Fall muesste ein
+ *  Accessory nach dem Namen der Shell fragen, oder das Programm
+ *  muss gelinkt und dann vom GEM-Desktop gestartet werden.
+ *)
+PROCEDURE FindApplication(REF fname: ARRAY OF CHAR; VAR id: CARDINAL; VAR success: BOOLEAN);
 
 
-  (*    Die folgenden zwei Routinen funktionieren im aktuellen TOS nicht
-   *    einwandfrei, eventuell arbeiten sie mit dem GDOS.
-   *)
+(*    Die folgenden zwei Routinen funktionieren im aktuellen TOS nicht
+ *    einwandfrei, eventuell arbeiten sie mit dem GDOS.
+ *)
 
 TYPE    RecEvent        = (timerRec, buttonRec, mouseRec, keyboardRec);
 
         RecordedEvent   = RECORD
                             CASE event :RecEvent OF
 
-                              timerRec    : time  : LONGCARD|
-                              buttonRec   : clicks: CARDINAL;
+                              timerRec    : time  : CARDINAL32|
+                              buttonRec   : clicks: CARDINAL16;
                                             state : WordBitSet|
                               mouseRec    : loc   : Point|
                               keyboardRec : spcl  : WordBitSet;
@@ -134,48 +126,42 @@ TYPE    RecEvent        = (timerRec, buttonRec, mouseRec, keyboardRec);
                             END;
                           END;
 
-PROCEDURE PlayEvents (REF buffer: ARRAY OF RecordedEvent;
-                          no    : CARDINAL;
-                          scale : CARDINAL);
-
-        (*  Bestimmte Ereignisse werden abgespielt, d.h. heisst das
-         *  GEM reagiert, als wuerden diese Ereignisse im Moment
-         *  vom Benutzer ausgeloest.
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'buffer'    -- Hier werden die Ereignisse abgespeichert,
-         *                 die abgespielt werden sollen.
-         *  'no'        -- Gibt die Anzahl der Ereignisse an, die
-         *                 abgespielt werden sollen. Ist sie gleich
-         *                 Null wird das gesamte Array abgearbeitet.
-         *  'scale'     -- Gibt den Geschwindigkeitsfaktor an, mit dem
-         *                 die Ereignisse abgearbeitet werden sollen.
-         *                 Dabei ist
-         *                 50  -- Halbe Geschwindigkeit
-         *                 100 -- Normale Geschwindigkeit
-         *                 200 -- Doppelte Geschwindigkeit
-         *)
+(*  Bestimmte Ereignisse werden abgespielt, d.h. heisst das
+ *  GEM reagiert, als wuerden diese Ereignisse im Moment
+ *  vom Benutzer ausgeloest.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'buffer'    -- Hier werden die Ereignisse abgespeichert,
+ *                 die abgespielt werden sollen.
+ *  'no'        -- Gibt die Anzahl der Ereignisse an, die
+ *                 abgespielt werden sollen. Ist sie gleich
+ *                 Null wird das gesamte Array abgearbeitet.
+ *  'scale'     -- Gibt den Geschwindigkeitsfaktor an, mit dem
+ *                 die Ereignisse abgearbeitet werden sollen.
+ *                 Dabei ist
+ *                 50  -- Halbe Geschwindigkeit
+ *                 100 -- Normale Geschwindigkeit
+ *                 200 -- Doppelte Geschwindigkeit
+ *)
+PROCEDURE PlayEvents(REF buffer: ARRAY OF RecordedEvent; no: CARDINAL; scale: CARDINAL);
                       
-PROCEDURE RecordEvents (VAR buffer  : ARRAY OF RecordedEvent;
-                            no      : CARDINAL;
-                        VAR recorded: CARDINAL);
-
-        (*  Zeichnet Ereignisse auf, die spaeter mit 'PlayEvents' re-
-         *  produziert werden koennen.
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'no'        -- Anzahl der Ereignisse
-         *
-         *  Ausgabeparameter
-         *  ----------------
-         *
-         *  'buffer'    -- Hier werden die Ereignisse abgespeichert.
-         *  'record'    -- Anzahl der gespeicherten Ereignisse
-         *)
+(*  Zeichnet Ereignisse auf, die spaeter mit 'PlayEvents' re-
+ *  produziert werden koennen.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'no'        -- Anzahl der Ereignisse
+ *
+ *  Ausgabeparameter
+ *  ----------------
+ *
+ *  'buffer'    -- Hier werden die Ereignisse abgespeichert.
+ *  'record'    -- Anzahl der gespeicherten Ereignisse
+ *)
+PROCEDURE RecordEvents(VAR buffer: ARRAY OF RecordedEvent; no: CARDINAL; VAR recorded: CARDINAL);
 
 
 
@@ -242,160 +228,150 @@ PROCEDURE RecordEvents (VAR buffer  : ARRAY OF RecordedEvent;
  *      'EasyGem1' automatisch!
  *)
 
-PROCEDURE ReadScrapDir (VAR dir: ARRAY OF CHAR);
+(*  Ermittelt Namen des aktuellen Scrap-Pfades.
+ *
+ *  'dir'       -- Der Scrap-Pfadname wird hier abge-
+ *                 speichert. Dieser Name ist nicht
+ *                 unbedingt mit einem '\' abgeschlossen,
+ *                 dieser ist dann ggf. selbst anzufuegen
+ *                 (z.B. mit 'Directory.ValidatePath')!
+ *
+ *  Siehe auch 'EasyGEM1.MakeScrapName'!
+ *)
+PROCEDURE ReadScrapDir(VAR dir: ARRAY OF CHAR);
 
-        (*  Ermittelt Namen des aktuellen Scrap-Pfades.
-         *
-         *  'dir'       -- Der Scrap-Pfadname wird hier abge-
-         *                 speichert. Dieser Name ist nicht
-         *                 unbedingt mit einem '\' abgeschlossen,
-         *                 dieser ist dann ggf. selbst anzufuegen
-         *                 (z.B. mit 'Directory.ValidatePath')!
-         *
-         *  Siehe auch 'EasyGEM1.MakeScrapName'!
-         *)
-
-PROCEDURE WriteScrapDir (REF dir: ARRAY OF CHAR);
-
-        (*  Setzt den Namen des aktuellem Scrap-Pfades.
-         *
-         *  'dir'       -- Wird zum neuen Scrap-Pfadnamen
-         *                 Bsp: WriteScrapDir ("C:\CLIPBRD\")
-         *)
+(*  Setzt den Namen des aktuellem Scrap-Pfades.
+ *
+ *  'dir'       -- Wird zum neuen Scrap-Pfadnamen
+ *                 Bsp: WriteScrapDir ("C:\CLIPBRD\")
+ *)
+PROCEDURE WriteScrapDir(REF dir: ARRAY OF CHAR);
 
 
-                (*  Shell Manager  *)
-                (*  =============  *)
+(*  Shell Manager  *)
+(*  =============  *)
 
 
-PROCEDURE ShellRead (VAR cmd, tail: ARRAY OF CHAR);
+(*  Diese Routine erfragt die Kommandozeile und das Kommando,
+ *  durch welches das aktuelle Programm gestartet wurde.
+ *
+ *  Ausgabeparameter
+ *  ----------------
+ *
+ *  'cmd'       -- Enthaelt das Kommando (Programmnamen)
+ *  'tail'      -- Enthaelt die Kommandozeile (das Laengenbyte ist
+ *                   bereits ausgewertet)
+ *
+ *  Vorsicht: Bei den TOS-Versionen aelter als 1.4 (also beim
+ *    altem ROM-TOS und Blitter-TOS) wird der Programname
+ *    nur solange korrekt zurueckgeliefert, bis ein 'ShellFind'-
+ *    oder 'LoadResource'-Aufruf getaetigt wird (danach wird
+ *    faelschlicherweise der Name der Resource geliefert)!
+ *
+ *)
+PROCEDURE ShellRead(VAR cmd, tail: ARRAY OF CHAR);
 
-        (*  Diese Routine erfragt die Kommandozeile und das Kommando,
-         *  durch welches das aktuelle Programm gestartet wurde.
-         *
-         *  Ausgabeparameter
-         *  ----------------
-         *
-         *  'cmd'       -- Enthaelt das Kommando (Programmnamen)
-         *  'tail'      -- Enthaelt die Kommandozeile (das Laengenbyte ist
-         *                   bereits ausgewertet)
-         *
-         *  Vorsicht: Bei den TOS-Versionen aelter als 1.4 (also beim
-         *    altem ROM-TOS und Blitter-TOS) wird der Programname
-         *    nur solange korrekt zurueckgeliefert, bis ein 'ShellFind'-
-         *    oder 'LoadResource'-Aufruf getaetigt wird (danach wird
-         *    faelschlicherweise der Name der Resource geliefert)!
-         *
-         *)
 
-
+(*  Damit ist es moeglich, andere Programme von einer laufenden
+ *  Anwendung aus zu starten.
+ *
+ *  Eingabeparameter
+ *  ----------------
+ *
+ *  'cmd'         -- Bestimmt das Kommando fuer den zu star-
+ *                   tenden Prozess (Programmname, am Besten mit
+ *                   vollst. Pfad -> 'Directory.MakeFullPath')
+ *  'tail'        -- Bestimmt die Kommandozeile (Argumentzeile)
+ *
+ *  'io' kann folgende Werte annehmen:
+ *
+ *    'textPrgm'    -- Zu startendes Programm laeuft im Textmodus
+ *    'graphicPrgm' -- Zu startendes Programm laeuft im Grafikmodus
+ *
+ *  'start' kann folgende Werte annehmen:
+ *
+ *    'TRUE'        -- Die in 'cmd' angegebene Anwendung wird
+ *                     nach Terminierung der Laufenden vom GEM-
+ *                     Desktop gestartet, sofern dahin zurueckgekehrt
+ *                     wird.
+ *    'FALSE'       -- TOS 1.0 & 1.2: wie 'TRUE'; ab TOS 1.4:
+ *                     Es wird keine neue Anwendung gestartet.
+ *                     Bei diesem Modus sollte 'io' = 'graphicPrgm'
+ *                     (bzw. der Typ des endenden Programms), weil
+ *                     sonst beim Verlassen das Desktop haengen bleiben
+ *                     kann.
+ *
+ *  Achtung:           Erst ab TOS 1.4 ist es hiermit moeglich,
+ *  ========           einen vorher erfolgten ShellWrite-Aufruf wieder
+ *                     rueckgaengig zu machen, sodass bei Terminierung
+ *                     des laufenden Programms keine neue Anwendung
+ *                     gestartet sondern zum Desktop zurueckgekehrt
+ *                     wird. Bei den alten TOS-Versionen dagegen
+ *                     hat dies keinen Effekt - wenn erstmal ein
+ *                     ShellWrite-Aufruf erfolgte, versucht das
+ *                     GEM-Desktop immer, das beim letzten ShellWrite-
+ *                     Aufruf in 'cmd' angegebene Programm zu starten,
+ *                     wenn das aktuelle Programm abgelaufen ist.
+ *                     Deshalb sollte dann zumindest ein Programm
+ *                     bei 'start = FALSE' angegeben werden, das
+ *                     praktisch nichts tut, als sich starten zu
+ *                     lassen und gleich wieder zu terminieren. Ist
+ *                     auch das nicht vorsehbar, sollte ein Leername
+ *                     bei 'cmd' angegeben werden, damit nicht irgend-
+ *                     ein anderes Programm unerwuenscht aufgerufen
+ *                     wird. Allerdings ist dann mit einer Fehler-
+ *                     meldung des GEM-Desktop zu rechnen.
+ *)
 TYPE    ProgramType     = (textPrgm, graphicPrgm);
 
-PROCEDURE ShellWrite (    start    : BOOLEAN;
-                          isGraf   : ProgramType;
-                      REF cmd, tail: ARRAY OF CHAR);
+PROCEDURE ShellWrite(start: BOOLEAN; isGraf: ProgramType; REF cmd, tail: ARRAY OF CHAR);
 
-        (*  Damit ist es moeglich, andere Programme von einer laufenden
-         *  Anwendung aus zu starten.
-         *
-         *  Eingabeparameter
-         *  ----------------
-         *
-         *  'cmd'         -- Bestimmt das Kommando fuer den zu star-
-         *                   tenden Prozess (Programmname, am Besten mit
-         *                   vollst. Pfad -> 'Directory.MakeFullPath')
-         *  'tail'        -- Bestimmt die Kommandozeile (Argumentzeile)
-         *
-         *  'io' kann folgende Werte annehmen:
-         *
-         *    'textPrgm'    -- Zu startendes Programm laeuft im Textmodus
-         *    'graphicPrgm' -- Zu startendes Programm laeuft im Grafikmodus
-         *
-         *  'start' kann folgende Werte annehmen:
-         *
-         *    'TRUE'        -- Die in 'cmd' angegebene Anwendung wird
-         *                     nach Terminierung der Laufenden vom GEM-
-         *                     Desktop gestartet, sofern dahin zurueckgekehrt
-         *                     wird.
-         *    'FALSE'       -- TOS 1.0 & 1.2: wie 'TRUE'; ab TOS 1.4:
-         *                     Es wird keine neue Anwendung gestartet.
-         *                     Bei diesem Modus sollte 'io' = 'graphicPrgm'
-         *                     (bzw. der Typ des endenden Programms), weil
-         *                     sonst beim Verlassen das Desktop haengen bleiben
-         *                     kann.
-         *
-         *  Achtung:           Erst ab TOS 1.4 ist es hiermit moeglich,
-         *  ========           einen vorher erfolgten ShellWrite-Aufruf wieder
-         *                     rueckgaengig zu machen, sodass bei Terminierung
-         *                     des laufenden Programms keine neue Anwendung
-         *                     gestartet sondern zum Desktop zurueckgekehrt
-         *                     wird. Bei den alten TOS-Versionen dagegen
-         *                     hat dies keinen Effekt - wenn erstmal ein
-         *                     ShellWrite-Aufruf erfolgte, versucht das
-         *                     GEM-Desktop immer, das beim letzten ShellWrite-
-         *                     Aufruf in 'cmd' angegebene Programm zu starten,
-         *                     wenn das aktuelle Programm abgelaufen ist.
-         *                     Deshalb sollte dann zumindest ein Programm
-         *                     bei 'start = FALSE' angegeben werden, das
-         *                     praktisch nichts tut, als sich starten zu
-         *                     lassen und gleich wieder zu terminieren. Ist
-         *                     auch das nicht vorsehbar, sollte ein Leername
-         *                     bei 'cmd' angegeben werden, damit nicht irgend-
-         *                     ein anderes Programm unerwuenscht aufgerufen
-         *                     wird. Allerdings ist dann mit einer Fehler-
-         *                     meldung des GEM-Desktop zu rechnen.
-         *)
+(*  Liest Zeichen aus dem Environment-Speicher des GEM.
+ *
+ *  Der Puffer 'buffer' sollte mind. 4192 Bytes gross sein!
+ *
+ *  'no'        -- Anzahl der zu Uebertragenden Zeichen
+ *                 Falls 'no = 0' wird das gesammte Array
+ *                 gefuellt.
+ *)
+PROCEDURE ShellGet(VAR buffer: ARRAY OF BYTE; no: CARDINAL);
 
-PROCEDURE ShellGet (VAR buffer: ARRAY OF BYTE; no: CARDINAL);
+(*  Schreibt Zeichen in den Environment-Speicher des GEM.
+ *
+ *  'no'        -- Gibt an, wieviele Zeichen uebertragen
+ *                 werden sollen.Bei einem Wert von Null
+ *                 wird das gesamte Array gefuellt.
+ *
+ *  Die Anzahl der zu schreibenden Bytes darf bei TOS 1.0
+ *  und TOS 1.2 (Blitter-TOS) 1024, bei TOS 1.4 (Rainbow-TOS)
+ *  4192 Byte nicht ueberschreiten! (Ggf. die Version des
+ *  GEM mittels GEMEnv.GEMVersion abfragen).
+ *)
+PROCEDURE ShellPut(REF buffer: ARRAY OF BYTE; no: CARDINAL);
 
-        (*  Liest Zeichen aus dem Environment-Speicher des GEM.
-         *
-         *  Der Puffer 'buffer' sollte mind. 4192 Bytes gross sein!
-         *
-         *  'no'        -- Anzahl der zu Uebertragenden Zeichen
-         *                 Falls 'no = 0' wird das gesammte Array
-         *                 gefuellt.
-         *)
+(*  Das AES sucht die Datei 'name'.
+ *
+ *  Bei TOS 1.0 und 1.2 wird dazu im aktuellen Inhaltsverzeichnis
+ *  und dann im Wurzelverzeichnis des Boot-Laufwerks gesucht
+ *  (genaugenommen in den Verzeichnissen, die im Environment-Speicher
+ *  unter "PATH" eingetragen sind - dieser ist bisher aber praktisch
+ *  nicht veraenderbar).
+ *  Ab TOS 1.4 wird zusaetzlich auf dem Pfad gesucht, von dem die
+ *  laufende Anwendung gestartet wurde (also dem Verzeichnis, das
+ *  in 'cmd' aus 'ShellRead' ermittelbar ist).
+ *
+ *  'name'      -- Enthaelt den Namen der zu suchenden Datei.
+ *                 Ist sie vorhanden, wird der komplette Name
+ *                 incl. Pfad zurueckgeliefert. Wird es nicht
+ *                 gefunden, so ist 'GemError() = TRUE'.
+ *)
+PROCEDURE ShellFind(VAR name: ARRAY OF CHAR);
 
-PROCEDURE ShellPut (REF buffer: ARRAY OF BYTE; no: CARDINAL);
-
-        (*  Schreibt Zeichen in den Environment-Speicher des GEM.
-         *
-         *  'no'        -- Gibt an, wieviele Zeichen uebertragen
-         *                 werden sollen.Bei einem Wert von Null
-         *                 wird das gesamte Array gefuellt.
-         *
-         *  Die Anzahl der zu schreibenden Bytes darf bei TOS 1.0
-         *  und TOS 1.2 (Blitter-TOS) 1024, bei TOS 1.4 (Rainbow-TOS)
-         *  4192 Byte nicht ueberschreiten! (Ggf. die Version des
-         *  GEM mittels GEMEnv.GEMVersion abfragen).
-         *)
-
-PROCEDURE ShellFind (VAR name: ARRAY OF CHAR);
-
-        (*  Das AES sucht die Datei 'name'.
-         *
-         *  Bei TOS 1.0 und 1.2 wird dazu im aktuellen Inhaltsverzeichnis
-         *  und dann im Wurzelverzeichnis des Boot-Laufwerks gesucht
-         *  (genaugenommen in den Verzeichnissen, die im Environment-Speicher
-         *  unter "PATH" eingetragen sind - dieser ist bisher aber praktisch
-         *  nicht veraenderbar).
-         *  Ab TOS 1.4 wird zusaetzlich auf dem Pfad gesucht, von dem die
-         *  laufende Anwendung gestartet wurde (also dem Verzeichnis, das
-         *  in 'cmd' aus 'ShellRead' ermittelbar ist).
-         *
-         *  'name'      -- Enthaelt den Namen der zu suchenden Datei.
-         *                 Ist sie vorhanden, wird der komplette Name
-         *                 incl. Pfad zurueckgeliefert. Wird es nicht
-         *                 gefunden, so ist 'GemError() = TRUE'.
-         *)
-
-PROCEDURE ShellEnvironment (REF parm: ARRAY OF CHAR; VAR value: ARRAY OF CHAR);
-
-        (*  In den Zeichenketten der TOS-Umgebung wird nach 'parm' gesucht.
-         *  Verlaeuft die Suche erfolgreich, so enthaelt 'value' die Zeichen,
-         *  die in der Umgebungszeichenkette auf 'parm' folgen.
-         *)
+(*  In den Zeichenketten der TOS-Umgebung wird nach 'parm' gesucht.
+ *  Verlaeuft die Suche erfolgreich, so enthaelt 'value' die Zeichen,
+ *  die in der Umgebungszeichenkette auf 'parm' folgen.
+ *)
+PROCEDURE ShellEnvironment(REF parm: ARRAY OF CHAR; VAR value: ARRAY OF CHAR);
 
 
 END AESMisc.

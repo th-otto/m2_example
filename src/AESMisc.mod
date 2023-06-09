@@ -30,6 +30,7 @@ IMPORT GEMOps;
 FROM GEMShare IMPORT our_cb, stringIntoCFormat, stringFromCFormat, aes_if, testINTOUT0;
 FROM GEMGlobals IMPORT MaxStr, PtrMaxStr;
 IMPORT MOSGlobals;
+FROM AESScraps IMPORT ScrapRead, ScrapWrite;
 
 
 PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
@@ -126,9 +127,7 @@ END RecordEvents;
 (*  =============  *)
 PROCEDURE ReadScrapDir(VAR dir:ARRAY OF CHAR);
 BEGIN
-  our_cb^.pubs.ADDRIN[0] := ADR(dir);
-  aes_if(AES_CTRL_CODE(GEMOps.SCRP_READ, 0, 1, 1));
-  testINTOUT0();
+  ScrapRead(ADR(dir)); /* TDI name */
 END ReadScrapDir;
 
 
@@ -136,8 +135,7 @@ PROCEDURE WriteScrapDir(REF dir:ARRAY OF CHAR);
 VAR s: MaxStr;
 BEGIN
   stringIntoCFormat(dir, s);
-  our_cb^.pubs.ADDRIN[0] := ADR(s);
-  aes_if(AES_CTRL_CODE(GEMOps.SCRP_WRITE, 0, 1, 1));
+  ScrapWrite(ADR(s)); /* TDI name */
 END WriteScrapDir;
 
 
