@@ -22,6 +22,7 @@ FROM SYSTEM IMPORT CARDINAL16, CARDINAL32, SHIFT, ADR, ADDRESS;
 FROM    GrafBase        IMPORT Point, Rectangle;
 
 FROM    GEMGlobals      IMPORT PtrMaxStr, PtrObjTree;
+FROM GEMConf IMPORT doSupervision;
 
 IMPORT GEMShare;
 IMPORT MOSGlobals;
@@ -44,8 +45,10 @@ BEGIN
   GEMShare.our_cb^.pubs.aINTIN[4] := max.h;
   GEMShare.aes_if(AES_CTRL_CODE(GEMOps.WIND_CREATE, 5, 1, 0));
   handle := VAL(CARDINAL16, GEMShare.our_cb^.pubs.aINTOUT[0]);
-  IF (handle <> NoWindow) AND (handle <= MAX(GEMShare.windowSet)) THEN
-    INCL(GEMShare.our_cb^.SUPERVISION.createWinds, handle);
+  IF doSupervision THEN
+    IF (handle <> NoWindow) AND (handle <= MAX(GEMShare.windowSet)) THEN
+      INCL(GEMShare.our_cb^.SUPERVISION.createWinds, handle);
+    END;
   END;
 END CreateWindow;
 
@@ -59,9 +62,11 @@ BEGIN
   GEMShare.our_cb^.pubs.aINTIN[4] := frame.h;
   GEMShare.aes_if(AES_CTRL_CODE(GEMOps.WIND_OPEN, 5, 1, 0));
   GEMShare.testINTOUT0();
-  IF (GEMShare.our_cb^.pubs.aINTOUT[0] <> 0) AND (handle <= MAX(GEMShare.windowSet)) THEN
-    INCL(GEMShare.our_cb^.SUPERVISION.openWinds, handle);
-  END
+  IF doSupervision THEN
+    IF (GEMShare.our_cb^.pubs.aINTOUT[0] <> 0) AND (handle <= MAX(GEMShare.windowSet)) THEN
+      INCL(GEMShare.our_cb^.SUPERVISION.openWinds, handle);
+    END;
+  END;
 END OpenWindow;
 
 
@@ -275,10 +280,12 @@ END CalcWindow;
 
 PROCEDURE ResetWindows();
 BEGIN
-  GEMShare.our_cb^.SUPERVISION.noMouseCtrl := 0;
-  GEMShare.our_cb^.SUPERVISION.noUpWind := 0;
-  GEMShare.our_cb^.SUPERVISION.createWinds := GEMShare.windowSet{};
-  GEMShare.our_cb^.SUPERVISION.openWinds := GEMShare.windowSet{};
+  IF doSupervision THEN
+    GEMShare.our_cb^.SUPERVISION.noMouseCtrl := 0;
+    GEMShare.our_cb^.SUPERVISION.noUpWind := 0;
+    GEMShare.our_cb^.SUPERVISION.createWinds := GEMShare.windowSet{};
+    GEMShare.our_cb^.SUPERVISION.openWinds := GEMShare.windowSet{};
+  END;
   GEMShare.aes_if(AES_CTRL_CODE(GEMOps.WIND_NEW, 0, 0, 0));
 END ResetWindows;
 

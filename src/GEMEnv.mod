@@ -498,8 +498,9 @@ BEGIN
 
   (*  Anmeldung beim AES
    *)
-  IF NOT appIsInit[modID] THEN
+  IF (modID <= INTEGER(HIGH(appIsInit))) AND (NOT appIsInit[modID]) THEN
     cb^.GLOBAL.ap_version := 0;
+    (* AESApplications.ApplInitialise *)
     aes_if(AES_CTRL_CODE(GEMOps.APPL_INIT, 0, 1, 0));
     cb^.GLOBAL.ap_id := cb^.pubs.aINTOUT[0];
     IF cb^.GLOBAL.ap_version <> 0 THEN gemStatus := available END;
@@ -601,15 +602,15 @@ BEGIN
     cb^.CURDEVICE := cb^.DEVICES;
 
     (* PathEnv-Vars / File-Selektor-Box init. *)
-    IF NOT didShRead[modID] THEN
+    IF (modID <= INTEGER(HIGH(didShRead))) AND (NOT didShRead[modID]) THEN
       (* nur beim 1. Mal, da spaeter evtl. durch rsrc_load bei alten TOS-
        * Versionen der Shell-Puffer ueberschrieben wird! *)
-      ShellRead (name, args);
-      SplitPath (name, HomePath, name);
+      ShellRead(name, args);
+      SplitPath(name, HomePath, name);
       IF HomePath [0] = 0C THEN
         GetDefaultPath (HomePath)
       END;
-      didShRead[modID] := TRUE
+      didShRead[modID] := TRUE;
     END;
   END;
 END initDev;
@@ -798,9 +799,12 @@ BEGIN
       END;
 
       IF handle^.DIDAPPLINIT THEN
-        aes_if (AES_CTRL_CODE(GEMOps.APPL_EXIT, 0, 1, 0));
+        (* AESApplications.ApplExit *)
+        aes_if(AES_CTRL_CODE(GEMOps.APPL_EXIT, 0, 1, 0));
         handle^.DIDAPPLINIT := FALSE;
-        appIsInit[modID] := FALSE;
+        IF (modID <= INTEGER(HIGH(appIsInit))) THEN
+          appIsInit[modID] := FALSE;
+        END;
         error := FALSE
       END
     END;
@@ -955,8 +959,10 @@ BEGIN
   ELSE
     IF start THEN
       INC(modID);
-      appIsInit[modID] := FALSE;
-      didShRead[modID] := FALSE;
+      IF (modID <= INTEGER(HIGH(appIsInit))) THEN
+        appIsInit[modID] := FALSE;
+        didShRead[modID] := FALSE;
+      END;
       (*
        * Damit ein Prg "EasyGEM1.SelectFile" benutzen kann, ohne selbst
        * ein GemInit machen zu muessen, muss hier die Routine neu zuge-
