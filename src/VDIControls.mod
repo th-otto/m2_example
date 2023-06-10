@@ -27,7 +27,7 @@ IMPORT GEMShare;
 IMPORT MOSGlobals;
 IMPORT GEMOps;
 IMPORT GEMVDIbase;
-FROM GEMBase IMPORT PtrIntoutArray, PtrPtsoutArray;
+FROM GEMBase IMPORT PtrIntinArray, PtrIntoutArray, PtrPtsoutArray;
 
 #include "VdiCtrl.i"
 
@@ -49,17 +49,21 @@ PROCEDURE opnwrk0(ctrlcode: CARDINAL32;
                   VAR workin: VDIWorkInType;
                   VAR workout: VDIWorkOutType): CARDINAL;
 VAR     oldpts: PtrPtsoutArray;
-        oldint: PtrIntoutArray;
+        oldintin: PtrIntinArray;
+        oldintout: PtrIntoutArray;
 VAR cb: GEMShare.GemHandle;
 BEGIN
   cb := GEMShare.our_cb;
   cb^.V_CONTRL.handle := handle;
   oldpts := cb^.vdipb.ptsout;
-  oldint := cb^.vdipb.intout;
+  oldintin := cb^.vdipb.intin;
+  oldintout := cb^.vdipb.intout;
+  cb^.vdipb.intin := ADR (workin[0]);
   cb^.vdipb.intout := ADR (workout[0]);
   cb^.vdipb.ptsout := ADR (workout[45]);
   GEMShare.vdi_if(NIL, ctrlcode);
-  cb^.vdipb.intout := oldint;
+  cb^.vdipb.intin := oldintin;
+  cb^.vdipb.intout := oldintout;
   cb^.vdipb.ptsout := oldpts;
   RETURN cb^.V_CONTRL.handle;
 END opnwrk0;

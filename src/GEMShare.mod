@@ -88,7 +88,7 @@ BEGIN
     INC(i);
   END;
   (* Anzahl kopierter Zeichen ermitteln und zurueckgeben *)
-  RETURN i;
+  RETURN offset;
 END stringIntoINTIN;
 
 

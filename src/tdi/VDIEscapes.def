@@ -16,8 +16,7 @@ DEFINITION MODULE VDIEscapes;
       FilmNameType = ARRAY [0H(*CARDINAL*)..7CH(*CARDINAL*)] OF CHAR;
     
     TYPE
-      FilmIndexType = ARRAY [0H(*CARDINAL*)..7H(*CARDINAL*)] OF ARRAY [0H(*C
-ARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
+      FilmIndexType = ARRAY [0H(*CARDINAL*)..7H(*CARDINAL*)] OF ARRAY [0H(*CARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
     
   END GEMVDIbase;
 
@@ -26,8 +25,7 @@ ARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
 
     IMPORT SYSTEM, GEMVDIbase;
 
-    PROCEDURE InquireCharCells(* ProcNum:1 *)(INTEGER; VAR INTEGER; VAR INTE
-GER);
+    PROCEDURE InquireCharCells(* ProcNum:1 *)(INTEGER; VAR INTEGER; VAR INTEGER);
     
     PROCEDURE ExitAlphaMode(* ProcNum:2 *)(INTEGER);
     
@@ -55,8 +53,7 @@ GER);
     
     PROCEDURE ReverseVideoOff(* ProcNum:14 *)(INTEGER);
     
-    PROCEDURE InquireCursorAddress(* ProcNum:15 *)(INTEGER; VAR INTEGER; VAR
- INTEGER);
+    PROCEDURE InquireCursorAddress(* ProcNum:15 *)(INTEGER; VAR INTEGER; VAR INTEGER);
     
     PROCEDURE InquireTabletStatus(* ProcNum:16 *)(INTEGER) : INTEGER;
     
@@ -68,25 +65,25 @@ GER);
     
     PROCEDURE FormAdvance(* ProcNum:20 *)(INTEGER);
     
-    PROCEDURE OutputWindow(* ProcNum:21 *)(INTEGER; GEMVDIbase.PxyArrayType)
-;
+    PROCEDURE OutputWindow(* ProcNum:21 *)(INTEGER; GEMVDIbase.PxyArrayType);
     
     PROCEDURE ClearDisplayList(* ProcNum:22 *)(INTEGER);
     
-    PROCEDURE OutputBitImageFile(* ProcNum:23 *)(INTEGER; VAR ARRAY CHAR; IN
-TEGER; INTEGER; INTEGER; VAR GEMVDIbase.PxyArrayType);
+    PROCEDURE OutputBitImageFile(* ProcNum:23 *)(
+          handle:INTEGER;                     22
+          VAR fname: ARRAY OF CHAR;           18
+          aspect: INTEGER;                    16
+          scaling: INTEGER;                   14
+          numPts: INTEGER;                    12
+          VAR frame: GEMVDIbase.PxyArrayType); 8
     
     PROCEDURE SelectPalette(* ProcNum:24 *)(INTEGER; INTEGER) : INTEGER;
     
-    PROCEDURE InquirePaletteFilms(* ProcNum:25 *)(INTEGER; VAR GEMVDIbase.Fi
-lmNameType);
+    PROCEDURE InquirePaletteFilms(* ProcNum:25 *)(INTEGER; VAR GEMVDIbase.FilmNameType);
     
-    PROCEDURE InquirePaletteState(* ProcNum:26 *)(INTEGER; VAR INTEGER; VAR 
-INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR GEMVDIbase.FilmIndexType
-);
+    PROCEDURE InquirePaletteState(* ProcNum:26 *)(INTEGER; VAR port: INTEGER; VAR film: INTEGER; VAR lightness: INTEGER; VAR interlace: INTEGER; VAR planes: INTEGER; VAR GEMVDIbase.FilmIndexType);
     
-    PROCEDURE SetPaletteState(* ProcNum:27 *)(INTEGER; INTEGER; INTEGER; INT
-EGER; INTEGER; INTEGER; VAR GEMVDIbase.FilmIndexType);
+    PROCEDURE SetPaletteState(* ProcNum:27 *)(handle: INTEGER; port: INTEGER; film: INTEGER; lightnes: INTEGER; interlace: INTEGER; planes: INTEGER; VAR GEMVDIbase.FilmIndexType);
     
     PROCEDURE SavePaletteState(* ProcNum:28 *)(INTEGER);
     
@@ -94,11 +91,9 @@ EGER; INTEGER; INTEGER; VAR GEMVDIbase.FilmIndexType);
     
     PROCEDURE PaletteErrorInquire(* ProcNum:30 *)(INTEGER) : INTEGER;
     
-    PROCEDURE UpdateMetafileExtents(* ProcNum:31 *)(INTEGER; INTEGER; INTEGE
-R; INTEGER; INTEGER);
+    PROCEDURE UpdateMetafileExtents(* ProcNum:31 *)(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
     
-    PROCEDURE WriteMetafile(* ProcNum:32 *)(INTEGER; INTEGER; VAR ARRAY INTE
-GER; INTEGER; VAR ARRAY INTEGER);
+    PROCEDURE WriteMetafile(* ProcNum:32 *)(INTEGER; INTEGER; VAR ARRAY INTEGER; INTEGER; VAR ARRAY INTEGER);
     
     PROCEDURE ChangeFileName(* ProcNum:33 *)(INTEGER; VAR ARRAY CHAR);
     

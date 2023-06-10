@@ -8,6 +8,7 @@ import GEMVDIbase, key =  2102H  CAE1H  2388H, modnum =  1  checksum: o.k.
 data size, number of bytes = 4  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 60
+InquireCharCells
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -35,6 +36,7 @@ ref ext data at    2AH, modnum =  1  checksum: o.k.
 ref ext data at    34H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 40
+ExitAlphaMode
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -54,6 +56,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 40
+EnterAlphaMode
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -73,6 +76,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 40
+CursorUp
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -92,6 +96,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 40
+CursorDown
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -111,6 +116,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 40
+CursorRight
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -130,6 +136,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 40
+CursorLeft
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -149,6 +156,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  8, entrypoint =     0H, number of bytes = 40
+CursorHome
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -168,6 +176,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  9, entrypoint =     0H, number of bytes = 40
+EraseToEOS
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -187,6 +196,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 10, entrypoint =     0H, number of bytes = 40
+EraseToEOL
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -206,6 +216,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 11, entrypoint =     0H, number of bytes = 58
+CursorAddress
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -231,6 +242,7 @@ ref ext data at    2CH, modnum =  1  checksum: o.k.
 ref ext proc call at    32H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 12, entrypoint =     0H, number of bytes = 146
+OutputText
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000C 0000 0002      MOVE.W  000C(A6),00000002H
@@ -296,6 +308,7 @@ ref ext proc call at    80H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    8AH, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 13, entrypoint =     0H, number of bytes = 40
+ReverseVideoOn
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -315,6 +328,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 14, entrypoint =     0H, number of bytes = 40
+ReverseVideoOff
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -334,6 +348,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 15, entrypoint =     0H, number of bytes = 60
+InquireCursorAddress
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -361,6 +376,7 @@ ref ext data at    2AH, modnum =  1  checksum: o.k.
 ref ext data at    34H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 16, entrypoint =     0H, number of bytes = 48
+InquireTabletStatus
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -383,6 +399,7 @@ ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    26H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 17, entrypoint =     0H, number of bytes = 40
+HardCopy
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -402,6 +419,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 18, entrypoint =     0H, number of bytes = 58
+DisplayCursor
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -427,6 +445,7 @@ ref ext data at    2CH, modnum =  1  checksum: o.k.
 ref ext proc call at    32H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 19, entrypoint =     0H, number of bytes = 40
+RemoveCursor
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -446,6 +465,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 20, entrypoint =     0H, number of bytes = 40
+FormAdvance
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -465,6 +485,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 21, entrypoint =     0H, number of bytes = 108
+OutputWindow
  DECODE --------                        INSTRUCTION
      0H        4E56 FFF8                LINK    A6,#FFF8H
      4H        286E 0008                MOVE.L  0008(A6),A4
@@ -511,6 +532,7 @@ ref ext proc call at    5AH, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    64H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 22, entrypoint =     0H, number of bytes = 40
+ClearDisplayList
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -530,11 +552,12 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 23, entrypoint =     0H, number of bytes = 190
+OutputBitImageFile
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
-     4H        33EE 0010 0000 0018      MOVE.W  0010(A6),00000018H
-     CH        33EE 000E 0000 001A      MOVE.W  000E(A6),0000001AH
-    14H        33EE 0016 0000 0002      MOVE.W  0016(A6),00000002H
+     4H        33EE 0010 0000 0018      MOVE.W  0010(A6),00000018H GEMVDIbase.intin   ; aspect
+     CH        33EE 000E 0000 001A      MOVE.W  000E(A6),0000001AH GEMVDIbase.intin+2
+    14H        33EE 0016 0000 0002      MOVE.W  0016(A6),00000002H GEMVDIbase.contrl+2
     1CH        4279 0000 0000           CLR.W   00000000H
     22H        3A39 0000 0000           MOVE.W  00000000H,D5
     28H        BA79 0000 0002           CMP.W   00000002H,D5
@@ -551,7 +574,7 @@ proc code, procnum = 23, entrypoint =     0H, number of bytes = 190
     54H        3A39 0000 0000           MOVE.W  00000000H,D5
     5AH        5445                     ADDQ.W  #2,D5
     5CH        DA45                     ADD.W   D5,D5
-    5EH        49F9 0000 0018           LEA     00000018H,A4
+    5EH        49F9 0000 0018           LEA     00000018H,A4 GEMVDIbase.intin
     64H        3984 5000                MOVE.W  D4,00H(A4,D5.W)
     68H        5279 0000 0000           ADDQ.W  #1,00000000H
     6EH        60B2                     BRA     [B2H] = 00000022H
@@ -613,6 +636,7 @@ ref ext proc call at    ACH, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    B6H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 24, entrypoint =     0H, number of bytes = 58
+SelectPalette
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -638,6 +662,7 @@ ref ext proc call at    2AH, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    30H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 25, entrypoint =     0H, number of bytes = 94
+InquirePaletteFilms
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -680,6 +705,7 @@ ref own data at    4CH  checksum: o.k.
 ref own data at    54H  checksum: o.k.
 
 proc code, procnum = 26, entrypoint =     0H, number of bytes = 176
+InquirePaletteState
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -754,6 +780,7 @@ ref own data at    9EH  checksum: o.k.
 ref own data at    A6H  checksum: o.k.
 
 proc code, procnum = 27, entrypoint =     0H, number of bytes = 164
+SetPaletteState
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0014 0000 0018      MOVE.W  0014(A6),00000018H
@@ -822,6 +849,7 @@ ref ext proc call at    92H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    9CH, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 28, entrypoint =     0H, number of bytes = 40
+SavePaletteState
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -841,6 +869,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 29, entrypoint =     0H, number of bytes = 40
+SuppressPaletteMessages
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -860,6 +889,7 @@ ref ext proc call at    16H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 30, entrypoint =     0H, number of bytes = 48
+PaletteErrorInquire
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0005                MOVE.W  #0005H,-(A7)
@@ -882,6 +912,7 @@ ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    26H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 31, entrypoint =     0H, number of bytes = 74
+UpdateMetafileExtents
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000E 0000 0118      MOVE.W  000E(A6),00000118H
@@ -913,6 +944,7 @@ ref ext proc call at    38H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    42H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 32, entrypoint =     0H, number of bytes = 88
+WriteMetafile
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        286E 0010                MOVE.L  0010(A6),A4
@@ -952,6 +984,7 @@ ref ext data at    4CH, modnum =  1  checksum: o.k.
 ref ext data at    50H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 33, entrypoint =     0H, number of bytes = 164
+ChangeFileName
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000C 0000 0002      MOVE.W  000C(A6),00000002H

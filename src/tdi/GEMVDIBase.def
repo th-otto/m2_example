@@ -43,17 +43,12 @@ DEFINITION MODULE GEMVDIbase;
       FilmNameType = ARRAY [0H(*CARDINAL*)..7CH(*CARDINAL*)] OF CHAR;
     
     TYPE
-      FilmIndexType = ARRAY [0H(*CARDINAL*)..7H(*CARDINAL*)] OF ARRAY [0H(*C
-ARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
+      FilmIndexType = ARRAY [0H(*CARDINAL*)..7H(*CARDINAL*)] OF ARRAY [0H(*CARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
     
     TYPE
       CtrlArrayType = ARRAY [0H(*CARDINAL*)..7FH(*CARDINAL*)] OF INTEGER;
     
-    TYPE
-      177777B = ARRAY [0H(*CARDINAL*)..BH(*CARDINAL*)] OF INTEGER;
-    
-    VAR
-      contrl (* reladdr: 0H*)  : 177777B;
+    VAR contrl (* reladdr: 0H*)  : ARRAY [0H(*CARDINAL*)..BH(*CARDINAL*)] OF INTEGER;
     
     VAR
       intin (* reladdr: 18H*)  : CtrlArrayType;

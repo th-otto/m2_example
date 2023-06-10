@@ -405,7 +405,7 @@ X       DC.B    0, 0         ; func 001 open workstation
 X       DC.B    0, 0         ; func 002 close workstation
 X       DC.B    0, 0         ; func 003 clear workstation
 X       DC.B    0, 0         ; func 004 update works.
-        DC.B    0, 0         ; func 005 escape funktions
+X       DC.B    0, 0         ; func 005 escape funktions
         DC.B    0, 0         ; func 006 polyline(ruft vdi_call direkt auf)
         DC.B    0, 0         ; func 007 polymarker(ruft vdi_call direkt auf)
         DC.B    0, 0         ; func 008 graftext(ruft vdi_call direkt auf)
@@ -575,29 +575,29 @@ PROCEDURE ctrl_cnts4;
   BEGIN
     ASSEMBLER
         DC.B    0, 0    ; *DUMMY*
-        DC.B    0, 0    ; #1  GetCharCells
-        DC.B    0, 0    ; #2  ExitCur
-        DC.B    0, 0    ; #3  EnterCur
-        DC.B    0, 0    ; #4  CurUp
-        DC.B    0, 0    ; #5  CurDown
-        DC.B    0, 0    ; #6  CurRight
-        DC.B    0, 0    ; #7  CurLeft
-        DC.B    0, 0    ; #8  CurHome
-        DC.B    0, 0    ; #9  EEOS
-        DC.B    0, 0    ; #10 EEOL
-        DC.B    0, 2    ; #11 SetCurAdr
-        DC.B    0, 0    ; #12 CurText  (* ruft vdi_call direkt *)
-        DC.B    0, 0    ; #13 RVOn
-        DC.B    0, 0    ; #14 RVOff
-        DC.B    0, 0    ; #15 GetCurAdr
-        DC.B    0, 0    ; #16 TabStatus
-        DC.B    0, 0    ; #17 Hardcopy
-        DC.B    1, 0    ; #18 DspCur
-        DC.B    0, 0    ; #19 RmCur
-        DC.B    0, 0    ; #20 FormAdv
-        DC.B    2, 0    ; #21 OutWind
-        DC.B    0, 0    ; #22 ClrDispList
-        DC.B    0, 0    ; #23 BitImg (direkt)
+X       DC.B    0, 0    ; #1  GetCharCells
+X       DC.B    0, 0    ; #2  ExitCur
+X       DC.B    0, 0    ; #3  EnterCur
+X       DC.B    0, 0    ; #4  CurUp
+X       DC.B    0, 0    ; #5  CurDown
+X       DC.B    0, 0    ; #6  CurRight
+X       DC.B    0, 0    ; #7  CurLeft
+X       DC.B    0, 0    ; #8  CurHome
+X       DC.B    0, 0    ; #9  EEOS
+X       DC.B    0, 0    ; #10 EEOL
+X       DC.B    0, 2    ; #11 SetCurAdr
+X       DC.B    0, n    ; #12 CurText
+X       DC.B    0, 0    ; #13 RVOn
+X       DC.B    0, 0    ; #14 RVOff
+X       DC.B    0, 0    ; #15 GetCurAdr
+X       DC.B    0, 0    ; #16 TabStatus
+X       DC.B    0, 0    ; #17 Hardcopy
+X       DC.B    1, 0    ; #18 DspCur
+X       DC.B    0, 0    ; #19 RmCur
+X       DC.B    0, 0    ; #20 FormAdv
+X       DC.B    2, 0    ; #21 OutWind
+X       DC.B    0, 0    ; #22 ClrDispList
+X       DC.B    2, n    ; #23 BitImg (direkt)
         
       ; DC.B    0, 1    ; #60 SelPalette (direkt)
         

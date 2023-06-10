@@ -48,6 +48,7 @@ OBJS = \
 	XBRA.o \
 	VDIAttributes.o \
 	VDIControls.o \
+	VDIEscapes.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -98,6 +99,7 @@ KbdEvents.o: KbdEvents.mod KbdEvents.def
 XBRA.o: XBRA.mod XBRA.def
 VDIAttributes.o: VDIAttributes.mod VDIAttributes.def
 VDIControls.o: VDIControls.mod VDIControls.def
+VDIEscapes.o: VDIEscapes.mod VDIEscapes.def
 
 clean::
 	rm -f *.o *.a

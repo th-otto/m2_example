@@ -1,0 +1,349 @@
+DEFINITION MODULE VDIEscapes;
+#define REF
+
+
+(*      Megamax-Modula II GEM Library (Escape-Funkionen)
+ *
+ *      geschrieben von Manuel Chakravarty
+ *
+ *      Version 2.2     V#0023      Erstellt Maerz 87 - Januar 88
+ *)
+
+(*      In den ROM's befinden sich nur die ersten 19 VDI-Escape-Routine
+ *      (bis 'RemoveCursor). Mit Hilfe des GDOS sind aber alle in diesem
+ *      Modul aufgefuehrten Prozeduren verwendbar. Eine Ausnahme bilden
+ *      'SetLineOffset' und 'InitSystemFont', da diese beiden Routine
+ *      schon im ROM vorhanden sind, sie werden in der Regel aber nur
+ *      systemintern vom GEM verwendet.
+ *
+ *      HINWEIS: In der aktuellen Modulversion sind noch nicht alle GDOS
+ *               Routinen implementiert. Die nicht implementierten sind
+ *               gekennzeichnet.
+ *)
+
+
+FROM    SYSTEM   IMPORT ADDRESS, INTEGER16, CARDINAL16;
+
+FROM    GrafBase IMPORT Rectangle, Point;
+
+FROM    GEMShare   IMPORT DeviceHandle;
+
+
+(*  Erfragt die Anzahl der Zeilen und Spalten des Textbildschirms.
+ *  Ist ein Wert gleich 'MaxCard', so kann der Cursor in dieser
+ *  Richtung nicht positsioniert werden.
+ *)
+PROCEDURE GetCharCells(handle: DeviceHandle; VAR rows, columns: CARDINAL16);
+CONST InquireCharCells = GetCharCells;
+
+(*  Es wird von alphanumerischer auf grafische Ausgabe umgeschaltet.
+ *)
+PROCEDURE ExitCursorMode(handle: DeviceHandle);
+CONST ExitAlphaMode = ExitCursorMode;
+
+(*  Hiermit schaltet man von grafischer auf alphanumerische Ausgabe.
+ *)
+PROCEDURE EnterCursorMode(handle: DeviceHandle);
+CONST EnterAlphaMode = EnterCursorMode;
+
+
+(*  Die folgenden vier Routinen bewegen den Cursor um je eine Zeichen-
+ *  position. Stoesst er dabei an einem Bildschirmrand an, so bleibt er
+ *  dort stehen und alle weiteren Versuche ihn in diese Richtung zu be-
+ *  wegen werden ignoriert.
+ *)
+
+
+(*  Bewegt den Cursor um eine Zeile nach oben.
+ *)
+PROCEDURE CursorUp(handle: DeviceHandle);
+
+(*  Bewegt den Cursor um eine Zeile nach unten.
+ *)
+PROCEDURE CursorDown(handle: DeviceHandle);
+
+(*  Bewegt den Cursor um eine Spalte nach rechts.
+ *)
+PROCEDURE CursorRight(handle: DeviceHandle);
+
+(*  Bewegt den Cursor um eine Spalte nach links.
+ *)
+PROCEDURE CursorLeft(handle: DeviceHandle);
+
+
+(*  Der Textcursor wird in die Ecke links oben positioniert.
+ *)
+PROCEDURE CursorHome(handle: DeviceHandle);
+
+(*  Diese Routine loescht den Textbildschirm bei der Cursorposition
+ *  beginnend bis zur rechten, unteren Ecke.
+ *)
+PROCEDURE EraseToEndOfScreen(handle: DeviceHandle);
+CONST EraseToEOS = EraseToEndOfScreen;
+
+(*  Hiermit wird die Zeile, in der der Cursor steht von der Cursor-
+ *  position bis zum Zeilenende geloescht.
+ *)
+PROCEDURE EraseToEndOfLine(handle: DeviceHandle);
+CONST EraseToEOL = EraseToEndOfLine;
+
+(*  Der Textcursor wird in der Spalte 'column' und der Zeile 'row'
+ *  positioniert.
+ *)
+PROCEDURE LocateCursor(handle: DeviceHandle; column, row: CARDINAL16);
+CONST CursorAddress = LocateCursor;
+
+(*  Ab der aktuellen Cursorposition wird der in 'str' ange-
+ *  gebene Text ausgegeben.
+ *)
+PROCEDURE CursorText(handle: DeviceHandle; REF str: ARRAY OF CHAR);
+CONST OutputText = CursorText;
+
+(*  Nach diesem Aufruf werden alle auszugebenden Zeichen invers
+ *  dargestellt.
+ *)
+PROCEDURE ReverseVideoOn(handle: DeviceHandle);
+
+(*  Die Zeichen, die nach Aufruf dieser Routine ausgegeben werden,
+ *  werden normal dargestellt.
+ *)
+PROCEDURE ReverseVideoOff(handle: DeviceHandle);
+
+(*  Spalte 'column' und Zeile 'row', in der sich der Cursor augen-
+ *  blicklich befindet, wird ermittelt.
+ *)
+PROCEDURE GetCursorLocation(handle: DeviceHandle; VAR column, row: CARDINAL16);
+CONST InquireCursorAddress = GetCursorLocation;
+
+(*  Erfragt, ob eine Maus, ein Joystick, ein Grafiktablett oder
+ *  ein aehnliches Geraet angeschlossen ist.
+ *)
+PROCEDURE TabletStatus(handle: DeviceHandle): BOOLEAN;
+CONST InquireTabletStatus = TabletStatus;
+
+(*  Gibt eine Bildschirmhardcopy auf den Drucker aus.
+ *  Entspricht <ALT>+<Help>
+ *)
+PROCEDURE HardCopy(handle: DeviceHandle);
+
+(*  Stellt den Grafikcursor auf dem Bildschirm dar. Beim Atari
+ *  werden die Parameter 'row' und 'column' ignoriert.
+ *  Entspricht 'VDInputs.ShowCursor(TRUE)'
+ *)
+PROCEDURE DisplayCursor(handle: DeviceHandle; row, column: CARDINAL16);
+
+(*  Der Grafikcursor wird wieder vom Bildschirm entfernt.
+ *  Entspricht 'VDInputs.HideCursor'
+ *)
+PROCEDURE RemoveCursor(handle: DeviceHandle);
+
+
+(*      Folgende Routinen sind nur bei geladenem GDOS verfuegbar.
+ *)
+
+(*  Ist nur wirkungsvoll, falls das angesprochene Geraet ein Drucker
+ *  ist. In diesem Fall wird ein Seitenvorschub erzeugt.
+ *  Der Datenpuffer wird nicht geloescht.
+ *)
+PROCEDURE FormAdvance(handle: DeviceHandle);
+
+(*  Die zu diesem Zeitpunkt fuer 'handle' gepufferten Ausgabebefehle
+ *  werden ausgefuehrt. Dabei ist die Ausgabe auf den Rechteckbereich
+ *  'frame' beschraenkt.
+ *  Auch hier muss 'handle' die Geraetekennung eines Druckers sein.
+ *)
+PROCEDURE OutputWindow(handle: DeviceHandle; frame: Rectangle);
+
+(*  Der Druckerpuffer des durch 'handle' beschriebenen Druckers
+ *  wird geloescht.
+ *)
+PROCEDURE ClearDisplayList(handle: DeviceHandle);
+
+
+TYPE AspectRatio     = (noAspect, pixelAspect, sideAspect);
+TYPE ScaleMode       = (sameScl, seperateScl);
+
+(*  Ein File, das ein Bitmuster enthaelt wird auf den Drucker ausge-
+ *  geben.
+ *
+ *  'handle'    -- Die Geraetekennung
+ *  'fname'     -- Name des auszudruckenden Files
+ *
+ *  'aspect' nimmt folgende Werte an:
+ *
+ *    'noAspect'    -- kein Aspect Ratio
+ *    'pixelAspect' -- es wird darauf geachtet, dass ein Pixel gleiche
+ *                     Breite und Hoehe hat
+ *    'sideRatio'   -- es wird darauf geachtet, dass das Bild die
+ *                     Kantenlaengen des Ausgabegeraetes voll ausnutzt
+ *
+ *  Fuer 'scaling' gilt:
+ *
+ *    'sameScl'     -- Einheitliche Massstabsaenderung
+ *    'seperateScl' -- die horizontale Massstabsveraenderung ist nicht
+ *                     an die vertikale gebunden und umgekehrt
+ *
+ *  'numPts' bestimmt wieviele Punkte von 'frame' genutzt werden:
+ *
+ *    '0' -- 'frame' wird ignoriert und das die Ausmasse des auszu-
+ *           gebenden Bereichs bestimmende Rechteck wird aus dem
+ *           File ausgelesen
+ *    '1' -- Die Position von 'frame' bestimmt die Position der Ausgabe
+ *    '2' -- 'frame' bestimmt sowohl die Position, als auch die Hoehe
+ *           und Breite der Ausgabe
+ *
+ *  ACHTUNG: In dieser Version nicht implementiert.
+ *)
+PROCEDURE OutputBitImage(handle: DeviceHandle; REF fname: ARRAY OF CHAR; aspect: AspectRatio;
+   xscale, yscale, halign, valign: CARDINAL16; frame: Rectangle);
+
+(*  Hiermit wird eine Farbpalette gesetzt. 'palette' kann folgende
+ *  Werte annehmen:
+ *
+ *    '0' -- Rot, Gruen, Braun
+ *    '1' -- Cyan, Magenta, Weiss
+ *
+ *  Ist nach Aufruf dieser Funktion 'GemError() = TRUE', so konnte
+ *  die gewuenschte Palette nicht gesetzt werden. Mit 'ErrorNumber'
+ *  kann die ersatzweise gesetzte Palette erfragt werden.
+ *
+ *  Hinweis: Diese Funktion ist normalerweise nur fuer einen IBM-
+ *           Farbmonitor in mittlerer Aufloesung bestimmt.
+ *
+ *  ACHTUNG: In dieser Version nicht implementiert.
+ *)
+PROCEDURE SelectPalette(handle: DeviceHandle; palette: CARDINAL16);
+
+(*  'handle' muss die Kennung eines Polaroid-Bild-Recorders sein.
+ *  Die Routine liefert in 'films' die Information zu 5 Filmen
+ *  (Film-Typ, Hersteller, ASA-Wert). Dabei sind fuer jeden Film
+ *  25 Zeichen reserviert. Werden diese nicht voll ausgenutzt, so
+ *  werden sie mit Leerzeichen aufgefuellt.
+ *  Wird ein Array uebergeben, das weniger als 5 * 25 = 125 Zeichen
+ *  fasst, so wird ein Laufzeitfehler ausgeloest.
+ *
+ *  ACHTUNG: In dieser Version nicht implementiert.
+ *)
+PROCEDURE GetFilmTypes(handle: DeviceHandle; VAR films: ARRAY OF CHAR);
+CONST InquirePaletteFilms = GetFilmTypes;
+
+(*  Auch diese Routine ist fuer eine Polaroid-Bild-Recorder gedacht.
+ *  Sie erfragt den Geraetestatus. Dabei haben die gelieferten Para-
+ *  meter folgende Bedeutung:
+ *
+ *  'port'      -- Nummer des Uebertragungsports (bei 0 beginnend)
+ *  'film'      -- Filmnummer (0 bis 4)
+ *  'lightness' -- Belichtung (-3 bis 3)
+ *  'interlace' -- '= TRUE' ~ interlaced Bild
+ *  'planes'    -- Anzahl der Farbebene (1 bis 4)
+ *  'indexes'   -- Zwei-Zeichen-Code fuer den Farbindex
+ *
+ *  ACHTUNG: In dieser Version nicht implementiert.
+ *)
+TYPE    IndexArray      = ARRAY [0..7], [0..1] OF CHAR;
+
+PROCEDURE GetDriverState(handle: DeviceHandle; VAR port, film: CARDINAL16; VAR lightness : INTEGER16;
+                  VAR interlace: BOOLEAN; VAR planes: CARDINAL16; VAR indexes: IndexArray);
+CONST InquirePaletteState = GetDriverState;
+
+(*  Setzt die mit 'GetDriverState' erfragten Parameter.
+ *
+ *  ACHTUNG: In dieser Version nicht implementiert.
+ *)
+PROCEDURE SetDriverState(handle: DeviceHandle; port, film: CARDINAL16; lightness : INTEGER16;
+                  interlace: BOOLEAN; planes: CARDINAL16; REF indexes: IndexArray);
+
+(*  Speichert die mit 'SetDriverState' gesetzten Parameter auf
+ *  Diskette.
+ *
+ *  ACHTUNG: In dieser Version nicht implementiert.
+ *)
+PROCEDURE SaveDriverState(handle: DeviceHandle);
+CONST SavePaletteState = SaveDriverState;
+
+(*  Die Fehlermeldungen eines Polaroid-Bild-Recorder-Geraetetreibers
+ *  werden unterdrueckt.
+ *
+ *  ACHTUNG: In dieser Version nicht implementiert.
+ *)
+PROCEDURE SuppressPaletteMsg(handle: DeviceHandle);
+CONST SuppressPaletteMessages = SuppressPaletteMsg;
+
+CONST noErrorPE      = 0;  (* Kein Fehler *)
+      shutterOpenPE  = 1;  (* Verschluss fuer Belichtung geoeffnet *)
+      noPortPE       = 2;  (* Es ist kein Port festgelegt *)
+      pltNotAvailPE  = 3;  (* Palette am Port nicht verfuegbar *)
+      interuptPE     = 4;  (* Die Viedeoverbindung ist unterbrochen *)
+      noMemPE        = 5;  (* Kein Speicher vom Betriebssystem erhaeltlich*)
+      noBufferMemPE  = 6;  (* Speicher im Puffer reicht nicht aus *)
+      memNotFreePE   = 7;  (* Speicher ist nicht frei *)
+      noFilePE       = 8;  (* Geraetetreiber-File wirde nicht gefunden *)
+      wrongTypePE    = 9;  (* File besitzt den falschen Typ *)
+      filmReadyPE    = 10; (* Der Film ist entwicklungsfertig *)
+
+
+(*  Hiermit kann man den Status bzw. eventuelle Fehler bei den
+ *  Operationen mit einem Polaroid-Bild-Recorder erfragen.
+ *
+ *  ACHTUNG: In dieser Version nicht implementiert.
+ *)
+PROCEDURE PaletteError(handle: DeviceHandle): CARDINAL16;
+CONST PaletteErrorInquire = PaletteError;
+
+(*  Die Groesseninformationen im Metafile-Vorspann werden erneuert.
+ *  Dabei geben 'min' bzw. 'max' den x/y-Wert des minimalen bzw.
+ *  maximalen Rechtecks an.
+ *)
+PROCEDURE MetafileExtents(handle: DeviceHandle; min, max: Point);
+CONST UpdateMetafileExtents = MetafileExtents;
+
+(*  Mit dieser Prozedur kann man benutzerdefinierte Kommandos in
+ *  ein Metafile schreiben.
+ *
+ *  'intin[0]'  -- Hier wird der vom Benutzer definierte Sub-
+ *                 Opcode eingetragen, der das Kommando identi-
+ *                 fiziert (sollte groesser als 100 sein).
+ *  'intin[1..]'-- In den uebrigen Elementen von 'intin' sollten
+ *                 die vom Benutzer fuer dieses Kommando bestimmten
+ *                 Parameter uebergeben werden.
+ *  'ptsin[0..]'-- Ebenso hier.
+ *)
+PROCEDURE WriteToMetafile(handle: DeviceHandle;
+                       numIntin: CARDINAL16;
+                   REF intin   : ARRAY OF INTEGER16;
+                       numPtsin: CARDINAL16;
+                   REF ptsin   : ARRAY OF INTEGER16);
+CONST WriteMetafile = WriteToMetafile;
+
+(*  Der Name eines Metafiles wird von dem Standardnamen 'GEMFILE.GEM'
+ *  in 'fname' umbenannte. Optional kann auch ein Pfad mit angegeben
+ *  werden. Dieser Aufruf muss dem entsprechenden 'OpenDevice'-Aufruf
+ *  direkt folgen, sonst wird er ignoriert.
+ *)
+
+(*      Die folgenden beiden Funktionen sind im ROM vorhanden, es ist also
+ *      kein GDOS notwendig.
+ *
+ *      ACHTUNG: Die beiden Routine sind von Atari nicht offiziell doku-
+ *               mentiert und sollten daher nur in Ausnahmefaellen benutzt
+ *               werden.
+ *)
+PROCEDURE SetVDIFileName(handle: DeviceHandle; REF fname: ARRAY OF CHAR);
+CONST ChangeFileName = SetVDIFileName;
+
+(*  Bestimmt den Offset zum Anfang des logischen Bildschirms (in
+ *  Zeilen). Standardwert ist 0.
+ *)
+PROCEDURE SetLineOffset(handle: DeviceHandle; offset: INTEGER16);
+
+(*  Der Zeichensatz wird als Systemzeichensatz installiert.
+ *  Dabei zeigt 'fontHeader' auf den Begin des Font-Headers
+ *  (siehe 'LineA').
+ *
+ *  Hinweis: Die Breite der Zeichenzelle jedes Characters aus dem
+ *           Zeichensatz muss 8 Pixel betragen.
+ *)
+PROCEDURE InitSystemFont(handle: DeviceHandle; fontHeader: ADDRESS);
+
+
+END VDIEscapes.
