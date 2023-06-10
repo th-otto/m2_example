@@ -8,6 +8,7 @@ import GEMVDIbase, key =  2102H  CAE1H  2388H, modnum =  1  checksum: o.k.
 data size, number of bytes = 8  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 56
+SetInputMode
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000A 0000 0018      MOVE.W  000A(A6),00000018H
@@ -33,6 +34,7 @@ ref ext proc call at    26H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    30H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 86
+InputLocatorRQ
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0016 0000 0118      MOVE.W  0016(A6),00000118H
@@ -70,6 +72,7 @@ ref ext data at    44H, modnum =  1  checksum: o.k.
 ref ext data at    4EH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 94
+InputLocatorSM
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0016 0000 0118      MOVE.W  0016(A6),00000118H
@@ -110,6 +113,7 @@ ref ext data at    4EH, modnum =  1  checksum: o.k.
 ref ext data at    54H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 68
+InputValuatorRQ
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0010 0000 0018      MOVE.W  0010(A6),00000018H
@@ -140,6 +144,7 @@ ref ext data at    32H, modnum =  1  checksum: o.k.
 ref ext data at    3CH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 78
+InputValuatorSM
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0014 0000 0018      MOVE.W  0014(A6),00000018H
@@ -174,6 +179,7 @@ ref ext data at    3CH, modnum =  1  checksum: o.k.
 ref ext data at    46H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 58
+InputChoiceRQ
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000C 0000 0018      MOVE.W  000C(A6),00000018H
@@ -200,6 +206,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    32H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 56
+InputChoiceSM
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 001E                MOVE.W  #001EH,-(A7)
@@ -226,6 +233,7 @@ ref ext data at    28H, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  8, entrypoint =     0H, number of bytes = 190
+InputStringRQ
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0014 0000 0018      MOVE.W  0014(A6),00000018H
@@ -308,6 +316,7 @@ ref own data at    A2H  checksum: o.k.
 ref own data at    ACH  checksum: o.k.
 
 proc code, procnum =  9, entrypoint =     0H, number of bytes = 216
+InputStringSM
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0014 0000 0018      MOVE.W  0014(A6),00000018H
@@ -401,6 +410,7 @@ ref own data at    BEH  checksum: o.k.
 ref ext data at    CEH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 10, entrypoint =     0H, number of bytes = 78
+SetMouseForm
  DECODE --------                        INSTRUCTION
      0H        4E56 FFB2                LINK    A6,#FFB2H
      4H        286E 0008                MOVE.L  0008(A6),A4
@@ -435,6 +445,7 @@ ref ext data at    42H, modnum =  1  checksum: o.k.
 ref ext data at    46H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 11, entrypoint =     0H, number of bytes = 96
+ExchangeTimerV
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0076                MOVE.W  #0076H,-(A7)
@@ -478,6 +489,7 @@ ref ext data at    4AH, modnum =  1  checksum: o.k.
 ref ext data at    50H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 12, entrypoint =     0H, number of bytes = 48
+ShowCursor
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -500,6 +512,7 @@ ref ext proc call at    1EH, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 13, entrypoint =     0H, number of bytes = 38
+HideCursor
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 007B                MOVE.W  #007BH,-(A7)
@@ -519,6 +532,7 @@ ref ext proc call at    14H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    1EH, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum = 14, entrypoint =     0H, number of bytes = 68
+SampleMouseButton
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 007C                MOVE.W  #007CH,-(A7)
@@ -550,6 +564,7 @@ ref ext data at    32H, modnum =  1  checksum: o.k.
 ref ext data at    3CH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 15, entrypoint =     0H, number of bytes = 86
+ExchangeButtonV
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 007D                MOVE.W  #007DH,-(A7)
@@ -589,6 +604,7 @@ ref ext data at    40H, modnum =  1  checksum: o.k.
 ref ext data at    46H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 16, entrypoint =     0H, number of bytes = 86
+ExchangeMovementV
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 007E                MOVE.W  #007EH,-(A7)
@@ -628,6 +644,7 @@ ref ext data at    40H, modnum =  1  checksum: o.k.
 ref ext data at    46H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 17, entrypoint =     0H, number of bytes = 86
+ExchangeCursorV
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 007F                MOVE.W  #007FH,-(A7)
@@ -667,6 +684,7 @@ ref ext data at    40H, modnum =  1  checksum: o.k.
 ref ext data at    46H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 18, entrypoint =     0H, number of bytes = 48
+SampleKeyboard
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0080                MOVE.W  #0080H,-(A7)

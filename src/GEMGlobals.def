@@ -142,11 +142,11 @@ TYPE    (*  Allgemeine Typen
 
         MouseButton     = (msBut1, msBut2, msBut3, msBut4, msBut5, msBut6,
                            msBut7, msBut8);
-        MButtonSet      = SET OF MouseButton;
+        MButtonSet      = WordBitSet;
 
         SpecialKey      = (rightShiftKey, leftShiftKey, controlKey,
                            alternateKey);
-        SpecialKeySet   = SET OF SpecialKey;
+        SpecialKeySet   = WordBitSet;
 
 
                 (*  Typen fuer die Ausgabeoperationen  *)

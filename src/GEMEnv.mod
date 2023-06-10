@@ -237,8 +237,7 @@ VAR     i               : INTEGER;
 
   PROCEDURE newDevice (): DeviceHandle;
 
-  VAR   d       : logInpDev;
-        newdev: DeviceHandle;
+  VAR   newdev: DeviceHandle;
   
   BEGIN
     ALLOCATE (newdev, SIZE (newdev^));
@@ -247,9 +246,6 @@ VAR     i               : INTEGER;
       newdev^.next := NIL;
       newdev^.magic := deviceMagic;
       newdev^.fontsLoaded := FALSE;
-      FOR d := MIN (logInpDev) TO MAX (logInpDev) DO
-        newdev^.curInpMode[d] := noMode;
-      END;
     END;
     RETURN newdev;
   END newDevice;

@@ -509,4 +509,10 @@ BEGIN
   messagePlug := messagePlugProc(0);
   timerPlug := timerPlugProc(0);
 
+  (* Vektorlisten initialisieren *)
+  timerVecList := NIL;
+  butChgVecList := NIL;
+  msMoveVecList := NIL;
+  curChgVecList := NIL;
+
 END GEMShare.

@@ -430,13 +430,13 @@ X       DC.B    0, 1         ; func 024  fill index
 X       DC.B    0, 1         ; func 025  fill color
         DC.B    0, 2         ; func 026  inq. color
         DC.B    2, 0         ; func 027  inq. cell array
-        DC.B    1, 0         ; func 028  inp loc
-        DC.B    0, 1         ; func 029  inp val
+X       DC.B    1, 0         ; func 028  inp loc
+X       DC.B    0, 1         ; func 029  inp val
     ;
-        DC.B    0, 0         ; func 030  inp choice ( vdi_call direkt )
+X       DC.B    0, 0         ; func 030  inp choice ( vdi_call direkt )
         DC.B    1, 2         ; func 031  inp str
 X       DC.B    0, 1         ; func 032  writing mode
-        DC.B    0, 2         ; func 033  set_input_mode
+X       DC.B    0, 2         ; func 033  set_input_mode
         DC.B    2, 0         ; func 034
         DC.B    0, 0         ; func 035  inq. line
         DC.B    0, 0         ; func 036  inq. mark
@@ -522,7 +522,7 @@ X       DC.B    0, 2         ; func 108  line end
         DC.B    4, 1         ; func 109  copy opaque
     ;
         DC.B    0, 0         ; func 110  transform form
-        DC.B    0, 37        ; func 111  mouse form
+X       DC.B    0, 37        ; func 111  mouse form
 X       DC.B    0, n         ; func 112  user fill
 X       DC.B    0, 1         ; func 113  user line
         DC.B    2, 0         ; func 114  fill rect
@@ -536,11 +536,11 @@ X       DC.B    0, 1         ; func 120  unload fonts
 X       DC.B    4, 3         ; func 121  copy transp.
 X       DC.B    0, 1         ; func 122  show cursor
 X       DC.B    0, 0         ; func 123  hide cur.
-        DC.B    0, 0         ; func 124  mouse buts
+X       DC.B    0, 0         ; func 124  mouse buts
 X       DC.B    0, 0         ; func 125  but change
 X       DC.B    0, 0         ; func 126  mouse move
 X       DC.B    0, 0         ; func 127  mouse change
-        DC.B    0, 0         ; func 128  key state
+X       DC.B    0, 0         ; func 128  key state
 X       DC.B    2, 1         ; func 129  clipping
      ;
         DC.B    0, 1         ; func 130  face name

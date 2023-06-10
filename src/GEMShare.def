@@ -20,6 +20,7 @@ FROM SYSTEM     IMPORT ADDRESS, INTEGER16, CARDINAL32, BYTE;
 
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
 FROM AESGraphics IMPORT MouseForm;
+FROM MOSGlobals IMPORT MemArea;
 
 FROM GEMGlobals IMPORT GemChar, MButtonSet, SpecialKeySet, TEffectSet, MaxStr;
 
@@ -41,12 +42,12 @@ EXPORT  QUALIFIED DeviceHandle, device, GemHandle, cb, root_cb, our_cb, error,
 
         ptrVectorList, vecListElem, timerVecList, butChgVecList, msMoveVecList,
         curChgVecList, orgTimerVec, orgButChgVec, orgMsMoveVec, orgCurChgVec,
-        deltaT,
         GrafMouse, updateWindow, showCursor, closeWindow, deleteWindow,
         exchangeTimerVec, exchangeMouseVec, removeTimerVector,
         removeButChgVector, removeMsMoveVector, removeCurChgVector,
         unloadFonts, hideCursor, UpdateWindowType, windowSet, MaxWinds,
-		keyboardPlugProc, buttonPlugProc, rectPlugProc, messagePlugProc, timerPlugProc;
+		keyboardPlugProc, buttonPlugProc, rectPlugProc, messagePlugProc, timerPlugProc,
+		TimerVecProc, ButChgVecProc, MsMoveVecProc, CurChgVecProc;
 
 
 
@@ -235,16 +236,23 @@ TYPE    DeviceHandle    = POINTER TO device;
 
                             fontsLoaded  : BOOLEAN;
 
-                            curInpMode   : ARRAY logInpDev OF inputMode;
-
                             next         : DeviceHandle;
                           END;
 
         ptrVectorList   = POINTER TO vecListElem;
+        TimerVecProc = PROCEDURE (): BOOLEAN;
+        ButChgVecProc = PROCEDURE (VAR (* pressed: *) MButtonSet) : BOOLEAN;
+        MsMoveVecProc = PROCEDURE (VAR (*loc:*) Point): BOOLEAN;
+        CurChgVecProc = PROCEDURE (VAR (*loc:*) Point): BOOLEAN;
         vecListElem     = RECORD
-                            newVec       : PROC; (*Die unterschiedlichen Para-
-                                   meter interessieren auf Masch.ebene nicht! *)
-                            wsp          : ADDRESS;
+                            CASE : CARDINAL OF
+                              0: timerVec     : TimerVecProc; |
+                              1: buttonChgVec : ButChgVecProc |
+                              2: moveVec      : MsMoveVecProc |
+                              3: curVec       : CurChgVecProc |
+                              ELSE
+                            END;
+                            wsp          : MemArea;
                             next         : ptrVectorList;
                             futureAddr   : ADDRESS;
                           END;
@@ -366,7 +374,6 @@ VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
         orgButChgVec: PROC;
         orgMsMoveVec: PROC;
         orgCurChgVec: PROC;
-        deltaT                                          :CARDINAL;
 
         (* Plugs for the event watch-dogs (see also 'EventHandler') *)
 

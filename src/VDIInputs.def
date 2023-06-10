@@ -1,0 +1,282 @@
+DEFINITION MODULE VDIInputs;
+
+
+(*  Megamax-Modula 2 GEM-Library :  Die VDI Eingabefunktionen
+ *
+ *  Autor: Manuel Chakravarty           Erstellt :  04.11.87
+ *
+ *  Version 2.2         V#0006
+ *)
+
+FROM    SYSTEM     IMPORT WORD;
+FROM    MOSGlobals IMPORT MemArea;
+FROM    GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
+FROM    GEMGlobals IMPORT GemChar, MButtonSet, SpecialKeySet;
+FROM    GEMShare   IMPORT DeviceHandle, logInpDev, inputMode, vecListElem, TimerVecProc, ButChgVecProc, MsMoveVecProc, CurChgVecProc;
+
+
+(*  SetInputMode -- Legt das logische Eingabegeraet und dessen Eingabe-  *
+ *                  modus fest. Der Aufruf wird nur ausgefuehrt, wenn    *
+ *                  die zu setzende Einstellung sich von der momentanen *
+ *                  Einstellung unterscheidet. !! 'GemError' beachten!! *)
+PROCEDURE SetInputMode (handle:DeviceHandle; dev:logInpDev; mode: inputMode);
+
+(*  Der Mauszeiger wird auf eine bestimmte Position gesetzt,
+ *  danach wird gewartet, bis eine Taste oder ein Mausknopf
+ *  gedrueckt wird.
+ *
+ *  'start'     -- An diese Stelle wird der Mauszeiger gesetzt.
+ *  'termbut'   -- Code der Taste, die zum Abbruch fuehrte.
+ *                 ( = 32/33: linke bzw. rechte Maustaste)
+ *
+ *  ACHTUNG: Die Routine funktioniert nur bei physikalisch
+ *           geoeffneten Arbeitsstationen (Devices), jedoch
+ *           nicht bei virtuellen (wie dem Bildschirm)!
+ *)
+PROCEDURE RequestLoc(handle: DeviceHandle; start: Point; VAR termBut: CHAR; VAR loc: Point);
+
+(*  Entspricht 'RequestLoc' nur wird nicht gewartet, bis eine Taste
+ *  gedrueckt ist, sondern gleich zurueckgekehrt.
+ *  Ist 'keyPress = TRUE', so wurde eine Taste betaetigt.
+ *  Ist 'koorChange = TRUE', so wurde der Mauszeiger bewegt.
+ *
+ *  ACHTUNG: Die Routine funktioniert nur bei physikalisch
+ *           geoeffneten Arbeitsstationen (Devices), jedoch
+ *           nicht bei virtuellen (wie dem Bildschirm)!
+ *)
+PROCEDURE TestLoc(handle: DeviceHandle;
+               start               : Point;
+           VAR termbut             : CHAR;
+           VAR keyPress, koorChange: BOOLEAN;
+           VAR loc                 : Point);
+
+
+(*      Die folgenden acht Routinen arbeiten in der aktuellen TOS-Version
+ *      nicht. Evtl. mit GDOS.
+ *)
+
+(*  Der Startwert 'start' kann vom Anwender solange mit den
+ *  Cursortasten veraendert werden, bis er eine andere Taste
+ *  drueckt.
+ *  'value' liefert den neuen Wert und 'termBut' die Taste,
+ *  mit der abgebrochen wurde.
+ *  Wert liegt zwischen 1 und 100
+ *)
+PROCEDURE RequestValue(    handle : DeviceHandle;
+                    start  : CARDINAL;
+                VAR termBut: CHAR;
+                VAR value  : CARDINAL);
+
+(*  Entspricht 'RequestValue', nur wird sofort zurueckgekehrt und
+ *  'status' enthaelt
+ *
+ *    'nothingHappened', falls keine Benutzeraktion erfolgte,
+ *    'valueChanged'   , falls der Wert geaendert wurde,
+ *    'keyPressed'     , falls eine Taste gedrueckt wurde.
+ *)
+TYPE    TValState       = (nothingHappened, valueChanged, keyPressed);
+PROCEDURE TestValue(handle : DeviceHandle;
+                 start  : CARDINAL;
+             VAR termbut: CHAR;
+             VAR status : TValState;
+             VAR value  : CARDINAL);
+
+(*  Es wird gewartet bis eine Taste gedrueckt wird.
+ *  War es eine Funktionstaste, so wird deren Nummer in 'choice'
+ *  geliefert, sonst der in 'start' uebergebenen Wert (1 - 10).
+ *)
+PROCEDURE RequestChoice(handle: DeviceHandle; start: CARDINAL; VAR choice: CARDINAL);
+
+(*  Wie 'TestChoice', nur wird nicht gewartet. Und es ist 'keyPress
+ *  = TRUE', falls eine Funktionstaste betaetigt wurde.
+ *)
+PROCEDURE TestChoice(handle: DeviceHandle; VAR keyPress: BOOLEAN; VAR choice: CARDINAL);
+
+(*  Wartet bis ein String vollstaendig, durch <Return> abgeschlossen,
+ *  eingegeben wurde. Falls 'echo = TRUE' ist, wird die Eingabe ab
+ *  der Position 'echoLoc' auf dem Bildschirm ausgegeben.
+ *
+ *  ACHTUNG: Diese Routine ist in der aktuellen Version nicht impl.
+ *)
+PROCEDURE RequestString(handle: DeviceHandle;
+                 VAR str    : ARRAY OF CHAR;
+                     echo   : BOOLEAN;
+                     echoLoc: Point);
+
+(*  Entspricht 'RequestString' nur wird nicht auf ein <Return> ge-
+ *  wartet. Ist 'success = TRUE', so wurde mindestens ein Zeichen
+ *  gelesen.
+ *
+ *  ACHTUNG: Diese Routine ist in der aktuellen Version nicht impl.
+ *)
+PROCEDURE TestString(handle: DeviceHandle;
+              VAR str    : ARRAY OF CHAR;
+                  echo   : BOOLEAN;
+                  echoLoc: Point;
+              VAR success: BOOLEAN);
+
+(*  Die durch 'newForm' spezifierte Mausform wird durch diese
+ *  Routine gesetzt.
+ *)
+PROCEDURE SetMouseForm(handle: DeviceHandle; newForm: PtrMouseFormDef);
+
+(*  Der Grafikcursor (Mauszeiger) wird sichtbar gemacht.
+ *  Da das VDI mitzaehlt, wie oft der Zeiger versteckt wurde, muss
+ *  er auch entsprechend oft sichtbar gemacht werden. Dies kann
+ *  umgangen werden, indem man fuer 'force' den Wert 'TRUE' an-
+ *  gibt. Daraufhin wird der Cursor auf alle Faelle angezeigt.
+ *
+ *  ACHTUNG: Diese Funktion darf nur bei physikalisch geoeffneten
+ *           Arbeitstationen (Devices) verwendet werden. Beim
+ *           Bildschirm (eine virtuelle Arbeitsstation) muessen
+ *           Sie stattdessen die Funktion "GrafMouse" aus
+ *           AESGraphics verwenden!
+ *)
+PROCEDURE ShowCursor(handle: DeviceHandle; force: BOOLEAN);
+
+(*  Der Grafikcursor wird versteckt (unsichtbar).
+ *  Siehe auch 'ShowCursor'.
+ *
+ *  ACHTUNG: Diese Funktion darf nur bei physikalisch geoeffneten
+ *           Arbeitstationen (Devices) verwendet werden. Beim
+ *           Bildschirm (eine virtuelle Arbeitsstation) muessen
+ *           Sie stattdessen die Funktion "GrafMouse" aus
+ *           AESGraphics verwenden!
+ *)
+PROCEDURE HideCursor(handle: DeviceHandle);
+
+(*  Es wird die aktuelle Position des Mauszeigers ('position')
+ *  und der Status (gedrueckt oder nicht) der Mausknoepfe ('buts')
+ *  erfragt.
+ *)
+PROCEDURE GetMouseState (handle: DeviceHandle; VAR position: Point; VAR buts: MButtonSet);
+
+(*  Es wird ermittelt welche Sondertasten (Alternate, Control,
+ *  linke und rechte Shifttaste) gedrueckt sind.
+ *)
+PROCEDURE KeyboardState (handle: DeviceHandle): SpecialKeySet;
+
+
+(*      Mit Hilfe der folgenden Routinen koennen sogenannte 'Softvektoren',
+ *      dies sind datentechnisch Prozedurvariablen, 'umgebogen' werden.
+ *      Im Klartext bedeutet dies, dass fuer den urspruenglichen Wert der Pro-
+ *      zedurvariable ein neuer eingesetzt wird. Diese neue Prozedur hat
+ *      zwei Moeglichkeiten, zum einen kann sie die alte Prozedur voll-
+ *      staendig ersetzen. Andererseits kann sie die zu verarbeitenden Daten
+ *      lediglich modifizieren, kontrollieren oder protokolieren und da-
+ *      nach die urspruengliche Routine aufrufen.
+ *      Dies Prinzip ist nun folgendermassen implementiert worden. Zu jedem
+ *      der Vektoren (Prozedurvariablen) wird eine Liste verwaltet. In diese
+ *      Liste koennen Prozeduren mit einer bestimmten Schnittstelle (Para-
+ *      meterliste) eingetragen und natuerlich auch wieder geloescht werden.
+ *      Wird nun eine dieser Prozedurvariablen benutzt, so wird zuerst die
+ *      zuletzt installierte Routine ausgefuehrt und falls diese es wuenscht
+ *      eine weitere. Dies setzt sich durch die gesamte Liste fort. Wird
+ *      nun das Listenende erreicht, so wird die, vor dem Aktivieren dieses
+ *      Moduls aktuelle Prozedur ausgefuehrt.
+ *      Jede installierte Routine liefert als Ergebnis einen BOOLEAN-Wert.
+ *      Ist dieser gleich 'TRUE', so heisst dies, dass mit der Ausfuehrung
+ *      der in der Liste enthaltenen Prozeduren fortgefahren werden soll.
+ *      Sonst wird die Kette unterbrochen.
+ *
+ *      Zum Installieren einer Prozedur muss ein 'Carrier' (Traeger) uebergeben
+ *      werden, dieser dient erstens als Kennung (handle) und zweitens wird
+ *      er zur zum Aufbau der Listenstruktur benoetigt. Daher ist es von ele-
+ *      mentarer Wichtigkeit, dass der Carrier global definiert wird und bis
+ *      zum Entfernen der Routine aus der Liste weder anderweitig verwendet,
+ *      noch irgendwie freigegeben wird. Weiter muss ein Arbeitsbereich (work-
+ *      space) fuer die Prozedur angegeben werden, dieser wird waehrend der Ab-
+ *      arbeitung der Routine als Stackbereich verwendet, es muss also unbe-
+ *      dingt sichergestellt werden, dass dieser Speicherbereich erstens zur
+ *      Verfuegung steht, zweitens nicht schon benutzt wird und eine aus-
+ *      reichende Groesse besitzt. In der Regel reichen wohl 2 kByte aus.
+ *
+ *      Achtung: Die Aufrufe der Vektoren geschehen von Interruptroutinen aus.
+ *               Da grosse Teile des Betriebssystem nicht oder nur bedingt re-
+ *               entrantfaehig sind, das heisst es darf waehrend eines Betriebs-
+ *               systemaufrufes noch ein weiterer ausgefuehrt werden, ist es
+ *               zu empfehlen, solche Aufrufe (dazu gehoehrt z.B. auch 'Write')
+ *               nicht in einer Vektorroutine zu taetigen. Es koennten voellig
+ *               unvorhersehbare Systemabstuerze herbeigefuehrt werden!
+ *)
+
+
+(*  Der Timervektor stellt eine Prozedurvariable dar, die in bestim-
+ *  mten Zeitabstaenden immer wieder aufgerufen wird. Er ist also
+ *  fuer das Abarbeiten zyklisch wiederkehrender Aufgaben praedesti-
+ *  niert.
+ *  'hdl'       --  der Carrier fuer die hiermit angemeldete Prozedur
+ *  'newProc'   --  beschreibt den von ihr zu benutzenden Stack-
+ *                  bereich.
+ *  'wsp'       --  ebenfalls
+ *  'deltaTime' --  Der Zeitabstand zwischen zwei Aufrufen (in Milli-
+ *                  sekunden).
+ *)
+PROCEDURE InstallTimerProc (VAR hdl: vecListElem;
+                        newProc  : TimerVecProc;
+                        wsp      : MemArea;
+                    VAR deltaTime: CARDINAL);
+
+(*  Meldet die durch 'hdl' beschriebene Prozedur wieder ab, das
+ *  heisst sie wird aus der Liste der aufzurufenden Prozeduren
+ *  gestrichen.
+ *)
+PROCEDURE RemoveTimerProc (VAR hdl: vecListElem);
+
+
+(*  Der Button-Change-Vektor wird immer aufgerufen, wenn der Status
+ *  der Maustasten geaendert wurde. Also eine Maustaste gedrueckt oder
+ *  losgelassen wurde. Jeder installierten Routine werden die zur
+ *  Zeit gedrueckten Maustasten (in 'pressed') uebergeben. Dieser
+ *  Wert kann geaendert werden und es wird die geaenderte Version dann
+ *  auch vom Betriebssystem uebernommen.
+ *  'hdl' enthaelt den Carrier, 'newProc' die neue Prozedur und 'wsp'
+ *  ihren Stackbereich.
+ *)
+PROCEDURE InstallButChgProc (VAR hdl: vecListElem;
+                     newProc: ButChgVecProc;
+                     wsp    : MemArea);
+
+(*  Meldet die mit 'InstallButChgProc' installierte Routine
+ *  wieder ab.
+ *)
+PROCEDURE RemoveButChgProc (VAR hdl: vecListElem);
+
+
+(*  Der Mouse-Movement-Vektor wird bei jeder Mausbewegung ange-
+ *  sprungen. Dabei wird der Routine (in 'loc') die aktuelle
+ *  Mausposition uebergegeben, diese kann von der Routine auch
+ *  veraendert werden. Durch Vertauschen der Koordinaten kann man
+ *  z.B die beiden Bewegungsrichtungen der Maus vertauschen.
+ *  Mit etwas mehr Aufwand koennen die Bewegungen auch gespie-
+ *  gelt werden oder es wird einfach ein Rahmen vorgegeben,
+ *  der von der Maus nicht verlassen werden darf.
+ *  Es ist 'hdl' der Carrier und 'wsp' der Stackbereich fuer die
+ *  zu installierende Routine 'newProc'.
+ *)
+PROCEDURE InstallMsMoveProc (VAR hdl    : vecListElem;
+                         newProc: MsMoveVecProc;
+                         wsp    : MemArea);
+
+(*  Es wird 'hdl' abgemeldet.
+ *)
+PROCEDURE RemoveMsMoveProc (VAR hdl: vecListElem);
+
+
+(*  Der Cursor-Change-Vektor wird bei jeder Positionsaenderung
+ *  des Mauszeigers aufgerufen. Der aufgerufenen Prozedur wird
+ *  (in 'loc') die neue Mauszeigerposition uebergeben.
+ *  Dabei ist 'hdl' der Carrier und 'wsp' der Stackbereich der
+ *  Prozedur 'newProc'.
+ *)
+
+PROCEDURE InstallCurChgProc (VAR hdl    : vecListElem;
+                         newProc: CurChgVecProc;
+                         wsp    : MemArea);
+
+(*  Es wird eine mit obiger Prozedur angemeldete Routine wieder
+ *  abgemeldet.
+ *)
+PROCEDURE RemoveCurChgProc (VAR hdl: vecListElem);
+
+END VDIInputs.
