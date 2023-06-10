@@ -390,8 +390,7 @@ VAR timerPlug: timerPlugProc;
  *                           Indizierung in D4 ( in Elementen )           *
  *                     ges.: Die CHAR's des Array befinden sich im INTIN- *
  *                           Array und als Rueckgabewert die Stringlaenge   *
-
- *                !! Aufruf nur von Assemblerteilen !!                    *)
+ *)
 PROCEDURE stringIntoINTIN(REF str:ARRAY OF CHAR; offset: CARDINAL):CARDINAL;
 
 
@@ -400,8 +399,7 @@ PROCEDURE stringIntoINTIN(REF str:ARRAY OF CHAR; offset: CARDINAL):CARDINAL;
  *                    ges.: (A1-8).W = frame.x, 2(A1-8).W = frame.y          *
  *                          4(A1-8).W = frame.x+frame.w-1,                   *
  *                          6(A1-8).W = frame.y+frame.h-1                    *
-
- *              Aufruf nur aus Assemblerteilen!!                             *)
+ *)
 PROCEDURE getCalcedFrame(frame:Rectangle; VAR pxy: PXY4);
 
 
@@ -410,8 +408,7 @@ PROCEDURE getCalcedFrame(frame:Rectangle; VAR pxy: PXY4);
  *                             $0 dran. Danach zeigt D2 auf den Stringanf.*
  *                             und mit 'MOVE.L  (A7),A7' wird der String  *
  *                             wieder vom Stack entfernt.                 *
-
- *              Aufruf nur von Assembler!                                 *)
+ *)
 PROCEDURE stringIntoCFormat(REF str:ARRAY OF CHAR; VAR dst: MaxStr);
 PROCEDURE stringFromCFormat(REF str: MaxStr; VAR dst:ARRAY OF CHAR);
 

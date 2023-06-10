@@ -8,8 +8,8 @@ DEFINITION MODULE LineA;
  *
  *  Created: 7.4.1987           Version 2.1   V#0069
  *)
- 
- 
+
+
 (*
  *      HINWEIS: Bei der Verwendung der Line-A-Routine ist eine gewisse Vor-
  *               sicht geboten, da diese auf eventuellen Nachfolgermodellen
@@ -37,12 +37,12 @@ FROM GrafBase   IMPORT WordBitSet, WritingMode, BitOperation, Point, Rectangle,
                        PtrMouseFormDef, PtrMemFormDef;
 
 FROM GEMBase IMPORT PtrVDIContrlArray, PtrIntinArray;
- 
- 
+
+
 TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
         PtrIntArray             = POINTER TO ARRAY[0..65535] OF INTEGER16;
         PtrCardArray            = POINTER TO ARRAY[0..65535] OF CARDINAL16;
-        
+
         SystemFont              = (font6x6, font8x8, font8x16);
         PtrFontHeader           = POINTER TO FontHeader;
         FontHeader              = RECORD
@@ -73,7 +73,7 @@ TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
                                     next         : PtrFontHeader;
                                   END;
         PtrSysFontHeader        = POINTER TO ARRAY SystemFont OF PtrFontHeader;
-        
+
         (*  Definition der Line-A-Varaible.
          *  Eine genauere Beschreibung ist im Handbuch zu finden.
          *)
@@ -126,55 +126,55 @@ TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
                                     seedAbort    : ADDRESS;
                                   END;
         PtrLineAVars            = POINTER TO LineAVars;
-        
+
         NegLineAVars            = RECORD
-                                    
+
                                     (*  Zeichenhoehe
                                      *)
                                     cellHeight   : CARDINAL16;
-                                    
+
                                     (*  Maximale Cursor Spalten- und Zeilen-
                                      *  position.
                                      *)
                                     maxColumn    : CARDINAL16;
                                     maxRow       : CARDINAL16;
-                                    
+
                                     (*  Zeichenzeilenbreite in Bytes
                                      *)
                                     charRowWidth : CARDINAL16;
-                                    
+
                                     (*  Hinter- und Vordergrundfarbe
                                      *)
                                     bgColor      : CARDINAL16;
                                     fgColor      : CARDINAL16;
-                                    
+
                                     (*  Adresse der aktuellen Cursorposition
                                      *)
                                     cursAddr     : ADDRESS;
-                                    
+
                                     (*  Vertikaler Offset zum Anfang des
                                      *  Bildschirms. Siehe auch 'VDIEscapes.
                                      *  SetLineOffset'.
                                      *)
                                     lineOffset   : INTEGER16;
-                                    
+
                                     (*  Spalten- und Zeilenposition des
                                      *  Cursors
                                      *)
                                     cursColumn   : CARDINAL16;
                                     cursRow      : CARDINAL16;
-                                    
+
                                     (*  Blinkgeschw. des Cursors und Zaehler
                                      *  fuer das Cursorblinken.
                                      *)
                                     cursFrequence: BYTE;
                                     cursCount    : BYTE;
-                                    
+
                                     (*  Zeiger auf den Systemzeichensatz
                                      *  Siehe auch 'VDIEscapes.InitSystemFont'.
                                      *)
                                     sysFontAddr  : ADDRESS;
-                                    
+
                                     (*  ASCII-Wert des letzten und ersten
                                      *  Zeichens im Systemzeichensatz und
                                      *  Breite der Fontdaten in Bytes.
@@ -182,16 +182,16 @@ TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
                                     maxADE       : CARDINAL16;
                                     minADE       : CARDINAL16;
                                     fontWidth    : CARDINAL16;
-                                    
+
                                     (*  Bildschirmbreite in Pixel
                                      *)
                                     screenWidth  : CARDINAL16;
-                                    
+
                                     (*  Zeiger auf die Offset-Tabelle des
                                      *  Systemzeichensatzes.
                                      *)
                                     fontOffset   : ADDRESS;
-                                    
+
                                     (*  Aktueller Cursorzustand:
                                      *
                                      *    b0 -- Cursorblinken ein/aus
@@ -203,100 +203,91 @@ TYPE    PtrByteArray            = POINTER TO ARRAY[0..65535] OF BYTE;
                                      *    b5 -- Cursorposition gespeichert
                                      *)
                                     cursStatus   : WordBitSet;
-                                    
+
                                     (*  Bildschirmhoehe in Pixel
                                      *)
                                     screenHeight : CARDINAL16;
-                                    
+
                                     (*  Breite einer Bildschirmzeile in Byte
                                      *)
                                     bytesPerLine : CARDINAL16;
-                                    
+
                                   END;
         PtrNegLineAVars         = POINTER TO NegLineAVars;
-        
- 
+
+
+(*  Durch diese Funktion erhaehlt man einen Zeiger auf ein Feld,
+ *  in dem die Startaddressen der drei System-Font-Header gespei-
+ *  chert sind.
+ *)
 PROCEDURE SystemFonts (): PtrSysFontHeader;
-        
-        (*  Durch diese Funktion erhaehlt man einen Zeiger auf ein Feld,
-         *  in dem die Startaddressen der drei System-Font-Header gespei-
-         *  chert sind.
-         *)
 
 
+(*  Liefert einen Zeiger auf die Line-A-Variablen.
+ *)
 PROCEDURE LineAVariables (): PtrLineAVars;
-        
-        (*  Liefert einen Zeiger auf die Line-A-Variablen.
-         *)
 
+(*  Liefert einen Zeiger auf die 'VDI-Escape-Variablen' (negative
+ *  Line-A-Variablen).
+ *
+ *  Die Benutzung dieser Variablen ist nicht uneingeschraenkt zu
+ *  empfehlen, da ihre Lage von Atari nicht offiziell dokumen-
+ *  tiert ist. Da sie aber bei allen bisherigen TOS-Versionen
+ *  ihre Lage relativ zu den Line-A-Variablen nicht veraendert
+ *  haben, ist ihre Benutzung relativ sicher.
+ *)
 PROCEDURE NegLineAVariables (): PtrNegLineAVars;
-        
-        (*  Liefert einen Zeiger auf die 'VDI-Escape-Variablen' (negative
-         *  Line-A-Variablen).
-         *
-         *  Die Benutzung dieser Variablen ist nicht uneingeschraenkt zu
-         *  empfehlen, da ihre Lage von Atari nicht offiziell dokumen-
-         *  tiert ist. Da sie aber bei allen bisherigen TOS-Versionen
-         *  ihre Lage relativ zu den Line-A-Variablen nicht veraendert
-         *  haben, ist ihre Benutzung relativ sicher.
-         *)
 
 
+(*  Diese Routine weisst dem Punkt 'p' des logischen Bildschirms
+ *  die Farbe 'color' zu. Dabei wird weder das Clipping noch ei-
+ *  ne andere der Line-A-Variablen beruecksichtigt.
+ *)
 PROCEDURE PutPixel (p: Point; color: CARDINAL);
 
-        (*  Diese Routine weisst dem Punkt 'p' des logischen Bildschirms
-         *  die Farbe 'color' zu. Dabei wird weder das Clipping noch ei-
-         *  ne andere der Line-A-Variablen beruecksichtigt.
-         *)
-        
+(*  Ermittelt den Farbwert des Punktes 'p'.
+ *)
 PROCEDURE PixelColor (p: Point): CARDINAL;
 
-        (*  Ermittelt den Farbwert des Punktes 'p'.
-         *)
-
+(*  'Line' zieht eine Linie zwischen den beiden Punkten 'p' und
+ *  'q', dabei wird die Farbe durch die Line-A-Variablen 'plane1'
+ *  bis 'plane4' bestimmt, ausserdem wird 'writingMode', 'lineMask'
+ *  und 'lastLine' beruecksichtigt.
+ *)
 PROCEDURE Line (p, q: Point);
 
-        (*  'Line' zieht eine Linie zwischen den beiden Punkten 'p' und
-         *  'q', dabei wird die Farbe durch die Line-A-Variablen 'plane1'
-         *  bis 'plane4' bestimmt, ausserdem wird 'writingMode', 'lineMask'
-         *  und 'lastLine' beruecksichtigt.
-         *)
-
+(*  Zieht eine horizontale Line von 'x1' bis 'x2' auf der Hoehe von
+ *  'y', die Farbe wird wieder durch 'plane1' bis 'plane4' bestimmt
+ *  und es werden noch 'writingMode', 'patternPtr', 'patternMask'
+ *  und 'multiFill' beruecksichtigt.
+ *)
 PROCEDURE HorizontalLine (x1, x2, y: INTEGER);
 
-        (*  Zieht eine horizontale Line von 'x1' bis 'x2' auf der Hoehe von
-         *  'y', die Farbe wird wieder durch 'plane1' bis 'plane4' bestimmt
-         *  und es werden noch 'writingMode', 'patternPtr', 'patternMask'
-         *  und 'multiFill' beruecksichtigt.
-         *)
-
+(*  Diese Procedur zeichnet ein gefuelltes Rechteck, dessen Ausmasse
+ *  durch 'p' und 'q' bestimmt werden, dabei ist 'p' der linke,
+ *  obere und 'q' der rechte, untere Eckpunkt. Die Parameter wer-
+ *  den durch die gleichen Line-A-Variablen, wie bei 'Horizontal-
+ *  Line' festgelegt, nur werden zusaetzlich noch die Clippingvar-
+ *  iablen benutzt.
+ *)
 PROCEDURE FilledRectangle (p, q: Point);
 
-        (*  Diese Procedur zeichnet ein gefuelltes Rechteck, dessen Ausmasse
-         *  durch 'p' und 'q' bestimmt werden, dabei ist 'p' der linke,
-         *  obere und 'q' der rechte, untere Eckpunkt. Die Parameter wer-
-         *  den durch die gleichen Line-A-Variablen, wie bei 'Horizontal-
-         *  Line' festgelegt, nur werden zusaetzlich noch die Clippingvar-
-         *  iablen benutzt.
-         *)
-
+(*  Mit dieser Funktion kann man gefuellte Polygone zeichnen, aller-
+ *  dings wird bei einem einzelnen Aufruf noch nicht das gesamte
+ *  Polygon, sondern nur eine einzelne Zeile daraus gezeichnet.
+ *  Welche Zeile gezeichnet wird, gibt 'y' an. Um das vollstaendige
+ *  Vieleck zu erhalten, muss man also die oberste und unterste Bild-
+ *  schirmzeile ermitteln, in der das Polygon liegt; danach ruft
+ *  man 'FilledPolygon' fuer alle Zeilen, die zwischen der obersten
+ *  und untersten liegen auf. Das Feld 'pts' enthaelt alle Eckpunkte
+ *  des Vielecks, wobei der erste Punkt (pts[0]) noch einmal als
+ *  letzter auftretten muss. Wieviel effektive Eckpunkt das Polygon
+ *  besitzt, wird in 'noPts' angegeben. Ist 'noPts = 0', so wird das
+ *  gesamte Feld benutzt.
+ *  Die beruecksichtigten Line-A-Variablen entsprechen denen von
+ *  'FilledRectangle'.
+ *)
 PROCEDURE FilledPolygon (REF pts: ARRAY OF Point; noPts: CARDINAL; y: INTEGER);
-
-        (*  Mit dieser Funktion kann man gefuellte Polygone zeichnen, aller-
-         *  dings wird bei einem einzelnen Aufruf noch nicht das gesamte
-         *  Polygon, sondern nur eine einzelne Zeile daraus gezeichnet.
-         *  Welche Zeile gezeichnet wird, gibt 'y' an. Um das vollstaendige
-         *  Vieleck zu erhalten, muss man also die oberste und unterste Bild-
-         *  schirmzeile ermitteln, in der das Polygon liegt; danach ruft
-         *  man 'FilledPolygon' fuer alle Zeilen, die zwischen der obersten
-         *  und untersten liegen auf. Das Feld 'pts' enthaelt alle Eckpunkte
-         *  des Vielecks, wobei der erste Punkt (pts[0]) noch einmal als
-         *  letzter auftretten muss. Wieviel effektive Eckpunkt das Polygon
-         *  besitzt, wird in 'noPts' angegeben. Ist 'noPts = 0', so wird das
-         *  gesamte Feld benutzt.
-         *  Die beruecksichtigten Line-A-Variablen entsprechen denen von
-         *  'FilledRectangle'.
-         *)
 
 
 TYPE    BBTDeskriptor   = RECORD
@@ -327,60 +318,55 @@ TYPE    BBTDeskriptor   = RECORD
                           END;
         PtrBBTDeskriptor= POINTER TO BBTDeskriptor;
 
+(*  Diese Routine kopiert Speicherbereiche, insbesondere Bild-
+ *  schirmausschnitte, wobei allerdings auch noch ein Fuell-
+ *  muster als Maske verwendet werden kann. Falls ein Blitter
+ *  vorhanden und dieser auch aktiviert ist, so wird die ei-
+ *  gentliche Kopierarbeit an ihn uebertragen, ist der Chip
+ *  nicht im Rechner eingebaut oder abgeschalten, so wird die
+ *  Aufgabe von einer Art Software-Blitter uebernommen, wodurch
+ *  alles etwas langsamer, aber im Prinzip gleichartig ablaeuft.
+ *  Das Record, auf das 'deskriptor' zeigt, beschreibt den Ko-
+ *  pierauftrag vollstaendig, es werden also keine Line-A-Var-
+ *  iablen benutzt.
+ *)
 PROCEDURE BitBlockTransfer (deskriptor: PtrBBTDeskriptor);
 
-        (*  Diese Routine kopiert Speicherbereiche, insbesondere Bild-
-         *  schirmausschnitte, wobei allerdings auch noch ein Fuell-
-         *  muster als Maske verwendet werden kann. Falls ein Blitter
-         *  vorhanden und dieser auch aktiviert ist, so wird die ei-
-         *  gentliche Kopierarbeit an ihn uebertragen, ist der Chip
-         *  nicht im Rechner eingebaut oder abgeschalten, so wird die
-         *  Aufgabe von einer Art Software-Blitter uebernommen, wodurch
-         *  alles etwas langsamer, aber im Prinzip gleichartig ablaeuft.
-         *  Das Record, auf das 'deskriptor' zeigt, beschreibt den Ko-
-         *  pierauftrag vollstaendig, es werden also keine Line-A-Var-
-         *  iablen benutzt.
-         *)
-
+(*  Gibt das Zeichen 'ch' des Fonts 'font' ab dem Bildschirmpunkt
+ *  'spot' aus, dabei werden nur die Daten, die speziell dieses
+ *  Zeichen, den Font und den angegebenen Punkt betreffen in die
+ *  Line-A Variablen eingetragen, dass setzen von Effekten etc.
+ *  muss vorher durgefuehrt werden.
+ *  Die Variable 'writingMode' und die Clippingvariablen haben
+ *  die gleiche Wirkung wie immer, ausserdem werden an speziellen
+ *  Textausgabevariablen noch 'scaleAcc', 'scaleFactor', 'scale-
+ *  Mode', 'style', 'scaling', 'chup', 'textFg' und 'textBg' aus-
+ *  gewertet. Falls man Texteffecte und/oder Scaling benutzt, muss
+ *  man 'scratchArea' und 'scratchOff2' noch mit den richtigen
+ *  Werten belegen.
+ *)
 PROCEDURE TextBlockTransfer (font: PtrFontHeader; ch: CHAR; spot: Point);
-        
-        (*  Gibt das Zeichen 'ch' des Fonts 'font' ab dem Bildschirmpunkt
-         *  'spot' aus, dabei werden nur die Daten, die speziell dieses
-         *  Zeichen, den Font und den angegebenen Punkt betreffen in die
-         *  Line-A Variablen eingetragen, dass setzen von Effekten etc.
-         *  muss vorher durgefuehrt werden.
-         *  Die Variable 'writingMode' und die Clippingvariablen haben
-         *  die gleiche Wirkung wie immer, ausserdem werden an speziellen
-         *  Textausgabevariablen noch 'scaleAcc', 'scaleFactor', 'scale-
-         *  Mode', 'style', 'scaling', 'chup', 'textFg' und 'textBg' aus-
-         *  gewertet. Falls man Texteffecte und/oder Scaling benutzt, muss
-         *  man 'scratchArea' und 'scratchOff2' noch mit den richtigen
-         *  Werten belegen.
-         *)
-         
 
+
+(*  Macht den Mauscursor sichtbar. Falls 'force = TRUE' ist, wird
+ *  der Cursor auf alle Faelle sichbar, sonst wird er erst sicht-
+ *  bar, wenn genauso viele 'ShowMouse' wie vorher 'HideMouse'
+ *  durchgefuehrt worden sind.
+ *)
 PROCEDURE ShowMouse (force: BOOLEAN);
 
-        (*  Macht den Mauscursor sichtbar. Falls 'force = TRUE' ist, wird
-         *  der Cursor auf alle Faelle sichbar, sonst wird er erst sicht-
-         *  bar, wenn genauso viele 'ShowMouse' wie vorher 'HideMouse'
-         *  durchgefuehrt worden sind.
-         *)
-
+(*  Versteckt den Mauscursor. Es wird mitgezaehlt, wie oft die
+ *  Procedur aufgerufen wurde (siehe auch 'ShowMouse').
+ *)
 PROCEDURE HideMouse;
 
-        (*  Versteckt den Mauscursor. Es wird mitgezaehlt, wie oft die
-         *  Procedur aufgerufen wurde (siehe auch 'ShowMouse').
-         *)
-
+(*  Mit dieser Routine kann man dem Mauscursor ein neues Aussehen
+ *  verleihen, dabei ist 'newForm' ein Zeiger auf den Parameter-
+ *  block, der das neue Aussehen des Cursors bestimmt.
+ *)
 PROCEDURE TransformMouse (newForm: PtrMouseFormDef);
 
-        (*  Mit dieser Routine kann man dem Mauscursor ein neues Aussehen
-         *  verleihen, dabei ist 'newForm' ein Zeiger auf den Parameter-
-         *  block, der das neue Aussehen des Cursors bestimmt.
-         *)
-                         
-                         
+
 TYPE    SpriteFormat    = (vdiFormat, xorFormat);
         SpriteDefBlock  = RECORD
                             offset       : Point;
@@ -390,7 +376,7 @@ TYPE    SpriteFormat    = (vdiFormat, xorFormat);
                             pattern      : ARRAY[0..31] OF CARDINAL16;
                           END;
         PtrSpriteDef    = POINTER TO SpriteDefBlock;
-        
+
         (*  Es bedeuten:
          *
          *  'offset'    -- Distanz zwischen dem angegebenen Hot-Spot (Siehe
@@ -426,7 +412,7 @@ TYPE    SpriteFormat    = (vdiFormat, xorFormat);
          *                 grundes und weiter mit der zweiten Zeile des Vor-
          *                 dergrundes usw.
          *)
-        
+
         PtrSpriteBuffer = RECORD
                             CASE (* planes *) :CARDINAL OF
                               1 :  onePlane  : POINTER TO ARRAY[0..73] OF BYTE|
@@ -435,29 +421,27 @@ TYPE    SpriteFormat    = (vdiFormat, xorFormat);
                             ELSE
                             END;
                           END;
-                          
+
         (*  Dabei gilt, 'onePlane'   fuer monochrome Darstellung
          *              'twoPlanes'  fuer 4 farbige Darstellung
          *              'fourPlanes' fuer 16 farbige Darstellung
          *)
-                         
+
+(*  Loescht einen Sprite wieder vom Bildschirm, wobei der Hinter-
+ *  grund restauriert wird. 'buffer' ist der Speicherbereich, in
+ *  den der Hintergrund beim Zeichnen des Sprites gerettet wurde
+ *)
 PROCEDURE UndrawSprite (buffer: PtrSpriteBuffer);
 
-        (*  Loescht einen Sprite wieder vom Bildschirm, wobei der Hinter-
-         *  grund restauriert wird. 'buffer' ist der Speicherbereich, in
-         *  den der Hintergrund beim Zeichnen des Sprites gerettet wurde
-         *)
-
+(*  Diese Procedur zeichnet den Sprite, der durch 'sprite' beschrieben
+ *  wird, ab dem Punkt 'hotSpot' auf den Bildschirm. Dabei wird der
+ *  ehemalige Inhalt des Bildschirmspeichers (Hintergrund) in den Spei-
+ *  cherbereich gerettet, auf den 'buffer' zeigt.
+ *)
 PROCEDURE DrawSprite (hotSpot: Point;
                       sprite : PtrSpriteDef;
                       buffer : PtrSpriteBuffer);
-        
-        (*  Diese Procedur zeichnet den Sprite, der durch 'sprite' beschrieben
-         *  wird, ab dem Punkt 'hotSpot' auf den Bildschirm. Dabei wird der
-         *  ehemalige Inhalt des Bildschirmspeichers (Hintergrund) in den Spei-
-         *  cherbereich gerettet, auf den 'buffer' zeigt.
-         *)
-         
+
 
 TYPE    RasterMode      = RECORD
                             CASE :BOOLEAN OF
@@ -466,6 +450,32 @@ TYPE    RasterMode      = RECORD
                             END
                           END;
 
+(*  Diese Routine kopiert einen rechteckigen Bildschirmausschnitt,
+ *  dabei ist es nicht noetig, dass der Bildspeicher genau die Groesse
+ *  eines physikalischen Bildspeichers besitzt (32000 Byte). Viel-
+ *  mehr wird die Form des Bildspeichers durch eine Variable vom
+ *  Typ 'MemFormDef' bestimmt. 'sourceMem' beschreibt den Quell-
+ *  bereich, 'sourceStart' gibt die linke, obere und 'sourceEnd'
+ *  die rechte, untere Ecke des Quellrechtecks an. Entsprechend
+ *  beschreiben 'destMem', 'destStart' und 'destEnd' den Ziel-
+ *  bereich. 'mode' bestimmt die Verknuepfungsart, der Inhalte des
+ *  Ziel- und des Quellbereichs. 'setCol' und 'unsetCol' bestimmen
+ *  beim 'CopyTransparent'-Modus die Farben im Zielbereich.
+ *  Diese Procedur benuetzt die 'BitBlockTransfer'-Routine.
+ *
+ *  Man muss zwei Arten des Kopievorgangs unterscheiden. Es ist
+ *  'LineAVars.copyTrans':
+ *
+ *  'FALSE' -- Es muss 'mode.opaque' gesetzt werden.
+ *             'setCol' und 'unsetCol' sind wirkungslos 'source
+ *             Mem.planes' muss gleich 'destMem.planes' sein.
+ *             Entspricht 'VDIRasters.CopyOpaque'.
+ *  'TRUE'  -- Es muss 'mode.trans' benutzt werden.
+ *             'setCol' legt die Farbe der in 'sourceMem' auf 1
+ *             gesetzten Bits fest, 'unsetCol' die der auf 0 ge-
+ *             setzten Bits. Dabei muss 'sourceMem.planes=1' sein.
+ *             Entspricht 'VDIRasters.CopyTrans'.
+ *)
 PROCEDURE CopyRasterForm (sourceMem,
                           destMem    : PtrMemFormDef;
                           sourceStart,
@@ -475,45 +485,17 @@ PROCEDURE CopyRasterForm (sourceMem,
                           mode       : RasterMode;
                           setCol,
                           unsetCol   : CARDINAL);
-                         
-        (*  Diese Routine kopiert einen rechteckigen Bildschirmausschnitt,
-         *  dabei ist es nicht noetig, dass der Bildspeicher genau die Groesse
-         *  eines physikalischen Bildspeichers besitzt (32000 Byte). Viel-
-         *  mehr wird die Form des Bildspeichers durch eine Variable vom
-         *  Typ 'MemFormDef' bestimmt. 'sourceMem' beschreibt den Quell-
-         *  bereich, 'sourceStart' gibt die linke, obere und 'sourceEnd'
-         *  die rechte, untere Ecke des Quellrechtecks an. Entsprechend
-         *  beschreiben 'destMem', 'destStart' und 'destEnd' den Ziel-
-         *  bereich. 'mode' bestimmt die Verknuepfungsart, der Inhalte des
-         *  Ziel- und des Quellbereichs. 'setCol' und 'unsetCol' bestimmen
-         *  beim 'CopyTransparent'-Modus die Farben im Zielbereich.
-         *  Diese Procedur benuetzt die 'BitBlockTransfer'-Routine.
-         *
-         *  Man muss zwei Arten des Kopievorgangs unterscheiden. Es ist
-         *  'LineAVars.copyTrans':
-         *
-         *  'FALSE' -- Es muss 'mode.opaque' gesetzt werden.
-         *             'setCol' und 'unsetCol' sind wirkungslos 'source
-         *             Mem.planes' muss gleich 'destMem.planes' sein.
-         *             Entspricht 'VDIRasters.CopyOpaque'.
-         *  'TRUE'  -- Es muss 'mode.trans' benutzt werden.
-         *             'setCol' legt die Farbe der in 'sourceMem' auf 1
-         *             gesetzten Bits fest, 'unsetCol' die der auf 0 ge-
-         *             setzten Bits. Dabei muss 'sourceMem.planes=1' sein.
-         *             Entspricht 'VDIRasters.CopyTrans'.
-         *)
-         
-PROCEDURE ContourFill (p: Point; color: CARDINAL; useColor: BOOLEAN);
 
-        (*  Diese Routine fuellt einen Bildschirmbereich von dem Punkt 'p'
-         *  ausgehend. Ist 'useColor = TRUE', so wird der Bereich durch
-         *  die Farbe 'color' abgegrenzt, sonst durch jede Farbe, ausser
-         *  der, die dem Punkt 'p' vor dem Funktionsaufruf zugeordnet ist.
-         *  Diese Routine benutzt unter anderem die Variable 'seedAbort'.
-         *
-         *  ACHTUNG: Die Routine ist offiziell nicht dokumentiert. Ihre
-         *           Funktionsweise kann sich also bei einer zukuenftigen
-         *           TOS-Version aendern!
-         *)
+(*  Diese Routine fuellt einen Bildschirmbereich von dem Punkt 'p'
+ *  ausgehend. Ist 'useColor = TRUE', so wird der Bereich durch
+ *  die Farbe 'color' abgegrenzt, sonst durch jede Farbe, ausser
+ *  der, die dem Punkt 'p' vor dem Funktionsaufruf zugeordnet ist.
+ *  Diese Routine benutzt unter anderem die Variable 'seedAbort'.
+ *
+ *  ACHTUNG: Die Routine ist offiziell nicht dokumentiert. Ihre
+ *           Funktionsweise kann sich also bei einer zukuenftigen
+ *           TOS-Version aendern!
+ *)
+PROCEDURE ContourFill (p: Point; color: CARDINAL; useColor: BOOLEAN);
 
 END LineA.

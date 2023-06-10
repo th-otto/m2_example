@@ -287,8 +287,8 @@ PROCEDURE GetBlitterMode(VAR available,active:BOOLEAN);
 VAR b: BITSET;
 BEGIN
   b := XBIOS.BlitMode(-1);
-  available := b * BITSET(2);
-  active := b * BITSET(1);
+  available := 1 IN b;
+  active := 0 IN b;
 END GetBlitterMode;
 
 

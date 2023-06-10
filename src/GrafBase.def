@@ -144,72 +144,64 @@ PROCEDURE LongPoint  (p    : Point    ): LongPnt;
 PROCEDURE ShortFrame (frame: LongRect ): Rectangle;
 PROCEDURE LongFrame  (frame: Rectangle): LongRect;
 
-        (*  Typwandlungen
-         *)
+(*  Typwandlungen
+ *)
 
+(*  'frame' wird zentrisch gestreckt und zwar in x-Richtung um
+ *  'xDelta' Pixel und in y-Richtung um 'yDelta' Pixel.
+ *  Negative Deltawerte verkleinern die Ausmasse des Rechtecks,
+ *  und fuehren fuer Werte kleiner '-frame.w' bzw. '-frame.h'
+ *  zu einer Spiegelung des Rechtecks an einer Parallelen der
+ *  x-Achse bzw. y-Achse, die durch den Mittelpunkt des Recht-
+ *  eckes geht. Sind beide Werte kleiner, so entspricht dies
+ *  einer Punktspiegelung am Rechtecksmittelpunkt.
+ *)
 PROCEDURE AbsZoomRect (frame: Rectangle; xDelta, yDelta: INTEGER16): Rectangle;
 
-        (*  'frame' wird zentrisch gestreckt und zwar in x-Richtung um
-         *  'xDelta' Pixel und in y-Richtung um 'yDelta' Pixel.
-         *  Negative Deltawerte verkleinern die Ausmasse des Rechtecks,
-         *  und fuehren fuer Werte kleiner '-frame.w' bzw. '-frame.h'
-         *  zu einer Spiegelung des Rechtecks an einer Parallelen der
-         *  x-Achse bzw. y-Achse, die durch den Mittelpunkt des Recht-
-         *  eckes geht. Sind beide Werte kleiner, so entspricht dies
-         *  einer Punktspiegelung am Rechtecksmittelpunkt.
-         *)
-
+(*  Auch hier wird das Rechteck 'frame' zentrisch gestreckt, nur
+ *  werden diesmal relative Masszahlen fuer die Streckung benutzt.
+ *  Die Ausmasse des Rechtecks werden mit '...Factor DIV 1000'
+ *  multipliziert. Das bedeutet, dass ein Faktor von 1000 das
+ *  Rechteck unveraendert laesst, negative Faktoren eine Spiegelung,
+ *  Faktoren zwischen -999 und 999 eine Verkleinerung und Fak-
+ *  toren deren Betrag groesser 1000 ist eine Vergroesserung nach
+ *  sich ziehen.
+ *)
 PROCEDURE RelZoomRect (frame: Rectangle; xFactor, yFactor: INTEGER32): Rectangle;
 
-        (*  Auch hier wird das Rechteck 'frame' zentrisch gestreckt, nur
-         *  werden diesmal relative Masszahlen fuer die Streckung benutzt.
-         *  Die Ausmasse des Rechtecks werden mit '...Factor DIV 1000'
-         *  multipliziert. Das bedeutet, dass ein Faktor von 1000 das
-         *  Rechteck unveraendert laesst, negative Faktoren eine Spiegelung,
-         *  Faktoren zwischen -999 und 999 eine Verkleinerung und Fak-
-         *  toren deren Betrag groesser 1000 ist eine Vergroesserung nach
-         *  sich ziehen.
-         *)
-
+(*  Liefert 'Rect (p.x, p.y, frame.w, frame.h)' entspricht also
+ *  einer Translation des Rechtecks 'frame' zum Punkt 'p'.
+ *)
 PROCEDURE TransRect (frame: Rectangle; p: Point): Rectangle;
 PROCEDURE LTransRect (frame: LongRect; p: LongPnt): LongRect;
 
-        (*  Liefert 'Rect (p.x, p.y, frame.w, frame.h)' entspricht also
-         *  einer Translation des Rechtecks 'frame' zum Punkt 'p'.
-         *)
-
+(*  Liefert 'Pnt(frame.x,frame.y)'
+ *)
 PROCEDURE MinPoint (frame: Rectangle): Point;
 PROCEDURE LMinPoint (frame: LongRect): LongPnt;
 
-        (*  Liefert 'Pnt(frame.x,frame.y)'
-         *)
-
+(*  Liefert 'Pnt(frame.x+frame.w-1,frame.y+frame.h-1)'
+ *)
 PROCEDURE MaxPoint (frame: Rectangle): Point;
 PROCEDURE LMaxPoint (frame: LongRect): LongPnt;
 
-        (*  Liefert 'Pnt(frame.x+frame.w-1,frame.y+frame.h-1)'
-         *)
-
+(*  Diese Routine "clippt" das Rechteck 'frame' auf den Bereich
+ *  'clip', d.h. es wird der Ausschnitt von 'frame' berechnet,
+ *  der innerhalb von 'clip' liegt.
+ *)
 PROCEDURE ClipRect (frame: Rectangle; clip: Rectangle): Rectangle;
 PROCEDURE LClipRect (frame: LongRect; clip: LongRect): LongRect;
 
-        (*  Diese Routine "clippt" das Rechteck 'frame' auf den Bereich
-         *  'clip', d.h. es wird der Ausschnitt von 'frame' berechnet,
-         *  der innerhalb von 'clip' liegt.
-         *)
-
+(*  Liefert das kleinste Rechteck, das 'frame1' und 'frame2'
+ *  vollstaendig einschliesst.
+ *)
 PROCEDURE FrameRects (r1, r2: Rectangle): Rectangle;
 PROCEDURE LFrameRects (r1, r2: LongRect): LongRect;
 
-        (*  Liefert das kleinste Rechteck, das 'frame1' und 'frame2'
-         *  vollstaendig einschliesst.
-         *)
-
+(*  Liefert das Rechteck, das von 'p1' und 'p2' aufgespannt wird.
+ *)
 PROCEDURE FramePoints (p1, p2: Point): Rectangle;
 PROCEDURE LFramePoints (p1, p2: LongPnt): LongRect;
-
-        (*  Liefert das Rechteck, das von 'p1' und 'p2' aufgespannt wird.
-         *)
 
 
 TYPE
@@ -289,91 +281,82 @@ TYPE
          *)
                          
                          
+(*  Berechnet den Memory Form Definition Block fuer den aktuellen
+ *  physikalischen Bildschirm (mit aktueller Aufloesung).
+ *
+ *  ACHTUNG: Da diese Routine auf den Line-A-Variablen aufbaut
+ *           und teilweise auch die negativen Line-A-Variablen
+ *           nutzt, sollte sie in Programmen, die mit der Ziel-
+ *           setzung erstellt werden auch auf Weiterentwicklungen
+ *           des Atari ST zu funktionieren nicht verwendet werden.
+ *           Eine Alternative bietet 'GEMEnv.DeviceParameter',
+ *           die das VDI nutzt.
+ *)
 PROCEDURE GetPhysMemForm (VAR memForm: MemFormDef);
 
-        (*  Berechnet den Memory Form Definition Block fuer den aktuellen
-         *  physikalischen Bildschirm (mit aktueller Aufloesung).
-         *
-         *  ACHTUNG: Da diese Routine auf den Line-A-Variablen aufbaut
-         *           und teilweise auch die negativen Line-A-Variablen
-         *           nutzt, sollte sie in Programmen, die mit der Ziel-
-         *           setzung erstellt werden auch auf Weiterentwicklungen
-         *           des Atari ST zu funktionieren nicht verwendet werden.
-         *           Eine Alternative bietet 'GEMEnv.DeviceParameter',
-         *           die das VDI nutzt.
-         *)
-
+(*  Entspricht 'GetPhysMemForm' fuer den logischen Bildschirm.
+ *)
 PROCEDURE GetLogMemForm (VAR memForm: MemFormDef);
 
-        (*  Entspricht 'GetPhysMemForm' fuer den logischen Bildschirm.
-         *)
-        
 
 (*  Die folgenden Routinen erfragen ihre Daten durch XBIOS-Aufrufe.
  *)
- 
+
+(*  Erfragt den Zustand des Blitters.
+ *
+ *  'available' gibt an ob der Blitter im Rechner eingebaut ist,
+ *  und 'active' meldet, ob der Blitter benuzt wird oder nicht.
+ *)
 PROCEDURE GetBlitterMode (VAR available, active: BOOLEAN);
 
-        (*  Erfragt den Zustand des Blitters.
-         *
-         *  'available' gibt an ob der Blitter im Rechner eingebaut ist,
-         *  und 'active' meldet, ob der Blitter benuzt wird oder nicht.
-         *)
-
+(*  Falls ein Bit-Block Transfer Processor eingebaut ist, so
+ *  kann mit dieser Routine bestimmt werden, ob er benutzt
+ *  werden soll oder nicht.
+ *)
 PROCEDURE SetBlitterMode (active: BOOLEAN);
-
-        (*  Falls ein Bit-Block Transfer Processor eingebaut ist, so
-         *  kann mit dieser Routine bestimmt werden, ob er benutzt
-         *  werden soll oder nicht.
-         *)
  
+(*  Liefert die Addresse des aktuellen logischen Bildschirms
+ *  (das ist der Bildschirm auf den alle Ausgaben gemacht
+ *  werden) und des physikalischen Bildschirms (dies ist der
+ *  sichtbare Bildschirm) und die momentane Aufloesung, dabei
+ *  gilt: 2 ~ HiRes | 1 ~ MidRes | 0 ~ LowRes .
+ *
+ *  HINWEIS: Die in 'rez' gelieferte Bildschirmaufloesung
+ *           beachtet Sonderaufloesungen, wie Grossbildschirme
+ *           oder aehnliches natuerlich nicht.
+ *)
 PROCEDURE GetScreen (VAR log, phys:ADDRESS; VAR rez: INTEGER16);
 
-        (*  Liefert die Addresse des aktuellen logischen Bildschirms
-         *  (das ist der Bildschirm auf den alle Ausgaben gemacht
-         *  werden) und des physikalischen Bildschirms (dies ist der
-         *  sichtbare Bildschirm) und die momentane Aufloesung, dabei
-         *  gilt: 2 ~ HiRes | 1 ~ MidRes | 0 ~ LowRes .
-         *
-         *  HINWEIS: Die in 'rez' gelieferte Bildschirmaufloesung
-         *           beachtet Sonderaufloesungen, wie Grossbildschirme
-         *           oder aehnliches natuerlich nicht.
-         *)
-
+(*  Mit 'SetScreen' lassen sich die mit 'GetScreen' erfragten
+ *  Parameter neu setzen. Soll einer der Werte unveraendert
+ *  bleiben, so muss fuer ihn -1L bzw. -1 uebergeben werden.
+ *)
 PROCEDURE SetScreen (log, phys: ADDRESS; rez: INTEGER16);
-
-        (*  Mit 'SetScreen' lassen sich die mit 'GetScreen' erfragten
-         *  Parameter neu setzen. Soll einer der Werte unveraendert
-         *  bleiben, so muss fuer ihn -1L bzw. -1 uebergeben werden.
-         *)
          
 
 TYPE    Palette         = ARRAY [0..15] OF CARDINAL16;
         PtrPalette      = POINTER TO Palette;
         
-        (*  Ein Paletteneintrag ist folgendermassen aufgebaut:
-         *
-         *  0000 0rrr 0ggg 0bbb ,  dabei steht jedes Zeichen fuer ein Bit
-         *                         rrr gibt den Rotanteil, ggg den Gruen-
-         *                         anteil und bbb den Blauanteil der be-
-         *                         schriebenen Farbe an.
-         *)
+(*  Ein Paletteneintrag ist folgendermassen aufgebaut:
+ *
+ *  0000 0rrr 0ggg 0bbb ,  dabei steht jedes Zeichen fuer ein Bit
+ *                         rrr gibt den Rotanteil, ggg den Gruen-
+ *                         anteil und bbb den Blauanteil der be-
+ *                         schriebenen Farbe an.
+ *)
          
+(*  Setzt eine neue Farbpalette. Die neue Palette wird beim
+ *  naechsten VBL-Interrupt gesetzt.
+ *)
 PROCEDURE SetPalette (newPalette: PtrPalette);
-
-        (*  Setzt eine neue Farbpalette. Die neue Palette wird beim
-         *  naechsten VBL-Interrupt gesetzt.
-         *)
-         
+ 
+(*  Damit wird die Farbe 'colorNum' auf den Farbwert 'color' gesetzt.
+ *  Der Aufbau des Farbwertes entspricht einem Eintrag in 'Palette'.
+ *)
 PROCEDURE SetColor (colorNum, color: CARDINAL);
 
-        (*  Damit wird die Farbe 'colorNum' auf den Farbwert 'color' gesetzt.
-         *  Der Aufbau des Farbwertes entspricht einem Eintrag in 'Palette'.
-         *)
-
+(*  Liest den mit 'SetColor' gesetzten Wert.
+ *)
 PROCEDURE ColorNumber (colorNum: CARDINAL): CARDINAL;
-
-        (*  Liest den mit 'SetColor' gesetzten Wert.
-         *)
 
 END GrafBase.

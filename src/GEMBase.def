@@ -144,40 +144,36 @@ TYPE    IntinArray      = ARRAY[0..127] OF INTEGER16;
                         (*  Abfrageroutinen  *)
                         (*  ===============  *)
 
+(*  Liefert die Parmeterbloecke zu einer GEM-Referenz.
+ *
+ *  Die zurueckgelieferten Parameterbloecke sind eine Kopie der
+ *  Bloecke, die von der GEM-Library beim Aufruf einer VDI- bzw.
+ *  AES-Routine benutzt werden, falls 'gemHdl' die zu diesem Zeit-
+ *  punkt aktuelle GEM-Referenz ist (siehe 'GEMEnv.CurrGemHandle).
+ *  Ist einer der Parameterbloecke mit dem Wert 'NIL' gefuellt, so
+ *  kann die uebergebene GEM-Referenz fuer entsprechende Aufrufe
+ *  (AES bzw. VDI) nicht benutzt werden.
+ *)
 PROCEDURE GetPBs (gemHdl: GemHandle; VAR vdipb: VDIPB; VAR aespb: AESPB);
 
-        (*  Liefert die Parmeterbloecke zu einer GEM-Referenz.
-         *
-         *  Die zurueckgelieferten Parameterbloecke sind eine Kopie der
-         *  Bloecke, die von der GEM-Library beim Aufruf einer VDI- bzw.
-         *  AES-Routine benutzt werden, falls 'gemHdl' die zu diesem Zeit-
-         *  punkt aktuelle GEM-Referenz ist (siehe 'GEMEnv.CurrGemHandle).
-         *  Ist einer der Parameterbloecke mit dem Wert 'NIL' gefuellt, so
-         *  kann die uebergebene GEM-Referenz fuer entsprechende Aufrufe
-         *  (AES bzw. VDI) nicht benutzt werden.
-         *)
-
+(*  Liefert die zu einem Geraet gehoerende VDI-Geraetekennung.
+ *)
 PROCEDURE VDIHandle (dev: DeviceHandle): INTEGER16;
 
-        (*  Liefert die zu einem Geraet gehoerende VDI-Geraetekennung.
-         *)
 
+(*  Aufrufroutinen  *)
+(*  ==============  *)
 
-                        (*  Aufrufroutinen  *)
-                        (*  ==============  *)
-
+(*  Ruft das VDI auf.
+ *
+ *  'ptrpb' spezifiziert den zu benutzenden Parameterblock.
+ *)
 PROCEDURE CallVDI (ptrpb: PtrVDIPB);
 
-        (*  Ruft das VDI auf.
-         *
-         *  'ptrpb' spezifiziert den zu benutzenden Parameterblock.
-         *)
-
+(*  Ruft das AES auf.
+ *
+ *  'ptrpb' spezifiziert den zu benutzenden Parameterblock.
+ *)
 PROCEDURE CallAES (ptrpb: PtrAESPB);
-
-        (*  Ruft das AES auf.
-         *
-         *  'ptrpb' spezifiziert den zu benutzenden Parameterblock.
-         *)
 
 END GEMBase.
