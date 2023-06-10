@@ -8,6 +8,7 @@ import GEMVDIbase, key =  2102H  CAE1H  2388H, modnum =  1  checksum: o.k.
 data size, number of bytes = 4  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 218
+OpenWorkstation:
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0001                MOVE.W  #0001H,-(A7)
@@ -102,6 +103,7 @@ ref own data at    C8H  checksum: o.k.
 ref own data at    D0H  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 38
+CloseWorkstation:
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0002                MOVE.W  #0002H,-(A7)
@@ -121,6 +123,7 @@ ref ext proc call at    14H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    1EH, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 220
+OpenVirtualWorkstation:
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0064                MOVE.W  #0064H,-(A7)
@@ -215,6 +218,7 @@ ref own data at    C8H  checksum: o.k.
 ref ext data at    D4H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 38
+CloseVirtualWorkstation
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0065                MOVE.W  #0065H,-(A7)
@@ -234,6 +238,7 @@ ref ext proc call at    14H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    1EH, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 38
+ClearWorkstation
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0003                MOVE.W  #0003H,-(A7)
@@ -253,6 +258,7 @@ ref ext proc call at    14H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    1EH, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 38
+UpdateWorkstation
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0004                MOVE.W  #0004H,-(A7)
@@ -272,6 +278,7 @@ ref ext proc call at    14H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    1EH, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 48
+LoadFonts
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0077                MOVE.W  #0077H,-(A7)
@@ -294,6 +301,7 @@ ref ext proc call at    20H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    26H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  8, entrypoint =     0H, number of bytes = 48
+UnloadFonts
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0078                MOVE.W  #0078H,-(A7)
@@ -316,6 +324,7 @@ ref ext data at    22H, modnum =  1  checksum: o.k.
 ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  9, entrypoint =     0H, number of bytes = 104
+SetClipping
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0081                MOVE.W  #0081H,-(A7)

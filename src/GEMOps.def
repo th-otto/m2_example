@@ -400,11 +400,11 @@ PROCEDURE ctrl_cnts2;
   BEGIN
     ASSEMBLER
     ;       PTSIN, INTIN
-        DC.B    0, 0         ; func 000
-X       DC.B    0, 0         ; func 001
+        DC.B    0, 0         ; func 000 unused
+X       DC.B    0, 0         ; func 001 open workstation
 X       DC.B    0, 0         ; func 002 close workstation
-        DC.B    0, 0         ; func 003 clear workstation
-        DC.B    0, 0         ; func 004 update works.
+X       DC.B    0, 0         ; func 003 clear workstation
+X       DC.B    0, 0         ; func 004 update works.
         DC.B    0, 0         ; func 005 escape funktions
         DC.B    0, 0         ; func 006 polyline(ruft vdi_call direkt auf)
         DC.B    0, 0         ; func 007 polymarker(ruft vdi_call direkt auf)
@@ -510,7 +510,7 @@ X       DC.B    0, 2         ; func 039  text alig
         DC.B    0, 0         ; func 098
         DC.B    0, 0         ; func 099
     ;
-        DC.B    0, 11        ; func 100  open work
+X       DC.B    0, 11        ; func 100  open work
 X       DC.B    0, 0         ; func 101  close work
 X       DC.B    0, 1         ; func 102  ext. inquire
         DC.B    1, 1         ; func 103  contour fill
@@ -530,7 +530,7 @@ X       DC.B    0, 1         ; func 113  user line
         DC.B    0, 0         ; func 116  text ext.( ruft vdi_call direkt )
         DC.B    0, 1         ; func 117  inq. cell
 X       DC.B    0, 0         ; func 118  time inter
-        DC.B    0, 1         ; func 119  load fonts
+X       DC.B    0, 1         ; func 119  load fonts
     ;
 X       DC.B    0, 1         ; func 120  unload fonts
 X       DC.B    4, 3         ; func 121  copy transp.
@@ -541,7 +541,7 @@ X       DC.B    0, 0         ; func 125  but change
 X       DC.B    0, 0         ; func 126  mouse move
 X       DC.B    0, 0         ; func 127  mouse change
         DC.B    0, 0         ; func 128  key state
-        DC.B    2, 1         ; func 129  clipping
+X       DC.B    2, 1         ; func 129  clipping
      ;
         DC.B    0, 1         ; func 130  face name
         DC.B    0, 0         ; func 131  face info

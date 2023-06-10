@@ -25,13 +25,11 @@ DEFINITION MODULE VDIControls;
 
     IMPORT SYSTEM, GEMVDIbase;
 
-    PROCEDURE OpenWorkstation(* ProcNum:1 *)(VAR GEMVDIbase.VDIWorkInType; V
-AR INTEGER; VAR GEMVDIbase.VDIWorkOutType);
+    PROCEDURE OpenWorkstation(* ProcNum:1 *)(VAR GEMVDIbase.VDIWorkInType; VAR INTEGER; VAR GEMVDIbase.VDIWorkOutType);
     
     PROCEDURE CloseWorkstation(* ProcNum:2 *)(INTEGER);
     
-    PROCEDURE OpenVirtualWorkstation(* ProcNum:3 *)(VAR GEMVDIbase.VDIWorkIn
-Type; VAR INTEGER; VAR GEMVDIbase.VDIWorkOutType);
+    PROCEDURE OpenVirtualWorkstation(* ProcNum:3 *)(VAR GEMVDIbase.VDIWorkInType; VAR INTEGER; VAR GEMVDIbase.VDIWorkOutType);
     
     PROCEDURE CloseVirtualWorkstation(* ProcNum:4 *)(INTEGER);
     
@@ -43,8 +41,7 @@ Type; VAR INTEGER; VAR GEMVDIbase.VDIWorkOutType);
     
     PROCEDURE UnloadFonts(* ProcNum:8 *)(INTEGER; INTEGER);
     
-    PROCEDURE SetClipping(* ProcNum:9 *)(INTEGER; INTEGER; VAR GEMVDIbase.Px
-yArrayType);
+    PROCEDURE SetClipping(* ProcNum:9 *)(INTEGER; INTEGER; VAR GEMVDIbase.PxyArrayType);
     
   END VDIControls;
 
