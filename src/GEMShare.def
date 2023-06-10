@@ -36,7 +36,7 @@ EXPORT  QUALIFIED DeviceHandle, device, GemHandle, cb, root_cb, our_cb, error,
         ptrPubArrays, DevParm, PtrDevParm,
 
         aes_call, aes_if, vdi_call, vdi_if, testINTOUT0, testErrorCheck,
-        setINT0attribut, getCalcedFrame, superData, stringIntoINTIN,
+        getCalcedFrame, superData, stringIntoINTIN,
         stringIntoCFormat, stringFromCFormat, setDevice, gemErrorOccured,
 
         ptrVectorList, vecListElem, timerVecList, butChgVecList, msMoveVecList,
@@ -453,23 +453,14 @@ PROCEDURE aes_if(ctrlcode:CARDINAL32);
 
 (* V D I *)
 
-PROCEDURE vdi_call(para: GemHandle);
 (* Ruft Virtual Display Interface mit dem Parameterblock 'para' auf. *)
+PROCEDURE vdi_call(para: GemHandle);
 
-PROCEDURE vdi_if(handle:DeviceHandle; ctrlcode:CARDINAL32);
 (* Bereitet Aufruf der VDI-Funktion mit der Nummer 'opcode' vor, *
  * falls diese Unterfunktionsnummern besitzt werden diese in     *
  * 'subcmd' uebergeben (, sonst setzt man 'subcmd=0'). Dann wird  *
  * 'vdi_call' mit dem aktuellen Parameterblock aufgerufen.       *)
-
-PROCEDURE setINT0attribut(handle:DeviceHandle; ctrlcode:CARDINAL32; intin0: INTEGER16);
-(*  setINT0attribute -- geg.: D0 Wert eines Attributes und D1 VDI-Fktsopcode*
- *                      ges.: Aufruf der Funktion die dem Opcode entspricht *
- *                            wobei der Wert uebergeben wird. Die Globale    *
- *                            Var. 'error' wird 'TRUE', falls der Wert vom  *
- *                            VDI nicht angenommen wird.                    *
-
- *      Aufruf nur von ASSEMBLER-Teilen!                                    *)
+PROCEDURE vdi_if(handle:DeviceHandle; ctrlcode:CARDINAL32);
 
 
 

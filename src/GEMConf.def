@@ -2,10 +2,12 @@
  */
 DEFINITION MODULE GEMConf;
 
-EXPORT QUALIFIED doSupervision;
+EXPORT QUALIFIED doSupervision, VDIChecks;
 
 /* benutzt von: GEMSHARE.I, GEMENV.I */
 /* track number of graf_mouse(M_ON/M_OFF) calls */
 CONST doSupervision = TRUE;
+
+CONST VDIChecks = FALSE;
 
 END GEMConf.

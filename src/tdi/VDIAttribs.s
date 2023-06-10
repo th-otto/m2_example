@@ -8,6 +8,7 @@ import GEMVDIbase, key =  2102H  CAE1H  2388H, modnum =  1  checksum: o.k.
 data size, number of bytes = 4  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 56
+SetWritingMode
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -16,9 +17,9 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 56
     12H        3F3C 0001                MOVE.W  #0001H,-(A7)
     16H        4267                     CLR.W   -(A7)
     18H        3F2E 000A                MOVE.W  000A(A6),-(A7)
-    1CH        4EB9 0000 0000           JSR     00000000H
+    1CH        4EB9 0000 0000           JSR     SetContrl
     22H        4FEF 000A                LEA     000A(A7),A7
-    26H        4EB9 0000 0000           JSR     00000000H
+    26H        4EB9 0000 0000           JSR     CallVDI
     2CH        3D79 0000 0218 000C      MOVE.W  00000218H,000C(A6)
     34H        4E5E                     UNLK    A6
     36H        4E75                     RTS
@@ -33,6 +34,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 84
+SetColour
  DECODE --------                        INSTRUCTION
      0H        4E56 FFF8                LINK    A6,#FFF8H
      4H        286E 0008                MOVE.L  0008(A6),A4
@@ -68,6 +70,7 @@ ref ext proc call at    42H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    4CH, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 56
+SetLineType
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -93,6 +96,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 48
+DefineLineStyle
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -115,6 +119,7 @@ ref ext proc call at    1EH, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 62
+SetLineWidth
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0118      MOVE.W  0008(A6),00000118H
@@ -143,6 +148,7 @@ ref ext proc call at    2EH, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    34H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 56
+SetLineColour
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -168,6 +174,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 56
+SetEndLineStyle
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000A 0000 0018      MOVE.W  000A(A6),00000018H
@@ -193,6 +200,7 @@ ref ext proc call at    26H, procnum =  2, modnum =  1  checksum: o.k.
 ref ext proc call at    30H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  8, entrypoint =     0H, number of bytes = 56
+SetMarkerType
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -218,6 +226,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  9, entrypoint =     0H, number of bytes = 62
+SetMarkerHeight
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        4279 0000 0118           CLR.W   00000118H
@@ -246,6 +255,7 @@ ref ext proc call at    2EH, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    34H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 10, entrypoint =     0H, number of bytes = 56
+SetMarkerColour
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -271,6 +281,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 11, entrypoint =     0H, number of bytes = 94
+SetAbsCharHeight
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        4279 0000 0118           CLR.W   00000118H
@@ -312,6 +323,7 @@ ref ext data at    4CH, modnum =  1  checksum: o.k.
 ref ext data at    56H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 12, entrypoint =     0H, number of bytes = 96
+SetPointCharHeight
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0018 0000 0018      MOVE.W  0018(A6),00000018H
@@ -353,6 +365,7 @@ ref ext data at    50H, modnum =  1  checksum: o.k.
 ref ext data at    56H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 13, entrypoint =     0H, number of bytes = 56
+SetRotation
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -378,6 +391,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 14, entrypoint =     0H, number of bytes = 56
+SetFont
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -403,6 +417,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 15, entrypoint =     0H, number of bytes = 56
+SetGraphicTextColour
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -428,6 +443,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 16, entrypoint =     0H, number of bytes = 56
+SetGraphicTextEffects
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -453,6 +469,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 17, entrypoint =     0H, number of bytes = 76
+SetGraphicTextAlignment
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0012 0000 0018      MOVE.W  0012(A6),00000018H
@@ -486,6 +503,7 @@ ref ext data at    3AH, modnum =  1  checksum: o.k.
 ref ext data at    44H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 18, entrypoint =     0H, number of bytes = 56
+SetFillInteriorStyle
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -511,6 +529,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 19, entrypoint =     0H, number of bytes = 56
+SetFillStyle
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -536,6 +555,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 20, entrypoint =     0H, number of bytes = 56
+SetFillColour
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -561,6 +581,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 21, entrypoint =     0H, number of bytes = 56
+SetFillPerimeterVisibility
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -586,6 +607,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 22, entrypoint =     0H, number of bytes = 66
+DefineFillPattern
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0070                MOVE.W  #0070H,-(A7)

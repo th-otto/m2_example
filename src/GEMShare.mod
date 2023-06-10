@@ -59,17 +59,8 @@ IMPORT GEMOps;
 
 (*  Misc. subroutines  *)
 (*  =================  *)
-
-PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
-BEGIN
-  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(nintin), 16) + SHIFT(BITSET(nintout), 8) + SHIFT(BITSET(naddrin), 0));
-END AES_CTRL_CODE;
-
-
-PROCEDURE VDI_CTRL_CODE(op, subcmd, nptsin, nintin: CARDINAL): CARDINAL32;
-BEGIN
-  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(subcmd), 16) + SHIFT(BITSET(nptsin), 8) + SHIFT(BITSET(nintin), 0));
-END VDI_CTRL_CODE;
+#include "AesCtrl.i"
+#include "VdiCtrl.i"
 
 
 PROCEDURE getCalcedFrame(frame:Rectangle; VAR pxy: PXY4);
@@ -262,17 +253,6 @@ BEGIN
   END;
   vdi_call(our_cb);
 END vdi_if;
-
-
-PROCEDURE setINT0attribut(handle:DeviceHandle; ctrlcode:CARDINAL32; intin0: INTEGER16);
-BEGIN
-  our_cb^.pubs.vINTIN[0] := intin0;
-  vdi_if(handle, ctrlcode);
-  IF our_cb^.pubs.vINTIN[0] <> intin0 THEN
-    errNum := 0;
-    signalGemError();
-  END;
-END setINT0attribut;
 
 
 (*  Von mehreren GEM Moduln benutzte GEM-Calls  *)

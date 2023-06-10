@@ -4,7 +4,7 @@ DEFINITION MODULE MOSCtrl;
  * Internes Modul!
  *)
 
-FROM SYSTEM IMPORT ADDRESS;
+FROM SYSTEM IMPORT ADDRESS, CSIZE_T;
 FROM GEMDOS IMPORT PtrBP;
 FROM MOSGlobals IMPORT MemArea;
 FROM PrgCtrl IMPORT PState;
@@ -87,7 +87,7 @@ TYPE PtrPDB = POINTER TO PDB;
              modLst       : POINTER TO ARRAY [1..65535] OF RECORD
                               head0: ADDRESS;
                               var0: ADDRESS;
-                              varlen0: LONGCARD;
+                              varlen0: CSIZE_T;
                               flags: BITSET;
                             END;
              modNo        : CARDINAL;

@@ -9,8 +9,7 @@ DEFINITION MODULE VDIAttribs;
 
     IMPORT SYSTEM;
 
-    TYPE
-      PxyArrayType = ARRAY [0H(*CARDINAL*)..3H(*CARDINAL*)] OF INTEGER;
+    TYPE PxyArrayType = ARRAY [0H(*CARDINAL*)..3H(*CARDINAL*)] OF INTEGER;
     
   END GEMVDIbase;
 
@@ -21,8 +20,7 @@ DEFINITION MODULE VDIAttribs;
 
     PROCEDURE SetWritingMode(* ProcNum:1 *)(INTEGER; INTEGER) : INTEGER;
     
-    PROCEDURE SetColour(* ProcNum:2 *)(INTEGER; INTEGER; GEMVDIbase.PxyArray
-Type);
+    PROCEDURE SetColour(* ProcNum:2 *)(INTEGER; INTEGER; GEMVDIbase.PxyArrayType);
     
     PROCEDURE SetLineType(* ProcNum:3 *)(INTEGER; INTEGER) : INTEGER;
     
@@ -40,37 +38,29 @@ Type);
     
     PROCEDURE SetMarkerColour(* ProcNum:10 *)(INTEGER; INTEGER) : INTEGER;
     
-    PROCEDURE SetAbsCharHeight(* ProcNum:11 *)(INTEGER; INTEGER; VAR INTEGER
-; VAR INTEGER; VAR INTEGER; VAR INTEGER);
+    PROCEDURE SetAbsCharHeight(* ProcNum:11 *)(INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
     
-    PROCEDURE SetPointCharHeight(* ProcNum:12 *)(INTEGER; INTEGER; VAR INTEG
-ER; VAR INTEGER; VAR INTEGER; VAR INTEGER) : INTEGER;
+    PROCEDURE SetPointCharHeight(* ProcNum:12 *)(INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER) : INTEGER;
     
     PROCEDURE SetRotation(* ProcNum:13 *)(INTEGER; INTEGER) : INTEGER;
     
     PROCEDURE SetFont(* ProcNum:14 *)(INTEGER; INTEGER) : INTEGER;
     
-    PROCEDURE SetGraphicTextColour(* ProcNum:15 *)(INTEGER; INTEGER) : INTEG
-ER;
+    PROCEDURE SetGraphicTextColour(* ProcNum:15 *)(INTEGER; INTEGER) : INTEGER;
     
-    PROCEDURE SetGraphicTextEffects(* ProcNum:16 *)(INTEGER; INTEGER) : INTE
-GER;
+    PROCEDURE SetGraphicTextEffects(* ProcNum:16 *)(INTEGER; INTEGER) : INTEGER;
     
-    PROCEDURE SetGraphicTextAlignment(* ProcNum:17 *)(INTEGER; INTEGER; INTE
-GER; VAR INTEGER; VAR INTEGER);
+    PROCEDURE SetGraphicTextAlignment(* ProcNum:17 *)(INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER);
     
-    PROCEDURE SetFillInteriorStyle(* ProcNum:18 *)(INTEGER; INTEGER) : INTEG
-ER;
+    PROCEDURE SetFillInteriorStyle(* ProcNum:18 *)(INTEGER; INTEGER) : INTEGER;
     
     PROCEDURE SetFillStyle(* ProcNum:19 *)(INTEGER; INTEGER) : INTEGER;
     
     PROCEDURE SetFillColour(* ProcNum:20 *)(INTEGER; INTEGER) : INTEGER;
     
-    PROCEDURE SetFillPerimeterVisibility(* ProcNum:21 *)(INTEGER; INTEGER) :
- INTEGER;
+    PROCEDURE SetFillPerimeterVisibility(* ProcNum:21 *)(INTEGER; INTEGER) : INTEGER;
     
-    PROCEDURE DefineFillPattern(* ProcNum:22 *)(INTEGER; VAR ARRAY INTEGER; 
-INTEGER);
+    PROCEDURE DefineFillPattern(* ProcNum:22 *)(INTEGER; VAR ARRAY INTEGER; INTEGER);
     
   END VDIAttribs;
 

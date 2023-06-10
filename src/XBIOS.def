@@ -256,7 +256,8 @@ PROCEDURE MFPint(intNo: CARDINAL16; vector: PROC);
    NOTE: for the RS232 device, an output record immediately follows the
            input record returned by this function. It may be accessed by:
          VAR x: IORECPTR;
-         x := IORECPTR(LONGCARD(IORec(RS232))+LONGCARD(TSIZE(IORec))); *)
+         x := IORec(RS232);
+         INC(x, TSIZE(IOREC)); *)
 PROCEDURE IORec(dev: SerialDevice): IORECPTR;
 
 (* configure RS232 port.

@@ -96,8 +96,7 @@ ARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
     
     PROCEDURE CallVDI(* ProcNum:1 *)();
     
-    PROCEDURE SetContrl(* ProcNum:2 *)(INTEGER; INTEGER; INTEGER; INTEGER; I
-NTEGER);
+    PROCEDURE SetContrl(* ProcNum:2 *)(OpCode: INTEGER; nptsin: INTEGER; nintin: INTEGER; subcmd: INTEGER; handle: INTEGER);
     
   END GEMVDIbase;
 

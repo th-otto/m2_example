@@ -116,17 +116,8 @@ CONST   maxParm         = 56;
 
 (*  misc. internal proc.s  *)
 (*  =====================  *)
-
-PROCEDURE AES_CTRL_CODE(op, nintin, nintout, naddrin: CARDINAL): CARDINAL32;
-BEGIN
-  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(nintin), 16) + SHIFT(BITSET(nintout), 8) + SHIFT(BITSET(naddrin), 0));
-END AES_CTRL_CODE;
-
-
-PROCEDURE VDI_CTRL_CODE(op, subcmd, nptsin, nintin: CARDINAL): CARDINAL32;
-BEGIN
-  RETURN CARDINAL32(SHIFT(BITSET(op), 24) + SHIFT(BITSET(subcmd), 16) + SHIFT(BITSET(nptsin), 8) + SHIFT(BITSET(nintin), 0));
-END VDI_CTRL_CODE;
+#include "AesCtrl.i"
+#include "VdiCtrl.i"
 
 
 PROCEDURE outOfMemory();

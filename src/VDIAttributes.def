@@ -1,0 +1,290 @@
+DEFINITION MODULE VDIAttributes;
+
+
+(*  Megamax Modula-2 GEM-Library :  Die VDI Attributfunktionen
+ *
+ *  Autor: Manuel Chakravarty           Erstellt :  04.11.87
+ *
+ *  Version   2.2     V#0008
+ *)
+
+(*      Mit Hilfe der Routinen dieses Moduls wird festgelegt, auf welche
+ *      Art und Weise die Ausgabeoperationen des Moduls 'VDIOutput' vor-
+ *      genommen werden sollen. Die hierfuer notwendigen Aufzaehlungstypen
+ *      muessen aus 'GEMGlobals' importiert werden. Ausserdem sind in 'Graf
+ *      Base' die 16 Farben der Standardfarbpalette als Konstanten vor-
+ *      definiert.
+ *      Versucht man einen Wert zu setzen, der vom GEM nicht akzeptiert
+ *      wird, so liefert 'GEMEnv.GemError' den Wert 'TRUE' und mit 'GEMEnv.
+ *      ErrorNumber' kann die Rueckgabe des GEM erfragt werden. Diese Rueck-
+ *      gabe stellt gleichzeitig den Wert dar, der vom GEM ersatzweise ge-
+ *      setzt wurde (als Ordinalzahl).
+ *)
+
+
+FROM    SYSTEM     IMPORT CARDINAL16;
+
+FROM    GrafBase   IMPORT WritingMode, BitBlk16x16;
+
+FROM    GEMGlobals IMPORT LineType, LineEnding, MarkerType, TEffectSet,
+                          TVertJust, THorJust, FillType;
+
+FROM    GEMShare   IMPORT DeviceHandle;
+
+FROM GEMVDIbase IMPORT PxyArrayType;
+
+
+(*  Mit Hilfe dieser Routine wird der aktuelle Zeichenmodus
+ *  fuer alle VDI Ausgaberoutinen festgelegt.
+ *)
+PROCEDURE SetWritingMode(handle: DeviceHandle; mode: WritingMode);
+
+(*  Hiermit wird das Aussehen der Farbe bestimmt, die den Farb-
+ *  index 'color' hat. 'red', 'green' und 'blue' geben den RGB-
+ *  Wert der Farbe in Promille an (Wertebereich 0 - 1000).
+ *)
+PROCEDURE DefineColor(handle: DeviceHandle; color, red, green, blue: CARDINAL16);
+(* not quite right: PxyArrayType has 4 elements *)
+PROCEDURE SetColour(handle: DeviceHandle; color: INTEGER; rgb: PxyArrayType);
+
+(*  Linien Attribute  *)
+(*  ================  *)
+
+
+(*  Der aktuelle Linientyp wird festgelegt, dabei gibt es
+ *  folgende Moeglichkeiten:
+ *
+ *  'solidLn'      -- Durchgezogene Linie ( **************** )
+ *  'longDashLn'   -- Gestrichelte Linie  ( ************---- )
+ *  'dottedLn'     -- Gepunktete Linie    ( ***-----**------ )
+ *  'dashDotLn'    --                     ( ******---***---- )
+ *  'dashedLn'     -- Kurz gestrichelt    ( ********-------- )
+ *  'dashDotDotLn' --                     ( ****---**--**--- )
+ *  'userLn'       -- Benutzerdefiniertes Linienmuster
+ *)
+PROCEDURE SetLineType(handle: DeviceHandle; type: LineType);
+
+(*  Mit dieser Routine kann man das benutzerdefinierte Linien-
+ *  muster festlegen. Das hoechstwertige Bit legt den linken
+ *  Punkt des Musters fest.
+ *)
+PROCEDURE DefUserLine(handle: DeviceHandle; pattern: CARDINAL16);
+(* PROCEDURE DefineLineStyle(INTEGER; INTEGER); *)
+
+(*  Hiermit legt man die Linienstaerke in Pixel fest.
+ *  Es sind nur ungerade Zahlen erlaubt.
+ *)
+PROCEDURE SetLineWidth(handle: DeviceHandle; width: CARDINAL16);
+
+(*  Es wird festgelegt welcher Farbnindex 'color' zum Zeichnen
+ *  von Linien verwendet werden soll.
+ *)
+PROCEDURE SetLineColor(handle: DeviceHandle; color: CARDINAL16);
+CONST SetLineColour = SetLineColor;
+
+
+(*  Das Aussehen der Linienenden wird bestimmt, es bedeutet:
+ *
+ *  'edgedLn'   -- Eckiges Ende (Standardwert)
+ *  'arrowedLn' -- Pfeilartiges Ende
+ *  'roundedLn' -- Abgerundetes Ende
+ *)
+PROCEDURE SetLineEndings(handle: DeviceHandle; begin, end: LineEnding);
+CONST SetEndLineStyle = SetLineEndings;
+
+
+(*  Markierungs Attribute  *)
+(*  =====================  *)
+
+
+(*  Damit bestimmt man das Aussehen von Markierungen,
+ *  wobei man die folgenden Alternativen hat:
+ *
+ *  'pointMark'   -- Einzelner Punkt
+ *  'plusMark'    -- Pluszeichen
+ *  'starMark'    -- Stern ('*')
+ *  'squareMark'  -- Quadrat
+ *  'crossMark'   -- Kreuz ('X')
+ *  'diamondMark' -- Raute
+ *)
+PROCEDURE SetMarkerType(handle: DeviceHandle; type: MarkerType);
+
+(*  Die Groesse einer einzelnen Markierung wird mit dieser Routine
+ *  festgelegt.
+ *
+ *  Hinweis: Beim ATARI sind nur Vielfache von 11 erlaubt.
+ *)
+PROCEDURE SetMarkerHeight(handle: DeviceHandle; height: CARDINAL16);
+
+(*  Hiermit wird die Markierungsfarbe bestimmt.
+ *)
+PROCEDURE SetMarkerColor(handle: DeviceHandle; color: CARDINAL16);
+CONST SetMarkerColour = SetMarkerColor;
+
+
+(*  Text Attribute  *)
+(*  ==============  *)
+
+(*  Diese Routine dient zum Einstellen der Texthoehe.
+ *
+ *  'height'    -- Die Hoehe von der Grundlinie (baseline) bis
+ *                 zum oberen Rand (topline).
+ *  'handle'    -- bezeichnet das Ausgabegeraet.
+ *
+ *  Ausgabeparameter
+ *  ----------------
+ *  die neuen Werte fuer
+ *  'charW'     -- Zeichenbreite
+ *  'charH'     -- Zeichenhoehe
+ *  'cellW'     -- Zellenbreite
+ *  'cellH'     -- Zellenhoehe
+ *
+ *  Bei einem proportionalen Zeichensatz wird die Breite des
+ *  breitesten Zeichens zurueckgegeben.
+ *)
+PROCEDURE SetAbsTHeight(handle: DeviceHandle; height: CARDINAL16; VAR charW, charH, cellW, cellH: CARDINAL16);
+
+(*  Entspricht im wesentlichen 'SetAbsTHeight', nur wird hier
+ *  die Hoehe der gesamten Zeichenzelle angegeben.
+ *
+ *  'height'    -- Hoehe der Zelle in Punkt, wobei ein Punkt
+ *                 1/72 Inch entspricht
+ *
+ *  Die VAR-Parameter entsprechen denen von 'SetAbsTHeight'.
+ *)
+PROCEDURE SetPtsTHeight(handle: DeviceHandle; height: CARDINAL16; VAR charW, charH, cellW, cellH: CARDINAL16);
+CONST SetPointCharHeight = SetPtsTHeight;
+
+(*  Die Ausrichtung der Grundlinie (base line) wird in 1/10 Grad
+ *  angegeben.
+ *
+ *  'angle'     -- Die gesamte Ausgabe wird um 1/10 * angle
+ *                 Grad entgegen dem Uhrzeigersinn gedreht.
+ *                 Leider sind hierfuer nur die Werte 0, 900,
+ *                 1800, 2700 erlaubt.
+ *)
+PROCEDURE SetTBaseLine(handle: DeviceHandle; angle: CARDINAL16);
+CONST SetRotation = SetTBaseLine;
+
+(*  Hiermit kann man den Zeichensatz bestimmen, der forthin bei
+ *  Textausgaben benutzt werden soll.
+ *  Die Font-Nummer wird bei VDIInquires.GetFaceName ermittelt.
+ *)
+PROCEDURE SetTextFace(handle: DeviceHandle; font: CARDINAL16);
+CONST SetFont = SetTextFace;
+
+(*  Der Farbindex der fuer die Textausgabe bestimmten Farbe
+ *  wird festgelegt.
+ *)
+PROCEDURE SetTextColor(handle: DeviceHandle; color: CARDINAL16);
+CONST SetGraphicTextColour = SetTextColor;
+
+
+(*  Damit koennen bei Textausgaben besondere Effekte erzielt
+ *  werden. Folgende Effekte, die beliebig kombiniert werden
+ *  koennen, stehen zur Verfuegung:
+ *
+ *  'thickText'     -- Fettschrift
+ *  'lightText'     -- Aufgehellte Schrift
+ *  'slantText'     -- Kursive Schrift
+ *  'underlineText' -- Die Schrift wird unterstrichen
+ *  'outlineText'   -- Umrahmte Schrift
+ *  'shadowText'    -- Schrift wird schattiert (Ist im GEM noch
+ *                     nicht implementiert)
+ *
+ *  Hinweis: Einige Kombinationen sind allerdings nicht besonders
+ *           sehenswert.
+ *)
+PROCEDURE SetTextEffects(handle: DeviceHandle; effects: TEffectSet);
+CONST SetGraphicTextEffects = SetTextEffects;
+
+
+(*  Hiermit kann der Text horizontal und vertikal ausgerichtet
+ *  werden.
+ *
+ *  Horizontale Ausrichtung:
+ *
+ *  'leftJust'   -- Der Text wird linksbuendig ausgegeben (Standardwert)
+ *  'centerJust' -- Der Text wird zentriert
+ *  'rightJust'  -- Der Text wird rechtsbuendig ausgegeben
+ *
+ *  Vertikale Ausrichtung,
+ *
+ *  'baseJust'    -- an der base line (Grundlinie; Standardwert)
+ *  'halfJust'    -- an der half line (Grenze der Kleinbuchstaben)
+ *  'ascentJust'  -- an der ascent line (Grenze der Grossbuchstaben)
+ *  'bottomJust'  -- an der bottom line (Unterer Rand der Zeichenzelle)
+ *  'descentJust' -- an der descent line (Grenze der Unterlaengen)
+ *  'topJust'     -- an der top line (Oberer Rand der Zeichenzelle
+ *)
+PROCEDURE SetTAlignment(handle: DeviceHandle; hor: THorJust; vert: TVertJust);
+CONST SetGraphicTextAlignment = SetTAlignment;
+
+
+(*  Fuell Attribute  *)
+(*  ==============  *)
+
+
+(*  Damit wird der Fuelltyp bestimmt. Es werden folgende Typen
+ *  unterstuetzt:
+ *
+ *  'hollowFill'   -- Die Flaeche wird nicht gefuellt.
+ *  'solidFill'    -- Die Flaeche wird vollstaendig mit der aktuellen
+ *                    Fuellfarbe gefuellt.
+ *  'dottPattern'  -- Die Flaeche wird mit einem Punktmuster gefuellt.
+ *  'hatchPattern' -- Die Flaeche wird mit einem Strichmuster gefuellt.
+ *  'userPattern'  -- Die Flaeche wird mit einem selbstdefinierten
+ *                    Muster gefuellt.
+ *)
+PROCEDURE SetFillType(handle: DeviceHandle; type: FillType);
+CONST SetFillInteriorStyle = SetFillType;
+
+(*  Diese Routine dient zum setzen des aktuellen Fuellmusters.
+ *  Ist der Fuelltyp 'dottPattern', so kann man aus 24 ver-
+ *  schiedenen Punktmuster eines auswaehlen(index = 1..24),
+ *  beim Typ 'hatchPattern' stehen 12 unterschiedliche Schraf-
+ *  furen zur Auswahl(index = 1..12).
+ *)
+PROCEDURE SetFillIndex(handle: DeviceHandle; index: CARDINAL16);
+CONST SetFillStyle = SetFillIndex;
+
+(*  Der Farbindex der aktuellen Fuellfarbe wird festgelegt.
+ *)
+PROCEDURE SetFillColor(handle: DeviceHandle; color: CARDINAL16);
+CONST SetFillColour = SetFillColor;
+
+(*  Diese Procedur erlaubt es, die Umrahmung von Fuellflaechen
+ *  ein- und auszuschalten. Der Rahmen wird, falls gewuenscht,
+ *  in der aktuellen Fuellfarbe gezeichnet und die Linienattri-
+ *  bute werden nicht beachtet.
+ *
+ *  'TRUE'  -- Rahmen zeichnen
+ *  'FALSE' -- Rahmen weglassen
+ *)
+PROCEDURE SetFillPerimeter(handle: DeviceHandle; visible: BOOLEAN);
+CONST SetFillPerimeterVisibility = SetFillPerimeter;
+
+
+TYPE    FillPattern     = RECORD
+                    planes : CARDINAL16;
+                    pattern: ARRAY[0..7] OF BitBlk16x16;
+                  END;
+PtrFillPattern  = POINTER TO FillPattern;
+
+(*  Hiermit kann ein eigenes Fuellmuster definiert werden.
+ *  'pattern' ist ein Zeiger auf eine Fuellmusterdefinition.
+ *
+ *  In 'pattern^.planes' wird die Anzahl der Bitebenen ein-
+ *  getragen, dabei gilt:
+ *
+ *      Hohe Aufloesung     -- 1 Bitebene  (schwarz/weiss Darstellung)
+ *      Mittlere Aufloesung -- 2 Bitebenen (4 verschiedene Farben)
+ *      Niedrige Aufloesung -- 4 Bitebenen (16 verschiedene Farben)
+ *
+ *  In dem varianten Teil des Records wird fuer jede Bitebene
+ *  ein 16 x 16 Bit grosses Muster angegeben.
+ *)
+PROCEDURE DefUserFill(handle: DeviceHandle; pattern: PtrFillPattern);
+CONST DefineFillPattern = DefUserFill;
+
+END VDIAttributes.

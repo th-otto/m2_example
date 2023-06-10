@@ -46,6 +46,7 @@ OBJS = \
 	CookieJar.o \
 	KbdEvents.o \
 	XBRA.o \
+	VDIAttributes.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -94,6 +95,7 @@ SysInfo.o: SysInfo.mod SysInfo.def
 CookieJar.o: CookieJar.mod CookieJar.def
 KbdEvents.o: KbdEvents.mod KbdEvents.def
 XBRA.o: XBRA.mod XBRA.def
+VDIAttributes.o: VDIAttributes.mod VDIAttributes.def
 
 clean::
 	rm -f *.o *.a

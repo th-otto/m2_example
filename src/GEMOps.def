@@ -413,36 +413,36 @@ X       DC.B    0, 0         ; func 002 close workstation
     ;
         DC.B    0, 0         ; func 010  cell array(ruft vdi_call direkt auf)
         DC.B    0, 0         ; func 011   (* Graf.Grundfkten *)
-        DC.B    1, 0         ; func 012  text height abs.
-        DC.B    0, 1         ; func 013  baseline
-        DC.B    0, 4         ; func 014  color rep
-        DC.B    0, 1         ; func 015  line type
-        DC.B    1, 0         ; func 016  line width
-        DC.B    0, 1         ; func 017  line color
-        DC.B    0, 1         ; func 008  marker type
-        DC.B    1, 0         ; func 019  marker height
+X       DC.B    1, 0         ; func 012  text height abs.
+X       DC.B    0, 1         ; func 013  baseline
+X       DC.B    0, 4         ; func 014  color rep
+X       DC.B    0, 1         ; func 015  line type
+X       DC.B    1, 0         ; func 016  line width
+X       DC.B    0, 1         ; func 017  line color
+X       DC.B    0, 1         ; func 018  marker type
+X       DC.B    1, 0         ; func 019  marker height
     ;
-        DC.B    0, 1         ; func 020  marker color
-        DC.B    0, 1         ; func 021  text face
-        DC.B    0, 1         ; func 022  text color
-        DC.B    0, 1         ; func 023  fill interior
-        DC.B    0, 1         ; func 024  fill index
-        DC.B    0, 1         ; func 025  fill color
+X       DC.B    0, 1         ; func 020  marker color
+X       DC.B    0, 1         ; func 021  text face
+X       DC.B    0, 1         ; func 022  text color
+X       DC.B    0, 1         ; func 023  fill interior
+X       DC.B    0, 1         ; func 024  fill index
+X       DC.B    0, 1         ; func 025  fill color
         DC.B    0, 2         ; func 026  inq. color
         DC.B    2, 0         ; func 027  inq. cell array
         DC.B    1, 0         ; func 028  inp loc
-        DC.B    0, 1         ; func 009  inp val
+        DC.B    0, 1         ; func 029  inp val
     ;
         DC.B    0, 0         ; func 030  inp choice ( vdi_call direkt )
         DC.B    1, 2         ; func 031  inp str
-        DC.B    0, 1         ; func 032  writing mode
+X       DC.B    0, 1         ; func 032  writing mode
         DC.B    0, 2         ; func 033  set_input_mode
         DC.B    2, 0         ; func 034
-        DC.B    0, 0         ; func 005  inq. line
-        DC.B    0, 0         ; func 006  inq. mark
-        DC.B    0, 0         ; func 007  inq. fill
-        DC.B    0, 0         ; func 008  inq. text
-        DC.B    0, 2         ; func 009  text alig
+        DC.B    0, 0         ; func 035  inq. line
+        DC.B    0, 0         ; func 036  inq. mark
+        DC.B    0, 0         ; func 037  inq. fill
+        DC.B    0, 0         ; func 038  inq. text
+X       DC.B    0, 2         ; func 039  text alig
     ;
         DC.B    1, 0         ; func 040
         DC.B    1, 0         ; func 041
@@ -457,25 +457,25 @@ X       DC.B    0, 0         ; func 002 close workstation
     ;
         DC.B    1, 0         ; func 050
         DC.B    1, 0         ; func 051
-        DC.B    1, 0         ; func 002
-        DC.B    0, 0         ; func 003
-        DC.B    1, 0         ; func 004
-        DC.B    1, 0         ; func 005
-        DC.B    1, 0         ; func 006
-        DC.B    0, 0         ; func 007
-        DC.B    0, 0         ; func 008
-        DC.B    0, 0         ; func 009
+        DC.B    1, 0         ; func 052
+        DC.B    0, 0         ; func 053
+        DC.B    1, 0         ; func 054
+        DC.B    1, 0         ; func 055
+        DC.B    1, 0         ; func 056
+        DC.B    0, 0         ; func 057
+        DC.B    0, 0         ; func 058
+        DC.B    0, 0         ; func 059
     ;
         DC.B    0, 0         ; func 060
         DC.B    0, 0         ; func 061
         DC.B    0, 0         ; func 062
-        DC.B    0, 0         ; func 003
-        DC.B    1, 0         ; func 004
-        DC.B    1, 0         ; func 005
-        DC.B    1, 0         ; func 006
-        DC.B    0, 0         ; func 007
-        DC.B    0, 0         ; func 008
-        DC.B    0, 0         ; func 009
+        DC.B    0, 0         ; func 063
+        DC.B    1, 0         ; func 064
+        DC.B    1, 0         ; func 065
+        DC.B    1, 0         ; func 066
+        DC.B    0, 0         ; func 067
+        DC.B    0, 0         ; func 068
+        DC.B    0, 0         ; func 069
     ;
         DC.B    0, 0         ; func 070
         DC.B    0, 0         ; func 071
@@ -486,45 +486,45 @@ X       DC.B    0, 0         ; func 002 close workstation
         DC.B    1, 0         ; func 076
         DC.B    0, 0         ; func 077
         DC.B    1, 0         ; func 078
-        DC.B    0, 0         ; func 009
+        DC.B    0, 0         ; func 079
     ;
         DC.B    1, 0         ; func 080
         DC.B    1, 0         ; func 081
         DC.B    0, 0         ; func 082
         DC.B    0, 0         ; func 083
         DC.B    0, 0         ; func 084
-        DC.B    1, 0         ; func 005
-        DC.B    1, 0         ; func 006
-        DC.B    0, 0         ; func 007
-        DC.B    0, 0         ; func 008
-        DC.B    0, 0         ; func 009
+        DC.B    1, 0         ; func 085
+        DC.B    1, 0         ; func 086
+        DC.B    0, 0         ; func 087
+        DC.B    0, 0         ; func 088
+        DC.B    0, 0         ; func 089
     ;
         DC.B    2, 0         ; func 090
         DC.B    0, 0         ; func 091
         DC.B    0, 0         ; func 092
-        DC.B    0, 0         ; func 003
-        DC.B    0, 0         ; func 004
-        DC.B    1, 0         ; func 005
-        DC.B    1, 0         ; func 006
-        DC.B    0, 0         ; func 007
-        DC.B    0, 0         ; func 008
-        DC.B    0, 0         ; func 009
+        DC.B    0, 0         ; func 093
+        DC.B    0, 0         ; func 094
+        DC.B    1, 0         ; func 095
+        DC.B    1, 0         ; func 096
+        DC.B    0, 0         ; func 097
+        DC.B    0, 0         ; func 098
+        DC.B    0, 0         ; func 099
     ;
         DC.B    0, 11        ; func 100  open work
 X       DC.B    0, 0         ; func 101  close work
 X       DC.B    0, 1         ; func 102  ext. inquire
         DC.B    1, 1         ; func 103  contour fill
-        DC.B    0, 1         ; func 104  fill perim.
+X       DC.B    0, 1         ; func 104  fill perim.
         DC.B    1, 0         ; func 105  get pixel
-        DC.B    0, 1         ; func 106  text effect
-        DC.B    0, 1         ; func 107  text height pts
-        DC.B    0, 2         ; func 108  line end
+X       DC.B    0, 1         ; func 106  text effect
+X       DC.B    0, 1         ; func 107  text height pts
+X       DC.B    0, 2         ; func 108  line end
         DC.B    4, 1         ; func 109  copy opaque
     ;
         DC.B    0, 0         ; func 110  transform form
         DC.B    0, 37        ; func 111  mouse form
-        DC.B    0, 0         ; func 112  user fill( ruft vdi_call direkt )
-        DC.B    0, 1         ; func 113  user line
+X       DC.B    0, n         ; func 112  user fill
+X       DC.B    0, 1         ; func 113  user line
         DC.B    2, 0         ; func 114  fill rect
         DC.B    0, 1         ; func 115  inq. input
         DC.B    0, 0         ; func 116  text ext.( ruft vdi_call direkt )
