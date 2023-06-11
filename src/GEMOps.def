@@ -406,13 +406,13 @@ X       DC.B    0, 0         ; func 002 close workstation
 X       DC.B    0, 0         ; func 003 clear workstation
 X       DC.B    0, 0         ; func 004 update works.
 X       DC.B    0, 0         ; func 005 escape funktions
-        DC.B    0, 0         ; func 006 polyline(ruft vdi_call direkt auf)
-        DC.B    0, 0         ; func 007 polymarker(ruft vdi_call direkt auf)
-        DC.B    0, 0         ; func 008 graftext(ruft vdi_call direkt auf)
-        DC.B    0, 0         ; func 009 filled polygon(ruft vdi_call direkt)
+X       DC.B    n, 0         ; func 006 polyline
+X       DC.B    n, 0         ; func 007 polymarker
+X       DC.B    1, n         ; func 008 graftext
+X       DC.B    n, 0         ; func 009 filled polygon
     ;
-        DC.B    0, 0         ; func 010  cell array(ruft vdi_call direkt auf)
-        DC.B    0, 0         ; func 011   (* Graf.Grundfkten *)
+X       DC.B    0, 0         ; func 010  cell array(ruft vdi_call direkt auf)
+X       DC.B    0, 0         ; func 011   (* Graf.Grundfkten *)
 X       DC.B    1, 0         ; func 012  text height abs.
 X       DC.B    0, 1         ; func 013  baseline
 X       DC.B    0, 4         ; func 014  color rep
@@ -513,7 +513,7 @@ X       DC.B    0, 2         ; func 039  text alig
 X       DC.B    0, 11        ; func 100  open work
 X       DC.B    0, 0         ; func 101  close work
 X       DC.B    0, 1         ; func 102  ext. inquire
-        DC.B    1, 1         ; func 103  contour fill
+X       DC.B    1, 1         ; func 103  contour fill
 X       DC.B    0, 1         ; func 104  fill perim.
         DC.B    1, 0         ; func 105  get pixel
 X       DC.B    0, 1         ; func 106  text effect
@@ -525,7 +525,7 @@ X       DC.B    0, 2         ; func 108  line end
 X       DC.B    0, 37        ; func 111  mouse form
 X       DC.B    0, n         ; func 112  user fill
 X       DC.B    0, 1         ; func 113  user line
-        DC.B    2, 0         ; func 114  fill rect
+X       DC.B    2, 0         ; func 114  fill rect
 X       DC.B    0, 1         ; func 115  inq. input
 X       DC.B    0, n         ; func 116  text ext.
 X       DC.B    0, 1         ; func 117  inq. cell
@@ -554,17 +554,17 @@ PROCEDURE ctrl_cnts3;
 
   BEGIN
     ASSEMBLER
-        DC.B        0, 0      ; *DUMMY*
-        DC.B        2, 0      ; #1  Bar
-        DC.B        4, 2      ; #2  Arc
-        DC.B        4, 2      ; #3  Pie
-        DC.B        3, 0      ; #4  Circle
-        DC.B        2, 0      ; #5  Ellipse
-        DC.B        2, 2      ; #6  ElliptArc
-        DC.B        2, 2      ; #7  ElliptPie
-        DC.B        2, 0      ; #8  RoundRect
-        DC.B        2, 0      ; #9  FillRoundRect
-        DC.B        0, 0      ; #10 JustText ( ruft vdi_call direkt auf )
+X       DC.B        0, 0      ; *DUMMY*
+X       DC.B        2, 0      ; #1  Bar
+X       DC.B        4, 2      ; #2  Arc
+X       DC.B        4, 2      ; #3  Pie
+X       DC.B        3, 0      ; #4  Circle
+X       DC.B        2, 0      ; #5  Ellipse
+X       DC.B        2, 2      ; #6  ElliptArc
+X       DC.B        2, 2      ; #7  ElliptPie
+X       DC.B        2, 0      ; #8  RoundRect
+X       DC.B        2, 0      ; #9  FillRoundRect
+X       DC.B        0, 0      ; #10 JustText ( ruft vdi_call direkt auf )
     END;
   END ctrl_cnts3;
 
@@ -599,7 +599,7 @@ X       DC.B    2, 0    ; #21 OutWind
 X       DC.B    0, 0    ; #22 ClrDispList
 X       DC.B    2, n    ; #23 BitImg (direkt)
         
-      ; DC.B    0, 1    ; #60 SelPalette (direkt)
+X     ; DC.B    0, 1    ; #60 SelPalette (direkt)
         
     END;
   END ctrl_cnts4;
@@ -608,18 +608,18 @@ PROCEDURE ctrl_cnts5;
 
   BEGIN
     ASSEMBLER
-        DC.B    0, 0    ; #91 vqp_films
-        DC.B    0, 0    ; #92 vqp_state
-        DC.B    0, 21   ; #93 vsp_state
-        DC.B    0, 0    ; #94 vsp_save
-        DC.B    0, 0    ; #95 vsp_message
-        DC.B    0, 0    ; #96 vsp_error
+X       DC.B    0, 0    ; #91 vqp_films
+X       DC.B    0, 0    ; #92 vqp_state
+X       DC.B    0, 21   ; #93 vsp_state
+X       DC.B    0, 0    ; #94 vsp_save
+X       DC.B    0, 0    ; #95 vsp_message
+X       DC.B    0, 0    ; #96 vsp_error
         DC.B    0, 0    ; #97
-        DC.B    2, 0    ; #98 v_meta_extents
-        DC.B    0, 0    ; #99 v_write_meta (direkt)
-        DC.B    0, 0    ; #100 vm_filename (direkt)
-        DC.B    0, 1    ; #101 v_offset
-        DC.B    0, 2    ; #102 v_fontinit
+X       DC.B    2, 0    ; #98 v_meta_extents
+X       DC.B    0, 0    ; #99 v_write_meta (direkt)
+X       DC.B    0, 0    ; #100 vm_filename (direkt)
+X       DC.B    0, 1    ; #101 v_offset
+X       DC.B    0, 2    ; #102 v_fontinit
     END;
   END ctrl_cnts5;
 

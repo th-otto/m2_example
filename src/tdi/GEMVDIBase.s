@@ -47,26 +47,26 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 142
      6H        4E56 0000                LINK    A6,#0000H
      AH        49F9 0000 0018           LEA     00000018H,A4
     10H        2A0C                     MOVE.L  A4,D5
-    12H        23C5 0000 041C           MOVE.L  D5,0000041CH
+    12H        23C5 0000 041C           MOVE.L  D5,0000041CH ADRintin := ADR(intin)
     18H        49F9 0000 0118           LEA     00000118H,A4
     1EH        2A0C                     MOVE.L  A4,D5
-    20H        23C5 0000 0420           MOVE.L  D5,00000420H
+    20H        23C5 0000 0420           MOVE.L  D5,00000420H ADRptsin := ADR(ptsin)
     26H        49F9 0000 0218           LEA     00000218H,A4
     2CH        2A0C                     MOVE.L  A4,D5
-    2EH        23C5 0000 0424           MOVE.L  D5,00000424H
+    2EH        23C5 0000 0424           MOVE.L  D5,00000424H ADRintout := ADR(intout)
     34H        49F9 0000 0318           LEA     00000318H,A4
     3AH        2A0C                     MOVE.L  A4,D5
-    3CH        23C5 0000 0428           MOVE.L  D5,00000428H
+    3CH        23C5 0000 0428           MOVE.L  D5,00000428H ADRptsout := ADR(ptsout)
     42H        49F9 0000 0000           LEA     00000000H,A4
     48H        2A0C                     MOVE.L  A4,D5
-    4AH        23C5 0000 0430           MOVE.L  D5,00000430H
-    50H        23F9 0000 041C 0000 0434 MOVE.L  0000041CH,00000434H
-    5AH        23F9 0000 0420 0000 0438 MOVE.L  00000420H,00000438H
-    64H        23F9 0000 0424 0000 043C MOVE.L  00000424H,0000043CH
-    6EH        23F9 0000 0428 0000 0440 MOVE.L  00000428H,00000440H
+    4AH        23C5 0000 0430           MOVE.L  D5,00000430H parameterBlock[0] := ADR(contrl)
+    50H        23F9 0000 041C 0000 0434 MOVE.L  0000041CH,00000434H parameterBlock[1] := ADRintin
+    5AH        23F9 0000 0420 0000 0438 MOVE.L  00000420H,00000438H parameterBlock[2] := ADRptsin
+    64H        23F9 0000 0424 0000 043C MOVE.L  00000424H,0000043CH parameterBlock[3] := ADRintout
+    6EH        23F9 0000 0428 0000 0440 MOVE.L  00000428H,00000440H parameterBlock[4] := ADRptsout
     78H        49F9 0000 0430           LEA     00000430H,A4
     7EH        2A0C                     MOVE.L  A4,D5
-    80H        23C5 0000 042C           MOVE.L  D5,0000042CH
+    80H        23C5 0000 042C           MOVE.L  D5,0000042CH ADRParams := ADR(parameterBlock)
     86H        4E5E                     UNLK    A6
     88H        4EF9 0000 0000           JMP     00000000H
   checksum: o.k.

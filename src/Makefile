@@ -52,6 +52,7 @@ OBJS = \
 	VDIInputs.o \
 	VDIInputx.o \
 	VDIInquires.o \
+	VDIOutputs.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -106,6 +107,7 @@ VDIEscapes.o: VDIEscapes.mod VDIEscapes.def GEMOps.def
 VDIInputs.o: VDIInputs.mod VDIInputs.def GEMOps.def
 VDIInputx.o: VDIInputx.mod VDIInputx.def GEMOps.def
 VDIInquires.o: VDIInquires.mod VDIInquires.def GEMOps.def
+VDIOutputs.o: VDIOutputs.mod VDIOutputs.def GEMOps.def
 
 clean::
 	rm -f *.o *.a

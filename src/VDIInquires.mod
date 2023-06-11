@@ -336,7 +336,7 @@ BEGIN
   usedRows := 0;
   undef := FALSE;
   colArray[0] := 0;
-  HALT();
+  DoTRAP6(MOSGlobals.IllegalCall);
 END GetCellArray;
 
 
@@ -375,4 +375,6 @@ BEGIN
   effects[2] := GEMShare.our_cb^.pubs.PTSOUT[6];
 END InquireFaceInfo;
 
+BEGIN
+  IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END VDIInquires.
