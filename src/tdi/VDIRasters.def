@@ -34,18 +34,13 @@ DEFINITION MODULE VDIRasters;
                    rsrvd2(*offset: 10H*)  : CARDINAL;
                  END;(*size: 12H*);
                
-    PROCEDURE CopyRasterOpaque(* ProcNum:1 *)(INTEGER; INTEGER; VAR GEMVDIba
-se.BigPxyArrayType; SYSTEM.ADDRESS; SYSTEM.ADDRESS);
+    PROCEDURE CopyRasterOpaque(* ProcNum:1 *)(INTEGER; INTEGER; VAR GEMVDIbase.BigPxyArrayType; SYSTEM.ADDRESS; SYSTEM.ADDRESS);
     
-    PROCEDURE CopyRasterTransparent(* ProcNum:2 *)(INTEGER; INTEGER; VAR GEM
-VDIbase.BigPxyArrayType; VAR SYSTEM.ADDRESS; VAR SYSTEM.ADDRESS; VAR GEMVDIb
-ase.SmallArrayType);
+    PROCEDURE CopyRasterTransparent(* ProcNum:2 *)(INTEGER; INTEGER; VAR GEMVDIbase.BigPxyArrayType; VAR SYSTEM.ADDRESS; VAR SYSTEM.ADDRESS; VAR GEMVDIbase.SmallArrayType);
     
-    PROCEDURE TransformForm(* ProcNum:3 *)(INTEGER; SYSTEM.ADDRESS; SYSTEM.A
-DDRESS);
+    PROCEDURE TransformForm(* ProcNum:3 *)(INTEGER; SYSTEM.ADDRESS; SYSTEM.ADDRESS);
     
-    PROCEDURE GetPixel(* ProcNum:4 *)(INTEGER; INTEGER; INTEGER; VAR INTEGER
-; VAR INTEGER);
+    PROCEDURE GetPixel(* ProcNum:4 *)(INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER);
     
   END VDIRasters;
 

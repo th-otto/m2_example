@@ -1,0 +1,99 @@
+DEFINITION MODULE VDIRasters;
+
+
+(*  Megamax-Modula 2 GEM-Library :  Die VDI Rasterfunktionen
+ *
+ *  Autor: Manuel Chakravarty           Erstellt :  04.11.87
+ *
+ *  Version   2.2     V#0011
+ *)
+
+(*      Die Routinen dieses Moduls bieten zum einen die Moeglichkeit,
+ *      beliebige Grafikausschnitte zu verschieben und zum anderen
+ *      kann die Farbe beliebiger Pixel ermittelt werden.
+ *      Der Arbeitsbereich der Kopierroutinen ist nicht auf die VDI
+ *      Geraete beschraenkt, vielmehr kann man nahezu unbeschraenkt auf
+ *      beliebige Speicherbereiche zugreifen. Dazu ist es aber noetig
+ *      den Aufbau des zu verwendenden Speicherausschnittes in einem
+ *      Memory Form Definition Block (kurz: MFDB) zu beschreiben. Den
+ *      von dem MFDB beschriebenen Speicher kann man sich als einen
+ *      in seiner Groesse (fast) frei waehlbaren Bildschirmspeicher vor-
+ *      stellen. Diese Assoziation erklaert auch die im MFDB-Record
+ *      gewaehlten Field-Bezeichner.
+ *      Eine genauere Beschreibung des MFDB befindet sich im Modul
+ *      'GrafBase'.
+ *
+ *      Die beiden Routinen 'CopyOpaque' und 'CopyTrans' werden, falls
+ *      eingebaut und aktiviert vom Blitter ausgefuehrt.
+ *)
+
+
+FROM    GrafBase IMPORT Point, Rectangle, MemFormDef, PtrMemFormDef,
+                WritingMode, BitOperation;
+
+FROM GEMShare IMPORT DeviceHandle;
+FROM SYSTEM IMPORT ADDRESS;
+FROM GEMVDIbase IMPORT BigPxyArrayType, SmallArrayType;
+
+
+(*  Diese Routine kopiert einen beliebigen Ausschnitt des Quell-
+ *  bereichs an eine frei waehlbare Stelle des Zielbereichs.
+ *  Dafuer muessen beide Bereiche im geraetespezifischen Format vor-
+ *  liegen und sie muessen die gleiche Anzahl an Bitebenen (planes)
+ *  besitzen.
+ *
+ *  'sourceMem'   -- Quellbereich
+ *  'destMem'     -- Zielbereich
+ *  'sourceframe' -- bestimmt, welcher Teil des Quellbereichs
+ *                   nun kopiert wird, indem dort einfach das zu
+ *                   kopierende Rechteck angegeben wird.
+ *  'destframe'   -- ..des Zielbereichs..
+ *  'mode'        -- bestimmt, auf welche Art beide Bereiche ver-
+ *                   knuepft werden.
+ *)
+PROCEDURE CopyOpaque(handle                : DeviceHandle;
+              sourceMem, destMem    : PtrMemFormDef;
+              sourceFrame, destFrame: Rectangle;
+              mode                  : BitOperation);
+PROCEDURE CopyRasterOpaque(handle: DeviceHandle; mode: INTEGER; VAR pxy: BigPxyArrayType; sourceMem: ADDRESS; destMem: ADDRESS);
+
+(*  Bei dieser Procedur wird ein einfarbiger Rechteckbereich
+ *  auf einen mehrfarbigen Rechteckbereich  kopiert.
+ *
+ *  'sourceMem'   -- Quellbereich. Muss hier einfarbig sein, d.h.
+ *                   er darf nur aus einer Bitebene (plane) be-
+ *                   hen.
+ *  'destMem'     -- Zielbereich ist beliebig
+ *  'sourceframe' -- bestimmt, welcher Teil des Quellbereichs
+ *                   nun kopiert wird, indem dort einfach das zu
+ *                   kopierende Rechteck angegeben wird.
+ *  'destframe'   -- ..des Zielbereichs..
+ *  'mode'        -- Schreibmodus
+ *  'unsetCol'    -- die ungesetzten Bits werden mit der hier ange-
+ *                   gebenen Farbe kopiert.
+ *  'setCol'      -- die gesetzten Bits werden mit der hier angege-
+ *                   benen Farbe kopiert.
+ *)
+PROCEDURE CopyTrans(handle                : DeviceHandle;
+             sourceMem, destMem    : PtrMemFormDef;
+             sourceFrame, destFrame: Rectangle;
+             mode                  : WritingMode;
+             setCol, unsetCol      : CARDINAL);
+PROCEDURE CopyRasterTransparent(handle: DeviceHandle; mode: INTEGER; VAR pxy: BigPxyArrayType; sourceMem: ADDRESS; destMem: ADDRESS; VAR setcol: SmallArrayType);
+
+(*  Damit koennen Rasterbereiche vom geraetespezifischen in das
+ *  Standardformat umgewandelt werden und umgekehrt.
+ *)
+PROCEDURE TransformForm(handle: DeviceHandle; VAR sourceMem, destMem: MemFormDef);
+
+(*  Hiermit kann der Zustand eines einzelnen Pixels erfragt wer-
+ *  den.
+ *
+ *  'toTest'    -- Enthaelt die Koordinaten des Pixels
+ *  'pel'       -- liefert den aktuellen Farbwert des Pixels
+ *  'color'     -- liefert den aktuellen Farbindex des Pixels
+ *)
+PROCEDURE PixelState(handle: DeviceHandle; toTest: Point; VAR pel: CARDINAL; VAR color: CARDINAL);
+PROCEDURE GetPixel(handle: DeviceHandle; x, y: INTEGER; VAR pel: INTEGER; VAR color: INTEGER);
+
+END VDIRasters.

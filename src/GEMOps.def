@@ -515,13 +515,13 @@ X       DC.B    0, 0         ; func 101  close work
 X       DC.B    0, 1         ; func 102  ext. inquire
 X       DC.B    1, 1         ; func 103  contour fill
 X       DC.B    0, 1         ; func 104  fill perim.
-        DC.B    1, 0         ; func 105  get pixel
+X       DC.B    1, 0         ; func 105  get pixel
 X       DC.B    0, 1         ; func 106  text effect
 X       DC.B    0, 1         ; func 107  text height pts
 X       DC.B    0, 2         ; func 108  line end
-        DC.B    4, 1         ; func 109  copy opaque
+X       DC.B    4, 1         ; func 109  copy opaque
     ;
-        DC.B    0, 0         ; func 110  transform form
+X       DC.B    0, 0         ; func 110  transform form
 X       DC.B    0, 37        ; func 111  mouse form
 X       DC.B    0, n         ; func 112  user fill
 X       DC.B    0, 1         ; func 113  user line

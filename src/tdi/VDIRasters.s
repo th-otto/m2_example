@@ -8,6 +8,7 @@ import GEMVDIbase, key =  2102H  CAE1H  2388H, modnum =  1  checksum: o.k.
 data size, number of bytes = 8  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 114
+CopyRasterOpaque
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0014 0000 0018      MOVE.W  0014(A6),00000018H
@@ -57,6 +58,7 @@ ref ext data at    66H, modnum =  1  checksum: o.k.
 ref ext data at    6AH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 140
+CopyRasterTransparent
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0018 0000 0018      MOVE.W  0018(A6),00000018H
@@ -116,6 +118,7 @@ ref ext data at    80H, modnum =  1  checksum: o.k.
 ref ext data at    84H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 80
+TransformForm
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 006E                MOVE.W  #006EH,-(A7)
@@ -152,6 +155,7 @@ ref ext data at    42H, modnum =  1  checksum: o.k.
 ref ext proc call at    48H, procnum =  1, modnum =  1  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 76
+GetPixel
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0012 0000 0118      MOVE.W  0012(A6),00000118H
