@@ -1,0 +1,25 @@
+(*
+ * resource set indices for gag
+ *
+ * created by ORCS 2.18
+ *)
+
+DEFINITION MODULE Gag;
+
+EXPORT QUALIFIED
+    Box, Text, Foset, Btan, Btaus, Btfertig, Fttime, Ftpre;
+
+CONST
+
+    Box      = 0; (* form/dialog *)
+    Text     = 1; (* STRING in tree Box *)
+
+    Foset    = 1; (* form/dialog *)
+    Btan     = 2; (* BUTTON in tree Foset *)
+    Btaus    = 3; (* BUTTON in tree Foset *)
+    Btfertig = 5; (* BUTTON in tree Foset *)
+    Fttime   = 6; (* FTEXT in tree Foset *)
+    Ftpre    = 7; (* FTEXT in tree Foset *)
+
+
+END Gag.

@@ -18,7 +18,7 @@ MODULE GagACC;
  * programmiert.
  *)
 
-IMPORT gag;
+IMPORT Gag;
 
 FROM AESEvents          IMPORT  accClose,       accOpen,        Event,
                                 EventSet,       MessageBuffer,  MultiEvent,
@@ -38,35 +38,34 @@ FROM PrgCtrl            IMPORT  Accessory;
 FROM GEMEnv             IMPORT  InitApplication,ExitApplication,GemError;
 FROM GEMGlobals         IMPORT  GemChar,        MButtonSet,     PtrObjTree,
                                 PtrTEdInfo,     Root,           MaxDepth,
-                                SpecialKeySet;
-FROM GrafBase           IMPORT  BitsPerWord,    ClipRect,       Point,
+                                SpecialKeySet, ObjState;
+FROM GrafBase           IMPORT  ClipRect,       Point,
                                 Rect,           Rectangle,      WordBitSet;
 FROM MOSGlobals         IMPORT  Time;
-FROM StrConv            IMPORT  CardToStr,      NumToStr,       StrToCard;
+FROM NumberIO           IMPORT  CardToStr,      IntToStr,       StrToCard;
 FROM Strings            IMPORT  Append,         Assign,         Concat,
-                                Copy,           Split,          Empty;
-FROM SYSTEM             IMPORT  ADR;
+                                Extract, Length;
+FROM SYSTEM             IMPORT  ADR, CARDINAL16;
 
-PROCEDURE SelectObj (tree : PtrObjTree; obj : CARDINAL; sel : BOOLEAN);
+PROCEDURE SelectObj (ptree : PtrObjTree; obj : CARDINAL; sel : BOOLEAN);
 VAR
         state : WordBitSet;
 BEGIN
-  state := tree^[obj].state;
+  state := ptree^[obj].state;
   IF sel THEN
-    INCL (state, b0)
+    INCL (state, 0)
   ELSE
-    EXCL (state, b0)
+    EXCL (state, 0)
   END;
-  tree^[obj].state := state;
+  ptree^[obj].state := state;
 END SelectObj;
 
-PROCEDURE ObjSelected (tree : PtrObjTree; obj : CARDINAL) : BOOLEAN;
+PROCEDURE ObjSelected (ptree : PtrObjTree; obj : CARDINAL) : BOOLEAN;
 BEGIN
-  RETURN b0 IN tree^[obj].state
+  RETURN selectObj IN ptree^[obj].state
 END ObjSelected;
 
 VAR
-        success : BOOLEAN;
         msgBuf : MessageBuffer;
         mouseLoc : Point;
         buttons : MButtonSet;
@@ -74,7 +73,6 @@ VAR
         key : GemChar;
         doneClicks : CARDINAL;
         occuredEvents : EventSet;
-        fooC : CARDINAL;
         tree : PtrObjTree;
         open : BOOLEAN;
         wHandle : CARDINAL;
@@ -92,7 +90,7 @@ VAR
         
 PROCEDURE Config;
 VAR
-        tree : PtrObjTree;
+        ptree : PtrObjTree;
         resButton : CARDINAL;
         diagRect : Rectangle;
         hStr, mStr : ARRAY [0..2] OF CHAR;
@@ -101,44 +99,45 @@ VAR
         fooC : CARDINAL;
         
 BEGIN
-  tree := ResourceAddr (treeRsrc, Foset);
+  ptree := ResourceAddr (treeRsrc, Gag.Foset);
   
   (* Buttons selektieren, Werte einsetzen *)
-  Assign (NumToStr (msgPre, 10, 0, '0'), hStr, success);
-  tedPtr := tree^[Ftpre].spec.more;
-  Assign (hStr, tedPtr^.textPtr^, success);
+  IntToStr (msgPre, 10, hStr);
+  tedPtr := ptree^[Gag.Ftpre].spec.more;
+  Assign (hStr, tedPtr^.textPtr^);
   
-  Assign (NumToStr (msgTime.hour, 10, 0, '0'), hStr, success);
-  Assign (NumToStr (msgTime.minute, 10, 0, '0'), mStr, success);
-  tedPtr := tree^[Fttime].spec.more;
-  Concat (hStr, mStr, tedPtr^.textPtr^, success);
-  SelectObj (tree, Btan, active);
-  SelectObj (tree, Btaus, ~active);
-  SelectObj (tree, Btfertig, FALSE);
+  IntToStr (msgTime.hour, 10, hStr);
+  IntToStr (msgTime.minute, 10, mStr);
+  tedPtr := ptree^[Gag.Fttime].spec.more;
+  Concat (hStr, mStr, tedPtr^.textPtr^);
+  SelectObj (ptree, Gag.Btan, active);
+  SelectObj (ptree, Gag.Btaus, ~active);
+  SelectObj (ptree, Gag.Btfertig, FALSE);
   
   (* Dialog animieren *)
-  diagRect := FormCenter (tree);
+  diagRect := FormCenter (ptree);
   FormDial (reserveForm, diagRect, diagRect);
   GrafMouse (mouseOff, NIL);
-  DrawObject (tree, Root, MaxDepth, diagRect);
+  DrawObject (ptree, Root, MaxDepth, diagRect);
   GrafMouse (mouseOn, NIL);
-  FormDo (tree, Root, resButton);
+  FormDo (ptree, Root, resButton);
   FormDial (freeForm, diagRect, diagRect);
   
   (* Werte auslesen *)
-  active := ObjSelected (tree, Btan);
-  Assign (tedPtr^.textPtr^, allStr, success);
-  WHILE LENGTH (allStr) < 4 DO
-    Append ('0', allStr, success)
+  active := ObjSelected (ptree, Gag.Btan);
+  Assign (tedPtr^.textPtr^, allStr);
+  WHILE Length (allStr) < 4 DO
+    Append ('0', allStr)
   END;
-  Split (allStr, 2, hStr, mStr, success);
-  fooC := 0;
-  msgTime.hour := StrToCard (hStr, fooC, success);
-  fooC := 0;
-  msgTime.minute := StrToCard (mStr, fooC, success);
-  tedPtr := tree^[Ftpre].spec.more;
-  fooC := 0;
-  msgPre := StrToCard (tedPtr^.textPtr^, fooC, success);
+  Extract(allStr, 0, 2, hStr);
+  Extract(allStr, 2, 2, mStr);
+  StrToCard (hStr, fooC);
+  msgTime.hour := fooC;
+  StrToCard (mStr, fooC);
+  msgTime.minute := fooC;
+  tedPtr := ptree^[Gag.Ftpre].spec.more;
+  StrToCard (tedPtr^.textPtr^, fooC);
+  msgPre := fooC;
   IF open AND ~active THEN
     CloseWindow (wHandle);
     DeleteWindow (wHandle);
@@ -150,40 +149,43 @@ END Config;
 PROCEDURE SetText (text : ARRAY OF CHAR);
 VAR
         boxSpace, textSpace : Rectangle;
-        success : BOOLEAN;
 BEGIN
-  Assign (text, dispText, success);
+  Assign (text, dispText);
   boxSpace := tree^[Root].space;
-  textSpace := tree^[Text].space;
-  textSpace.w := 8 * LENGTH (text);
+  textSpace := tree^[Gag.Text].space;
+  textSpace.w := 8 * Length (text);
   boxSpace.w := 2 * textSpace.x + textSpace.w;
   boxSpace.h := 2 * textSpace.y + textSpace.h;
   tree^[Root].space := boxSpace;
-  tree^[Text].space := textSpace;
-  tree^[Text].spec.more := ADR (dispText);
+  tree^[Gag.Text].space := textSpace;
+  tree^[Gag.Text].spec.more := ADR (dispText);
   boxSpace := FormCenter (tree);
   windSpace := CalcWindow (calcBorder, WElementSet{}, boxSpace);
   CreateWindow (WElementSet{}, windSpace, wHandle);
-  IF wHandle # NoWindow THEN
+  IF wHandle <> NoWindow THEN
     OpenWindow (wHandle, windSpace);
   END
 END SetText;
+
+VAR success: BOOLEAN;
+a : ARRAY [1..30] OF CHAR;
+    alertBut : CARDINAL;
 
 BEGIN
   InitApplication (success);
   IF success THEN
     IF NOT Accessory() THEN
-      FormAlert (1, "[0][GAGACC laeuft nur |als Accessory!][OK]", fooC);
+      FormAlert (1, "[0][GAGACC laeuft nur |als Accessory!][OK]", alertBut);
       ExitApplication;
       RETURN
     END;
-    LoadResource ("GAG.RSC");
+    LoadResource ("gag.rsc");
     IF GemError () THEN
-      FormAlert (1, "[0][Accessory GAGACC: |GAG.RSC fehlt!][OK]", fooC);
+      FormAlert (1, "[0][Accessory GAGACC: |GAG.RSC fehlt!][OK]", alertBut);
       success:= FALSE
     ELSE
-      tree := ResourceAddr (treeRsrc, Box);
-      Assign ("  GagAcc", title, success);
+      tree := ResourceAddr (treeRsrc, Gag.Box);
+      Assign ("  GagAcc", title);
       RegisterAcc (ADR (title), accId, success)
     END
   END;
@@ -222,15 +224,16 @@ BEGIN
           IF ~open THEN
             (* Warnung ausgeben *)
             dispText := "Noch ";
-            Append (CardToStr (msgPre, 0), dispText, success);
+            CardToStr (msgPre, 0, a);
+            Append (a, dispText);
             IF msgPre = 1 THEN
-              Append (" Minute!", dispText, success);
+              Append (" Minute!", dispText);
             ELSE
-              Append (" Minuten!", dispText, success);
+              Append (" Minuten!", dispText);
             END;
             SetText (dispText);
           ELSE
-            IF wHandle # NoWindow THEN
+            IF wHandle <> NoWindow THEN
               CloseWindow (wHandle);
               DeleteWindow (wHandle);
               INC (stage);
@@ -249,7 +252,7 @@ BEGIN
         IF (((t.hour = msgTime.hour) AND (t.minute >= msgTime.minute)) OR
             (t.hour > msgTime.hour)) AND (stage = 1) THEN
           IF open THEN
-            IF wHandle # NoWindow THEN
+            IF wHandle <> NoWindow THEN
               CloseWindow (wHandle);
               DeleteWindow (wHandle);
             END
@@ -262,7 +265,7 @@ BEGIN
       ELSIF message IN occuredEvents THEN
         WITH msgBuf DO
           CASE msgType OF
-            accClose : IF (aClsMId = accId) AND open THEN
+            accClose : IF (VAL(CARDINAL, aClsMId) = accId) AND open THEN
                          (* Fenster wurde bereits geschlossen
                            CloseWindow (wHandle);
                          *)
@@ -270,15 +273,15 @@ BEGIN
                          open := FALSE;
                          stage := 1
                        END|
-            accOpen : IF aOpnMId = accId THEN
+            accOpen : IF VAL(CARDINAL, aOpnMId) = accId THEN
                         Config;
                       END|
-            windRedraw : IF rdrwHdl = wHandle THEN
+            windRedraw : IF VAL(CARDINAL, rdrwHdl) = wHandle THEN
                            GrafMouse (mouseOff, NIL);
                            r := WindowRectList (wHandle, firstElem);
-                           WHILE (r.w # 0) OR (r.h # 0) DO
+                           WHILE (r.w <> 0) OR (r.h <> 0) DO
                              r := ClipRect (r, rdrwFrame);
-                             IF (r.w # 0) AND (r.h # 0) THEN
+                             IF (r.w <> 0) AND (r.h <> 0) THEN
                                DrawObject (tree, Root, MaxDepth, r)
                              END;
                              r := WindowRectList (wHandle, nextElem);

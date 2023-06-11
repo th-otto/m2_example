@@ -7,7 +7,7 @@ PROGRAMS += aesdemo
 PROGRAMS += vdidemo
 PROGRAMS += dhryston
 #PROGRAMS += excdemo
-#PROGRAMS += gagacc
+PROGRAMS += gag.acc
 #PROGRAMS += hatschi
 PROGRAMS += kbddemo
 #PROGRAMS += kbdtest
@@ -37,7 +37,7 @@ dhryston: dhryston.mod
 excdemo: excdemo.mod
 	$(M2) $(M2CFLAGS) $(M2LDFLAGS) $< -o $@ -L$(top_srcdir)/src -lm2gem
 
-gagacc: gagacc.mod
+gag.acc: gagacc.mod
 	$(M2) $(M2CFLAGS) $(M2LDFLAGS) $< -o $@ -L$(top_srcdir)/src -lm2gem
 
 hatschi: hatschi.mod
