@@ -78,10 +78,9 @@ FROM PathEnv IMPORT FileSelectProc, SelectFilePtr, HomePath;
 FROM FileNames IMPORT SplitPath;
 FROM GEMShare IMPORT device, cb, deviceMagic, logInpDev, inputMode, our_cb, root_cb,
      GDPAttribute, GDPFkt, InputDev, DeviceType, ScreenType, TextRotType,
-     timerVecList, butChgVecList, msMoveVecList, curChgVecList,
      errorProcPtr, ptrToErrHdler, testErrorCheck, gemErrorOccured,
-     UpdateWindowType, updateWindow, removeCurChgVector, removeMsMoveVector,
-     removeButChgVector, removeTimerVector, cbMagic, error, errNum,
+     UpdateWindowType, updateWindow,
+     cbMagic, error, errNum,
      aes_if, vdi_if, unloadFonts, setDevice,
      windowSet, PtrDevParm, intinMax, ptsinMax, MaxWinds, closeWindow, deleteWindow,
      showCursor, hideCursor;
@@ -755,22 +754,10 @@ BEGIN
 
       (*  'showCursor'-Aufrufe sind schon ausgefuehrt worden
        *)
-      IF doSupervision THEN
-        (* Melde alle GEM-IR-Vektoren ab *)
-        WHILE handle^.SUPERVISION.timerChgd DO
-          removeTimerVector (timerVecList^)
-        END;
-        WHILE handle^.SUPERVISION.butChgChgd DO
-          removeButChgVector (butChgVecList^)
-        END;
-        WHILE handle^.SUPERVISION.msMoveChgd DO
-          removeMsMoveVector (msMoveVecList^)
-        END;
-        WHILE handle^.SUPERVISION.curChgChgd DO
-          removeCurChgVector (curChgVecList^)
-        END;
+      IF removeVDIVecs <> removeVDIProcPtr(0) THEN
+        removeVDIVecs(handle);
       END;
-
+      
       (* Devices abmelden *)
 
       WHILE handle^.DEVICES <> NIL DO

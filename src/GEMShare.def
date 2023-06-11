@@ -35,19 +35,16 @@ EXPORT  QUALIFIED DeviceHandle, device, GemHandle, cb, root_cb, our_cb, error,
         ScreenType, TextRotType, GDPAttribute, logInpDev,
         inputMode, errNum, ptrToErrHdler, errorProcPtr, pubArrays,
         ptrPubArrays, DevParm, PtrDevParm,
+        ptrVectorList, vecListElem,
+		TimerVecProc, ButChgVecProc, MsMoveVecProc, CurChgVecProc,
 
         aes_call, aes_if, vdi_call, vdi_if, testINTOUT0, testErrorCheck,
         getCalcedFrame, superData, stringIntoINTIN,
         stringIntoCFormat, stringFromCFormat, setDevice, gemErrorOccured,
 
-        ptrVectorList, vecListElem, timerVecList, butChgVecList, msMoveVecList,
-        curChgVecList, orgTimerVec, orgButChgVec, orgMsMoveVec, orgCurChgVec,
         GrafMouse, updateWindow, showCursor, closeWindow, deleteWindow,
-        exchangeTimerVec, exchangeMouseVec, removeTimerVector,
-        removeButChgVector, removeMsMoveVector, removeCurChgVector,
         unloadFonts, hideCursor, UpdateWindowType, windowSet, MaxWinds,
-		keyboardPlugProc, buttonPlugProc, rectPlugProc, messagePlugProc, timerPlugProc,
-		TimerVecProc, ButChgVecProc, MsMoveVecProc, CurChgVecProc;
+		keyboardPlugProc, buttonPlugProc, rectPlugProc, messagePlugProc, timerPlugProc;
 
 
 
@@ -239,6 +236,8 @@ TYPE    DeviceHandle    = POINTER TO device;
                             next         : DeviceHandle;
                           END;
 
+        windowSet = SET OF [0..MaxWinds];
+
         ptrVectorList   = POINTER TO vecListElem;
         TimerVecProc = PROCEDURE (): BOOLEAN;
         ButChgVecProc = PROCEDURE (VAR (* pressed: *) MButtonSet) : BOOLEAN;
@@ -256,8 +255,6 @@ TYPE    DeviceHandle    = POINTER TO device;
                             next         : ptrVectorList;
                             futureAddr   : ADDRESS;
                           END;
-
-        windowSet = SET OF [0..MaxWinds];
 
         superData       = RECORD
                             noGrafMouse  : CARDINAL;
@@ -364,16 +361,6 @@ VAR     our_cb, root_cb : GemHandle; (*  root_cb ~ Zeiger auf die Liste mit den
                                             *  wird, so wird 'errorProc^'
                                             *  ausgefuehrt, falls installiert.
                                             *)
-
-        (* Vector Variablen *)
-        timerVecList: ptrVectorList;
-        butChgVecList: ptrVectorList;
-        msMoveVecList: ptrVectorList;
-        curChgVecList: ptrVectorList;
-        orgTimerVec: PROC;
-        orgButChgVec: PROC;
-        orgMsMoveVec: PROC;
-        orgCurChgVec: PROC;
 
         (* Plugs for the event watch-dogs (see also 'EventHandler') *)
 
@@ -488,29 +475,6 @@ PROCEDURE closeWindow (handle:CARDINAL);
 
 PROCEDURE deleteWindow (handle:CARDINAL);
 
-
-(*  exchangeTimeVec -- geg.: 'newproc' der neue Timerinterrupt vector *
- *                     ges.: In 'time' steht die Zeit die zwischen 2 *
- *                           Timerinter. vergeht(in ms), der neue    *
- *                           Vector ist beim VDI angemeldet und der  *
- *                           alte Vector ist Rueckgabewert.           *)
-PROCEDURE exchangeTimerVec(newproc: PROC;VAR time:CARDINAL): [ PROC ];
-
-
-(*  exchangeMouseVec -- geg.: 'opcode' der VDI-Opcode fuer einen Mouse- *
- *                            vector exchange und 'newproc' die neue Proc. *
- *                      ges.: neue Proc. bei VDI angemeldet und alter  *
- *                            Vector als Rueckgabewert                  *)
-PROCEDURE exchangeMouseVec(opcode:CARDINAL; newproc:PROC): [ PROC ];
-
-
-PROCEDURE removeTimerVector(VAR hdl:vecListElem);
-
-PROCEDURE removeButChgVector(VAR hdl:vecListElem);
-
-PROCEDURE removeMsMoveVector(VAR hdl:vecListElem);
-
-PROCEDURE removeCurChgVector(VAR hdl:vecListElem);
 
 PROCEDURE unloadFonts (handle:DeviceHandle; select:INTEGER16);
 

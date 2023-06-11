@@ -207,6 +207,8 @@ PROCEDURE SetCurrGemHandle (handle: GemHandle): [ BOOLEAN ];
 (*  ================  *)
 
 VAR     ErrorProc: PROC;
+TYPE removeVDIProcPtr = PROCEDURE(GemHandle);
+VAR removeVDIVecs: removeVDIProcPtr;
 
 (*  Ermittelt, ob beim letzten Aufruf einer GEM-Routine ein
  *  Fehler aufgetretten ist.

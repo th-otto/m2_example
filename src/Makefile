@@ -50,6 +50,7 @@ OBJS = \
 	VDIControls.o \
 	VDIEscapes.o \
 	VDIInputs.o \
+	VDIInputx.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -102,6 +103,7 @@ VDIAttributes.o: VDIAttributes.mod VDIAttributes.def
 VDIControls.o: VDIControls.mod VDIControls.def
 VDIEscapes.o: VDIEscapes.mod VDIEscapes.def
 VDIInputs.o: VDIInputs.mod VDIInputs.def
+VDIInputx.o: VDIInputx.mod VDIInputx.def
 
 clean::
 	rm -f *.o *.a

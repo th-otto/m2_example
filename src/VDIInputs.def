@@ -8,11 +8,9 @@ DEFINITION MODULE VDIInputs;
  *  Version 2.2         V#0006
  *)
 
-FROM    SYSTEM     IMPORT WORD;
-FROM    MOSGlobals IMPORT MemArea;
 FROM    GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
 FROM    GEMGlobals IMPORT GemChar, MButtonSet, SpecialKeySet;
-FROM    GEMShare   IMPORT DeviceHandle, logInpDev, inputMode, vecListElem, TimerVecProc, ButChgVecProc, MsMoveVecProc, CurChgVecProc;
+FROM    GEMShare   IMPORT DeviceHandle, logInpDev, inputMode;
 
 
 (*  SetInputMode -- Legt das logische Eingabegeraet und dessen Eingabe-  *
@@ -156,127 +154,5 @@ PROCEDURE GetMouseState (handle: DeviceHandle; VAR position: Point; VAR buts: MB
  *)
 PROCEDURE KeyboardState (handle: DeviceHandle): SpecialKeySet;
 
-
-(*      Mit Hilfe der folgenden Routinen koennen sogenannte 'Softvektoren',
- *      dies sind datentechnisch Prozedurvariablen, 'umgebogen' werden.
- *      Im Klartext bedeutet dies, dass fuer den urspruenglichen Wert der Pro-
- *      zedurvariable ein neuer eingesetzt wird. Diese neue Prozedur hat
- *      zwei Moeglichkeiten, zum einen kann sie die alte Prozedur voll-
- *      staendig ersetzen. Andererseits kann sie die zu verarbeitenden Daten
- *      lediglich modifizieren, kontrollieren oder protokolieren und da-
- *      nach die urspruengliche Routine aufrufen.
- *      Dies Prinzip ist nun folgendermassen implementiert worden. Zu jedem
- *      der Vektoren (Prozedurvariablen) wird eine Liste verwaltet. In diese
- *      Liste koennen Prozeduren mit einer bestimmten Schnittstelle (Para-
- *      meterliste) eingetragen und natuerlich auch wieder geloescht werden.
- *      Wird nun eine dieser Prozedurvariablen benutzt, so wird zuerst die
- *      zuletzt installierte Routine ausgefuehrt und falls diese es wuenscht
- *      eine weitere. Dies setzt sich durch die gesamte Liste fort. Wird
- *      nun das Listenende erreicht, so wird die, vor dem Aktivieren dieses
- *      Moduls aktuelle Prozedur ausgefuehrt.
- *      Jede installierte Routine liefert als Ergebnis einen BOOLEAN-Wert.
- *      Ist dieser gleich 'TRUE', so heisst dies, dass mit der Ausfuehrung
- *      der in der Liste enthaltenen Prozeduren fortgefahren werden soll.
- *      Sonst wird die Kette unterbrochen.
- *
- *      Zum Installieren einer Prozedur muss ein 'Carrier' (Traeger) uebergeben
- *      werden, dieser dient erstens als Kennung (handle) und zweitens wird
- *      er zur zum Aufbau der Listenstruktur benoetigt. Daher ist es von ele-
- *      mentarer Wichtigkeit, dass der Carrier global definiert wird und bis
- *      zum Entfernen der Routine aus der Liste weder anderweitig verwendet,
- *      noch irgendwie freigegeben wird. Weiter muss ein Arbeitsbereich (work-
- *      space) fuer die Prozedur angegeben werden, dieser wird waehrend der Ab-
- *      arbeitung der Routine als Stackbereich verwendet, es muss also unbe-
- *      dingt sichergestellt werden, dass dieser Speicherbereich erstens zur
- *      Verfuegung steht, zweitens nicht schon benutzt wird und eine aus-
- *      reichende Groesse besitzt. In der Regel reichen wohl 2 kByte aus.
- *
- *      Achtung: Die Aufrufe der Vektoren geschehen von Interruptroutinen aus.
- *               Da grosse Teile des Betriebssystem nicht oder nur bedingt re-
- *               entrantfaehig sind, das heisst es darf waehrend eines Betriebs-
- *               systemaufrufes noch ein weiterer ausgefuehrt werden, ist es
- *               zu empfehlen, solche Aufrufe (dazu gehoehrt z.B. auch 'Write')
- *               nicht in einer Vektorroutine zu taetigen. Es koennten voellig
- *               unvorhersehbare Systemabstuerze herbeigefuehrt werden!
- *)
-
-
-(*  Der Timervektor stellt eine Prozedurvariable dar, die in bestim-
- *  mten Zeitabstaenden immer wieder aufgerufen wird. Er ist also
- *  fuer das Abarbeiten zyklisch wiederkehrender Aufgaben praedesti-
- *  niert.
- *  'hdl'       --  der Carrier fuer die hiermit angemeldete Prozedur
- *  'newProc'   --  beschreibt den von ihr zu benutzenden Stack-
- *                  bereich.
- *  'wsp'       --  ebenfalls
- *  'deltaTime' --  Der Zeitabstand zwischen zwei Aufrufen (in Milli-
- *                  sekunden).
- *)
-PROCEDURE InstallTimerProc (VAR hdl: vecListElem;
-                        newProc  : TimerVecProc;
-                        wsp      : MemArea;
-                    VAR deltaTime: CARDINAL);
-
-(*  Meldet die durch 'hdl' beschriebene Prozedur wieder ab, das
- *  heisst sie wird aus der Liste der aufzurufenden Prozeduren
- *  gestrichen.
- *)
-PROCEDURE RemoveTimerProc (VAR hdl: vecListElem);
-
-
-(*  Der Button-Change-Vektor wird immer aufgerufen, wenn der Status
- *  der Maustasten geaendert wurde. Also eine Maustaste gedrueckt oder
- *  losgelassen wurde. Jeder installierten Routine werden die zur
- *  Zeit gedrueckten Maustasten (in 'pressed') uebergeben. Dieser
- *  Wert kann geaendert werden und es wird die geaenderte Version dann
- *  auch vom Betriebssystem uebernommen.
- *  'hdl' enthaelt den Carrier, 'newProc' die neue Prozedur und 'wsp'
- *  ihren Stackbereich.
- *)
-PROCEDURE InstallButChgProc (VAR hdl: vecListElem;
-                     newProc: ButChgVecProc;
-                     wsp    : MemArea);
-
-(*  Meldet die mit 'InstallButChgProc' installierte Routine
- *  wieder ab.
- *)
-PROCEDURE RemoveButChgProc (VAR hdl: vecListElem);
-
-
-(*  Der Mouse-Movement-Vektor wird bei jeder Mausbewegung ange-
- *  sprungen. Dabei wird der Routine (in 'loc') die aktuelle
- *  Mausposition uebergegeben, diese kann von der Routine auch
- *  veraendert werden. Durch Vertauschen der Koordinaten kann man
- *  z.B die beiden Bewegungsrichtungen der Maus vertauschen.
- *  Mit etwas mehr Aufwand koennen die Bewegungen auch gespie-
- *  gelt werden oder es wird einfach ein Rahmen vorgegeben,
- *  der von der Maus nicht verlassen werden darf.
- *  Es ist 'hdl' der Carrier und 'wsp' der Stackbereich fuer die
- *  zu installierende Routine 'newProc'.
- *)
-PROCEDURE InstallMsMoveProc (VAR hdl    : vecListElem;
-                         newProc: MsMoveVecProc;
-                         wsp    : MemArea);
-
-(*  Es wird 'hdl' abgemeldet.
- *)
-PROCEDURE RemoveMsMoveProc (VAR hdl: vecListElem);
-
-
-(*  Der Cursor-Change-Vektor wird bei jeder Positionsaenderung
- *  des Mauszeigers aufgerufen. Der aufgerufenen Prozedur wird
- *  (in 'loc') die neue Mauszeigerposition uebergeben.
- *  Dabei ist 'hdl' der Carrier und 'wsp' der Stackbereich der
- *  Prozedur 'newProc'.
- *)
-
-PROCEDURE InstallCurChgProc (VAR hdl    : vecListElem;
-                         newProc: CurChgVecProc;
-                         wsp    : MemArea);
-
-(*  Es wird eine mit obiger Prozedur angemeldete Routine wieder
- *  abgemeldet.
- *)
-PROCEDURE RemoveCurChgProc (VAR hdl: vecListElem);
 
 END VDIInputs.
