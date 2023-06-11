@@ -428,20 +428,20 @@ X       DC.B    0, 1         ; func 022  text color
 X       DC.B    0, 1         ; func 023  fill interior
 X       DC.B    0, 1         ; func 024  fill index
 X       DC.B    0, 1         ; func 025  fill color
-        DC.B    0, 2         ; func 026  inq. color
-        DC.B    2, 0         ; func 027  inq. cell array
+X       DC.B    0, 2         ; func 026  inq. color
+X       DC.B    2, 0         ; func 027  inq. cell array
 X       DC.B    1, 0         ; func 028  inp loc
 X       DC.B    0, 1         ; func 029  inp val
     ;
-X       DC.B    0, 0         ; func 030  inp choice ( vdi_call direkt )
-        DC.B    1, 2         ; func 031  inp str
+X       DC.B    0, 0         ; func 030  inp choice
+X       DC.B    1, 2         ; func 031  inp str
 X       DC.B    0, 1         ; func 032  writing mode
 X       DC.B    0, 2         ; func 033  set_input_mode
-        DC.B    2, 0         ; func 034
-        DC.B    0, 0         ; func 035  inq. line
-        DC.B    0, 0         ; func 036  inq. mark
-        DC.B    0, 0         ; func 037  inq. fill
-        DC.B    0, 0         ; func 038  inq. text
+X       DC.B    0, 0         ; func 034
+X       DC.B    0, 0         ; func 035  inq. line
+X       DC.B    0, 0         ; func 036  inq. mark
+X       DC.B    0, 0         ; func 037  inq. fill
+X       DC.B    0, 0         ; func 038  inq. text
 X       DC.B    0, 2         ; func 039  text alig
     ;
         DC.B    1, 0         ; func 040
@@ -526,9 +526,9 @@ X       DC.B    0, 37        ; func 111  mouse form
 X       DC.B    0, n         ; func 112  user fill
 X       DC.B    0, 1         ; func 113  user line
         DC.B    2, 0         ; func 114  fill rect
-        DC.B    0, 1         ; func 115  inq. input
-        DC.B    0, 0         ; func 116  text ext.( ruft vdi_call direkt )
-        DC.B    0, 1         ; func 117  inq. cell
+X       DC.B    0, 1         ; func 115  inq. input
+X       DC.B    0, n         ; func 116  text ext.
+X       DC.B    0, 1         ; func 117  inq. cell
 X       DC.B    0, 0         ; func 118  time inter
 X       DC.B    0, 1         ; func 119  load fonts
     ;
@@ -543,8 +543,8 @@ X       DC.B    0, 0         ; func 127  mouse change
 X       DC.B    0, 0         ; func 128  key state
 X       DC.B    2, 1         ; func 129  clipping
      ;
-        DC.B    0, 1         ; func 130  face name
-        DC.B    0, 0         ; func 131  face info
+X       DC.B    0, 1         ; func 130  face name
+X       DC.B    0, 0         ; func 131  face info
     END
   END ctrl_cnts2;
   

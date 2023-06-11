@@ -57,7 +57,7 @@ END setINT0attribut;
 
 PROCEDURE SetWritingMode(handle:DeviceHandle;mode:WritingMode);
 BEGIN
-  GEMShare.our_cb^.pubs.vINTIN[0] := ORD(mode) + 1;
+  GEMShare.our_cb^.pubs.vINTIN[0] := ORD(mode);
   GEMShare.vdi_if(handle, VDI_CTRL_CODE(GEMOps.SET_WRITING_MODE, 0, 0, 1));
 END SetWritingMode;
 
@@ -121,7 +121,7 @@ END SetLineColor;
 
 PROCEDURE SetLineType(handle:DeviceHandle;type:LineType);
 BEGIN
-  setINT0attribut(handle, VDI_CTRL_CODE(GEMOps.SET_LINE_TYPE, 0, 0, 1), ORD(type) + 1);
+  setINT0attribut(handle, VDI_CTRL_CODE(GEMOps.SET_LINE_TYPE, 0, 0, 1), ORD(type));
 END SetLineType;
 
 
@@ -149,8 +149,9 @@ END SetMarkerColor;
 
 PROCEDURE SetMarkerType(handle:DeviceHandle;type:MarkerType);
 BEGIN
-  setINT0attribut(handle, VDI_CTRL_CODE(GEMOps.SET_MARKER_TYPE, 0, 0, 1), ORD(type) + 1);
+  setINT0attribut(handle, VDI_CTRL_CODE(GEMOps.SET_MARKER_TYPE, 0, 0, 1), ORD(type));
 END SetMarkerType;
+
 
 (*  Text Attributs  *)
 (*  ==============  *)

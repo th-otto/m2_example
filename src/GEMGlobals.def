@@ -41,8 +41,8 @@ TYPE    (*  Allgemeine Typen
                           END;                  (*  hoeriger ASCII-Code      *)
 
 
-                (*  Definitionen zur Objektbehandlung  *)
-                (*  =================================  *)
+        (*  Definitionen zur Objektbehandlung  *)
+        (*  =================================  *)
 
         ObjType         = (boxObj, textObj, boxTextObj, imageObj, progDefObj,
                            iBoxObj, buttonObj, boxCharObj, stringObj, fTextObj,
@@ -137,8 +137,8 @@ TYPE    (*  Allgemeine Typen
                           END;
 
 
-                (*  Typen fuer die Eingabeoperationen  *)
-                (*  ================================  *)
+        (*  Typen fuer die Eingabeoperationen  *)
+        (*  ================================  *)
 
         MouseButton     = (msBut1, msBut2, msBut3, msBut4, msBut5, msBut6,
                            msBut7, msBut8);
@@ -149,15 +149,15 @@ TYPE    (*  Allgemeine Typen
         SpecialKeySet   = WordBitSet;
 
 
-                (*  Typen fuer die Ausgabeoperationen  *)
-                (*  ================================  *)
+        (*  Typen fuer die Ausgabeoperationen  *)
+        (*  ================================  *)
 
-        LineType        = (solidLn, longDashLn, dottedLn, dashDotLn, dashedLn,
+        LineType        = (noLn, solidLn, longDashLn, dottedLn, dashDotLn, dashedLn,
                            dashDotDotLn, userLn);
 
         LineEnding      = (edgedLn, arrowedLn, roundedLn);
 
-        MarkerType      = (pointMark, plusMark, starMark, squareMark, crossMark,
+        MarkerType      = (noMark, pointMark, plusMark, starMark, squareMark, crossMark,
                            diamondMark);
 
         TextEffect      = (thickText, lightText, slantText, underlineText,

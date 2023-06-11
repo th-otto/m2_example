@@ -8,21 +8,22 @@ import GEMVDIbase, key =  2102H  CAE1H  2388H, modnum =  1  checksum: o.k.
 data size, number of bytes = 4  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 162
+ExtendedInquire
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
-     4H        33EE 000C 0000 0018      MOVE.W  000C(A6),00000018H
+     4H        33EE 000C 0000 0018      MOVE.W  000C(A6),intin
      CH        3F3C 0066                MOVE.W  #0066H,-(A7)
     10H        4267                     CLR.W   -(A7)
     12H        3F3C 0001                MOVE.W  #0001H,-(A7)
     16H        4267                     CLR.W   -(A7)
     18H        3F2E 000E                MOVE.W  000E(A6),-(A7)
-    1CH        4EB9 0000 0000           JSR     00000000H
+    1CH        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     22H        4FEF 000A                LEA     000A(A7),A7
-    26H        4EB9 0000 0000           JSR     00000000H
+    26H        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     2CH        4279 0000 0000           CLR.W   00000000H
     32H        3A39 0000 0000           MOVE.W  00000000H,D5
     38H        DA45                     ADD.W   D5,D5
-    3AH        49F9 0000 0218           LEA     00000218H,A4
+    3AH        49F9 0000 0218           LEA     intout,A4
     40H        3839 0000 0000           MOVE.W  00000000H,D4
     46H        266E 0008                MOVE.L  0008(A6),A3
     4AH        D844                     ADD.W   D4,D4
@@ -34,7 +35,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 162
     6AH        3A39 0000 0000           MOVE.W  00000000H,D5
     70H        0445 002D                SUBI.W  #002DH,D5
     74H        DA45                     ADD.W   D5,D5
-    76H        49F9 0000 0318           LEA     00000318H,A4
+    76H        49F9 0000 0318           LEA     ptsout,A4
     7CH        3839 0000 0000           MOVE.W  00000000H,D4
     82H        266E 0008                MOVE.L  0008(A6),A3
     86H        D844                     ADD.W   D4,D4
@@ -77,24 +78,25 @@ ref own data at    90H  checksum: o.k.
 ref own data at    98H  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 90
+InquireColour
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
-     4H        33EE 000E 0000 0018      MOVE.W  000E(A6),00000018H
-     CH        33EE 000C 0000 001A      MOVE.W  000C(A6),0000001AH
+     4H        33EE 000E 0000 0018      MOVE.W  000E(A6),intin
+     CH        33EE 000C 0000 001A      MOVE.W  000C(A6),intin+2
     14H        3F3C 001A                MOVE.W  #001AH,-(A7)
     18H        4267                     CLR.W   -(A7)
     1AH        3F3C 0002                MOVE.W  #0002H,-(A7)
     1EH        4267                     CLR.W   -(A7)
     20H        3F2E 0010                MOVE.W  0010(A6),-(A7)
-    24H        4EB9 0000 0000           JSR     00000000H
+    24H        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     2AH        4FEF 000A                LEA     000A(A7),A7
-    2EH        4EB9 0000 0000           JSR     00000000H
+    2EH        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     34H        286E 0008                MOVE.L  0008(A6),A4
-    38H        38B9 0000 021A           MOVE.W  0000021AH,(A4)
+    38H        38B9 0000 021A           MOVE.W  intout+2,(A4)
     3EH        286E 0008                MOVE.L  0008(A6),A4
-    42H        3979 0000 021C 0002      MOVE.W  0000021CH,0002(A4)
+    42H        3979 0000 021C 0002      MOVE.W  intout+4,0002(A4)
     4AH        286E 0008                MOVE.L  0008(A6),A4
-    4EH        3979 0000 021E 0004      MOVE.W  0000021EH,0004(A4)
+    4EH        3979 0000 021E 0004      MOVE.W  intout+6,0004(A4)
     56H        4E5E                     UNLK    A6
     58H        4E75                     RTS
   checksum: o.k.
@@ -114,6 +116,7 @@ ref ext data at    44H, modnum =  1  checksum: o.k.
 ref ext data at    50H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 84
+InquireLineAttributes
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0023                MOVE.W  #0023H,-(A7)
@@ -121,17 +124,17 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 84
      AH        4267                     CLR.W   -(A7)
      CH        4267                     CLR.W   -(A7)
      EH        3F2E 000C                MOVE.W  000C(A6),-(A7)
-    12H        4EB9 0000 0000           JSR     00000000H
+    12H        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     18H        4FEF 000A                LEA     000A(A7),A7
-    1CH        4EB9 0000 0000           JSR     00000000H
+    1CH        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     22H        286E 0008                MOVE.L  0008(A6),A4
-    26H        38B9 0000 0218           MOVE.W  00000218H,(A4)
+    26H        38B9 0000 0218           MOVE.W  intout,(A4)
     2CH        286E 0008                MOVE.L  0008(A6),A4
-    30H        3979 0000 021A 0002      MOVE.W  0000021AH,0002(A4)
+    30H        3979 0000 021A 0002      MOVE.W  intout+2,0002(A4)
     38H        286E 0008                MOVE.L  0008(A6),A4
-    3CH        3979 0000 021C 0004      MOVE.W  0000021CH,0004(A4)
+    3CH        3979 0000 021C 0004      MOVE.W  intout+4,0004(A4)
     44H        286E 0008                MOVE.L  0008(A6),A4
-    48H        3979 0000 0318 0006      MOVE.W  00000318H,0006(A4)
+    48H        3979 0000 0318 0006      MOVE.W  ptsout,0006(A4)
     50H        4E5E                     UNLK    A6
     52H        4E75                     RTS
   checksum: o.k.
@@ -149,6 +152,7 @@ ref ext data at    3EH, modnum =  1  checksum: o.k.
 ref ext data at    4AH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 84
+InquireMarkerAttributes
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0024                MOVE.W  #0024H,-(A7)
@@ -156,17 +160,17 @@ proc code, procnum =  4, entrypoint =     0H, number of bytes = 84
      AH        4267                     CLR.W   -(A7)
      CH        4267                     CLR.W   -(A7)
      EH        3F2E 000C                MOVE.W  000C(A6),-(A7)
-    12H        4EB9 0000 0000           JSR     00000000H
+    12H        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     18H        4FEF 000A                LEA     000A(A7),A7
-    1CH        4EB9 0000 0000           JSR     00000000H
+    1CH        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     22H        286E 0008                MOVE.L  0008(A6),A4
-    26H        38B9 0000 0218           MOVE.W  00000218H,(A4)
+    26H        38B9 0000 0218           MOVE.W  intout,(A4)
     2CH        286E 0008                MOVE.L  0008(A6),A4
-    30H        3979 0000 021A 0002      MOVE.W  0000021AH,0002(A4)
+    30H        3979 0000 021A 0002      MOVE.W  intout+2,0002(A4)
     38H        286E 0008                MOVE.L  0008(A6),A4
-    3CH        3979 0000 021C 0004      MOVE.W  0000021CH,0004(A4)
+    3CH        3979 0000 021C 0004      MOVE.W  intout+4,0004(A4)
     44H        286E 0008                MOVE.L  0008(A6),A4
-    48H        3979 0000 031A 0006      MOVE.W  0000031AH,0006(A4)
+    48H        3979 0000 031A 0006      MOVE.W  ptsout+2,0006(A4)
     50H        4E5E                     UNLK    A6
     52H        4E75                     RTS
   checksum: o.k.
@@ -184,6 +188,7 @@ ref ext data at    3EH, modnum =  1  checksum: o.k.
 ref ext data at    4AH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 92
+InquireFillAttributes
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0025                MOVE.W  #0025H,-(A7)
@@ -191,13 +196,13 @@ proc code, procnum =  5, entrypoint =     0H, number of bytes = 92
      AH        4267                     CLR.W   -(A7)
      CH        4267                     CLR.W   -(A7)
      EH        3F2E 000C                MOVE.W  000C(A6),-(A7)
-    12H        4EB9 0000 0000           JSR     00000000H
+    12H        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     18H        4FEF 000A                LEA     000A(A7),A7
-    1CH        4EB9 0000 0000           JSR     00000000H
+    1CH        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     22H        4279 0000 0000           CLR.W   00000000H
     28H        3A39 0000 0000           MOVE.W  00000000H,D5
     2EH        DA45                     ADD.W   D5,D5
-    30H        49F9 0000 0218           LEA     00000218H,A4
+    30H        49F9 0000 0218           LEA     intout,A4
     36H        3839 0000 0000           MOVE.W  00000000H,D4
     3CH        266E 0008                MOVE.L  0008(A6),A3
     40H        D844                     ADD.W   D4,D4
@@ -226,6 +231,7 @@ ref own data at    4AH  checksum: o.k.
 ref own data at    52H  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 150
+InquireTextAttributes
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0026                MOVE.W  #0026H,-(A7)
@@ -233,13 +239,13 @@ proc code, procnum =  6, entrypoint =     0H, number of bytes = 150
      AH        4267                     CLR.W   -(A7)
      CH        4267                     CLR.W   -(A7)
      EH        3F2E 000C                MOVE.W  000C(A6),-(A7)
-    12H        4EB9 0000 0000           JSR     00000000H
+    12H        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     18H        4FEF 000A                LEA     000A(A7),A7
-    1CH        4EB9 0000 0000           JSR     00000000H
+    1CH        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     22H        4279 0000 0000           CLR.W   00000000H
     28H        3A39 0000 0000           MOVE.W  00000000H,D5
     2EH        DA45                     ADD.W   D5,D5
-    30H        49F9 0000 0218           LEA     00000218H,A4
+    30H        49F9 0000 0218           LEA     intout,A4
     36H        3839 0000 0000           MOVE.W  00000000H,D4
     3CH        266E 0008                MOVE.L  0008(A6),A3
     40H        D844                     ADD.W   D4,D4
@@ -251,7 +257,7 @@ proc code, procnum =  6, entrypoint =     0H, number of bytes = 150
     60H        3A39 0000 0000           MOVE.W  00000000H,D5
     66H        5D45                     SUBQ.W  #6,D5
     68H        DA45                     ADD.W   D5,D5
-    6AH        49F9 0000 0318           LEA     00000318H,A4
+    6AH        49F9 0000 0318           LEA     ptsout,A4
     70H        3839 0000 0000           MOVE.W  00000000H,D4
     76H        266E 0008                MOVE.L  0008(A6),A3
     7AH        D844                     ADD.W   D4,D4
@@ -292,6 +298,7 @@ ref own data at    84H  checksum: o.k.
 ref own data at    8CH  checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 170
+InquireTextExtent
  DECODE --------                        INSTRUCTION
      0H        4E56 FFF0                LINK    A6,#FFF0H
      4H        286E 0008                MOVE.L  0008(A6),A4
@@ -316,7 +323,7 @@ proc code, procnum =  7, entrypoint =     0H, number of bytes = 170
     50H        1834 5000                MOVE.B  00H(A4,D5.W),D4
     54H        3A39 0000 0000           MOVE.W  00000000H,D5
     5AH        DA45                     ADD.W   D5,D5
-    5CH        49F9 0000 0018           LEA     00000018H,A4
+    5CH        49F9 0000 0018           LEA     intin,A4
     62H        3984 5000                MOVE.W  D4,00H(A4,D5.W)
     66H        5279 0000 0000           ADDQ.W  #1,00000000H
     6CH        60B4                     BRA     [B4H] = 00000022H
@@ -325,12 +332,12 @@ proc code, procnum =  7, entrypoint =     0H, number of bytes = 170
     74H        3F39 0000 0000           MOVE.W  00000000H,-(A7)
     7AH        4267                     CLR.W   -(A7)
     7CH        3F2E 0012                MOVE.W  0012(A6),-(A7)
-    80H        4EB9 0000 0000           JSR     00000000H
+    80H        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     86H        4FEF 000A                LEA     000A(A7),A7
     8AH        49EE FFF0                LEA     FFF0(A6),A4
     8EH        2A0C                     MOVE.L  A4,D5
     90H        23C5 0000 0440           MOVE.L  D5,00000440H
-    96H        4EB9 0000 0000           JSR     00000000H
+    96H        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     9CH        23F9 0000 0428 0000 0440 MOVE.L  00000428H,00000440H
     A6H        4E5E                     UNLK    A6
     A8H        4E75                     RTS
@@ -367,26 +374,27 @@ ref ext data at    9EH, modnum =  1  checksum: o.k.
 ref ext data at    A2H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  8, entrypoint =     0H, number of bytes = 90
+InquireCharWidth
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        7A00                     MOVEQ   #00H,D5
      6H        1A2E 0014                MOVE.B  0014(A6),D5
-     AH        33C5 0000 0018           MOVE.W  D5,00000018H
+     AH        33C5 0000 0018           MOVE.W  D5,intin
     10H        3F3C 0075                MOVE.W  #0075H,-(A7)
     14H        4267                     CLR.W   -(A7)
     16H        3F3C 0001                MOVE.W  #0001H,-(A7)
     1AH        4267                     CLR.W   -(A7)
     1CH        3F2E 0016                MOVE.W  0016(A6),-(A7)
-    20H        4EB9 0000 0000           JSR     00000000H
+    20H        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     26H        4FEF 000A                LEA     000A(A7),A7
-    2AH        4EB9 0000 0000           JSR     00000000H
+    2AH        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     30H        286E 0010                MOVE.L  0010(A6),A4
-    34H        38B9 0000 0318           MOVE.W  00000318H,(A4)
+    34H        38B9 0000 0318           MOVE.W  ptsout,(A4)
     3AH        286E 000C                MOVE.L  000C(A6),A4
-    3EH        38B9 0000 031C           MOVE.W  0000031CH,(A4)
+    3EH        38B9 0000 031C           MOVE.W  ptsout+4,(A4)
     44H        286E 0008                MOVE.L  0008(A6),A4
-    48H        38B9 0000 0320           MOVE.W  00000320H,(A4)
-    4EH        3D79 0000 0218 0018      MOVE.W  00000218H,0018(A6)
+    48H        38B9 0000 0320           MOVE.W  ptsout+8,(A4)
+    4EH        3D79 0000 0218 0018      MOVE.W  intout,0018(A6)
     56H        4E5E                     UNLK    A6
     58H        4E75                     RTS
   checksum: o.k.
@@ -406,21 +414,22 @@ ref ext data at    4AH, modnum =  1  checksum: o.k.
 ref ext data at    50H, modnum =  1  checksum: o.k.
 
 proc code, procnum =  9, entrypoint =     0H, number of bytes = 114
+InquireFaceName
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
-     4H        33EE 000C 0000 0018      MOVE.W  000C(A6),00000018H
+     4H        33EE 000C 0000 0018      MOVE.W  000C(A6),intin
      CH        3F3C 0082                MOVE.W  #0082H,-(A7)
     10H        4267                     CLR.W   -(A7)
     12H        3F3C 0001                MOVE.W  #0001H,-(A7)
     16H        4267                     CLR.W   -(A7)
     18H        3F2E 000E                MOVE.W  000E(A6),-(A7)
-    1CH        4EB9 0000 0000           JSR     00000000H
+    1CH        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     22H        4FEF 000A                LEA     000A(A7),A7
-    26H        4EB9 0000 0000           JSR     00000000H
+    26H        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     2CH        33FC 0001 0000 0000      MOVE.W  #0001H,00000000H
     34H        3A39 0000 0000           MOVE.W  00000000H,D5
     3AH        DA45                     ADD.W   D5,D5
-    3CH        49F9 0000 0218           LEA     00000218H,A4
+    3CH        49F9 0000 0218           LEA     intout,A4
     42H        3834 5000                MOVE.W  00H(A4,D5.W),D4
     46H        3A39 0000 0000           MOVE.W  00000000H,D5
     4CH        5345                     SUBQ.W  #1,D5
@@ -429,7 +438,7 @@ proc code, procnum =  9, entrypoint =     0H, number of bytes = 114
     56H        5279 0000 0000           ADDQ.W  #1,00000000H
     5CH        0C79 0021 0000 0000      CMPI.W  #0021H,00000000H
     64H        66CE                     BNE     [CEH] = 00000034H
-    66H        3D79 0000 0218 0010      MOVE.W  00000218H,0010(A6)
+    66H        3D79 0000 0218 0010      MOVE.W  intout,0010(A6)
     6EH        4E5E                     UNLK    A6
     70H        4E75                     RTS
   checksum: o.k.
@@ -455,6 +464,7 @@ ref own data at    60H  checksum: o.k.
 ref ext data at    68H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 10, entrypoint =     0H, number of bytes = 162
+InquireCellArray
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        4279 0000 0000           CLR.W   00000000H
@@ -475,12 +485,12 @@ proc code, procnum = 10, entrypoint =     0H, number of bytes = 162
     52H        4267                     CLR.W   -(A7)
     54H        4267                     CLR.W   -(A7)
     56H        3F2E 0022                MOVE.W  0022(A6),-(A7)
-    5AH        4EB9 0000 0000           JSR     00000000H
+    5AH        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     60H        4FEF 000A                LEA     000A(A7),A7
     64H        286E 0008                MOVE.L  0008(A6),A4
     68H        2A0C                     MOVE.L  A4,D5
     6AH        23C5 0000 043C           MOVE.L  D5,0000043CH
-    70H        4EB9 0000 0000           JSR     00000000H
+    70H        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     76H        23F9 0000 0424 0000 043C MOVE.L  00000424H,0000043CH
     80H        286E 0016                MOVE.L  0016(A6),A4
     84H        38B9 0000 0012           MOVE.W  00000012H,(A4)
@@ -525,19 +535,20 @@ ref ext data at    90H, modnum =  1  checksum: o.k.
 ref ext data at    9AH, modnum =  1  checksum: o.k.
 
 proc code, procnum = 11, entrypoint =     0H, number of bytes = 58
+InquireInputMode
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
-     4H        33EE 000C 0000 0018      MOVE.W  000C(A6),00000018H
+     4H        33EE 000C 0000 0018      MOVE.W  000C(A6),intin
      CH        3F3C 0073                MOVE.W  #0073H,-(A7)
     10H        4267                     CLR.W   -(A7)
     12H        3F3C 0001                MOVE.W  #0001H,-(A7)
     16H        4267                     CLR.W   -(A7)
     18H        3F2E 000E                MOVE.W  000E(A6),-(A7)
-    1CH        4EB9 0000 0000           JSR     00000000H
+    1CH        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     22H        4FEF 000A                LEA     000A(A7),A7
-    26H        4EB9 0000 0000           JSR     00000000H
+    26H        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     2CH        286E 0008                MOVE.L  0008(A6),A4
-    30H        38B9 0000 0218           MOVE.W  00000218H,(A4)
+    30H        38B9 0000 0218           MOVE.W  intout,(A4)
     36H        4E5E                     UNLK    A6
     38H        4E75                     RTS
   checksum: o.k.
@@ -551,6 +562,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    32H, modnum =  1  checksum: o.k.
 
 proc code, procnum = 12, entrypoint =     0H, number of bytes = 160
+InquireFaceInfo
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0083                MOVE.W  #0083H,-(A7)
@@ -558,19 +570,19 @@ proc code, procnum = 12, entrypoint =     0H, number of bytes = 160
      AH        4267                     CLR.W   -(A7)
      CH        4267                     CLR.W   -(A7)
      EH        3F2E 001C                MOVE.W  001C(A6),-(A7)
-    12H        4EB9 0000 0000           JSR     00000000H
+    12H        4EB9 0000 0000           JSR     GEMVDIbase.SetContrl
     18H        4FEF 000A                LEA     000A(A7),A7
-    1CH        4EB9 0000 0000           JSR     00000000H
+    1CH        4EB9 0000 0000           JSR     GEMVDIbase.CallVDI
     22H        286E 0018                MOVE.L  0018(A6),A4
-    26H        38B9 0000 0218           MOVE.W  00000218H,(A4)
+    26H        38B9 0000 0218           MOVE.W  intout,(A4)
     2CH        286E 0014                MOVE.L  0014(A6),A4
-    30H        38B9 0000 021A           MOVE.W  0000021AH,(A4)
+    30H        38B9 0000 021A           MOVE.W  intout+2,(A4)
     36H        4279 0000 0000           CLR.W   00000000H
     3CH        7A02                     MOVEQ   #02H,D5
     3EH        CAF9 0000 0000           MULU    00000000H,D5
     44H        5245                     ADDQ.W  #1,D5
     46H        DA45                     ADD.W   D5,D5
-    48H        49F9 0000 0318           LEA     00000318H,A4
+    48H        49F9 0000 0318           LEA     ptsout,A4
     4EH        3839 0000 0000           MOVE.W  00000000H,D4
     54H        266E 0010                MOVE.L  0010(A6),A3
     58H        D844                     ADD.W   D4,D4
@@ -579,7 +591,7 @@ proc code, procnum = 12, entrypoint =     0H, number of bytes = 160
     66H        0C79 0005 0000 0000      CMPI.W  #0005H,00000000H
     6EH        66CC                     BNE     [CCH] = 0000003CH
     70H        286E 000C                MOVE.L  000C(A6),A4
-    74H        38B9 0000 0318           MOVE.W  00000318H,(A4)
+    74H        38B9 0000 0318           MOVE.W  ptsout,(A4)
     7AH        286E 0008                MOVE.L  0008(A6),A4
     7EH        38B9 0000 031C           MOVE.W  0000031CH,(A4)
     84H        286E 0008                MOVE.L  0008(A6),A4

@@ -51,6 +51,7 @@ OBJS = \
 	VDIEscapes.o \
 	VDIInputs.o \
 	VDIInputx.o \
+	VDIInquires.o \
 	$(empty)
 
 libm2gem.a: $(OBJS)
@@ -99,11 +100,12 @@ SysInfo.o: SysInfo.mod SysInfo.def
 CookieJar.o: CookieJar.mod CookieJar.def
 KbdEvents.o: KbdEvents.mod KbdEvents.def
 XBRA.o: XBRA.mod XBRA.def
-VDIAttributes.o: VDIAttributes.mod VDIAttributes.def
-VDIControls.o: VDIControls.mod VDIControls.def
-VDIEscapes.o: VDIEscapes.mod VDIEscapes.def
-VDIInputs.o: VDIInputs.mod VDIInputs.def
-VDIInputx.o: VDIInputx.mod VDIInputx.def
+VDIAttributes.o: VDIAttributes.mod VDIAttributes.def GEMOps.def
+VDIControls.o: VDIControls.mod VDIControls.def GEMOps.def
+VDIEscapes.o: VDIEscapes.mod VDIEscapes.def GEMOps.def
+VDIInputs.o: VDIInputs.mod VDIInputs.def GEMOps.def
+VDIInputx.o: VDIInputx.mod VDIInputx.def GEMOps.def
+VDIInquires.o: VDIInquires.mod VDIInquires.def GEMOps.def
 
 clean::
 	rm -f *.o *.a

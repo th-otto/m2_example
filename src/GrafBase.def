@@ -39,7 +39,7 @@ CONST           (* Standard Farbenpalette *)
         lmagenta        = 15;
         
         
-TYPE    WritingMode     = (replaceWrt, transWrt, xorWrt, reverseWrt);
+TYPE    WritingMode     = (noOp, replaceWrt, transWrt, xorWrt, reverseWrt);
         
         (*  Es bedeutet dabei:
          *
