@@ -1,16 +1,68 @@
 DEFINITION MODULE RealInOut;
 
+(** ------------------------------------------------------------------
+
+                     Real value input/output module
+
+
+    ------------------------------------------------------------------ **)
+
+(* ---------------------------------------------------------------------- *)
+(* (c) Copyright 1986, 1987  Modula-2 Software Ltd.  All Rights Reserved. *)
+(* ---------------------------------------------------------------------- *)
+(* (c) Copyright 1986, 1987  TDI Software, Inc.      All Rights Reserved. *)
+(* ---------------------------------------------------------------------- *)
+
+
+(* VERSION FOR Atari ST
+
+     Original Author : PLC, Modula-2 Software Ltd.  06-Jul-86
+
+     Version         : 0.01a  29-Dec-86  MNF, Modula-2 Software Ltd.
+                         Added LONGREAL support - Read/Write LongReal.
+                       0.00a  06-Jul-86  PLC, Modula-2 Software Ltd.
+                         Original
+
+  *)
+
+
+
   VAR Done: BOOLEAN;
   
-  PROCEDURE ReadLongReal(VAR x: LONGREAL) ;
+  (*1*) PROCEDURE ReadLongReal(VAR x: LONGREAL);
+    (* Read LONGREAL number x according to syntax:
 
-  PROCEDURE ReadReal(VAR x: REAL);
+         ["+"|"-"] digit {digit} ["." digit {digit}]
+         ["E" ["+"|"-"] digit {digit}]
 
-  PROCEDURE WriteLongReal(x: LONGREAL ; n: CARDINAL) ;
+       Done := "a number was read"
+       At most 15 digits are significant, leading zeroes not
+       counting, Maximum exponent is 307. Input terminates
+       with a blank or any control character. DEL isused
+       for backspacing *)
+
+  (*2*) PROCEDURE ReadReal(VAR x: REAL);
+    (* Read REAL number x according to syntax:
+
+         ["+"|"-"] digit {digit} ["." digit {digit}]
+         ["E" ["+"|"-"] digit {digit}]
+
+       Done := "a number was read"
+       At most 7 digits are significant, leading zeroes not
+       counting, Maximum exponent is 38. Input terminates
+       with a blank or any control character. DEL isused
+       for backspacing *)
+
+  (*3*) PROCEDURE WriteLongReal(x: LONGREAL; n: CARDINAL);
+    (* Write x using n characters. If fewer than n characters
+       are needed, leading blanks are inserted *)
      
-  PROCEDURE WriteReal(x: REAL; n: CARDINAL);
+  (*4*) PROCEDURE WriteReal(x: REAL; n: CARDINAL);
+    (* Write x using n characters. If fewer than n characters
+       are needed, leading blanks are inserted *)
 
-  PROCEDURE WriteRealOct(x: REAL);
+  (*5*) PROCEDURE WriteRealOct(x: REAL);
+    (* Write x in octal form with exponent and mantissa *)
 
 
 END RealInOut.

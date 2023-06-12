@@ -1,0 +1,34 @@
+DEFINITION MODULE MathLib0;
+
+IMPORT SYSTEM;
+
+CONST pi = 3.1415926536;
+CONST e = 2.7182818284;
+
+(* 1 *) PROCEDURE RadToDeg(RadianAngle: REAL): REAL;
+
+(* 2 *) PROCEDURE DegToRad(DegreeAngle: REAL): REAL;
+
+(* 3 *) PROCEDURE real(x: INTEGER): REAL;
+
+(* 4 *) PROCEDURE entier(x: REAL): INTEGER;
+
+(* 5 *) PROCEDURE sin(x: REAL): REAL;
+
+(* 6 *) PROCEDURE cos(x: REAL): REAL;
+
+(* 7 *) PROCEDURE tan(x: REAL): REAL;
+
+(* 8 *) PROCEDURE arctan(x: REAL): REAL;
+
+(* 9 *) PROCEDURE exp(x: REAL): REAL;
+
+(* 10 *) PROCEDURE ln(x: REAL): REAL;
+
+(* 11 *) PROCEDURE log(x: REAL): REAL;
+
+(* 12 *) PROCEDURE power(x, y: REAL): REAL;
+
+(* 13 *) PROCEDURE sqrt(x: REAL): REAL;
+
+END MathLib0.

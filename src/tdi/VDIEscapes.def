@@ -1,103 +1,77 @@
-(*syntax version =    4H*)
-
-(*module key = 2102HCAF6H A10H*)
 DEFINITION MODULE VDIEscapes;
 
+FROM GEMVDIbase IMPORT PxyArrayType, FilmNameType, FilmIndexType;
 
-  (*module key = 2102HCAE1H2388H*)
-  MODULE GEMVDIbase;
+(* 1 *) PROCEDURE InquireCharCells(INTEGER; VAR INTEGER; VAR INTEGER);
 
-    IMPORT SYSTEM;
+(* 2 *) PROCEDURE ExitAlphaMode(INTEGER);
 
-    TYPE
-      PxyArrayType = ARRAY [0H(*CARDINAL*)..3H(*CARDINAL*)] OF INTEGER;
-    
-    TYPE
-      FilmNameType = ARRAY [0H(*CARDINAL*)..7CH(*CARDINAL*)] OF CHAR;
-    
-    TYPE
-      FilmIndexType = ARRAY [0H(*CARDINAL*)..7H(*CARDINAL*)] OF ARRAY [0H(*CARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
-    
-  END GEMVDIbase;
+(* 3 *) PROCEDURE EnterAlphaMode(INTEGER);
 
-  (*module key = 2102HCAF6H A10H*)
-  MODULE VDIEscapes;
+(* 4 *) PROCEDURE CursorUp(INTEGER);
 
-    IMPORT SYSTEM, GEMVDIbase;
+(* 5 *) PROCEDURE CursorDown(INTEGER);
 
-    PROCEDURE InquireCharCells(* ProcNum:1 *)(INTEGER; VAR INTEGER; VAR INTEGER);
-    
-    PROCEDURE ExitAlphaMode(* ProcNum:2 *)(INTEGER);
-    
-    PROCEDURE EnterAlphaMode(* ProcNum:3 *)(INTEGER);
-    
-    PROCEDURE CursorUp(* ProcNum:4 *)(INTEGER);
-    
-    PROCEDURE CursorDown(* ProcNum:5 *)(INTEGER);
-    
-    PROCEDURE CursorRight(* ProcNum:6 *)(INTEGER);
-    
-    PROCEDURE CursorLeft(* ProcNum:7 *)(INTEGER);
-    
-    PROCEDURE CursorHome(* ProcNum:8 *)(INTEGER);
-    
-    PROCEDURE EraseToEOS(* ProcNum:9 *)(INTEGER);
-    
-    PROCEDURE EraseToEOL(* ProcNum:10 *)(INTEGER);
-    
-    PROCEDURE CursorAddress(* ProcNum:11 *)(INTEGER; INTEGER; INTEGER);
-    
-    PROCEDURE OutputText(* ProcNum:12 *)(INTEGER; VAR ARRAY CHAR);
-    
-    PROCEDURE ReverseVideoOn(* ProcNum:13 *)(INTEGER);
-    
-    PROCEDURE ReverseVideoOff(* ProcNum:14 *)(INTEGER);
-    
-    PROCEDURE InquireCursorAddress(* ProcNum:15 *)(INTEGER; VAR INTEGER; VAR INTEGER);
-    
-    PROCEDURE InquireTabletStatus(* ProcNum:16 *)(INTEGER) : INTEGER;
-    
-    PROCEDURE HardCopy(* ProcNum:17 *)(INTEGER);
-    
-    PROCEDURE DisplayCursor(* ProcNum:18 *)(INTEGER; INTEGER; INTEGER);
-    
-    PROCEDURE RemoveCursor(* ProcNum:19 *)(INTEGER);
-    
-    PROCEDURE FormAdvance(* ProcNum:20 *)(INTEGER);
-    
-    PROCEDURE OutputWindow(* ProcNum:21 *)(INTEGER; GEMVDIbase.PxyArrayType);
-    
-    PROCEDURE ClearDisplayList(* ProcNum:22 *)(INTEGER);
-    
-    PROCEDURE OutputBitImageFile(* ProcNum:23 *)(
-          handle:INTEGER;                     22
-          VAR fname: ARRAY OF CHAR;           18
-          aspect: INTEGER;                    16
-          scaling: INTEGER;                   14
-          numPts: INTEGER;                    12
-          VAR frame: GEMVDIbase.PxyArrayType); 8
-    
-    PROCEDURE SelectPalette(* ProcNum:24 *)(INTEGER; INTEGER) : INTEGER;
-    
-    PROCEDURE InquirePaletteFilms(* ProcNum:25 *)(INTEGER; VAR GEMVDIbase.FilmNameType);
-    
-    PROCEDURE InquirePaletteState(* ProcNum:26 *)(INTEGER; VAR port: INTEGER; VAR film: INTEGER; VAR lightness: INTEGER; VAR interlace: INTEGER; VAR planes: INTEGER; VAR GEMVDIbase.FilmIndexType);
-    
-    PROCEDURE SetPaletteState(* ProcNum:27 *)(handle: INTEGER; port: INTEGER; film: INTEGER; lightnes: INTEGER; interlace: INTEGER; planes: INTEGER; VAR GEMVDIbase.FilmIndexType);
-    
-    PROCEDURE SavePaletteState(* ProcNum:28 *)(INTEGER);
-    
-    PROCEDURE SuppressPaletteMessages(* ProcNum:29 *)(INTEGER);
-    
-    PROCEDURE PaletteErrorInquire(* ProcNum:30 *)(INTEGER) : INTEGER;
-    
-    PROCEDURE UpdateMetafileExtents(* ProcNum:31 *)(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
-    
-    PROCEDURE WriteMetafile(* ProcNum:32 *)(INTEGER; INTEGER; VAR ARRAY INTEGER; INTEGER; VAR ARRAY INTEGER);
-    
-    PROCEDURE ChangeFileName(* ProcNum:33 *)(INTEGER; VAR ARRAY CHAR);
-    
-  END VDIEscapes;
+(* 6 *) PROCEDURE CursorRight(INTEGER);
+
+(* 7 *) PROCEDURE CursorLeft(INTEGER);
+
+(* 8 *) PROCEDURE CursorHome(INTEGER);
+
+(* 9 *) PROCEDURE EraseToEOS(INTEGER);
+
+(* 10 *) PROCEDURE EraseToEOL(INTEGER);
+
+(* 11 *) PROCEDURE CursorAddress(INTEGER; INTEGER; INTEGER);
+
+(* 12 *) PROCEDURE OutputText(INTEGER; VAR ARRAY CHAR);
+
+(* 13 *) PROCEDURE ReverseVideoOn(INTEGER);
+
+(* 14 *) PROCEDURE ReverseVideoOff(INTEGER);
+
+(* 15 *) PROCEDURE InquireCursorAddress(INTEGER; VAR INTEGER; VAR INTEGER);
+
+(* 16 *) PROCEDURE InquireTabletStatus(INTEGER) : INTEGER;
+
+(* 17 *) PROCEDURE HardCopy(INTEGER);
+
+(* 18 *) PROCEDURE DisplayCursor(INTEGER; INTEGER; INTEGER);
+
+(* 19 *) PROCEDURE RemoveCursor(INTEGER);
+
+(* 20 *) PROCEDURE FormAdvance(INTEGER);
+
+(* 21 *) PROCEDURE OutputWindow(INTEGER; PxyArrayType);
+
+(* 22 *) PROCEDURE ClearDisplayList(INTEGER);
+
+(* 23 *) PROCEDURE OutputBitImageFile(
+      handle:INTEGER;
+      VAR fname: ARRAY OF CHAR;
+      aspect: INTEGER;
+      scaling: INTEGER;
+      numPts: INTEGER;
+      VAR frame: PxyArrayType);
+
+(* 24 *) PROCEDURE SelectPalette(INTEGER; INTEGER) : INTEGER;
+
+(* 25 *) PROCEDURE InquirePaletteFilms(INTEGER; VAR FilmNameType);
+
+(* 26 *) PROCEDURE InquirePaletteState(INTEGER; VAR port: INTEGER; VAR film: INTEGER; VAR lightness: INTEGER; VAR interlace: INTEGER; VAR planes: INTEGER; VAR FilmIndexType);
+
+(* 27 *) PROCEDURE SetPaletteState(handle: INTEGER; port: INTEGER; film: INTEGER; lightnes: INTEGER; interlace: INTEGER; planes: INTEGER; VAR FilmIndexType);
+
+(* 28 *) PROCEDURE SavePaletteState(INTEGER);
+
+(* 29 *) PROCEDURE SuppressPaletteMessages(INTEGER);
+
+(* 30 *) PROCEDURE PaletteErrorInquire(INTEGER) : INTEGER;
+
+(* 31 *) PROCEDURE UpdateMetafileExtents(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+
+(* 32 *) PROCEDURE WriteMetafile(INTEGER; INTEGER; VAR ARRAY INTEGER; INTEGER; VAR ARRAY INTEGER);
+
+(* 33 *) PROCEDURE ChangeFileName(INTEGER; VAR ARRAY CHAR);
 
 END VDIEscapes.
-

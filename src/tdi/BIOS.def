@@ -1,112 +1,81 @@
-(*syntax version =    4H*)
-
-(*module key = 2102HCB4DH70E9H*)
 DEFINITION MODULE BIOS;
 
+FROM SYSTEM IMPORT ADDRESS, LONGCARD;
 
-  (*module key = 2102HCB4DH70E9H*)
-  MODULE BIOS;
+TYPE MDPtr = POINTER TO MD;
 
-    IMPORT SYSTEM;
+TYPE MD = RECORD
+  mlink(*offset: 0H*)  : MDPtr;
+  mstart(*offset: 4H*)  : ADDRESS;
+  mlength(*offset: 8H*)  : LONGCARD;
+  mown(*offset: CH*)  : ADDRESS;
+END;
+     
+TYPE MPB = RECORD
+  mpmfl(*offset: 0H*)  : MDPtr;
+  mpmal(*offset: 4H*)  : MDPtr;
+  morover(*offset: 8H*)  : MDPtr;
+END;
+      
+TYPE Device = (PRT, AUX, CON, HSS, KDB, RAW);
 
-    TYPE
-      MDPtr = POINTER TO MD;
-    
-    TYPE
-      MD = RECORD
-             mlink(*offset: 0H*)  : MDPtr;
-             mstart(*offset: 4H*)  : SYSTEM.ADDRESS;
-             mlength(*offset: 8H*)  : LONGCARD;
-             mown(*offset: CH*)  : SYSTEM.ADDRESS;
-           END;(*size: 10H*);
-         
-    TYPE
-      MPB = RECORD
-              mpmfl(*offset: 0H*)  : MDPtr;
-              mpmal(*offset: 4H*)  : MDPtr;
-              morover(*offset: 8H*)  : MDPtr;
-            END;(*size: CH*);
-          
-    TYPE
-      Device = (PRT(*0*),
-      AUX(*1*),
-      CON(*2*),
-      HSS(*3*),
-      KDB(*4*),
-      RAW(*5*));
-    
-    TYPE
-      RW = (Read(*0*),
-      Write(*1*),
-      ReadNoMediaChange(*2*),
-      WriteNoMediaChange(*3*));
-    
-    TYPE
-      MCState = (NoChange(*0*),
-      MayHaveChanged(*1*),
-      Changed(*2*));
-    
-    TYPE
-      BPBPtr = POINTER TO BPB;
-    
-    TYPE
-      BPB = RECORD
-              recsiz(*offset: 0H*)  : CARDINAL;
-              clsiz(*offset: 2H*)  : CARDINAL;
-              clsizb(*offset: 4H*)  : CARDINAL;
-              rdlen(*offset: 6H*)  : CARDINAL;
-              fsiz(*offset: 8H*)  : CARDINAL;
-              fatrec(*offset: AH*)  : CARDINAL;
-              datrec(*offset: CH*)  : CARDINAL;
-              numcl(*offset: EH*)  : CARDINAL;
-              bflags(*offset: 10H*)  : CARDINAL;
-            END;(*size: 12H*);
-          
-    TYPE
-      DriveSet = SET OF [0H(*CARDINAL*)..1FH(*CARDINAL*)];
-    
-    TYPE
-      KBShiftBits = (RightShift(*0*),
-      LeftShift(*1*),
-      ControlKey(*2*),
-      AlternateKey(*3*),
-      CapsLock(*4*),
-      RightMouseButton(*5*),
-      LeftMMouseButton(*6*));
-    
-    TYPE
-      KBShifts = SET OF KBShiftBits;
-    
-    PROCEDURE GetMPB(* ProcNum:1 *)(VAR MPB);
-    
-    PROCEDURE BConStat(* ProcNum:2 *)(Device) : BOOLEAN;
-    
-    PROCEDURE BCosStat(* ProcNum:3 *)(Device) : BOOLEAN;
-    
-    PROCEDURE BConIn(* ProcNum:4 *)(Device) : LONGCARD;
-    
-    PROCEDURE BConOut(* ProcNum:5 *)(Device; CHAR);
-    
-    PROCEDURE RWAbs(* ProcNum:6 *)(RW; SYSTEM.ADDRESS; CARDINAL; CARDINAL; C
-ARDINAL) : LONGINT;
-    
-    PROCEDURE SetException(* ProcNum:7 *)(CARDINAL; PROC);
-    
-    PROCEDURE GetException(* ProcNum:8 *)(CARDINAL) : SYSTEM.ADDRESS;
-    
-    PROCEDURE TimerCalibration(* ProcNum:9 *)() : LONGCARD;
-    
-    PROCEDURE GetBPB(* ProcNum:10 *)(CARDINAL) : BPBPtr;
-    
-    PROCEDURE MediaChange(* ProcNum:11 *)(CARDINAL) : MCState;
-    
-    PROCEDURE DriveMap(* ProcNum:12 *)() : DriveSet;
-    
-    PROCEDURE SetKBShift(* ProcNum:13 *)(KBShifts);
-    
-    PROCEDURE GetKBShift(* ProcNum:14 *)() : KBShifts;
-    
-  END BIOS;
+TYPE RW = (Read, Write, ReadNoMediaChange, WriteNoMediaChange);
+
+TYPE MCState = (NoChange, MayHaveChanged, Changed);
+
+TYPE BPBPtr = POINTER TO BPB;
+
+TYPE BPB = RECORD
+  recsiz(*offset: 0H*)  : CARDINAL;
+  clsiz(*offset: 2H*)  : CARDINAL;
+  clsizb(*offset: 4H*)  : CARDINAL;
+  rdlen(*offset: 6H*)  : CARDINAL;
+  fsiz(*offset: 8H*)  : CARDINAL;
+  fatrec(*offset: AH*)  : CARDINAL;
+  datrec(*offset: CH*)  : CARDINAL;
+  numcl(*offset: EH*)  : CARDINAL;
+  bflags(*offset: 10H*)  : CARDINAL;
+END;
+      
+TYPE DriveSet = SET OF [0..31];
+
+TYPE
+  KBShiftBits = (RightShift(*0*),
+  LeftShift(*1*),
+  ControlKey(*2*),
+  AlternateKey(*3*),
+  CapsLock(*4*),
+  RightMouseButton(*5*),
+  LeftMMouseButton(*6*));
+
+TYPE KBShifts = SET OF KBShiftBits;
+
+(* 1 *) PROCEDURE GetMPB(VAR mpb: MPB);
+
+(* 2 *) PROCEDURE BConStat(Device) : BOOLEAN;
+
+(* 3 *) PROCEDURE BCosStat(Device) : BOOLEAN;
+
+(* 4 *) PROCEDURE BConIn(Device) : LONGCARD;
+
+(* 5 *) PROCEDURE BConOut(Device; CHAR);
+
+(* 6 *) PROCEDURE RWAbs(RW; ADDRESS; CARDINAL; CARDINAL; CARDINAL) : LONGINT;
+
+(* 7 *) PROCEDURE SetException(CARDINAL; PROC);
+
+(* 8 *) PROCEDURE GetException(CARDINAL) : ADDRESS;
+
+(* 9 *) PROCEDURE TimerCalibration() : LONGCARD;
+
+(* 10 *) PROCEDURE GetBPB(CARDINAL) : BPBPtr;
+
+(* 11 *) PROCEDURE MediaChange(CARDINAL) : MCState;
+
+(* 12 *) PROCEDURE DriveMap() : DriveSet;
+
+(* 13 *) PROCEDURE SetKBShift(KBShifts);
+
+(* 14 *) PROCEDURE GetKBShift() : KBShifts;
 
 END BIOS.
-

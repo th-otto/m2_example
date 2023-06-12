@@ -6,6 +6,7 @@ scmod header: MODULE  GEMAESbase, key =  2102H  CAD6H  2E6DH  checksum: o.k.
 data size, number of bytes = 136  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 78
+PROCEDURE GemCall(opcode: INTEGER; nintin: INTEGER; nintout: INTEGER; naddrin: INTEGER; naddrout: INTEGER): INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        49F9 0000 0036           LEA     00000036H,A4
@@ -36,6 +37,7 @@ ref own data at    3EH  checksum: o.k.
 ref own data at    44H  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 24
+PROCEDURE IntIn2(intin0, intin1: INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000A 0000 0040      MOVE.W  000A(A6),00000040H
@@ -50,6 +52,7 @@ ref own data at    10H  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 32
  DECODE --------                        INSTRUCTION
+PROCEDURE IntIn3(intin0, intin1, intin2: INTEGER);
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000C 0000 0040      MOVE.W  000C(A6),00000040H
      CH        33EE 000A 0000 0042      MOVE.W  000A(A6),00000042H
@@ -65,6 +68,7 @@ ref own data at    10H  checksum: o.k.
 ref own data at    18H  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 40
+PROCEDURE IntIn4(intin0, intin1, intin2, intin3: INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000E 0000 0040      MOVE.W  000E(A6),00000040H
@@ -84,6 +88,7 @@ ref own data at    18H  checksum: o.k.
 ref own data at    20H  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 72
+PROCEDURE IntIn8(intin0, intin1, intin2, intin3, intin4, intin5, intin6, intin7: INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0016 0000 0040      MOVE.W  0016(A6),00000040H
@@ -115,6 +120,7 @@ ref own data at    38H  checksum: o.k.
 ref own data at    40H  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 28
+PROCEDURE IntOut2(VAR intout0: INTEGER; VAR intout1: INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        286E 000C                MOVE.L  000C(A6),A4
@@ -130,6 +136,7 @@ ref own data at     AH  checksum: o.k.
 ref own data at    14H  checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 48
+PROCEDURE IntOut4(VAR intout0: INTEGER; VAR intout1: INTEGER; VAR intout2: INTEGER; VAR intout3: INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        286E 0014                MOVE.L  0014(A6),A4

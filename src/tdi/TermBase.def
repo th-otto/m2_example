@@ -1,0 +1,17 @@
+DEFINITION MODULE TermBase;
+
+IMPORT SYSTEM;
+
+TYPE ReadProc = PROCEDURE(VAR CHAR);
+
+TYPE WriteProc = PROCEDURE(CHAR);
+
+TYPE StatusProc = PROCEDURE(): BOOLEAN;
+
+VAR DoRead (* reladdr: 0H*)  : ReadProc;
+
+VAR DoWrite (* reladdr: 4H*)  : WriteProc;
+
+VAR DoStatus (* reladdr: 8H*)  : StatusProc;
+
+END TermBase.

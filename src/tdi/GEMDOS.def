@@ -1,4 +1,4 @@
-DEFINITION MODULE GEMDOS ;
+DEFINITION MODULE GEMDOS;
 
 (* ---------------------------------------------------------------------
 
@@ -19,220 +19,219 @@ DEFINITION MODULE GEMDOS ;
 (* ---------------------------------------------------------------------- *)
 
 
-FROM SYSTEM IMPORT ADDRESS ;
+FROM SYSTEM IMPORT ADDRESS;
 
 CONST
   (* BIOS error codes *)
-  EOK           =   0 ;
-  Error         =  -1 ;
-  EDrvNR        =  -2 ;         (* Drive not ready *)
-  EUnCmd        =  -3 ;         (* Unknown command *)
-  ECRC          =  -4 ;         (* CRC error *)
-  EBadRq        =  -5 ;         (* Bad request *)
-  ESeek         =  -6 ;         (* Seek error *)
-  EMedia        =  -7 ;         (* Unknown media *)
-  ESecNF        =  -8 ;         (* Sector not found *)
-  EPaper        =  -9 ;         (* No paper *)
-  EWritF        = -10 ;         (* Write fault *)
-  EReadF        = -11 ;         (* Read fault *)
-  EGenrl        = -12 ;         (* General error *)
-  EWrPro        = -13 ;         (* Write protect *)
-  EChng         = -14 ;         (* Media change *)
-  EUnDev        = -15 ;         (* Unknown device *)
-  EBadSF        = -16 ;         (* Bad sectors on format *)
-  EOther        = -17 ;         (* Insert other disk *)
+  EOK           =   0;
+  Error         =  -1;
+  EDrvNR        =  -2;         (* Drive not ready *)
+  EUnCmd        =  -3;         (* Unknown command *)
+  ECRC          =  -4;         (* CRC error *)
+  EBadRq        =  -5;         (* Bad request *)
+  ESeek         =  -6;         (* Seek error *)
+  EMedia        =  -7;         (* Unknown media *)
+  ESecNF        =  -8;         (* Sector not found *)
+  EPaper        =  -9;         (* No paper *)
+  EWritF        = -10;         (* Write fault *)
+  EReadF        = -11;         (* Read fault *)
+  EGenrl        = -12;         (* General error *)
+  EWrPro        = -13;         (* Write protect *)
+  EChng         = -14;         (* Media change *)
+  EUnDev        = -15;         (* Unknown device *)
+  EBadSF        = -16;         (* Bad sectors on format *)
+  EOther        = -17;         (* Insert other disk *)
 
   (* BDOS Error codes *)
-  EInvFN        = -32 ;         (* Invalid function number *)
-  EFilNF        = -33 ;         (* File not found *)
-  EPthNF        = -34 ;         (* Path not found *)
-  ENHndl        = -35 ;         (* No handles left *)
-  EAccDn        = -36 ;         (* Access denied *)
-  EIHndl        = -37 ;         (* Invalid handle *)
-  ENSMem        = -39 ;         (* Insufficient memory *)
-  EIMBA         = -40 ;         (* Invalid memory block address *)
-  EDrive        = -46 ;         (* Invaild drive specified *)
-  ENMFil        = -49 ;         (* No more files *)
+  EInvFN        = -32;         (* Invalid function number *)
+  EFilNF        = -33;         (* File not found *)
+  EPthNF        = -34;         (* Path not found *)
+  ENHndl        = -35;         (* No handles left *)
+  EAccDn        = -36;         (* Access denied *)
+  EIHndl        = -37;         (* Invalid handle *)
+  ENSMem        = -39;         (* Insufficient memory *)
+  EIMBA         = -40;         (* Invalid memory block address *)
+  EDrive        = -46;         (* Invaild drive specified *)
+  ENMFil        = -49;         (* No more files *)
 
   (* Other errors *)
-  ERange        = -64 ;         (* Range error *)
-  EIntrn        = -65 ;         (* Internal error *)
-  EPLFmt        = -66 ;         (* Invalid program load format *)
-  EGSBF         = -67 ;         (* Setblock failure due to growth restr *)
+  ERange        = -64;         (* Range error *)
+  EIntrn        = -65;         (* Internal error *)
+  EPLFmt        = -66;         (* Invalid program load format *)
+  EGSBF         = -67;         (* Setblock failure due to growth restr *)
 
 TYPE
-  IOMode = ( read, write ) ;
+  IOMode = (read, write)
 
-  SeekMode = ( beginning, relative, end ) ;
+  SeekMode = (beginning, relative, end)
 
-  ExecMode = ( loadExecute, resrvd1, resrvd2, load ) ;
+  ExecMode = (loadExecute, resrvd1, resrvd2, load)
 
-  SetOrGet = ( set, get ) ;
+  SetOrGet = (set, get)
 
   DiskInfoBuffer = RECORD 
-                     freeSpace   : LONGCARD ; (* in clusters *)
-                     clusters    : LONGCARD ; (* num on disk *)
-                     sectorSize  : LONGCARD ; (* in bytes *)
-                     clusterSize : LONGCARD ; (* sectors per cluster *)
-                   END ;
+                     freeSpace   : LONGCARD; (* in clusters *)
+                     clusters    : LONGCARD; (* num on disk *)
+                     sectorSize  : LONGCARD; (* in bytes *)
+                     clusterSize : LONGCARD; (* sectors per cluster *)
+                   END;
 
-PROCEDURE OldTerm () ;
+(* 1 *) PROCEDURE OldTerm (); 
 (* Terminate process (old version) *)
 
-PROCEDURE ConIn ( VAR Ch : CHAR ) ;
+(* 2 *) PROCEDURE ConIn(VAR Ch: CHAR) 
 (* Read character from standard input *)
 
-PROCEDURE ConScanIn ( VAR Ch, Scan : CHAR ) ;
+(* 3 *) PROCEDURE ConScanIn(VAR Ch, Scan: CHAR); 
 (* Read character and scan code from standard input *)
 
-PROCEDURE ConOut ( Ch : CHAR ) ;
+(* 4 *) PROCEDURE ConOut(Ch: CHAR); 
 (* Write character to standard output *)
 
-PROCEDURE AuxIn ( VAR Ch : CHAR ) ;
+(* 5 *) PROCEDURE AuxIn(VAR Ch: CHAR); 
 (* Read character from auxiliary port *)
 
-PROCEDURE AuxOut ( Ch : CHAR ) ;
+(* 6 *) PROCEDURE AuxOut(Ch: CHAR); 
 (* Write character to auxiliary port *)
 
-PROCEDURE PrnOut ( Ch : CHAR ) ;
+(* 7 *) PROCEDURE PrnOut(Ch: CHAR); 
 (* Write character to printer port *)
 
-PROCEDURE RawIO ( VAR Ch : CHAR ; Mode : IOMode ) ;
+(* 8 *) PROCEDURE RawIO(VAR Ch: CHAR; Mode: IOMode); 
 (* Raw IO to standard input/output device *)
 
-PROCEDURE RawIn ( VAR Ch : CHAR ) ;
+(* 9 *) PROCEDURE RawIn(VAR Ch: CHAR); 
 (* Raw input from standard input *)
 
-PROCEDURE RawScanIn ( VAR Ch, Scan : CHAR ) ;
+(* 10 *) PROCEDURE RawScanIn(VAR Ch, Scan: CHAR); 
 (* Raw inpput of character and scan code from standard input *)
 
-PROCEDURE NecIn ( VAR Ch : CHAR ) ;
+(* 11 *) PROCEDURE NecIn(VAR Ch: CHAR); 
 (* Read character from standard input with no echo *)
 
-PROCEDURE ConWS ( VAR String : ARRAY OF CHAR ) ;
+(* 12 *) PROCEDURE ConWS(VAR String: ARRAY OF CHAR); 
 (* Write null terminated string to standard output device *)
 
-PROCEDURE ConRS ( VAR String : ARRAY OF CHAR ) ;
+(* 13 *) PROCEDURE ConRS(VAR String: ARRAY OF CHAR); 
 (* Read edited string from standard input device *)
 
-PROCEDURE ConIS () : BOOLEAN ;
+(* 14 *) PROCEDURE ConIS (): BOOLEAN; 
 (* Return status of standard input *)
 
-PROCEDURE SetDrv ( Drive : CARDINAL ; VAR DriveMap : LONGCARD ) ;
+(* 15 *) PROCEDURE SetDrv(Drive: CARDINAL; VAR DriveMap: LONGCARD); 
 (* Set default drive *)
 
-PROCEDURE ConOS () : BOOLEAN ;
+(* 16 *) PROCEDURE ConOS (): BOOLEAN; 
 (* Return output status of standard output *)
 
-PROCEDURE PrnOS () : BOOLEAN ;
+(* 17 *) PROCEDURE PrnOS (): BOOLEAN; 
 (* Return output status of standard printer *)
 
-PROCEDURE AuxIS () : BOOLEAN ;
+(* 18 *) PROCEDURE AuxIS (): BOOLEAN; 
 (* Return status of standard auxiliary *)
 
-PROCEDURE AuxOS () : BOOLEAN ;
+(* 19 *) PROCEDURE AuxOS (): BOOLEAN; 
 (* Return output status of standard auxiliary *)
 
-PROCEDURE GetDrv ( VAR Drive : CARDINAL ) ;
+(* 20 *) PROCEDURE GetDrv(VAR Drive: CARDINAL); 
 (* Get default drive *)
 
-PROCEDURE SetDTA ( Address : ADDRESS ) ;
+(* 21 *) PROCEDURE SetDTA(Address: ADDRESS); 
 (* Set disk transfer address *)
 
-PROCEDURE GetDate ( VAR Date : CARDINAL ) ;
+(* 22 *) PROCEDURE GetDate(VAR Date: CARDINAL); 
 (* Get Date *)
 
-PROCEDURE SetDate ( Date : CARDINAL ) ;
+(* 23 *) PROCEDURE SetDate(Date: CARDINAL); 
 (* Set Date *)
 
-PROCEDURE GetTime ( VAR Time : CARDINAL ) ;
+(* 24 *) PROCEDURE GetTime(VAR Time: CARDINAL); 
 (* Get Date *)
 
-PROCEDURE SetTime ( Time : CARDINAL ) ;
+(* 25 *) PROCEDURE SetTime(Time: CARDINAL); 
 (* Set Date *)
 
-PROCEDURE GetDTA ( VAR Addr : ADDRESS ) ;
+(* 26 *) PROCEDURE GetDTA(VAR Addr: ADDRESS); 
 (* Get disk transfer address *)
 
-PROCEDURE Version ( VAR Ver : CARDINAL ) ;
+(* 27 *) PROCEDURE Version(VAR Ver: CARDINAL); 
 (* Get version number *)
 
-PROCEDURE TermRes ( NumBytes : LONGCARD ; ExitCode : CARDINAL ) ;
+(* 28 *) PROCEDURE TermRes(NumBytes: LONGCARD; ExitCode: CARDINAL); 
 (* Terminate and stay resident *)
 
-PROCEDURE DFree (VAR InfoBuffer : DiskInfoBuffer ; Drive : CARDINAL ) ;
+(* 29 *) PROCEDURE DFree (VAR InfoBuffer: DiskInfoBuffer; Drive: CARDINAL); 
 (* Get drive free space *)
 
-PROCEDURE DirCreate ( VAR Path : ARRAY OF CHAR ) : BOOLEAN ;
+(* 30 *) PROCEDURE DirCreate(VAR Path: ARRAY OF CHAR ): BOOLEAN; 
 (* Create a subdirectory *)
 
-PROCEDURE DirDelete ( VAR Path : ARRAY OF CHAR ) : BOOLEAN;
+(* 31 *) PROCEDURE DirDelete(VAR Path: ARRAY OF CHAR ): BOOLEAN; 
 (* Delete a subdirectory *)
 
-PROCEDURE SetPath ( VAR Path : ARRAY OF CHAR ) : BOOLEAN ;
+(* 32 *) PROCEDURE SetPath(VAR Path: ARRAY OF CHAR ): BOOLEAN; 
 (* Set current directory *)
 
-PROCEDURE Create ( VAR Name : ARRAY OF CHAR ; Attr : CARDINAL ; 
-                   VAR Handle : INTEGER  ) ;
+(* 33 *) PROCEDURE Create(VAR Name: ARRAY OF CHAR; Attr: CARDINAL; 
+                   VAR Handle: INTEGER );
 (* Create a file *)
 
-PROCEDURE Open ( VAR Name : ARRAY OF CHAR ; Mode : CARDINAL ;
-                 VAR Handle : INTEGER ) ;
+(* 34 *) PROCEDURE Open(VAR Name: ARRAY OF CHAR; Mode: CARDINAL; 
+                 VAR Handle: INTEGER);
 (* Open a file *)
 
-PROCEDURE Close ( Handle : INTEGER ) : BOOLEAN ;
+(* 35 *) PROCEDURE Close(Handle: INTEGER ): BOOLEAN; 
 (* Close a file *)
 
-PROCEDURE Read ( Handle : INTEGER ; VAR Count : LONGCARD ; Buffer : ADDRESS ) ;
+(* 36 *) PROCEDURE Read(Handle: INTEGER; VAR Count: LONGCARD; Buffer: ADDRESS); 
 (* Read file *)
 
-PROCEDURE Write ( Handle : INTEGER ; VAR Count : LONGCARD ; Buffer : ADDRESS ) ;(* Write file *)
+(* 37 *) PROCEDURE Write(Handle: INTEGER; VAR Count: LONGCARD; Buffer: ADDRESS);(* Write file *) 
 
-PROCEDURE Delete ( VAR Name : ARRAY OF CHAR ) : BOOLEAN ;
+(* 38 *) PROCEDURE Delete(VAR Name: ARRAY OF CHAR ): BOOLEAN; 
 (* Delete file *)
 
-PROCEDURE Seek ( Offset : LONGINT ; Handle : INTEGER ; Mode : SeekMode ;
-                 VAR Position : LONGCARD ) ;
+(* 39 *) PROCEDURE Seek(Offset: LONGINT; Handle: INTEGER; Mode: SeekMode; VAR Position: LONGCARD);
 (* Seek file pointer *)
 
-PROCEDURE Attrib ( VAR Name : ARRAY OF CHAR ; Which : SetOrGet ; 
-                   VAR Attr : CARDINAL ) ;
+(* 40 *) PROCEDURE Attrib(VAR Name: ARRAY OF CHAR; Which: SetOrGet;  
+                   VAR Attr: CARDINAL);
 (* Get/Set file attributes *)
 
-PROCEDURE GetPath ( VAR PathName : ARRAY OF CHAR ; Drive : CARDINAL ) ;
+(* 41 *) PROCEDURE GetPath(VAR PathName: ARRAY OF CHAR; Drive: CARDINAL); 
 (* Get current directory *)
 
-PROCEDURE Alloc ( Bytes : LONGCARD ; VAR Addr : ADDRESS ) ;
+(* 42 *) PROCEDURE Alloc(Bytes: LONGCARD; VAR Addr: ADDRESS); 
 (* Allocate memory *)
 
-PROCEDURE Free ( Addr : ADDRESS ) : BOOLEAN ;
+(* 43 *) PROCEDURE Free(Addr: ADDRESS ): BOOLEAN; 
 (* Free memory *)
 
-PROCEDURE Shrink ( Addr : ADDRESS ; NewSize : LONGCARD ) : BOOLEAN ;
+(* 44 *) PROCEDURE Shrink(Addr: ADDRESS; NewSize: LONGCARD ): BOOLEAN; 
 (* Shrink size of allocated memory *)
 
-PROCEDURE Exec ( Mode : ExecMode ; VAR Name : ARRAY OF CHAR ; 
-                 VAR Tail : ARRAY OF CHAR ; VAR EnvStr : ARRAY OF CHAR ;
-                 VAR Result : INTEGER ) ;
+(* 45 *) PROCEDURE Exec(Mode: ExecMode; VAR Name: ARRAY OF CHAR;  
+                 VAR Tail: ARRAY OF CHAR; VAR EnvStr: ARRAY OF CHAR;
+                 VAR Result: INTEGER);
 (* Load or execute a process *)
 
-PROCEDURE Term ( Code : INTEGER ) : BOOLEAN ;
+(* 46 *) PROCEDURE Term(Code: INTEGER ): BOOLEAN; 
 (* Terminate a process *)
 
-PROCEDURE SFirst ( VAR Name : ARRAY OF CHAR ; Attr : CARDINAL ;
-                   VAR Result : INTEGER ) ;
+(* 47 *) PROCEDURE SFirst(VAR Name: ARRAY OF CHAR; Attr: CARDINAL; 
+                   VAR Result: INTEGER);
 (* Search for first file *)
 
-PROCEDURE SNext ( VAR Result : INTEGER ) ;
+(* 48 *) PROCEDURE SNext(VAR Result: INTEGER); 
 (* Search for next file *)
 
-PROCEDURE Rename ( VAR CurrentName, NewName : ARRAY OF CHAR ) ;
+(* 49 *) PROCEDURE Rename(VAR CurrentName, NewName: ARRAY OF CHAR); 
 (* Rename a file *)
 
-PROCEDURE DaTime ( Handle : INTEGER ; Buffer : ADDRESS ; Which : SetOrGet ) ;
+(* 50 *) PROCEDURE DaTime(Handle: INTEGER; Buffer: ADDRESS; Which: SetOrGet); 
 (* Get/Set file date and time stamp *)
 
-PROCEDURE Super(VAR stack: ADDRESS);
+(* 51 *) PROCEDURE Super(VAR stack: ADDRESS); 
 (* enter supervisor mode if stack = 0, otherwise come out of
    supervisor mode with the given stack. *)
 

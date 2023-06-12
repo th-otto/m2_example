@@ -1,48 +1,24 @@
-(*syntax version =    4H*)
-
-(*module key = 2102HCAE5H E12H*)
 DEFINITION MODULE VDIRasters;
 
+FROM GEMVDIbase IMPORT BigPxyArrayType, SmallArrayType;
 
-  (*module key = 2102HCAE1H2388H*)
-  MODULE GEMVDIbase;
+TYPE MFDBType = RECORD
+   pointer(*offset: 0H*)  : SYSTEM.ADDRESS;
+   width(*offset: 4H*)  : CARDINAL;
+   height(*offset: 6H*)  : CARDINAL;
+   widthW(*offset: 8H*)  : CARDINAL;
+   format(*offset: AH*)  : CARDINAL;
+   planes(*offset: CH*)  : CARDINAL;
+   rsrvd1(*offset: EH*)  : CARDINAL;
+   rsrvd2(*offset: 10H*)  : CARDINAL;
+END;
 
-    IMPORT SYSTEM;
+(* 1 *) PROCEDURE CopyRasterOpaque(INTEGER; INTEGER; VAR GEMVDIbase.BigPxyArrayType; SYSTEM.ADDRESS; SYSTEM.ADDRESS);
 
-    TYPE
-      BigPxyArrayType = ARRAY [0H(*CARDINAL*)..7H(*CARDINAL*)] OF INTEGER;
-    
-    TYPE
-      SmallArrayType = ARRAY [0H(*CARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
-    
-  END GEMVDIbase;
+(* 2 *) PROCEDURE CopyRasterTransparent(INTEGER; INTEGER; VAR GEMVDIbase.BigPxyArrayType; VAR SYSTEM.ADDRESS; VAR SYSTEM.ADDRESS; VAR GEMVDIbase.SmallArrayType);
 
-  (*module key = 2102HCAE5H E12H*)
-  MODULE VDIRasters;
+(* 3 *) PROCEDURE TransformForm(INTEGER; SYSTEM.ADDRESS; SYSTEM.ADDRESS);
 
-    IMPORT SYSTEM, GEMVDIbase;
-
-    TYPE
-      MFDBType = RECORD
-                   pointer(*offset: 0H*)  : SYSTEM.ADDRESS;
-                   width(*offset: 4H*)  : CARDINAL;
-                   height(*offset: 6H*)  : CARDINAL;
-                   widthW(*offset: 8H*)  : CARDINAL;
-                   format(*offset: AH*)  : CARDINAL;
-                   planes(*offset: CH*)  : CARDINAL;
-                   rsrvd1(*offset: EH*)  : CARDINAL;
-                   rsrvd2(*offset: 10H*)  : CARDINAL;
-                 END;(*size: 12H*);
-               
-    PROCEDURE CopyRasterOpaque(* ProcNum:1 *)(INTEGER; INTEGER; VAR GEMVDIbase.BigPxyArrayType; SYSTEM.ADDRESS; SYSTEM.ADDRESS);
-    
-    PROCEDURE CopyRasterTransparent(* ProcNum:2 *)(INTEGER; INTEGER; VAR GEMVDIbase.BigPxyArrayType; VAR SYSTEM.ADDRESS; VAR SYSTEM.ADDRESS; VAR GEMVDIbase.SmallArrayType);
-    
-    PROCEDURE TransformForm(* ProcNum:3 *)(INTEGER; SYSTEM.ADDRESS; SYSTEM.ADDRESS);
-    
-    PROCEDURE GetPixel(* ProcNum:4 *)(INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER);
-    
-  END VDIRasters;
+(* 4 *) PROCEDURE GetPixel(INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER);
 
 END VDIRasters.
-

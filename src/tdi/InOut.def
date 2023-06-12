@@ -1,0 +1,55 @@
+DEFINITION MODULE InOut;
+
+(* ------------------------------------------------------------------
+ Standard InOut Module
+ (c) Copyright 1985, 1986 TDI SoftHare, Inc.
+ All Rights Reserved
+ ------------------------------------------------------------------ *)
+
+CONST EOL = 13C;
+
+VAR Done (* reladdr: 0H*)  : BOOLEAN;
+
+VAR termCH (* reladdr: 1H*)  : CHAR;
+
+(* request a file name and open input file "in".
+   Done  := "file was successfully opened".
+   If TRUE, subsequent input is read from this file.
+   If name ends with ".", append extension defext *)
+(* 1 *) PROCEDURE OpenInput(VAR defext: ARRAY OF CHAR);
+
+(* 2 *) PROCEDURE OpenInputFile(VAR FileName: ARRAY OF CHAR);
+
+(* 3 *) PROCEDURE OpenOutput(VAR defext: ARRAY OF CHAR);
+
+(* 4 *) PROCEDURE OpenOutputFile(VAR FileName: ARRAY OF CHAR);
+
+(* 5 *) PROCEDURE CloseInput();
+
+(* 6 *) PROCEDURE CloseOutput();
+
+(* 7 *) PROCEDURE Read(VAR ch: CHAR);
+
+(* 8 *) PROCEDURE ReadString(VAR s: ARRAY OF CHAR);
+
+(* 9 *) PROCEDURE ReadInt(VAR x: INTEGER);
+
+(* 10 *) PROCEDURE ReadCard(VAR x: CARDINAL);
+
+(* 11 *) PROCEDURE Write(ch: CHAR);
+
+(* 12 *) PROCEDURE WriteLn();
+
+(* 13 *) PROCEDURE WriteString(VAR s: ARRAY OF CHAR);
+
+(* 14 *) PROCEDURE WriteStringRight(VAR s: ARRAY OF CHAR; CARDINAL);
+
+(* 15 *) PROCEDURE WriteInt(x: INTEGER; n: CARDINAL);
+
+(* 16 *) PROCEDURE WriteCard(x: CARDINAL; n: CARDINAL);
+
+(* 17 *) PROCEDURE WriteOct(x: CARDINAL; n: CARDINAL);
+
+(* 18 *) PROCEDURE WriteHex(x: CARDINAL; n: CARDINAL);
+
+END InOut.

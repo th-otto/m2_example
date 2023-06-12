@@ -6,7 +6,7 @@ scmod header: MODULE  GEMVDIbase, key =  2102H  CAE1H  2388H  checksum: o.k.
 data size, number of bytes = 1092  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 18
-CallVDI
+PROCEDURE CallVDI();
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        7073                     MOVEQ   #73H,D0
@@ -19,7 +19,7 @@ CallVDI
 ref own data at     8H  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 48
-SetContrl
+PROCEDURE SetContrl(OpCode: INTEGER; nptsin: INTEGER; nintin: INTEGER; subcmd: INTEGER; handle: INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0010 0000 0000      MOVE.W  0010(A6),00000000H

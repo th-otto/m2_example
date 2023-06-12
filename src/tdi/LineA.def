@@ -1,4 +1,4 @@
-DEFINITION MODULE LineA ;
+DEFINITION MODULE LineA;
 
 (* ----------------------------------------------------------------------
 
@@ -306,4 +306,4 @@ PROCEDURE DoString(str: ADDRESS; n, x, y: INTEGER; Font: ADDRESS);
      screen at x, y *)
 
 
-END LineA .
+END LineA.

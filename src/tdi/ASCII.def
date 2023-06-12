@@ -1,0 +1,133 @@
+DEFINITION MODULE ASCII;
+
+IMPORT SYSTEM;
+
+CONST
+  NUL = 0H(*CHAR*);
+
+CONST
+  SOH = 1H(*CHAR*);
+
+CONST
+  STX = 2H(*CHAR*);
+
+CONST
+  ETX = 3H(*CHAR*);
+
+CONST
+  EOT = 4H(*CHAR*);
+
+CONST
+  ENQ = 5H(*CHAR*);
+
+CONST
+  ACK = 6H(*CHAR*);
+
+CONST
+  BEL = 7H(*CHAR*);
+
+CONST
+  BS = 8H(*CHAR*);
+
+CONST
+  HT = 9H(*CHAR*);
+
+CONST
+  LF = AH(*CHAR*);
+
+CONST
+  VT = BH(*CHAR*);
+
+CONST
+  FF = CH(*CHAR*);
+
+CONST
+  CR = DH(*CHAR*);
+
+CONST
+  SO = EH(*CHAR*);
+
+CONST
+  SI = FH(*CHAR*);
+
+CONST
+  DLE = 10H(*CHAR*);
+
+CONST
+  DC1 = 11H(*CHAR*);
+
+CONST
+  DC2 = 12H(*CHAR*);
+
+CONST
+  DC3 = 13H(*CHAR*);
+
+CONST
+  DC4 = 14H(*CHAR*);
+
+CONST
+  NAK = 15H(*CHAR*);
+
+CONST
+  SYN = 16H(*CHAR*);
+
+CONST
+  ETB = 17H(*CHAR*);
+
+CONST
+  CAN = 18H(*CHAR*);
+
+CONST
+  EM = 19H(*CHAR*);
+
+CONST
+  SUB = 1AH(*CHAR*);
+
+CONST
+  ESC = 1BH(*CHAR*);
+
+CONST
+  FS = 1CH(*CHAR*);
+
+CONST
+  GS = 1DH(*CHAR*);
+
+CONST
+  RS = 1EH(*CHAR*);
+
+CONST
+  US = 1FH(*CHAR*);
+
+CONST
+  DEL = 7FH(*CHAR*);
+
+CONST
+  OctalChars = "01234567";
+
+CONST
+  DecimalChars = "0123456789";
+
+CONST
+  HexadecimalChars = "0123456789ABCDEF";
+
+CONST
+  AlphabetChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+CONST
+  RealChars = "0123456789.E+-";
+
+TYPE
+  CharCases = (Upper(*0*),
+  Lower(*1*),
+  UpperOrLower(*2*),
+  Shift(*3*),
+  Control(*4*),
+  ControlShift(*5*));
+
+(* 1 *) PROCEDURE CharIsPrintable(CHAR) : BOOLEAN;
+
+(* 2 *) PROCEDURE CharIsControl(CHAR) : BOOLEAN;
+
+(* 3 *) PROCEDURE CharIsASCII(CHAR) : BOOLEAN;
+    
+END ASCII.

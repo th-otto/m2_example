@@ -6,6 +6,7 @@ scmod header: MODULE  BIOS, key =  2102H  CB4DH  70E9H  checksum: o.k.
 data size, number of bytes = 0  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 20
+PROCEDURE GetMPB(* ProcNum:1 *)(VAR MPB);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        286E 0008                MOVE.L  0008(A6),A4
@@ -18,6 +19,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 20
   checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 38
+PROCEDURE BConStat(* ProcNum:2 *)(Device) : BOOLEAN;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        7A00                     MOVEQ   #00H,D5
@@ -36,6 +38,7 @@ proc code, procnum =  2, entrypoint =     0H, number of bytes = 38
   checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 38
+PROCEDURE BCosStat(* ProcNum:3 *)(Device) : BOOLEAN;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        7A00                     MOVEQ   #00H,D5
@@ -54,6 +57,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 38
   checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 28
+PROCEDURE BConIn(* ProcNum:4 *)(Device) : LONGCARD;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        7A00                     MOVEQ   #00H,D5
@@ -68,6 +72,7 @@ proc code, procnum =  4, entrypoint =     0H, number of bytes = 28
   checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 30
+PROCEDURE BConOut(* ProcNum:5 *)(Device; CHAR);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        7A00                     MOVEQ   #00H,D5
@@ -83,6 +88,7 @@ proc code, procnum =  5, entrypoint =     0H, number of bytes = 30
   checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 44
+PROCEDURE RWAbs(* ProcNum:6 *)(RW; SYSTEM.ADDRESS; CARDINAL; CARDINAL; CARDINAL) : LONGINT;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 0008                MOVE.W  0008(A6),-(A7)
@@ -101,6 +107,7 @@ proc code, procnum =  6, entrypoint =     0H, number of bytes = 44
   checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 22
+PROCEDURE SetException(* ProcNum:7 *)(CARDINAL; PROC);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        2F2E 0008                MOVE.L  0008(A6),-(A7)
@@ -112,6 +119,7 @@ proc code, procnum =  7, entrypoint =     0H, number of bytes = 22
   checksum: o.k.
 
 proc code, procnum =  8, entrypoint =     0H, number of bytes = 28
+PROCEDURE GetException(* ProcNum:8 *)(CARDINAL) : SYSTEM.ADDRESS;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        4878 FFFF                PEA     FFFFH
@@ -125,6 +133,7 @@ proc code, procnum =  8, entrypoint =     0H, number of bytes = 28
   checksum: o.k.
 
 proc code, procnum =  9, entrypoint =     0H, number of bytes = 20
+PROCEDURE TimerCalibration(* ProcNum:9 *)() : LONGCARD;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 0006                MOVE.W  #0006H,-(A7)
@@ -136,6 +145,7 @@ proc code, procnum =  9, entrypoint =     0H, number of bytes = 20
   checksum: o.k.
 
 proc code, procnum = 10, entrypoint =     0H, number of bytes = 24
+PROCEDURE GetBPB(* ProcNum:10 *)(CARDINAL) : BPBPtr;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 0008                MOVE.W  0008(A6),-(A7)
@@ -148,6 +158,7 @@ proc code, procnum = 10, entrypoint =     0H, number of bytes = 24
   checksum: o.k.
 
 proc code, procnum = 11, entrypoint =     0H, number of bytes = 24
+PROCEDURE MediaChange(* ProcNum:11 *)(CARDINAL) : MCState;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 0008                MOVE.W  0008(A6),-(A7)
@@ -160,6 +171,7 @@ proc code, procnum = 11, entrypoint =     0H, number of bytes = 24
   checksum: o.k.
 
 proc code, procnum = 12, entrypoint =     0H, number of bytes = 20
+PROCEDURE DriveMap(* ProcNum:12 *)() : DriveSet;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C 000A                MOVE.W  #000AH,-(A7)
@@ -171,6 +183,7 @@ proc code, procnum = 12, entrypoint =     0H, number of bytes = 20
   checksum: o.k.
 
 proc code, procnum = 13, entrypoint =     0H, number of bytes = 22
+PROCEDURE SetKBShift(* ProcNum:13 *)(KBShifts);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        7A00                     MOVEQ   #00H,D5
@@ -183,6 +196,7 @@ proc code, procnum = 13, entrypoint =     0H, number of bytes = 22
   checksum: o.k.
 
 proc code, procnum = 14, entrypoint =     0H, number of bytes = 24
+PROCEDURE GetKBShift(* ProcNum:14 *)() : KBShifts;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F3C FFFF                MOVE.W  #FFFFH,-(A7)

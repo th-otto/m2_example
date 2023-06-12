@@ -1,0 +1,9 @@
+DEFINITION MODULE Keyboard;
+
+IMPORT SYSTEM;
+
+(* 1 *) PROCEDURE Read(VAR CHAR);
+
+(* 2 *) PROCEDURE Status(): BOOLEAN;
+    
+END Keyboard.

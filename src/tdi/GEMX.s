@@ -52,6 +52,7 @@ ref own string: at    40H  checksum: o.k.
 ref own proc call at    46H, procnum = 31  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 30
+PROCEDURE CASEX();
  DECODE --------                        INSTRUCTION
      0H        205F                     MOVE.L  (A7)+,A0
      2H        9090                     SUB.L   (A0),D0
@@ -67,6 +68,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 30
   checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 8
+PROCEDURE HALTX();
  DECODE --------                        INSTRUCTION
      0H        2200                     MOVE.L  D0,D1
      2H        7006                     MOVEQ   #06H,D0
@@ -114,7 +116,7 @@ proc code, procnum = 32, entrypoint =     0H, number of bytes = 228
     7EH        2D50 FFFA                MOVE.L  (A0),FFFA(A6)
     82H        4EFA 0008                JMP     [0008H] = 0000008CH
     86H        2D6E 000A FFFA           MOVE.L  000A(A6),FFFA(A6)
-    8CH        49F9 0000 0008           LEA     00000008H,A4
+    8CH        49F9 0000 0008           LEA     ErrorContext,A4
     92H        38AE FFFE                MOVE.W  FFFE(A6),(A4)
     96H        422C 0002                CLR.B   0002(A4)
     9AH        296E FFFA 0004           MOVE.L  FFFA(A6),0004(A4)
@@ -125,7 +127,7 @@ proc code, procnum = 32, entrypoint =     0H, number of bytes = 228
     B8H        296E FFF0 0016           MOVE.L  FFF0(A6),0016(A4)
     BEH        197C 0001 001A           MOVE.B  #01H,001A(A4)
     C4H        2E6E FFE8                MOVE.L  FFE8(A6),A7
-    C8H        2039 0000 0004           MOVE.L  00000004H,D0
+    C8H        2039 0000 0004           MOVE.L  ErrorProcessor,D0
     CEH        2F40 0002                MOVE.L  D0,0002(A7)
     D2H        3EBC 0000                MOVE.W  #0000H,(A7)
     D6H        2C56                     MOVE.L  (A6),A6
@@ -220,7 +222,7 @@ proc code, procnum = 34, entrypoint =     0H, number of bytes = 312
    122H        4EB9 0000 0000           JSR     00000000H
    128H        704C                     MOVEQ   #4CH,D0
    12AH        3F00                     MOVE.W  D0,-(A7)
-   12CH        3039 0000 0008           MOVE.W  00000008H,D0
+   12CH        3039 0000 0008           MOVE.W  ErrorContext.Error,D0
    132H        4E41                     TRAP    #1
    134H        4E5E                     UNLK    A6
    136H        4E75                     RTS
@@ -247,7 +249,7 @@ proc code, procnum = 33, entrypoint =     0H, number of bytes = 244
     2EH        6706                     BEQ     [06H] = 00000036H
     30H        526E FF8C                ADDQ.W  #1,FF8C(A6)
     34H        60EC                     BRA     [ECH] = 00000022H
-    36H        3D79 0000 0008 FF88      MOVE.W  00000008H,FF88(A6)
+    36H        3D79 0000 0008 FF88      MOVE.W  ErrorContext.Error,FF88(A6)
     3EH        0C6E 000A FF88           CMPI.W  #000AH,FF88(A6)
     44H        6412                     BCC     [12H] = 00000058H
     46H        3A2E FF8C                MOVE.W  FF8C(A6),D5
@@ -309,6 +311,7 @@ ref own string: at    A4H  checksum: o.k.
 ref own proc call at    E8H, procnum = 34  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 22
+PROCEDURE STACKTEST();
  DECODE --------                        INSTRUCTION
      0H        204F                     MOVE.L  A7,A0
      2H        41E8 FF80                LEA     FF80(A0),A0
@@ -329,6 +332,7 @@ proc code, procnum = 35, entrypoint =     0H, number of bytes = 6
   checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 110
+PROCEDURE NEWPROCESS(PROC; SYSTEM.ADDRESS; LONGCARD; VAR SYSTEM.PROCESS; LONGCARD);
  DECODE --------                        INSTRUCTION
      0H        4E56 FFF8                LINK    A6,#FFF8H
      4H        2D7C 0000 0000 FFF8      MOVE.L  #00000000H,FFF8(A6)
@@ -369,6 +373,7 @@ proc code, procnum =  4, entrypoint =     0H, number of bytes = 110
 ref own proc ass at     6H, procnum = 35  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 4
+PROCEDURE TRANSFER();
  DECODE --------                        INSTRUCTION
      0H        4E46                     TRAP    #6
      2H        4E75                     RTS
@@ -396,6 +401,7 @@ proc code, procnum = 36, entrypoint =     0H, number of bytes = 52
   checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 12
+PROCEDURE IOTRANSFER();
  DECODE --------                        INSTRUCTION
      0H        7011                     MOVEQ   #11H,D0
      2H        4EB9 0000 0000           JSR     00000000H
@@ -466,6 +472,7 @@ ref own data at    44H  checksum: o.k.
 ref own proc call at    5CH, procnum = 47  checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 36
+PROCEDURE SYSCALL();
  DECODE --------                        INSTRUCTION
      0H        2A00                     MOVE.L  D0,D5
      2H        7809                     MOVEQ   #09H,D4
@@ -487,6 +494,7 @@ proc code, procnum =  7, entrypoint =     0H, number of bytes = 36
 ref own proc call at    1EH, procnum = 47  checksum: o.k.
 
 proc code, procnum =  8, entrypoint =     0H, number of bytes = 76
+PROCEDURE MULU32(LONGCARD; LONGCARD);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 7C00                MOVEM.L #7C00H,-(A7)
@@ -522,6 +530,7 @@ proc code, procnum =  8, entrypoint =     0H, number of bytes = 76
   checksum: o.k.
 
 proc code, procnum =  9, entrypoint =     0H, number of bytes = 100
+PROCEDURE DIVU32(LONGCARD; LONGCARD);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 7800                MOVEM.L #7800H,-(A7)
@@ -565,6 +574,7 @@ proc code, procnum =  9, entrypoint =     0H, number of bytes = 100
   checksum: o.k.
 
 proc code, procnum = 10, entrypoint =     0H, number of bytes = 92
+PROCEDURE MULS32(LONGINT; LONGINT);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 FF00                MOVEM.L #FF00H,-(A7)
@@ -608,6 +618,7 @@ proc code, procnum = 10, entrypoint =     0H, number of bytes = 92
   checksum: o.k.
 
 proc code, procnum = 11, entrypoint =     0H, number of bytes = 62
+PROCEDURE DIVS32(LONGINT; LONGINT);
  DECODE --------                        INSTRUCTION
      0H        201F                     MOVE.L  (A7)+,D0
      2H        2E2F 0000                MOVE.L  0000(A7),D7
@@ -636,6 +647,7 @@ proc code, procnum = 11, entrypoint =     0H, number of bytes = 62
 ref own proc ass at    24H, procnum =  9  checksum: o.k.
 
 proc code, procnum = 12, entrypoint =     0H, number of bytes = 188
+PROCEDURE FADD(REAL; REAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 9F00                MOVEM.L #9F00H,-(A7)
@@ -717,6 +729,7 @@ proc code, procnum = 12, entrypoint =     0H, number of bytes = 188
 ref own proc call at    A2H, procnum =  2  checksum: o.k.
 
 proc code, procnum = 13, entrypoint =     0H, number of bytes = 14
+PROCEDURE FSUB(REAL; REAL);
  DECODE --------                        INSTRUCTION
      0H        207C 0000 0000           MOVE.L  #00000000H,A0
      6H        086F 0007 0004           BCHG    #0007H,0004(A7)
@@ -726,6 +739,7 @@ proc code, procnum = 13, entrypoint =     0H, number of bytes = 14
 ref own proc ass at     2H, procnum = 12  checksum: o.k.
 
 proc code, procnum = 14, entrypoint =     0H, number of bytes = 164
+PROCEDURE FMUL(REAL; REAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 CF00                MOVEM.L #CF00H,-(A7)
@@ -796,6 +810,7 @@ proc code, procnum = 14, entrypoint =     0H, number of bytes = 164
 ref own proc call at    86H, procnum =  2  checksum: o.k.
 
 proc code, procnum = 15, entrypoint =     0H, number of bytes = 158
+PROCEDURE FDIV(REAL; REAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 8F00                MOVEM.L #8F00H,-(A7)
@@ -865,6 +880,7 @@ proc code, procnum = 15, entrypoint =     0H, number of bytes = 158
 ref own proc call at    80H, procnum =  2  checksum: o.k.
 
 proc code, procnum = 16, entrypoint =     0H, number of bytes = 66
+PROCEDURE FCMP(REAL; REAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 E000                MOVEM.L #E000H,-(A7)
@@ -889,6 +905,7 @@ proc code, procnum = 16, entrypoint =     0H, number of bytes = 66
   checksum: o.k.
 
 proc code, procnum = 17, entrypoint =     0H, number of bytes = 34
+PROCEDURE FTST(REAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 A000                MOVEM.L #A000H,-(A7)
@@ -904,6 +921,7 @@ proc code, procnum = 17, entrypoint =     0H, number of bytes = 34
   checksum: o.k.
 
 proc code, procnum = 18, entrypoint =     0H, number of bytes = 68
+PROCEDURE FLOATX(SYSTEM.LONGWORD);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 C000                MOVEM.L #C000H,-(A7)
@@ -930,6 +948,7 @@ proc code, procnum = 18, entrypoint =     0H, number of bytes = 68
   checksum: o.k.
 
 proc code, procnum = 19, entrypoint =     0H, number of bytes = 78
+PROCEDURE TRUNCX(REAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 C000                MOVEM.L #C000H,-(A7)
@@ -963,6 +982,7 @@ proc code, procnum = 19, entrypoint =     0H, number of bytes = 78
 ref own proc call at    3CH, procnum =  2  checksum: o.k.
 
 proc code, procnum = 20, entrypoint =     0H, number of bytes = 328
+PROCEDURE LFADD(LONGREAL; LONGREAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 FF00                MOVEM.L #FF00H,-(A7)
@@ -1101,6 +1121,7 @@ proc code, procnum = 20, entrypoint =     0H, number of bytes = 328
 ref own proc call at    F8H, procnum =  2  checksum: o.k.
 
 proc code, procnum = 21, entrypoint =     0H, number of bytes = 14
+PROCEDURE LFSUB(LONGREAL; LONGREAL);
  DECODE --------                        INSTRUCTION
      0H        207C 0000 0000           MOVE.L  #00000000H,A0
      6H        086F 0007 0004           BCHG    #0007H,0004(A7)
@@ -1110,6 +1131,7 @@ proc code, procnum = 21, entrypoint =     0H, number of bytes = 14
 ref own proc ass at     2H, procnum = 20  checksum: o.k.
 
 proc code, procnum = 22, entrypoint =     0H, number of bytes = 318
+PROCEDURE LFMUL(LONGREAL; LONGREAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 FF00                MOVEM.L #FF00H,-(A7)
@@ -1255,6 +1277,7 @@ proc code, procnum = 22, entrypoint =     0H, number of bytes = 318
 ref own proc call at   13AH, procnum =  2  checksum: o.k.
 
 proc code, procnum = 23, entrypoint =     0H, number of bytes = 232
+PROCEDURE LFDIV(LONGREAL; LONGREAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 FF00                MOVEM.L #FF00H,-(A7)
@@ -1349,6 +1372,7 @@ proc code, procnum = 23, entrypoint =     0H, number of bytes = 232
 ref own proc call at    AAH, procnum =  2  checksum: o.k.
 
 proc code, procnum = 24, entrypoint =     0H, number of bytes = 76
+PROCEDURE LFCMP(LONGREAL; LONGREAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 F800                MOVEM.L #F800H,-(A7)
@@ -1378,6 +1402,7 @@ proc code, procnum = 24, entrypoint =     0H, number of bytes = 76
   checksum: o.k.
 
 proc code, procnum = 25, entrypoint =     0H, number of bytes = 34
+PROCEDURE LFTST(LONGREAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 C000                MOVEM.L #C000H,-(A7)
@@ -1393,6 +1418,7 @@ proc code, procnum = 25, entrypoint =     0H, number of bytes = 34
   checksum: o.k.
 
 proc code, procnum = 26, entrypoint =     0H, number of bytes = 104
+PROCEDURE LFLOATX(SYSTEM.LONGWORD);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 E000                MOVEM.L #E000H,-(A7)
@@ -1437,6 +1463,7 @@ proc code, procnum = 26, entrypoint =     0H, number of bytes = 104
   checksum: o.k.
 
 proc code, procnum = 27, entrypoint =     0H, number of bytes = 100
+PROCEDURE LTRUNCX(LONGREAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 E000                MOVEM.L #E000H,-(A7)
@@ -1479,6 +1506,7 @@ proc code, procnum = 27, entrypoint =     0H, number of bytes = 100
 ref own proc call at    20H, procnum =  2  checksum: o.k.
 
 proc code, procnum = 28, entrypoint =     0H, number of bytes = 76
+PROCEDURE LENGTHEN(REAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 E000                MOVEM.L #E000H,-(A7)
@@ -1507,6 +1535,7 @@ proc code, procnum = 28, entrypoint =     0H, number of bytes = 76
   checksum: o.k.
 
 proc code, procnum = 29, entrypoint =     0H, number of bytes = 134
+PROCEDURE SHORTEN(LONGREAL);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 F000                MOVEM.L #F000H,-(A7)
@@ -1629,6 +1658,7 @@ proc code, procnum = 45, entrypoint =     0H, number of bytes = 14
 ref own proc call at     8H, procnum = 32  checksum: o.k.
 
 proc code, procnum = 46, entrypoint =     0H, number of bytes = 84
+SetException(vec: CARDINAL; p: PROC);
  DECODE --------                        INSTRUCTION
      0H        4E56 FFFC                LINK    A6,#FFFCH
      4H        202E 000A                MOVE.L  000A(A6),D0
@@ -1664,35 +1694,35 @@ proc code, procnum = 47, entrypoint =     0H, number of bytes = 152
      0H        4E56 0000                LINK    A6,#0000H
      4H        2F39 0000 0050           MOVE.L  00000050H,-(A7)
      AH        3F3C 0003                MOVE.W  #0003H,-(A7)
-     EH        4EB9 0000 0000           JSR     00000000H
+     EH        4EB9 0000 0000           JSR     SetException
     14H        5C8F                     ADDQ.L  #6,A7
     16H        2F39 0000 004C           MOVE.L  0000004CH,-(A7)
     1CH        3F3C 0002                MOVE.W  #0002H,-(A7)
-    20H        4EB9 0000 0000           JSR     00000000H
+    20H        4EB9 0000 0000           JSR     SetException
     26H        5C8F                     ADDQ.L  #6,A7
     28H        2F39 0000 0058           MOVE.L  00000058H,-(A7)
     2EH        3F3C 0005                MOVE.W  #0005H,-(A7)
-    32H        4EB9 0000 0000           JSR     00000000H
+    32H        4EB9 0000 0000           JSR     SetException
     38H        5C8F                     ADDQ.L  #6,A7
     3AH        2F39 0000 005C           MOVE.L  0000005CH,-(A7)
     40H        3F3C 0006                MOVE.W  #0006H,-(A7)
-    44H        4EB9 0000 0000           JSR     00000000H
+    44H        4EB9 0000 0000           JSR     SetException
     4AH        5C8F                     ADDQ.L  #6,A7
     4CH        2F39 0000 0060           MOVE.L  00000060H,-(A7)
     52H        3F3C 0007                MOVE.W  #0007H,-(A7)
-    56H        4EB9 0000 0000           JSR     00000000H
+    56H        4EB9 0000 0000           JSR     SetException
     5CH        5C8F                     ADDQ.L  #6,A7
     5EH        2F39 0000 0064           MOVE.L  00000064H,-(A7)
     64H        3F3C 0008                MOVE.W  #0008H,-(A7)
-    68H        4EB9 0000 0000           JSR     00000000H
+    68H        4EB9 0000 0000           JSR     SetException
     6EH        5C8F                     ADDQ.L  #6,A7
     70H        2F39 0000 0090           MOVE.L  00000090H,-(A7)
     76H        3F3C 0027                MOVE.W  #0027H,-(A7)
-    7AH        4EB9 0000 0000           JSR     00000000H
+    7AH        4EB9 0000 0000           JSR     SetException
     80H        5C8F                     ADDQ.L  #6,A7
     82H        2F39 0000 008C           MOVE.L  0000008CH,-(A7)
     88H        3F3C 0026                MOVE.W  #0026H,-(A7)
-    8CH        4EB9 0000 0000           JSR     00000000H
+    8CH        4EB9 0000 0000           JSR     SetException
     92H        5C8F                     ADDQ.L  #6,A7
     94H        4E5E                     UNLK    A6
     96H        4E75                     RTS
@@ -1736,8 +1766,8 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 278
      6H        204F                     MOVE.L  A7,A0
      8H        2068 0004                MOVE.L  0004(A0),A0
      CH        2A08                     MOVE.L  A0,D5
-     EH        23C5 0000 0000           MOVE.L  D5,00000000H
-    14H        2879 0000 0000           MOVE.L  00000000H,A4
+     EH        23C5 0000 0000           MOVE.L  D5,BasePageAddress
+    14H        2879 0000 0000           MOVE.L  BasePageAddress,A4
     1AH        23EC 0008 0000 003C      MOVE.L  0008(A4),0000003CH
     22H        2028 000C                MOVE.L  000C(A0),D0
     26H        D0A8 0014                ADD.L   0014(A0),D0
@@ -1762,35 +1792,35 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 278
     6CH        23C5 0000 0040           MOVE.L  D5,00000040H
     72H        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     78H        3F3C 0003                MOVE.W  #0003H,-(A7)
-    7CH        4EB9 0000 0000           JSR     00000000H
+    7CH        4EB9 0000 0000           JSR     SetException
     82H        5C8F                     ADDQ.L  #6,A7
     84H        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     8AH        3F3C 0002                MOVE.W  #0002H,-(A7)
-    8EH        4EB9 0000 0000           JSR     00000000H
+    8EH        4EB9 0000 0000           JSR     SetException
     94H        5C8F                     ADDQ.L  #6,A7
     96H        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     9CH        3F3C 0005                MOVE.W  #0005H,-(A7)
-    A0H        4EB9 0000 0000           JSR     00000000H
+    A0H        4EB9 0000 0000           JSR     SetException
     A6H        5C8F                     ADDQ.L  #6,A7
     A8H        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     AEH        3F3C 0006                MOVE.W  #0006H,-(A7)
-    B2H        4EB9 0000 0000           JSR     00000000H
+    B2H        4EB9 0000 0000           JSR     SetException
     B8H        5C8F                     ADDQ.L  #6,A7
     BAH        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     C0H        3F3C 0007                MOVE.W  #0007H,-(A7)
-    C4H        4EB9 0000 0000           JSR     00000000H
+    C4H        4EB9 0000 0000           JSR     SetException
     CAH        5C8F                     ADDQ.L  #6,A7
     CCH        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     D2H        3F3C 0008                MOVE.W  #0008H,-(A7)
-    D6H        4EB9 0000 0000           JSR     00000000H
+    D6H        4EB9 0000 0000           JSR     SetException
     DCH        5C8F                     ADDQ.L  #6,A7
     DEH        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     E4H        3F3C 0027                MOVE.W  #0027H,-(A7)
-    E8H        4EB9 0000 0000           JSR     00000000H
+    E8H        4EB9 0000 0000           JSR     SetException
     EEH        5C8F                     ADDQ.L  #6,A7
     F0H        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     F6H        3F3C 0026                MOVE.W  #0026H,-(A7)
-    FAH        4EB9 0000 0000           JSR     00000000H
+    FAH        4EB9 0000 0000           JSR     SetException
    100H        5C8F                     ADDQ.L  #6,A7
    102H        23FC 0000 0000 0000 0004 MOVE.L  #00000000H,00000004H
    10CH        7007                     MOVEQ   #07H,D0

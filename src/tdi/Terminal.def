@@ -1,0 +1,21 @@
+DEFINITION MODULE Terminal;
+
+IMPORT SYSTEM;
+
+VAR termCH (* reladdr: 0H*)  : CHAR;
+
+(* 1 *) PROCEDURE Read(VAR ch: CHAR);
+
+(* 2 *) PROCEDURE BusyRead(VAR ch: CHAR);
+
+(* 3 *) PROCEDURE ReadAgain();
+
+(* 4 *) PROCEDURE Write(ch: CHAR);
+
+(* 5 *) PROCEDURE WriteLn();
+
+(* 6 *) PROCEDURE WriteString(VAR str: ARRAY OF CHAR);
+
+(* 7 *) PROCEDURE ReadString(VAR str: ARRAY OF CHAR);
+
+END Terminal.

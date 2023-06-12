@@ -1,0 +1,87 @@
+DEFINITION MODULE FileSystem;
+
+IMPORT SYSTEM;
+
+TYPE
+  Response = (done(*0*),
+  notdone(*1*),
+  notsupported(*2*),
+  callerror(*3*),
+  unknownmedium(*4*),
+  unknownfile(*5*),
+  paramerror(*6*),
+  toomanyfiles(*7*),
+  eom(*8*),
+  deviceoff(*9*),
+  softparityerror(*10*),
+  softprotected(*11*),
+  softerror(*12*),
+  hardparityerror(*13*),
+  hardprotected(*14*),
+  timeout(*15*),
+  harderror(*16*));
+
+TYPE
+  Flag = (er(*0*),
+  ef(*1*),
+  rd(*2*),
+  wr(*3*),
+  bytemode(*4*),
+  ag(*5*),
+  tmp(*6*),
+  dirty(*7*));
+
+TYPE FlagSet = SET OF Flag;
+
+TYPE
+  File = RECORD
+           res(*offset: 0H*)  : Response;
+           bufa(*offset: 2H*)  : SYSTEM.ADDRESS;
+           flags(*offset: 6H*)  : FlagSet;
+           eof(*offset: 7H*)  : BOOLEAN;
+           handle(*offset: 8H*)  : INTEGER;
+           name(*offset: AH*)  : ARRAY [0H(*CARDINAL*)..27H(*CARDINAL*)] OF CHAR;
+           endpos(*offset: 32H*)  : LONGCARD;
+           buffpos(*offset: 36H*)  : LONGCARD;
+           filepos(*offset: 3AH*)  : LONGCARD;
+           bufflen(*offset: 3EH*)  : CARDINAL;
+           again(*offset: 40H*)  : SYSTEM.WORD;
+         END;(*size: 42H*);
+       
+(* 1 *) PROCEDURE Create(VAR File; VAR ARRAY CHAR);
+
+(* 2 *) PROCEDURE Close(VAR File);
+
+(* 3 *) PROCEDURE Lookup(VAR File; VAR ARRAY CHAR; BOOLEAN);
+
+(* 4 *) PROCEDURE Rename(VAR File; VAR ARRAY CHAR);
+
+(* 5 *) PROCEDURE SetRead(VAR File);
+
+(* 6 *) PROCEDURE SetWrite(VAR File);
+
+(* 7 *) PROCEDURE SetModify(VAR File);
+
+(* 8 *) PROCEDURE SetOpen(VAR File);
+
+(* 9 *) PROCEDURE Doio(VAR File);
+
+(* 10 *) PROCEDURE SetPos(VAR File; LONGCARD);
+
+(* 11 *) PROCEDURE GetPos(VAR File; VAR LONGCARD);
+
+(* 12 *) PROCEDURE Length(VAR File; VAR LONGCARD);
+
+(* 13 *) PROCEDURE Reset(VAR File);
+
+(* 14 *) PROCEDURE Again(VAR File);
+
+(* 15 *) PROCEDURE ReadWord(VAR File; VAR SYSTEM.WORD);
+
+(* 16 *) PROCEDURE WriteWord(VAR File; SYSTEM.WORD);
+
+(* 17 *) PROCEDURE ReadChar(VAR File; VAR CHAR);
+
+(* 18 *) PROCEDURE WriteChar(VAR File; CHAR);
+
+END FileSystem.

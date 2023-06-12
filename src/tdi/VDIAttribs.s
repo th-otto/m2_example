@@ -8,7 +8,7 @@ import GEMVDIbase, key =  2102H  CAE1H  2388H, modnum =  1  checksum: o.k.
 data size, number of bytes = 4  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 56
-SetWritingMode
+PROCEDURE SetWritingMode(INTEGER; INTEGER) : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0018      MOVE.W  0008(A6),00000018H
@@ -34,7 +34,7 @@ ref ext proc call at    28H, procnum =  1, modnum =  1  checksum: o.k.
 ref ext data at    2EH, modnum =  1  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 84
-SetColour
+PROCEDURE SetColour(INTEGER; INTEGER; PxyArrayType);
  DECODE --------                        INSTRUCTION
      0H        4E56 FFF8                LINK    A6,#FFF8H
      4H        286E 0008                MOVE.L  0008(A6),A4

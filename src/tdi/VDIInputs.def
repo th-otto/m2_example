@@ -1,62 +1,42 @@
-(*syntax version =    4H*)
-
-(*module key = 2102HCB0DH3586H*)
 DEFINITION MODULE VDIInputs;
 
+FROM GEMVDIbase IMPORT SmallArrayType, MouseArrayType;
+FROM SYSTEM IMPORT ADDRESS;
 
-  (*module key = 2102HCAE1H2388H*)
-  MODULE GEMVDIbase;
+(* 1 *) PROCEDURE SetInputMode(handle: INTEGER; dev: INTEGER; mode: INTEGER);
 
-    IMPORT SYSTEM;
+(* 2 *) PROCEDURE InputLocatorRQ(handle INTEGER; x: INTEGER; y: INTEGER; VAR locX: INTEGER; VAR locY: INTEGER; VAR termBut: INTEGER);
 
-    TYPE SmallArrayType = ARRAY [0H(*CARDINAL*)..1H(*CARDINAL*)] OF INTEGER;
-    
-    TYPE MouseArrayType = ARRAY [0H(*CARDINAL*)..26H(*CARDINAL*)] OF INTEGER;
-    
-  END GEMVDIbase;
+(* 3 *) PROCEDURE InputLocatorSM(handle: INTEGER; x: INTEGER; y: INTEGER; VAR locX: INTEGER; VAR locY: INTEGER; VAR termBut: INTEGER) : INTEGER;
 
-  (*module key = 2102HCB0DH3586H*)
-  MODULE VDIInputs;
+(* 4 *) PROCEDURE InputValuatorRQ(handle: INTEGER; valuator_in: INTEGER; VAR valuator_out: INTEGER; VAR terminator: INTEGER);
 
-    IMPORT SYSTEM, GEMVDIbase;
+(* 5 *) PROCEDURE InputValuatorSM(handle: INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
 
-    PROCEDURE SetInputMode(* ProcNum:1 *)(handle: INTEGER; dev: INTEGER; mode: INTEGER);
-    
-    PROCEDURE InputLocatorRQ(* ProcNum:2 *)(handle INTEGER; x: INTEGER; y: INTEGER; VAR locX: INTEGER; VAR locY: INTEGER; VAR termBut: INTEGER);
-    
-    PROCEDURE InputLocatorSM(* ProcNum:3 *)(handle: INTEGER; x: INTEGER; y: INTEGER; VAR locX: INTEGER; VAR locY: INTEGER; VAR termBut: INTEGER) : INTEGER;
-    
-    PROCEDURE InputValuatorRQ(* ProcNum:4 *)(handle: INTEGER; valuator_in: INTEGER; VAR valuator_out: INTEGER; VAR terminator: INTEGER);
-    
-    PROCEDURE InputValuatorSM(* ProcNum:5 *)(handle: INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
-    
-    PROCEDURE InputChoiceRQ(* ProcNum:6 *)(handle: INTEGER; INTEGER; VAR INTEGER);
-    
-    PROCEDURE InputChoiceSM(* ProcNum:7 *)(handle: INTEGER; VAR INTEGER) : INTEGER;
-    
-    PROCEDURE InputStringRQ(* ProcNum:8 *)(handle: INTEGER; INTEGER; INTEGER; VAR GEMVDIbase.SmallArrayType; VAR ARRAY CHAR);
-    
-    PROCEDURE InputStringSM(* ProcNum:9 *)(handle: INTEGER; INTEGER; INTEGER; VAR GEMVDIbase.SmallArrayType; VAR ARRAY CHAR) : INTEGER;
-    
-    PROCEDURE SetMouseForm(* ProcNum:10 *)(handle: INTEGER; GEMVDIbase.MouseArrayType);
-    
-    PROCEDURE ExchangeTimerV(* ProcNum:11 *)(handle: INTEGER; SYSTEM.ADDRESS; VAR SYSTEM.ADDRESS; VAR INTEGER);
-    
-    PROCEDURE ShowCursor(* ProcNum:12 *)(handle: INTEGER; INTEGER);
-    
-    PROCEDURE HideCursor(* ProcNum:13 *)(handle: INTEGER);
-    
-    PROCEDURE SampleMouseButton(* ProcNum:14 *)(handle: INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
-    
-    PROCEDURE ExchangeButtonV(* ProcNum:15 *)(handle: INTEGER; SYSTEM.ADDRESS; VAR SYSTEM.ADDRESS);
-    
-    PROCEDURE ExchangeMovementV(* ProcNum:16 *)(handle: INTEGER; SYSTEM.ADDRESS; VAR SYSTEM.ADDRESS);
-    
-    PROCEDURE ExchangeCursorV(* ProcNum:17 *)(handle: INTEGER; SYSTEM.ADDRESS; VAR SYSTEM.ADDRESS);
-    
-    PROCEDURE SampleKeyboard(* ProcNum:18 *)(handle: INTEGER; VAR INTEGER);
-    
-  END VDIInputs;
+(* 6 *) PROCEDURE InputChoiceRQ(handle: INTEGER; INTEGER; VAR INTEGER);
+
+(* 7 *) PROCEDURE InputChoiceSM(handle: INTEGER; VAR INTEGER) : INTEGER;
+
+(* 8 *) PROCEDURE InputStringRQ(handle: INTEGER; INTEGER; INTEGER; VAR SmallArrayType; VAR ARRAY CHAR);
+
+(* 9 *) PROCEDURE InputStringSM(handle: INTEGER; INTEGER; INTEGER; VAR SmallArrayType; VAR ARRAY CHAR) : INTEGER;
+
+(* 10 *) PROCEDURE SetMouseForm(handle: INTEGER; MouseArrayType);
+
+(* 11 *) PROCEDURE ExchangeTimerV(handle: INTEGER; ADDRESS; VAR ADDRESS; VAR INTEGER);
+
+(* 12 *) PROCEDURE ShowCursor(handle: INTEGER; INTEGER);
+
+(* 13 *) PROCEDURE HideCursor(handle: INTEGER);
+
+(* 14 *) PROCEDURE SampleMouseButton(handle: INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
+
+(* 15 *) PROCEDURE ExchangeButtonV(handle: INTEGER; ADDRESS; VAR ADDRESS);
+
+(* 16 *) PROCEDURE ExchangeMovementV(handle: INTEGER; ADDRESS; VAR ADDRESS);
+
+(* 17 *) PROCEDURE ExchangeCursorV(handle: INTEGER; ADDRESS; VAR ADDRESS);
+
+(* 18 *) PROCEDURE SampleKeyboard(handle: INTEGER; VAR INTEGER);
 
 END VDIInputs.
-

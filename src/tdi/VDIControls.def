@@ -1,49 +1,23 @@
-(*syntax version =    4H*)
-
-(*module key = 2102HCB2DH78D7H*)
 DEFINITION MODULE VDIControls;
 
+FROM GEMVDIbase IMPORT VDIWorkInType, VDIWorkOutType, PxyArrayType;
 
-  (*module key = 2102HCAE1H2388H*)
-  MODULE GEMVDIbase;
+(* 1 *) PROCEDURE OpenWorkstation(VAR VDIWorkInType; VAR INTEGER; VAR VDIWorkOutType);
 
-    IMPORT SYSTEM;
+(* 2 *) PROCEDURE CloseWorkstation(INTEGER);
 
-    TYPE
-      VDIWorkInType = ARRAY [0H(*CARDINAL*)..AH(*CARDINAL*)] OF INTEGER;
-    
-    TYPE
-      VDIWorkOutType = ARRAY [0H(*CARDINAL*)..39H(*CARDINAL*)] OF INTEGER;
-    
-    TYPE
-      PxyArrayType = ARRAY [0H(*CARDINAL*)..3H(*CARDINAL*)] OF INTEGER;
-    
-  END GEMVDIbase;
+(* 3 *) PROCEDURE OpenVirtualWorkstation(VAR VDIWorkInType; VAR INTEGER; VAR VDIWorkOutType);
 
-  (*module key = 2102HCB2DH78D7H*)
-  MODULE VDIControls;
+(* 4 *) PROCEDURE CloseVirtualWorkstation(INTEGER);
 
-    IMPORT SYSTEM, GEMVDIbase;
+(* 5 *) PROCEDURE ClearWorkstation(INTEGER);
 
-    PROCEDURE OpenWorkstation(* ProcNum:1 *)(VAR GEMVDIbase.VDIWorkInType; VAR INTEGER; VAR GEMVDIbase.VDIWorkOutType);
-    
-    PROCEDURE CloseWorkstation(* ProcNum:2 *)(INTEGER);
-    
-    PROCEDURE OpenVirtualWorkstation(* ProcNum:3 *)(VAR GEMVDIbase.VDIWorkInType; VAR INTEGER; VAR GEMVDIbase.VDIWorkOutType);
-    
-    PROCEDURE CloseVirtualWorkstation(* ProcNum:4 *)(INTEGER);
-    
-    PROCEDURE ClearWorkstation(* ProcNum:5 *)(INTEGER);
-    
-    PROCEDURE UpdateWorkstation(* ProcNum:6 *)(INTEGER);
-    
-    PROCEDURE LoadFonts(* ProcNum:7 *)(INTEGER; INTEGER) : INTEGER;
-    
-    PROCEDURE UnloadFonts(* ProcNum:8 *)(INTEGER; INTEGER);
-    
-    PROCEDURE SetClipping(* ProcNum:9 *)(INTEGER; INTEGER; VAR GEMVDIbase.PxyArrayType);
-    
-  END VDIControls;
+(* 6 *) PROCEDURE UpdateWorkstation(INTEGER);
+
+(* 7 *) PROCEDURE LoadFonts(INTEGER; INTEGER) : INTEGER;
+
+(* 8 *) PROCEDURE UnloadFonts(INTEGER; INTEGER);
+
+(* 9 *) PROCEDURE SetClipping(INTEGER; INTEGER; VAR PxyArrayType);
 
 END VDIControls.
-

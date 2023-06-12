@@ -1,27 +1,15 @@
-(*syntax version =    4H*)
-
-(*module key = 2102HCB13H7C09H*)
 DEFINITION MODULE AESResources;
 
+IMPORT SYSTEM;
 
-  (*module key = 2102HCB13H7C09H*)
-  MODULE AESResources;
+(* 1 *) PROCEDURE ResourceLoad(VAR ARRAY CHAR);
 
-    IMPORT SYSTEM;
+(* 2 *) PROCEDURE ResourceFree();
 
-    PROCEDURE ResourceLoad(* ProcNum:1 *)(VAR ARRAY CHAR);
-    
-    PROCEDURE ResourceFree(* ProcNum:2 *)();
-    
-    PROCEDURE ResourceGetAddr(* ProcNum:3 *)(INTEGER; INTEGER; VAR SYSTEM.AD
-DRESS);
-    
-    PROCEDURE ResourceSetAddr(* ProcNum:4 *)(INTEGER; INTEGER; SYSTEM.ADDRES
-S);
-    
-    PROCEDURE ResourceObjectFix(* ProcNum:5 *)(SYSTEM.ADDRESS; INTEGER);
-    
-  END AESResources;
+(* 3 *) PROCEDURE ResourceGetAddr(INTEGER; INTEGER; VAR SYSTEM.ADDRESS);
 
+(* 4 *) PROCEDURE ResourceSetAddr(INTEGER; INTEGER; SYSTEM.ADDRESS);
+
+(* 5 *) PROCEDURE ResourceObjectFix(SYSTEM.ADDRESS; INTEGER);
+    
 END AESResources.
-

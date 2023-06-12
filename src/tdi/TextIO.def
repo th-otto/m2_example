@@ -1,0 +1,106 @@
+DEFINITION MODULE TextIO;
+
+FROM Streams IMPORT Stream, StreamKinds;
+FROM SYSTEM IMPORT ADDRESS, WORD;
+
+(* 1 *) PROCEDURE WRite(Stream; CHAR);
+
+(* 2 *) PROCEDURE Write(CHAR);
+
+(* 3 *) PROCEDURE WRiteLn(Stream);
+
+(* 4 *) PROCEDURE WriteLn();
+
+(* 5 *) PROCEDURE WRiteString(Stream; VAR ARRAY CHAR);
+
+(* 6 *) PROCEDURE WriteString(VAR ARRAY CHAR);
+
+(* 7 *) PROCEDURE WRiteCard(Stream; CARDINAL; CARDINAL);
+
+(* 8 *) PROCEDURE WriteCard(CARDINAL; CARDINAL);
+
+(* 9 *) PROCEDURE WRiteInt(Stream; INTEGER; CARDINAL);
+
+(* 10 *) PROCEDURE WriteInt(INTEGER; CARDINAL);
+
+(* 11 *) PROCEDURE WRiteReal(Stream; REAL; CARDINAL; INTEGER);
+
+(* 12 *) PROCEDURE WriteReal(REAL; CARDINAL; INTEGER);
+
+(* 13 *) PROCEDURE WRiteOct(Stream; CARDINAL; CARDINAL);
+
+(* 14 *) PROCEDURE WriteOct(CARDINAL; CARDINAL);
+
+(* 15 *) PROCEDURE WRiteHex(Stream; CARDINAL; CARDINAL);
+
+(* 16 *) PROCEDURE WriteHex(CARDINAL; CARDINAL);
+
+(* 17 *) PROCEDURE WRiteAdr(Stream; ADDRESS; CARDINAL);
+
+(* 18 *) PROCEDURE WriteAdr(ADDRESS; CARDINAL);
+
+(* 19 *) PROCEDURE WRiteOctAdr(Stream; ADDRESS; CARDINAL);
+
+(* 20 *) PROCEDURE WriteOctAdr(ADDRESS; CARDINAL);
+
+(* 21 *) PROCEDURE WRiteHexAdr(Stream; ADDRESS; CARDINAL);
+
+(* 22 *) PROCEDURE WriteHexAdr(ADDRESS; CARDINAL);
+
+(* 23 *) PROCEDURE REad(Stream; VAR CHAR);
+
+(* 24 *) PROCEDURE Read(VAR CHAR);
+
+(* 25 *) PROCEDURE REadCap(Stream; VAR CHAR);
+
+(* 26 *) PROCEDURE ReadCap(VAR CHAR);
+
+(* 27 *) PROCEDURE REadAgain(Stream);
+
+(* 28 *) PROCEDURE ReadAgain();
+
+(* 29 *) PROCEDURE REadLn(Stream);
+
+(* 30 *) PROCEDURE ReadLn();
+
+(* 31 *) PROCEDURE REadString(Stream; VAR ARRAY CHAR);
+
+(* 32 *) PROCEDURE ReadString(VAR ARRAY CHAR);
+
+(* 33 *) PROCEDURE REadCard(Stream; VAR CARDINAL);
+
+(* 34 *) PROCEDURE ReadCard(VAR CARDINAL);
+
+(* 35 *) PROCEDURE REadInt(Stream; VAR INTEGER);
+
+(* 36 *) PROCEDURE ReadInt(VAR INTEGER);
+
+(* 37 *) PROCEDURE REadReal(Stream; VAR REAL);
+
+(* 38 *) PROCEDURE ReadReal(VAR REAL);
+
+(* 39 *) PROCEDURE REadOct(Stream; VAR CARDINAL);
+
+(* 40 *) PROCEDURE ReadOct(VAR CARDINAL);
+
+(* 41 *) PROCEDURE REadHex(Stream; VAR CARDINAL);
+
+(* 42 *) PROCEDURE ReadHex(VAR CARDINAL);
+
+(* 43 *) PROCEDURE REadWord(Stream; VAR WORD);
+
+(* 44 *) PROCEDURE ReadWord(VAR WORD);
+
+(* 45 *) PROCEDURE REadAdr(Stream; VAR ADDRESS);
+
+(* 46 *) PROCEDURE ReadAdr(VAR ADDRESS);
+
+(* 47 *) PROCEDURE SetTextMode(CARDINAL);
+
+(* 48 *) PROCEDURE SetDefaultIO(VAR ARRAY CHAR; StreamKinds; VAR INTEGER);
+
+VAR in (* reladdr: 0H*): Stream;
+
+VAR out (* reladdr: AH*): Stream;
+
+END TextIO.

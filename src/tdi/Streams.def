@@ -1,0 +1,51 @@
+DEFINITION MODULE Streams;
+
+
+FROM SYSTEM IMPORT BYTE, WORD, LONGWORD, LONGCARD;
+
+TYPE StreamKinds = (READ, READWRITE);
+
+TYPE
+  Stream = RECORD
+             rAgainBuf(*offset: 0H*)  : CHAR;
+             rAgain(*offset: 1H*)  : BOOLEAN;
+             handle(*offset: 2H*)  : INTEGER;
+             endPos(*offset: 4H*)  : LONGCARD;
+             dev(*offset: 8H*)  : (Con, Aux, Prn, Dsc);
+           END;(*size: AH*)
+
+(* 1 *) PROCEDURE OpenStream(VAR s: Stream; VAR filename: ARRAY CHAR; kind: StreamKinds; VAR result: INTEGER);
+
+(* 2 *) PROCEDURE CloseStream(VAR s: Stream; VAR result: INTEGER);
+
+(* 3 *) PROCEDURE Write8Bit(s: Stream; v: BYTE);
+
+(* 4 *) PROCEDURE Write16Bit(s: Stream; v: WORD);
+
+(* 5 *) PROCEDURE Write32Bit(s: Stream; v: LONGWORD);
+
+(* 6 *) PROCEDURE Write8BitBack(s: Stream; v: BYTE);
+
+(* 7 *) PROCEDURE Write16BitBack(s: Stream; v: WORD);
+
+(* 8 *) PROCEDURE Write32BitBack(s: Stream; v: LONGWORD);
+
+(* 9 *) PROCEDURE Read8Bit(s: Stream; VAR v: BYTE);
+
+(* 10 *) PROCEDURE Read16Bit(s: Stream; VAR v: WORD);
+
+(* 11 *) PROCEDURE Read32Bit(s: Stream; VAR v: LONGWORD);
+
+(* 12 *) PROCEDURE Read8BitBack(s: Stream; VAR v: BYTE);
+
+(* 13 *) PROCEDURE Read16BitBack(s: Stream; VAR v: WORD);
+
+(* 14 *) PROCEDURE Read32BitBack(s: Stream; VAR v: LONGWORD);
+
+(* 15 *) PROCEDURE GetPos(s: Stream; VAR v: LONGCARD);
+
+(* 16 *) PROCEDURE SetPos(s: Stream; v: LONGCARD);
+
+(* 17 *) PROCEDURE EOS(s: Stream) : BOOLEAN;
+
+END Streams.

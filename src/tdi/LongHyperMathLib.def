@@ -1,23 +1,22 @@
 DEFINITION MODULE LongHyperMathLib ;
 
-PROCEDURE sinh(x : LONGREAL) : LONGREAL ;
+(*1*) PROCEDURE dsinh(x : LONGREAL) : LONGREAL ;
 (* Return the hyperbolic sin of x *)
 
-PROCEDURE cosh(x : LONGREAL) : LONGREAL ;
+(*2*) PROCEDURE dcosh(x : LONGREAL) : LONGREAL ;
 (* Return the hyperbolic cos of x *)
 
-PROCEDURE tanh(x : LONGREAL) : LONGREAL ;
+(*3*) PROCEDURE dtanh(x : LONGREAL) : LONGREAL ;
 (* Return the hyperbolic tan of x *)
 
-PROCEDURE arcsinh(x : LONGREAL) : LONGREAL ;
+(*4*) PROCEDURE darcsinh(x : LONGREAL) : LONGREAL ;
 (* Return the hyperbolic arcsin of x *)
 
-PROCEDURE arccosh(x : LONGREAL) : LONGREAL ;
+(*5*) PROCEDURE darccosh(x : LONGREAL) : LONGREAL ;
 (* Return the hyperbolic arccos of x *)
 
-PROCEDURE arctanh(x : LONGREAL) : LONGREAL ;
+(*6*) PROCEDURE darctanh(x : LONGREAL) : LONGREAL ;
 (* Return the hyperbolic arctan of x *)
 
 
-END LongHyperMathLib .
-
+END LongHyperMathLib.
