@@ -225,16 +225,16 @@ BEGIN
 	
 	(* Adr. der Instruktion suchen (2 bis 10 Bytes vor PC) *)
 	ASM VOLATILE("moveq   #-2,%%d1" : : );
-ASM VOLATILE("1:");
+ASM VOLATILE("1:" : : : );
 	ASM VOLATILE("cmp.w   0(%%a2,%%d1.l),%%d0" : : );   (* Instr. gefunden ? *)
 	ASM VOLATILE("beq.s   3f" : : );              (* Ja, PC (A2) auf die Adr. setzen *)
 	ASM VOLATILE("subq.l  #2,%%d1" : : );           (* weiter zurueck *)
 	ASM VOLATILE("cmpi    #-10,%%d1" : : );         (* nicht mehr als 10 Bytes zurueck *)
 	ASM VOLATILE("bcc.s   1b" : : );              (* weitersuchen *)
-ASM VOLATILE("2:");
+ASM VOLATILE("2:" : : : );
 	ASM VOLATILE("move.l  %%a2,68(%%a0)" : : ); (* regPC *)
 	ASM VOLATILE("jmp     %0" : : "m"(excHandler0) );     (* nicht gefunden, PC unveraendert lassen *)
-ASM VOLATILE("3:");
+ASM VOLATILE("3:" : : : );
 	ASM VOLATILE("adda.l  %%d1,%%a2" : : );
 	ASM VOLATILE("bra.s   2b" : : );
 END busHdl0;

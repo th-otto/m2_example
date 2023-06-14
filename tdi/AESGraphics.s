@@ -8,6 +8,7 @@ import GEMAESbase, key =  2102H  CAD6H  2E6DH, modnum =  2  checksum: o.k.
 data size, number of bytes = 0  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 86
+PROCEDURE GrafRubberBox(INTEGER; INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 0016                MOVE.W  0016(A6),-(A7)
@@ -24,7 +25,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 86
     2CH        4267                     CLR.W   -(A7)
     2EH        4EB9 0000 0000           JSR     00000000H
     34H        4FEF 000A                LEA     000A(A7),A7
-    38H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    38H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     3EH        286E 000C                MOVE.L  000C(A6),A4
     42H        4854                     PEA     (A4)
     44H        286E 0008                MOVE.L  0008(A6),A4
@@ -44,6 +45,7 @@ ref ext data at    3AH, modnum =  2  checksum: o.k.
 ref ext proc call at    4CH, procnum =  6, modnum =  2  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 104
+PROCEDURE GrafDragBox(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 001E                MOVE.W  001E(A6),-(A7)
@@ -64,7 +66,7 @@ proc code, procnum =  2, entrypoint =     0H, number of bytes = 104
     3EH        4267                     CLR.W   -(A7)
     40H        4EB9 0000 0000           JSR     00000000H
     46H        4FEF 000A                LEA     000A(A7),A7
-    4AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    4AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     50H        286E 000C                MOVE.L  000C(A6),A4
     54H        4854                     PEA     (A4)
     56H        286E 0008                MOVE.L  0008(A6),A4
@@ -84,6 +86,7 @@ ref ext data at    4CH, modnum =  2  checksum: o.k.
 ref ext proc call at    5EH, procnum =  6, modnum =  2  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 82
+PROCEDURE GrafMoveBox(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 0012                MOVE.W  0012(A6),-(A7)
@@ -102,7 +105,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 82
     3CH        4267                     CLR.W   -(A7)
     3EH        4EB9 0000 0000           JSR     00000000H
     44H        4FEF 000A                LEA     000A(A7),A7
-    48H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    48H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     4EH        4E5E                     UNLK    A6
     50H        4E75                     RTS
   checksum: o.k.
@@ -118,6 +121,7 @@ ref ext proc call at    40H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    4AH, modnum =  2  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 84
+PROCEDURE GrafGrowBox(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 0016                MOVE.W  0016(A6),-(A7)
@@ -138,7 +142,7 @@ proc code, procnum =  4, entrypoint =     0H, number of bytes = 84
     3EH        4267                     CLR.W   -(A7)
     40H        4EB9 0000 0000           JSR     00000000H
     46H        4FEF 000A                LEA     000A(A7),A7
-    4AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    4AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     50H        4E5E                     UNLK    A6
     52H        4E75                     RTS
   checksum: o.k.
@@ -150,6 +154,7 @@ ref ext proc call at    42H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    4CH, modnum =  2  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 84
+PROCEDURE GrafShrinkBox(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 0016                MOVE.W  0016(A6),-(A7)
@@ -170,7 +175,7 @@ proc code, procnum =  5, entrypoint =     0H, number of bytes = 84
     3EH        4267                     CLR.W   -(A7)
     40H        4EB9 0000 0000           JSR     00000000H
     46H        4FEF 000A                LEA     000A(A7),A7
-    4AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    4AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     50H        4E5E                     UNLK    A6
     52H        4E75                     RTS
   checksum: o.k.
@@ -182,6 +187,7 @@ ref ext proc call at    42H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    4CH, modnum =  2  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 72
+PROCEDURE GrafWatchBox(SYSTEM.ADDRESS; INTEGER; INTEGER; INTEGER) : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        4267                     CLR.W   -(A7)
@@ -211,6 +217,7 @@ ref ext data at    1EH, modnum =  2  checksum: o.k.
 ref ext proc call at    38H, procnum =  1, modnum =  2  checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 74
+PROCEDURE GrafSlideBox(SYSTEM.ADDRESS; INTEGER; INTEGER; INTEGER) : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 000C                MOVE.W  000C(A6),-(A7)
@@ -241,6 +248,7 @@ ref ext data at    20H, modnum =  2  checksum: o.k.
 ref ext proc call at    3AH, procnum =  1, modnum =  2  checksum: o.k.
 
 proc code, procnum =  8, entrypoint =     0H, number of bytes = 78
+PROCEDURE GrafHandle(VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER) : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 FFFE                LINK    A6,#FFFEH
      4H        558F                     SUBQ.L  #2,A7
@@ -272,6 +280,7 @@ ref ext proc call at    16H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext proc call at    3CH, procnum =  7, modnum =  2  checksum: o.k.
 
 proc code, procnum =  9, entrypoint =     0H, number of bytes = 60
+PROCEDURE GrafMouse(INTEGER; SYSTEM.ADDRESS);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000C 0000 0040      MOVE.W  000C(A6),00000040H
@@ -284,7 +293,7 @@ proc code, procnum =  9, entrypoint =     0H, number of bytes = 60
     26H        4267                     CLR.W   -(A7)
     28H        4EB9 0000 0000           JSR     00000000H
     2EH        4FEF 000A                LEA     000A(A7),A7
-    32H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    32H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     38H        4E5E                     UNLK    A6
     3AH        4E75                     RTS
   checksum: o.k.
@@ -298,6 +307,7 @@ ref ext proc call at    2AH, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    34H, modnum =  2  checksum: o.k.
 
 proc code, procnum = 10, entrypoint =     0H, number of bytes = 74
+PROCEDURE GrafMouseKeyboardState(VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        558F                     SUBQ.L  #2,A7
@@ -308,7 +318,7 @@ proc code, procnum = 10, entrypoint =     0H, number of bytes = 74
     12H        4267                     CLR.W   -(A7)
     14H        4EB9 0000 0000           JSR     00000000H
     1AH        4FEF 000A                LEA     000A(A7),A7
-    1EH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    1EH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     24H        286E 0014                MOVE.L  0014(A6),A4
     28H        4854                     PEA     (A4)
     2AH        286E 0010                MOVE.L  0010(A6),A4

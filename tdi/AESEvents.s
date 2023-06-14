@@ -8,6 +8,7 @@ import GEMAESbase, key =  2102H  CAD6H  2E6DH, modnum =  2  checksum: o.k.
 data size, number of bytes = 0  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 38
+PROCEDURE EventKeyboard() : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        558F                     SUBQ.L  #2,A7
@@ -26,6 +27,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 38
 ref ext proc call at    16H, procnum =  1, modnum =  2  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 100
+PROCEDURE EventButton(INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER) : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 FFFE                LINK    A6,#FFFEH
      4H        3F2E 001C                MOVE.W  001C(A6),-(A7)
@@ -64,6 +66,7 @@ ref ext proc call at    2CH, procnum =  1, modnum =  2  checksum: o.k.
 ref ext proc call at    52H, procnum =  7, modnum =  2  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 108
+PROCEDURE EventMouse(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 FFFE                LINK    A6,#FFFEH
      4H        3F2E 0020                MOVE.W  0020(A6),-(A7)
@@ -81,7 +84,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 108
     34H        4267                     CLR.W   -(A7)
     36H        4EB9 0000 0000           JSR     00000000H
     3CH        4FEF 000A                LEA     000A(A7),A7
-    40H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    40H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     46H        286E 0014                MOVE.L  0014(A6),A4
     4AH        4854                     PEA     (A4)
     4CH        286E 0010                MOVE.L  0010(A6),A4
@@ -107,6 +110,7 @@ ref ext data at    42H, modnum =  2  checksum: o.k.
 ref ext proc call at    60H, procnum =  7, modnum =  2  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 50
+PROCEDURE EventMessage(SYSTEM.ADDRESS);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        23EE 0008 0000 0072      MOVE.L  0008(A6),00000072H
@@ -118,7 +122,7 @@ proc code, procnum =  4, entrypoint =     0H, number of bytes = 50
     1CH        4267                     CLR.W   -(A7)
     1EH        4EB9 0000 0000           JSR     00000000H
     24H        4FEF 000A                LEA     000A(A7),A7
-    28H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    28H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     2EH        4E5E                     UNLK    A6
     30H        4E75                     RTS
   checksum: o.k.
@@ -130,6 +134,7 @@ ref ext proc call at    20H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    2AH, modnum =  2  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 58
+PROCEDURE EventTimer(INTEGER; INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 000A                MOVE.W  000A(A6),-(A7)
@@ -144,7 +149,7 @@ proc code, procnum =  5, entrypoint =     0H, number of bytes = 58
     24H        4267                     CLR.W   -(A7)
     26H        4EB9 0000 0000           JSR     00000000H
     2CH        4FEF 000A                LEA     000A(A7),A7
-    30H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    30H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     36H        4E5E                     UNLK    A6
     38H        4E75                     RTS
   checksum: o.k.
@@ -156,6 +161,9 @@ ref ext proc call at    28H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    32H, modnum =  2  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 238
+PROCEDURE EventMultiple(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER;
+      INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER;
+      SYSTEM.ADDRESS; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER) : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 FFFE                LINK    A6,#FFFEH
      4H        33EE 0042 0000 0040      MOVE.W  0042(A6),00000040H
@@ -246,6 +254,7 @@ ref ext data at    D6H, modnum =  2  checksum: o.k.
 ref ext data at    E0H, modnum =  2  checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 56
+PROCEDURE EventDoubleClick(INTEGER; INTEGER) : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 000A                MOVE.W  000A(A6),-(A7)

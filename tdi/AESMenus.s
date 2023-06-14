@@ -20,7 +20,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 60
     26H        4267                     CLR.W   -(A7)
     28H        4EB9 0000 0000           JSR     00000000H
     2EH        4FEF 000A                LEA     000A(A7),A7
-    32H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    32H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     38H        4E5E                     UNLK    A6
     3AH        4E75                     RTS
   checksum: o.k.
@@ -49,7 +49,7 @@ proc code, procnum =  2, entrypoint =     0H, number of bytes = 68
     2EH        4267                     CLR.W   -(A7)
     30H        4EB9 0000 0000           JSR     00000000H
     36H        4FEF 000A                LEA     000A(A7),A7
-    3AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    3AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     40H        4E5E                     UNLK    A6
     42H        4E75                     RTS
   checksum: o.k.
@@ -78,7 +78,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 68
     2EH        4267                     CLR.W   -(A7)
     30H        4EB9 0000 0000           JSR     00000000H
     36H        4FEF 000A                LEA     000A(A7),A7
-    3AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    3AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     40H        4E5E                     UNLK    A6
     42H        4E75                     RTS
   checksum: o.k.
@@ -107,7 +107,7 @@ proc code, procnum =  4, entrypoint =     0H, number of bytes = 68
     2EH        4267                     CLR.W   -(A7)
     30H        4EB9 0000 0000           JSR     00000000H
     36H        4FEF 000A                LEA     000A(A7),A7
-    3AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    3AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     40H        4E5E                     UNLK    A6
     42H        4E75                     RTS
   checksum: o.k.
@@ -134,7 +134,7 @@ proc code, procnum =  5, entrypoint =     0H, number of bytes = 68
     2EH        4267                     CLR.W   -(A7)
     30H        4EB9 0000 0000           JSR     00000000H
     36H        4FEF 000A                LEA     000A(A7),A7
-    3AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    3AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     40H        4E5E                     UNLK    A6
     42H        4E75                     RTS
   checksum: o.k.

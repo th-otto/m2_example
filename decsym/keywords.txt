@@ -1,0 +1,31 @@
+CODE ( w : CARDINAL ....)
+
+Allows the insertion of machine code into the object code of the compiling
+module. Each parameter w represents one 16-bit instruction to be executed.
+The procedure has an arbitrary number of parameters separated by the
+character ",".
+
+SETREG ( regNum : CARDINAL; value: ADDRESS );
+Procedure to generate code to set a value into one of the 68000
+processors general purpose registers. regNum is the register number:
+DO = 0 .. D7 = 7, AO = 8 .. A7 = 15
+
+REGISTER ( regNuM : CARDINAL) : ADDRESS;
+Procedure to generate code to return the contents of one of the 68000
+processor s general purpose registers (see SETREGl.
+
+
+
+$C : Generate the normal 68000 clear instructions to set variables to zero.
+The only time this is not required is if you are trying to clear a register on a
+device and the read before write operation of the clear cperation will cause a
+problem.
+
+$P: Generate the normal entry and exit code for the next procedure. The only
+time this is not required is if a procedure is being jumped to from a machine
+code instruction.
+
+$S: Generate code at the entry of each procedure to check the stack space
+available.
+
+$T: Generate code to perform range checking on array subscripts etc.

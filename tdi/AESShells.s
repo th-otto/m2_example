@@ -21,7 +21,7 @@ ShellRead
     24H        4267                     CLR.W   -(A7)
     26H        4EB9 0000 0000           JSR     GemCall
     2CH        4FEF 000A                LEA     000A(A7),A7
-    30H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    30H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     36H        4E5E                     UNLK    A6
     38H        4E75                     RTS
   checksum: o.k.
@@ -53,7 +53,7 @@ ShellWrite:
     3EH        4267                     CLR.W   -(A7)
     40H        4EB9 0000 0000           JSR     GemCall
     46H        4FEF 000A                LEA     000A(A7),A7
-    4AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    4AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     50H        4E5E                     UNLK    A6
     52H        4E75                     RTS
   checksum: o.k.
@@ -83,7 +83,7 @@ ShellFind:
     1CH        4267                     CLR.W   -(A7)
     1EH        4EB9 0000 0000           JSR     GemCall
     24H        4FEF 000A                LEA     000A(A7),A7
-    28H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    28H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     2EH        4E5E                     UNLK    A6
     30H        4E75                     RTS
   checksum: o.k.
@@ -108,7 +108,7 @@ ShellEnvrn
     24H        4267                     CLR.W   -(A7)
     26H        4EB9 0000 0000           JSR     GemCall
     2CH        4FEF 000A                LEA     000A(A7),A7
-    30H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    30H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     36H        4E5E                     UNLK    A6
     38H        4E75                     RTS
   checksum: o.k.

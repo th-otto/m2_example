@@ -7,7 +7,7 @@ M2CFLAGS = -fcpp -O2 -Wall -Werror -funbounded-by-reference
 M2CFLAGS += -flibs=m2pim,m2iso
 M2LDFLAGS =
 # the cc1gm2 backend sometimes complains about -sys-root being passed
-M2CFLAGS += -Wno-complain-wrong-lang
+# M2CFLAGS += -Wno-complain-wrong-lang
 ifneq ($(shell echo "" | $(CROSS)gcc -dM -E - | grep __ELF__),)
 M2CFLAGS += -ffunction-sections -fdata-sections
 M2LDFLAGS += -Wl,--gc-sections

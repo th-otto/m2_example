@@ -20,8 +20,8 @@ PROCEDURE GemCall(opcode: INTEGER; nintin: INTEGER; nintout: INTEGER; naddrin: I
     32H        2A0C                     MOVE.L  A4,D5
     34H        2205                     MOVE.L  D5,D1
     36H        4E42                     TRAP    #2
-    38H        33F9 0000 0062 0000 0086 MOVE.W  00000062H,00000086H
-    42H        3D79 0000 0086 0012      MOVE.W  00000086H,0012(A6)
+    38H        33F9 0000 0062 0000 0086 MOVE.W  00000062H,GEMAESbase.AESCallResult
+    42H        3D79 0000 0086 0012      MOVE.W  GEMAESbase.AESCallResult,0012(A6)
     4AH        4E5E                     UNLK    A6
     4CH        4E75                     RTS
   checksum: o.k.

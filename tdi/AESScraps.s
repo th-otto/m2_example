@@ -19,7 +19,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 50
     1CH        4267                     CLR.W   -(A7)
     1EH        4EB9 0000 0000           JSR     00000000H
     24H        4FEF 000A                LEA     000A(A7),A7
-    28H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    28H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     2EH        4E5E                     UNLK    A6
     30H        4E75                     RTS
   checksum: o.k.
@@ -42,7 +42,7 @@ proc code, procnum =  2, entrypoint =     0H, number of bytes = 50
     1CH        4267                     CLR.W   -(A7)
     1EH        4EB9 0000 0000           JSR     00000000H
     24H        4FEF 000A                LEA     000A(A7),A7
-    28H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    28H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     2EH        4E5E                     UNLK    A6
     30H        4E75                     RTS
   checksum: o.k.

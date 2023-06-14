@@ -8,6 +8,7 @@ import GEMAESbase, key =  2102H  CAD6H  2E6DH, modnum =  2  checksum: o.k.
 data size, number of bytes = 0  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 54
+PROCEDURE ResourceLoad(VAR ARRAY CHAR);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        286E 0008                MOVE.L  0008(A6),A4
@@ -21,7 +22,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 54
     20H        4267                     CLR.W   -(A7)
     22H        4EB9 0000 0000           JSR     00000000H
     28H        4FEF 000A                LEA     000A(A7),A7
-    2CH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    2CH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     32H        4E5E                     UNLK    A6
     34H        4E75                     RTS
   checksum: o.k.
@@ -33,6 +34,7 @@ ref ext proc call at    24H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    2EH, modnum =  2  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 40
+PROCEDURE ResourceFree();
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        558F                     SUBQ.L  #2,A7
@@ -43,7 +45,7 @@ proc code, procnum =  2, entrypoint =     0H, number of bytes = 40
     12H        4267                     CLR.W   -(A7)
     14H        4EB9 0000 0000           JSR     00000000H
     1AH        4FEF 000A                LEA     000A(A7),A7
-    1EH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    1EH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     24H        4E5E                     UNLK    A6
     26H        4E75                     RTS
   checksum: o.k.
@@ -53,6 +55,7 @@ ref ext proc call at    16H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    20H, modnum =  2  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 70
+PROCEDURE ResourceGetAddr(INTEGER; INTEGER; VAR SYSTEM.ADDRESS);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 000E                MOVE.W  000E(A6),-(A7)
@@ -67,7 +70,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 70
     24H        3F3C 0001                MOVE.W  #0001H,-(A7)
     28H        4EB9 0000 0000           JSR     00000000H
     2EH        4FEF 000A                LEA     000A(A7),A7
-    32H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    32H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     38H        286E 0008                MOVE.L  0008(A6),A4
     3CH        28B9 0000 007E           MOVE.L  0000007EH,(A4)
     42H        4E5E                     UNLK    A6
@@ -83,6 +86,7 @@ ref ext data at    34H, modnum =  2  checksum: o.k.
 ref ext data at    3EH, modnum =  2  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 68
+PROCEDURE ResourceSetAddr(INTEGER; INTEGER; SYSTEM.ADDRESS);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 000E                MOVE.W  000E(A6),-(A7)
@@ -98,7 +102,7 @@ proc code, procnum =  4, entrypoint =     0H, number of bytes = 68
     2EH        4267                     CLR.W   -(A7)
     30H        4EB9 0000 0000           JSR     00000000H
     36H        4FEF 000A                LEA     000A(A7),A7
-    3AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    3AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     40H        4E5E                     UNLK    A6
     42H        4E75                     RTS
   checksum: o.k.
@@ -112,6 +116,7 @@ ref ext proc call at    32H, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    3CH, modnum =  2  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 60
+PROCEDURE ResourceObjectFix(SYSTEM.ADDRESS; INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0040      MOVE.W  0008(A6),00000040H
@@ -124,7 +129,7 @@ proc code, procnum =  5, entrypoint =     0H, number of bytes = 60
     26H        4267                     CLR.W   -(A7)
     28H        4EB9 0000 0000           JSR     00000000H
     2EH        4FEF 000A                LEA     000A(A7),A7
-    32H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    32H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     38H        4E5E                     UNLK    A6
     3AH        4E75                     RTS
   checksum: o.k.

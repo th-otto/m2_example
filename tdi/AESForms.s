@@ -8,6 +8,7 @@ import GEMAESbase, key =  2102H  CAD6H  2E6DH, modnum =  2  checksum: o.k.
 data size, number of bytes = 0  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 58
+PROCEDURE FormDo(SYSTEM.ADDRESS; INTEGER) : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0040      MOVE.W  0008(A6),00000040H
@@ -32,6 +33,7 @@ ref ext data at    10H, modnum =  2  checksum: o.k.
 ref ext proc call at    2AH, procnum =  1, modnum =  2  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 92
+PROCEDURE FormDialogue(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        3F2E 0018                MOVE.W  0018(A6),-(A7)
@@ -53,7 +55,7 @@ proc code, procnum =  2, entrypoint =     0H, number of bytes = 92
     46H        4267                     CLR.W   -(A7)
     48H        4EB9 0000 0000           JSR     00000000H
     4EH        4FEF 000A                LEA     000A(A7),A7
-    52H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    52H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     58H        4E5E                     UNLK    A6
     5AH        4E75                     RTS
   checksum: o.k.
@@ -67,6 +69,7 @@ ref ext proc call at    4AH, procnum =  1, modnum =  2  checksum: o.k.
 ref ext data at    54H, modnum =  2  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 62
+PROCEDURE FormAlert(INTEGER; VAR ARRAY CHAR) : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 000E 0000 0040      MOVE.W  000E(A6),00000040H
@@ -93,6 +96,7 @@ ref ext data at    14H, modnum =  2  checksum: o.k.
 ref ext proc call at    2EH, procnum =  1, modnum =  2  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 48
+PROCEDURE FormError(INTEGER) : INTEGER;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        33EE 0008 0000 0042      MOVE.W  0008(A6),00000042H
@@ -114,6 +118,7 @@ ref ext data at     8H, modnum =  2  checksum: o.k.
 ref ext proc call at    20H, procnum =  1, modnum =  2  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 84
+PROCEDURE FormCenter(SYSTEM.ADDRESS; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        23EE 0018 0000 0072      MOVE.L  0018(A6),00000072H
@@ -125,7 +130,7 @@ proc code, procnum =  5, entrypoint =     0H, number of bytes = 84
     1CH        4267                     CLR.W   -(A7)
     1EH        4EB9 0000 0000           JSR     00000000H
     24H        4FEF 000A                LEA     000A(A7),A7
-    28H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    28H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     2EH        286E 0014                MOVE.L  0014(A6),A4
     32H        4854                     PEA     (A4)
     34H        286E 0010                MOVE.L  0010(A6),A4
@@ -149,6 +154,7 @@ ref ext data at    2AH, modnum =  2  checksum: o.k.
 ref ext proc call at    48H, procnum =  7, modnum =  2  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 68
+PROCEDURE FileSelectorInput(SYSTEM.ADDRESS; SYSTEM.ADDRESS; VAR INTEGER);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        23EE 0010 0000 0072      MOVE.L  0010(A6),00000072H
@@ -161,7 +167,7 @@ proc code, procnum =  6, entrypoint =     0H, number of bytes = 68
     24H        4267                     CLR.W   -(A7)
     26H        4EB9 0000 0000           JSR     00000000H
     2CH        4FEF 000A                LEA     000A(A7),A7
-    30H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    30H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     36H        286E 0008                MOVE.L  0008(A6),A4
     3AH        38B9 0000 0064           MOVE.W  00000064H,(A4)
     40H        4E5E                     UNLK    A6

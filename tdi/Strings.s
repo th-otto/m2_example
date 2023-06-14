@@ -9,7 +9,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 14
 PROCEDURE InitStringModule();
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
-     4H        4239 0000 0000           CLR.B   00000000H
+     4H        4239 0000 0000           CLR.B   terminator
      AH        4E5E                     UNLK    A6
      CH        4E75                     RTS
   checksum: o.k.
@@ -27,7 +27,7 @@ PROCEDURE Length(VAR Str: ARRAY OF CHAR): CARDINAL;
     12H        3A2E FFFE                MOVE.W  FFFE(A6),D5
     16H        286E 0008                MOVE.L  0008(A6),A4
     1AH        1834 5000                MOVE.B  00H(A4,D5.W),D4
-    1EH        B839 0000 0000           CMP.B   00000000H,D4
+    1EH        B839 0000 0000           CMP.B   terminator,D4
     24H        6706                     BEQ     [06H] = 0000002CH
     26H        526E FFFE                ADDQ.W  #1,FFFE(A6)
     2AH        60DC                     BRA     [DCH] = 00000008H
@@ -52,7 +52,7 @@ PROCEDURE Assign(VAR Dest: ARRAY OF CHAR; VAR Source: ARRAY OF CHAR);
     1CH        3A2E FFFE                MOVE.W  FFFE(A6),D5
     20H        286E 0008                MOVE.L  0008(A6),A4
     24H        1834 5000                MOVE.B  00H(A4,D5.W),D4
-    28H        B839 0000 0000           CMP.B   00000000H,D4
+    28H        B839 0000 0000           CMP.B   terminator,D4
     2EH        671C                     BEQ     [1CH] = 0000004CH
     30H        3A2E FFFE                MOVE.W  FFFE(A6),D5
     34H        286E 0008                MOVE.L  0008(A6),A4
@@ -66,7 +66,7 @@ PROCEDURE Assign(VAR Dest: ARRAY OF CHAR; VAR Source: ARRAY OF CHAR);
     54H        6210                     BHI     [10H] = 00000066H
     56H        3A2E FFFE                MOVE.W  FFFE(A6),D5
     5AH        286E 000E                MOVE.L  000E(A6),A4
-    5EH        19B9 0000 0000 5000      MOVE.B  00000000H,00H(A4,D5.W)
+    5EH        19B9 0000 0000 5000      MOVE.B  terminator,00H(A4,D5.W)
     66H        4E5E                     UNLK    A6
     68H        4E75                     RTS
   checksum: o.k.
@@ -83,14 +83,14 @@ PROCEDURE Insert(VAR SubStr: ARRAY OF CHAR; VAR Str: ARRAY OF CHAR; Index: CARDI
      6H        3F2E 0014                MOVE.W  0014(A6),-(A7)
      AH        286E 0010                MOVE.L  0010(A6),A4
      EH        4854                     PEA     (A4)
-    10H        6100 0000                BSR     [0000H] = 00000012H
+    10H        6100 0000                BSR     Length
     14H        5C8F                     ADDQ.L  #6,A7
     16H        3D5F FFFC                MOVE.W  (A7)+,FFFC(A6)
     1AH        558F                     SUBQ.L  #2,A7
     1CH        3F2E 000E                MOVE.W  000E(A6),-(A7)
     20H        286E 000A                MOVE.L  000A(A6),A4
     24H        4854                     PEA     (A4)
-    26H        6100 0000                BSR     [0000H] = 00000028H
+    26H        6100 0000                BSR     Length
     2AH        5C8F                     ADDQ.L  #6,A7
     2CH        3D5F FFFE                MOVE.W  (A7)+,FFFE(A6)
     30H        4A6E FFFC                TST.W   FFFC(A6)
@@ -160,7 +160,7 @@ PROCEDURE Delete(VAR Str: ARRAY OF CHAR; Index: CARDINAL; Len: CARDINAL);
      6H        3F2E 0010                MOVE.W  0010(A6),-(A7)
      AH        286E 000C                MOVE.L  000C(A6),A4
      EH        4854                     PEA     (A4)
-    10H        6100 0000                BSR     [0000H] = 00000012H
+    10H        6100 0000                BSR     Length
     14H        5C8F                     ADDQ.L  #6,A7
     16H        3D5F FFFE                MOVE.W  (A7)+,FFFE(A6)
     1AH        4A6E 0008                TST.W   0008(A6)
@@ -185,7 +185,7 @@ PROCEDURE Delete(VAR Str: ARRAY OF CHAR; Index: CARDINAL; Len: CARDINAL);
     60H        60D2                     BRA     [D2H] = 00000034H
     62H        3A2E FFFC                MOVE.W  FFFC(A6),D5
     66H        286E 000C                MOVE.L  000C(A6),A4
-    6AH        19B9 0000 0000 5000      MOVE.B  00000000H,00H(A4,D5.W)
+    6AH        19B9 0000 0000 5000      MOVE.B  terminator,00H(A4,D5.W)
     72H        4E5E                     UNLK    A6
     74H        4E75                     RTS
   checksum: o.k.
@@ -206,7 +206,7 @@ PROCEDURE Copy(VAR Str: ARRAY OF CHAR; Index: CARDINAL; Len: CARDINAL; VAR Resul
     14H        3F2E 0016                MOVE.W  0016(A6),-(A7)
     18H        286E 0012                MOVE.L  0012(A6),A4
     1CH        4854                     PEA     (A4)
-    1EH        6100 0000                BSR     [0000H] = 00000020H
+    1EH        6100 0000                BSR     Length
     22H        5C8F                     ADDQ.L  #6,A7
     24H        3A1F                     MOVE.W  (A7)+,D5
     26H        9A6E 0010                SUB.W   0010(A6),D5
@@ -228,7 +228,7 @@ PROCEDURE Copy(VAR Str: ARRAY OF CHAR; Index: CARDINAL; Len: CARDINAL; VAR Resul
     62H        6210                     BHI     [10H] = 00000074H
     64H        3A2E FFFE                MOVE.W  FFFE(A6),D5
     68H        286E 0008                MOVE.L  0008(A6),A4
-    6CH        19B9 0000 0000 5000      MOVE.B  00000000H,00H(A4,D5.W)
+    6CH        19B9 0000 0000 5000      MOVE.B  terminator,00H(A4,D5.W)
     74H        4E5E                     UNLK    A6
     76H        4E75                     RTS
   checksum: o.k.
@@ -246,14 +246,14 @@ PROCEDURE Concat(VAR S1: ARRAY OF CHAR; VAR S2: ARRAY OF CHAR; VAR Result: ARRAY
      AH        3F2E 0018                MOVE.W  0018(A6),-(A7)
      EH        286E 0014                MOVE.L  0014(A6),A4
     12H        4854                     PEA     (A4)
-    14H        6100 0000                BSR     [0000H] = 00000016H
+    14H        6100 0000                BSR     Length
     18H        5C8F                     ADDQ.L  #6,A7
     1AH        3D5F FFFE                MOVE.W  (A7)+,FFFE(A6)
     1EH        558F                     SUBQ.L  #2,A7
     20H        3F2E 0012                MOVE.W  0012(A6),-(A7)
     24H        286E 000E                MOVE.L  000E(A6),A4
     28H        4854                     PEA     (A4)
-    2AH        6100 0000                BSR     [0000H] = 0000002CH
+    2AH        6100 0000                BSR     Length
     2EH        5C8F                     ADDQ.L  #6,A7
     30H        3D5F FFFC                MOVE.W  (A7)+,FFFC(A6)
     34H        286E 000E                MOVE.L  000E(A6),A4
@@ -269,7 +269,7 @@ PROCEDURE Concat(VAR S1: ARRAY OF CHAR; VAR S2: ARRAY OF CHAR; VAR Result: ARRAY
     52H        286E 000E                MOVE.L  000E(A6),A4
     56H        4854                     PEA     (A4)
     58H        4267                     CLR.W   -(A7)
-    5AH        6100 0000                BSR     [0000H] = 0000005CH
+    5AH        6100 0000                BSR     Insert
     5EH        4FEF 000E                LEA     000E(A7),A7
     62H        4E5E                     UNLK    A6
     64H        4E75                     RTS
@@ -306,7 +306,7 @@ PROCEDURE Concat(VAR S1: ARRAY OF CHAR; VAR S2: ARRAY OF CHAR; VAR Result: ARRAY
     D6H        6210                     BHI     [10H] = 000000E8H
     D8H        3A2E FFFA                MOVE.W  FFFA(A6),D5
     DCH        286E 0008                MOVE.L  0008(A6),A4
-    E0H        19B9 0000 0000 5000      MOVE.B  00000000H,00H(A4,D5.W)
+    E0H        19B9 0000 0000 5000      MOVE.B  terminator,00H(A4,D5.W)
     E8H        4E5E                     UNLK    A6
     EAH        4E75                     RTS
   checksum: o.k.
@@ -336,7 +336,7 @@ PROCEDURE Compare(VAR S1: ARRAY OF CHAR; VAR S2: ARRAY OF CHAR): CompareResults;
     2EH        6004                     BRA     [04H] = 00000034H
     30H        4EFA 0098                JMP     [0098H] = 000000CAH
     34H        1A2E FFFD                MOVE.B  FFFD(A6),D5
-    38H        BA39 0000 0000           CMP.B   00000000H,D5
+    38H        BA39 0000 0000           CMP.B   terminator,D5
     3EH        660A                     BNE     [0AH] = 0000004AH
     40H        1D7C 0001 0014           MOVE.B  #01H,0014(A6)
     46H        4E5E                     UNLK    A6
@@ -351,7 +351,7 @@ PROCEDURE Compare(VAR S1: ARRAY OF CHAR; VAR S2: ARRAY OF CHAR): CompareResults;
     62H        3A2E FFFE                MOVE.W  FFFE(A6),D5
     66H        286E 0008                MOVE.L  0008(A6),A4
     6AH        1834 5000                MOVE.B  00H(A4,D5.W),D4
-    6EH        B839 0000 0000           CMP.B   00000000H,D4
+    6EH        B839 0000 0000           CMP.B   terminator,D4
     74H        660E                     BNE     [0EH] = 00000084H
     76H        1D7C 0001 0014           MOVE.B  #01H,0014(A6)
     7CH        4E5E                     UNLK    A6
@@ -367,7 +367,7 @@ PROCEDURE Compare(VAR S1: ARRAY OF CHAR; VAR S2: ARRAY OF CHAR): CompareResults;
     9CH        3A2E FFFE                MOVE.W  FFFE(A6),D5
     A0H        286E 000E                MOVE.L  000E(A6),A4
     A4H        1834 5000                MOVE.B  00H(A4,D5.W),D4
-    A8H        B839 0000 0000           CMP.B   00000000H,D4
+    A8H        B839 0000 0000           CMP.B   terminator,D4
     AEH        660E                     BNE     [0EH] = 000000BEH
     B0H        1D7C 0001 0014           MOVE.B  #01H,0014(A6)
     B6H        4E5E                     UNLK    A6
@@ -404,7 +404,7 @@ PROCEDURE Pos(VAR Source: ARRAY OF CHAR; VAR Match: ARRAY OF CHAR; Start: CARDIN
      6H        3F2E 0018                MOVE.W  0018(A6),-(A7)
      AH        286E 0014                MOVE.L  0014(A6),A4
      EH        4854                     PEA     (A4)
-    10H        6100 0000                BSR     [0000H] = 00000012H
+    10H        6100 0000                BSR     Length
     14H        5C8F                     ADDQ.L  #6,A7
     16H        3D5F FFFC                MOVE.W  (A7)+,FFFC(A6)
     1AH        286E 0008                MOVE.L  0008(A6),A4
@@ -422,7 +422,7 @@ PROCEDURE Pos(VAR Source: ARRAY OF CHAR; VAR Match: ARRAY OF CHAR; Start: CARDIN
     42H        3A2E FFFE                MOVE.W  FFFE(A6),D5
     46H        286E 000E                MOVE.L  000E(A6),A4
     4AH        1834 5000                MOVE.B  00H(A4,D5.W),D4
-    4EH        B839 0000 0000           CMP.B   00000000H,D4
+    4EH        B839 0000 0000           CMP.B   terminator,D4
     54H        660E                     BNE     [0EH] = 00000064H
     56H        1D7C 0001 001A           MOVE.B  #01H,001A(A6)
     5CH        4E5E                     UNLK    A6
@@ -462,7 +462,7 @@ proc code, procnum = 10, entrypoint =     0H, number of bytes = 16
 PROCEDURE SetTerminator(Ch: CHAR);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
-     4H        13EE 0008 0000 0000      MOVE.B  0008(A6),00000000H
+     4H        13EE 0008 0000 0000      MOVE.B  0008(A6),terminator
      CH        4E5E                     UNLK    A6
      EH        4E75                     RTS
   checksum: o.k.
@@ -473,7 +473,7 @@ proc code, procnum = 11, entrypoint =     0H, number of bytes = 16
 PROCEDURE GetTerminator(): CHAR;
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
-     4H        1D79 0000 0000 0008      MOVE.B  00000000H,0008(A6)
+     4H        1D79 0000 0000 0008      MOVE.B  terminator,0008(A6)
      CH        4E5E                     UNLK    A6
      EH        4E75                     RTS
   checksum: o.k.

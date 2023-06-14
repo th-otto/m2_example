@@ -23,7 +23,7 @@ proc code, procnum =  1, entrypoint =     0H, number of bytes = 68
     2EH        4267                     CLR.W   -(A7)
     30H        4EB9 0000 0000           JSR     00000000H
     36H        4FEF 000A                LEA     000A(A7),A7
-    3AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    3AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     40H        4E5E                     UNLK    A6
     42H        4E75                     RTS
   checksum: o.k.
@@ -49,7 +49,7 @@ proc code, procnum =  2, entrypoint =     0H, number of bytes = 60
     26H        4267                     CLR.W   -(A7)
     28H        4EB9 0000 0000           JSR     00000000H
     2EH        4FEF 000A                LEA     000A(A7),A7
-    32H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    32H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     38H        4E5E                     UNLK    A6
     3AH        4E75                     RTS
   checksum: o.k.
@@ -82,7 +82,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 92
     46H        4267                     CLR.W   -(A7)
     48H        4EB9 0000 0000           JSR     00000000H
     4EH        4FEF 000A                LEA     000A(A7),A7
-    52H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    52H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     58H        4E5E                     UNLK    A6
     5AH        4E75                     RTS
   checksum: o.k.
@@ -141,7 +141,7 @@ proc code, procnum =  5, entrypoint =     0H, number of bytes = 80
     26H        4267                     CLR.W   -(A7)
     28H        4EB9 0000 0000           JSR     00000000H
     2EH        4FEF 000A                LEA     000A(A7),A7
-    32H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    32H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     38H        286E 000C                MOVE.L  000C(A6),A4
     3CH        38B9 0000 0064           MOVE.W  00000064H,(A4)
     42H        286E 0008                MOVE.L  0008(A6),A4
@@ -178,7 +178,7 @@ proc code, procnum =  6, entrypoint =     0H, number of bytes = 68
     2EH        4267                     CLR.W   -(A7)
     30H        4EB9 0000 0000           JSR     00000000H
     36H        4FEF 000A                LEA     000A(A7),A7
-    3AH        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    3AH        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     40H        4E5E                     UNLK    A6
     42H        4E75                     RTS
   checksum: o.k.
@@ -209,7 +209,7 @@ proc code, procnum =  7, entrypoint =     0H, number of bytes = 86
     36H        4267                     CLR.W   -(A7)
     38H        4EB9 0000 0000           JSR     00000000H
     3EH        4FEF 000A                LEA     000A(A7),A7
-    42H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    42H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     48H        286E 0008                MOVE.L  0008(A6),A4
     4CH        38B9 0000 0064           MOVE.W  00000064H,(A4)
     52H        4E5E                     UNLK    A6
@@ -248,7 +248,7 @@ proc code, procnum =  8, entrypoint =     0H, number of bytes = 94
     48H        4267                     CLR.W   -(A7)
     4AH        4EB9 0000 0000           JSR     00000000H
     50H        4FEF 000A                LEA     000A(A7),A7
-    54H        33DF 0000 0086           MOVE.W  (A7)+,00000086H
+    54H        33DF 0000 0086           MOVE.W  (A7)+,GEMAESbase.AESCallResult
     5AH        4E5E                     UNLK    A6
     5CH        4E75                     RTS
   checksum: o.k.

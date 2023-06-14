@@ -1,0 +1,288 @@
+DEFINITION MODULE GEMAESbase;
+
+FROM SYSTEM IMPORT ADDRESS, LONGINT, LONGCARD;
+
+CONST RTree = 0;
+CONST RObject = 1;
+CONST RTedInfo = 2;
+CONST RIconBlock = 3;
+CONST RBitBlock = 4;
+CONST RString = 5;
+CONST RImageData = 6;
+CONST RObSpec = 7;
+CONST RText = 8;
+CONST RTemplate = 9;
+CONST RValid = 10;
+CONST RIconBlkMask = 11;
+CONST RIconBlkData = 12;
+CONST RIconBlkText = 13;
+CONST RBitBlkData = 14;
+CONST RFreeString = 15;
+CONST RFreeImage = 16;
+
+CONST GraphicBox = 20;
+CONST GraphicText = 21;
+CONST GraphicBoxText = 22;
+CONST GraphicImage = 23;
+CONST GraphicProgDef = 24;
+CONST GraphicInvisibleBox = 25;
+CONST GraphicButton = 26;
+CONST GraphicBoxChar = 27;
+CONST GraphicString = 28;
+CONST GraphicFormattedText = 29;
+CONST GraphicFormattedBoxText = 30;
+CONST GraphicIcon = 31;
+CONST GraphicTitle = 32;
+
+CONST None = 0;
+CONST Selectable = 1H;
+CONST Default = 2H;
+CONST Exit = 4H;
+CONST Editable = 8H;
+CONST RadioButton = 10H;
+CONST LastObject = 20H;
+CONST TouchExit = 40H;
+CONST HideTree = 80H;
+CONST Indirect = 100H;
+
+CONST Normal = 0;
+CONST Selected = 1H;
+CONST Crossed = 2H;
+CONST Checked = 4H;
+CONST Disabled = 8H;
+CONST Outlined = 10H;
+CONST Shadowed = 20H;
+
+CONST White = 0;
+CONST Black = 1;
+CONST Red = 2;
+CONST Green = 3;
+CONST Blue = 4;
+CONST Cyan = 5;
+CONST Yellow = 6;
+CONST Magenta = 7;
+CONST LightWhite = 8;
+CONST LightBlack = 9;
+CONST LightRed = 10;
+CONST LightGreen = 11;
+CONST LightBlue = 12;
+CONST LightCyan = 13;
+CONST LightYellow = 14;
+CONST LightMagenta = 15;
+
+CONST KeyboardEvent = 1H;
+CONST ButtonEvent = 2H;
+CONST Mouse1Event = 4H;
+CONST Mouse2Event = 8H;
+CONST MesageEvent = 10H;
+CONST TimerEvent = 20H;
+
+CONST KeyRightShift = 1H;
+CONST KeyLeftShift = 2H;
+CONST KeyCTRL = 4H;
+CONST KeyALT = 8H;
+
+CONST MenuSelected = 10;
+CONST WindowRedraw = 20;
+CONST WindowTopped = 21;
+CONST WindowClosed = 22;
+CONST WindowFulled = 23;
+CONST WindowArrowed = 24;
+CONST WindowHorizSlided = 25;
+CONST WindowVertSlided = 26;
+CONST WindowSized = 27;
+CONST WindowMoved = 28;
+CONST WindowNewTop = 29;
+CONST AccessoryOpen = 40;
+CONST AccessoryClose = 41;
+
+CONST Arrow = 0;
+CONST TextCursor = 1;
+CONST HourGlass = 2;
+CONST PointHand = 3;
+CONST FlatHand = 4;
+CONST ThinCross = 5;
+CONST ThickCross = 6;
+CONST OutlineCross = 7;
+CONST UserDef = 255;
+
+CONST MouseOff = 256;
+CONST MouseOn = 257;
+
+CONST FormStart = 0;
+CONST FormGrow = 1;
+CONST FormShrink = 2;
+CONST FormFinish = 3;
+
+CONST Name = 1H;
+CONST Closer = 2H;
+CONST Fuller = 4H;
+CONST Mover = 8H;
+CONST InfoLine = 10H;
+CONST Sizer = 20H;
+CONST UpArrow = 40H;
+CONST DownArrow = 80H;
+CONST VertSlide = 100H;
+CONST LeftArrow = 200H;
+CONST RightArrow = 400H;
+CONST HorizSlide = 800H;
+
+CONST WCBorder = 0;
+CONST WCWork = 1H;
+
+CONST WindowKind = 1;
+CONST WindowName = 2;
+CONST WindowInfo = 3;
+CONST WorkXYWH = 4;
+CONST CurrXYWH = 5;
+CONST PrevXYWH = 6;
+CONST FullXYWH = 7;
+CONST WindowHorizSlide = 8;
+CONST WindowVertSlide = 9;
+CONST Top = 10;
+CONST FirstXYWH = 11;
+CONST NextXYWH = 12;
+CONST Reserved = 13;
+CONST NewDesk = 14;
+CONST HorizSliderSize = 15;
+CONST VertSliderSize = 16;
+CONST WindowScreen = 17;
+
+CONST EndUpdate = 0;
+CONST BeginUpdate = 1;
+CONST EndMouseControl = 2;
+CONST BeginMouseControl = 3;
+
+TYPE Object = RECORD
+  next  : INTEGER;
+  head  : INTEGER;
+  tail  : INTEGER;
+  type  : INTEGER;
+  flags  : INTEGER;
+  state  : INTEGER;
+  spec  : ADDRESS;
+  x  : INTEGER;
+  y  : INTEGER;
+  width  : INTEGER;
+  height  : INTEGER;
+END;
+
+TYPE TEdInfo = RECORD
+  ptext  : ADDRESS;
+  ptmplt  : ADDRESS;
+  pvalid  : ADDRESS;
+  font  : INTEGER;
+  resvd1  : INTEGER;
+  just  : INTEGER;
+  colour  : INTEGER;
+  resvd2  : INTEGER;
+  thickness  : INTEGER;
+  txtlen  : INTEGER;
+  tmplen  : INTEGER;
+END;
+          
+TYPE IconBlk = RECORD
+  x  : INTEGER;
+  y  : INTEGER;
+  width  : INTEGER;
+  height  : INTEGER;
+  ptext  : ADDRESS;
+  pmask  : ADDRESS;
+  pdata  : ADDRESS;
+  iChar  : INTEGER;
+  xChar  : INTEGER;
+  yChar  : INTEGER;
+  xText  : INTEGER;
+  yText  : INTEGER;
+  wText  : INTEGER;
+  hText  : INTEGER;
+END;
+          
+TYPE BitBlk = RECORD
+  x  : INTEGER;
+  y  : INTEGER;
+  width  : INTEGER;
+  height  : INTEGER;
+  colour  : INTEGER;
+  pdata  : ADDRESS;
+END;
+         
+TYPE ApplBlk = RECORD
+  code  : ADDRESS;
+  param : LONGINT;
+END;
+          
+TYPE ParamBlk = RECORD
+   x  : INTEGER;
+   y  : INTEGER;
+   param  : LONGINT;
+   pTree  : ADDRESS;
+   object  : INTEGER;
+   preState  : INTEGER;
+   curState  : INTEGER;
+   w  : INTEGER;
+   h  : INTEGER;
+   xc  : INTEGER;
+   yc  : INTEGER;
+   wc  : INTEGER;
+   hc  : INTEGER;
+END;
+           
+TYPE AESGlobalType = RECORD
+    apVersion: CARDINAL;
+    apCount  : CARDINAL;
+    apID     : CARDINAL;
+    apPrivate: LONGCARD;
+    apPTree  : ADDRESS;
+    ap1Resv  : LONGCARD;
+    ap2Resv  : LONGCARD;
+    ap3Resv  : LONGCARD;
+    ap4Resv  : LONGCARD;
+END;
+                
+TYPE AESControlType = RECORD
+  opcode      : CARDINAL;
+  sizeIntIn   : CARDINAL;
+  sizeIntOut  : CARDINAL;
+  sizeAddrIn  : CARDINAL;
+  sizeAddrOut : CARDINAL;
+END;
+                 
+TYPE AESIntInType = ARRAY [0..16] OF INTEGER;
+TYPE AESIntOutType = ARRAY [0..7] OF INTEGER;
+TYPE AESAddrInType = ARRAY [0..2] OF ADDRESS;
+TYPE AESAddrOutType = ARRAY [0..1] OF ADDRESS;
+
+TYPE AESParameterType = RECORD
+   control : POINTER TO AESControlType;
+   global  : POINTER TO AESGlobalType;
+   intIn   : POINTER TO AESIntInType;
+   intOut  : POINTER TO AESIntOutType;
+   addrIn  : POINTER TO AESAddrInType;
+   addrOut : POINTER TO AESAddrOutType;
+END;
+                   
+VAR AESParameters (* reladdr: 0H*)  : AESParameterType;
+VAR AESGlobal (* reladdr: 18H*)  : AESGlobalType;
+VAR AESControl (* reladdr: 36H*)  : AESControlType;
+VAR AESIntIn (* reladdr: 40H*)  : AESIntInType;
+VAR AESIntOut (* reladdr: 62H*)  : AESIntOutType;
+VAR AESAddrIn (* reladdr: 72H*)  : AESAddrInType;
+VAR AESAddrOut (* reladdr: 7EH*)  : AESAddrOutType;
+VAR AESCallResult (* reladdr: 86H*)  : INTEGER;
+
+(* 1 *) PROCEDURE GemCall(opcode: INTEGER; nintin: INTEGER; nintout: INTEGER; naddrin: INTEGER; naddrout: INTEGER): INTEGER;
+
+(* 2 *) PROCEDURE IntIn2(intin0, intin1: INTEGER);
+
+(* 3 *) PROCEDURE IntIn3(intin0, intin1, intin2: INTEGER);
+
+(* 4 *) PROCEDURE IntIn4(intin0, intin1, intin2, intin3: INTEGER);
+
+(* 5 *) PROCEDURE IntIn8(intin0, intin1, intin2, intin3, intin4, intin5, intin6, intin7: INTEGER);
+
+(* 6 *) PROCEDURE IntOut2(VAR intout0: INTEGER; VAR intout1: INTEGER);
+
+(* 7 *) PROCEDURE IntOut4(VAR intout0: INTEGER; VAR intout1: INTEGER; VAR intout2: INTEGER; VAR intout3: INTEGER);
+
+END GEMAESbase.
