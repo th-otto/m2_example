@@ -34,7 +34,7 @@ proc code, procnum = 20, entrypoint =     0H, number of bytes = 136
     14H        2F0C                     MOVE.L  A4,-(A7)
     16H        4878 0800                PEA     0800H
     1AH        486C 0002                PEA     0002(A4)
-    1EH        4EB9 0000 0000           JSR     00000000H
+    1EH        4EB9 0000 0000           JSR     GEMDOS.Alloc
     24H        508F                     ADDQ.L  #8,A7
     26H        285F                     MOVE.L  (A7)+,A4
     28H        7AFF                     MOVEQ   #FFH,D5
@@ -55,7 +55,7 @@ proc code, procnum = 20, entrypoint =     0H, number of bytes = 136
     58H        3F2E 000C                MOVE.W  000C(A6),-(A7)
     5CH        266E 0008                MOVE.L  0008(A6),A3
     60H        4853                     PEA     (A3)
-    62H        4EB9 0000 0000           JSR     00000000H
+    62H        4EB9 0000 0000           JSR     Strings.Assign
     68H        4FEF 000C                LEA     000C(A7),A7
     6CH        285F                     MOVE.L  (A7)+,A4
     6EH        422C 0031                CLR.B   0031(A4)
@@ -94,7 +94,7 @@ proc code, procnum = 21, entrypoint =     0H, number of bytes = 180
     30H        3F2C 0008                MOVE.W  0008(A4),-(A7)
     34H        486E FFFC                PEA     FFFC(A6)
     38H        2F2C 0002                MOVE.L  0002(A4),-(A7)
-    3CH        4EB9 0000 0000           JSR     00000000H
+    3CH        4EB9 0000 0000           JSR     GEMDOS.Write
     42H        4FEF 000A                LEA     000A(A7),A7
     46H        285F                     MOVE.L  (A7)+,A4
     48H        2A2E FFFC                MOVE.L  FFFC(A6),D5
@@ -194,7 +194,7 @@ proc code, procnum = 22, entrypoint =     0H, number of bytes = 304
     92H        3F2C 0008                MOVE.W  0008(A4),-(A7)
     96H        4227                     CLR.B   -(A7)
     98H        486E FFFC                PEA     FFFC(A6)
-    9CH        4EB9 0000 0000           JSR     00000000H
+    9CH        4EB9 0000 0000           JSR     GEMDOS.Seek
     A2H        4FEF 000C                LEA     000C(A7),A7
     A6H        285F                     MOVE.L  (A7)+,A4
     A8H        2D7C 0000 0800 FFF8      MOVE.L  #00000800H,FFF8(A6)
@@ -202,7 +202,7 @@ proc code, procnum = 22, entrypoint =     0H, number of bytes = 304
     B2H        3F2C 0008                MOVE.W  0008(A4),-(A7)
     B6H        486E FFF8                PEA     FFF8(A6)
     BAH        2F2C 0002                MOVE.L  0002(A4),-(A7)
-    BEH        4EB9 0000 0000           JSR     00000000H
+    BEH        4EB9 0000 0000           JSR     GEMDOS.Read
     C4H        4FEF 000A                LEA     000A(A7),A7
     C8H        285F                     MOVE.L  (A7)+,A4
     CAH        2A2E FFF8                MOVE.L  FFF8(A6),D5
@@ -330,7 +330,7 @@ proc code, procnum = 24, entrypoint =     0H, number of bytes = 340
     6EH        3F2C 0008                MOVE.W  0008(A4),-(A7)
     72H        4227                     CLR.B   -(A7)
     74H        486E FFFC                PEA     FFFC(A6)
-    78H        4EB9 0000 0000           JSR     00000000H
+    78H        4EB9 0000 0000           JSR     GEMDOS.Seek
     7EH        4FEF 000C                LEA     000C(A7),A7
     82H        285F                     MOVE.L  (A7)+,A4
     84H        2D7C 0000 0800 FFF8      MOVE.L  #00000800H,FFF8(A6)
@@ -338,7 +338,7 @@ proc code, procnum = 24, entrypoint =     0H, number of bytes = 340
     8EH        3F2C 0008                MOVE.W  0008(A4),-(A7)
     92H        486E FFF8                PEA     FFF8(A6)
     96H        2F2C 0002                MOVE.L  0002(A4),-(A7)
-    9AH        4EB9 0000 0000           JSR     00000000H
+    9AH        4EB9 0000 0000           JSR     GEMDOS.Read
     A0H        4FEF 000A                LEA     000A(A7),A7
     A4H        285F                     MOVE.L  (A7)+,A4
     A6H        2A2E FFF8                MOVE.L  FFF8(A6),D5
@@ -350,7 +350,7 @@ proc code, procnum = 24, entrypoint =     0H, number of bytes = 340
     BAH        3F2C 0008                MOVE.W  0008(A4),-(A7)
     BEH        4227                     CLR.B   -(A7)
     C0H        486E FFFC                PEA     FFFC(A6)
-    C4H        4EB9 0000 0000           JSR     00000000H
+    C4H        4EB9 0000 0000           JSR     GEMDOS.Seek
     CAH        4FEF 000C                LEA     000C(A7),A7
     CEH        285F                     MOVE.L  (A7)+,A4
     D0H        2F0C                     MOVE.L  A4,-(A7)
@@ -478,7 +478,7 @@ PROCEDURE Create(VAR File; VAR ARRAY CHAR);
     34H        3F2E 000C                MOVE.W  000C(A6),-(A7)
     38H        266E 0008                MOVE.L  0008(A6),A3
     3CH        4853                     PEA     (A3)
-    3EH        4EB9 0000 0000           JSR     00000000H
+    3EH        4EB9 0000 0000           JSR     Strings.Assign
     44H        4FEF 000C                LEA     000C(A7),A7
     48H        285F                     MOVE.L  (A7)+,A4
     4AH        3A39 0000 0000           MOVE.W  00000000H,D5
@@ -493,13 +493,13 @@ PROCEDURE Create(VAR File; VAR ARRAY CHAR);
     6AH        558F                     SUBQ.L  #2,A7
     6CH        3F3C 0032                MOVE.W  #0032H,-(A7)
     70H        486E FFCC                PEA     FFCC(A6)
-    74H        4EB9 0000 0000           JSR     00000000H
+    74H        4EB9 0000 0000           JSR     Strings.Length
     7AH        5C8F                     ADDQ.L  #6,A7
     7CH        3A1F                     MOVE.W  (A7)+,D5
     7EH        285F                     MOVE.L  (A7)+,A4
     80H        5345                     SUBQ.W  #1,D5
     82H        3F05                     MOVE.W  D5,-(A7)
-    84H        4EB9 0000 0000           JSR     00000000H
+    84H        4EB9 0000 0000           JSR     Strings.Insert
     8AH        4FEF 000E                LEA     000E(A7),A7
     8EH        285F                     MOVE.L  (A7)+,A4
     90H        5279 0000 0000           ADDQ.W  #1,00000000H
@@ -512,13 +512,13 @@ PROCEDURE Create(VAR File; VAR ARRAY CHAR);
     ACH        558F                     SUBQ.L  #2,A7
     AEH        3F3C 0032                MOVE.W  #0032H,-(A7)
     B2H        486E FFCC                PEA     FFCC(A6)
-    B6H        4EB9 0000 0000           JSR     00000000H
+    B6H        4EB9 0000 0000           JSR     Strings.Length
     BCH        5C8F                     ADDQ.L  #6,A7
     BEH        3A1F                     MOVE.W  (A7)+,D5
     C0H        285F                     MOVE.L  (A7)+,A4
     C2H        5345                     SUBQ.W  #1,D5
     C4H        3F05                     MOVE.W  D5,-(A7)
-    C6H        4EB9 0000 0000           JSR     00000000H
+    C6H        4EB9 0000 0000           JSR     Strings.Insert
     CCH        4FEF 000E                LEA     000E(A7),A7
     D0H        285F                     MOVE.L  (A7)+,A4
     D2H        2F0C                     MOVE.L  A4,-(A7)
@@ -536,7 +536,7 @@ PROCEDURE Create(VAR File; VAR ARRAY CHAR);
     F6H        486E FFCC                PEA     FFCC(A6)
     FAH        4267                     CLR.W   -(A7)
     FCH        486C 0008                PEA     0008(A4)
-   100H        4EB9 0000 0000           JSR     00000000H
+   100H        4EB9 0000 0000           JSR     GEMDOS.Create
    106H        4FEF 000C                LEA     000C(A7),A7
    10AH        285F                     MOVE.L  (A7)+,A4
    10CH        4A6C 0008                TST.W   0008(A4)
@@ -551,7 +551,7 @@ PROCEDURE Create(VAR File; VAR ARRAY CHAR);
    126H        2F0C                     MOVE.L  A4,-(A7)
    128H        558F                     SUBQ.L  #2,A7
    12AH        2F2C 0002                MOVE.L  0002(A4),-(A7)
-   12EH        4EB9 0000 0000           JSR     00000000H
+   12EH        4EB9 0000 0000           JSR     GEMDOS.Free
    134H        588F                     ADDQ.L  #4,A7
    136H        1A1F                     MOVE.B  (A7)+,D5
    138H        285F                     MOVE.L  (A7)+,A4
@@ -614,7 +614,7 @@ PROCEDURE Close(VAR File);
     18H        2F0C                     MOVE.L  A4,-(A7)
     1AH        558F                     SUBQ.L  #2,A7
     1CH        3F2C 0008                MOVE.W  0008(A4),-(A7)
-    20H        4EB9 0000 0000           JSR     00000000H
+    20H        4EB9 0000 0000           JSR     GEMDOS.Close
     26H        548F                     ADDQ.L  #2,A7
     28H        1A1F                     MOVE.B  (A7)+,D5
     2AH        285F                     MOVE.L  (A7)+,A4
@@ -624,7 +624,7 @@ PROCEDURE Close(VAR File);
     32H        558F                     SUBQ.L  #2,A7
     34H        3F3C 0027                MOVE.W  #0027H,-(A7)
     38H        486C 000A                PEA     000A(A4)
-    3CH        4EB9 0000 0000           JSR     00000000H
+    3CH        4EB9 0000 0000           JSR     GEMDOS.Delete
     42H        5C8F                     ADDQ.L  #6,A7
     44H        1A1F                     MOVE.B  (A7)+,D5
     46H        285F                     MOVE.L  (A7)+,A4
@@ -648,7 +648,7 @@ PROCEDURE Close(VAR File);
     76H        2F0C                     MOVE.L  A4,-(A7)
     78H        558F                     SUBQ.L  #2,A7
     7AH        2F2C 0002                MOVE.L  0002(A4),-(A7)
-    7EH        4EB9 0000 0000           JSR     00000000H
+    7EH        4EB9 0000 0000           JSR     GEMDOS.Free
     84H        588F                     ADDQ.L  #4,A7
     86H        1A1F                     MOVE.B  (A7)+,D5
     88H        285F                     MOVE.L  (A7)+,A4
@@ -666,7 +666,7 @@ PROCEDURE Close(VAR File);
     A6H        2F0C                     MOVE.L  A4,-(A7)
     A8H        558F                     SUBQ.L  #2,A7
     AAH        3F2C 0008                MOVE.W  0008(A4),-(A7)
-    AEH        4EB9 0000 0000           JSR     00000000H
+    AEH        4EB9 0000 0000           JSR     GEMDOS.Close
     B4H        548F                     ADDQ.L  #2,A7
     B6H        1A1F                     MOVE.B  (A7)+,D5
     B8H        285F                     MOVE.L  (A7)+,A4
@@ -682,7 +682,7 @@ PROCEDURE Close(VAR File);
     D2H        2F0C                     MOVE.L  A4,-(A7)
     D4H        558F                     SUBQ.L  #2,A7
     D6H        2F2C 0002                MOVE.L  0002(A4),-(A7)
-    DAH        4EB9 0000 0000           JSR     00000000H
+    DAH        4EB9 0000 0000           JSR     GEMDOS.Free
     E0H        588F                     ADDQ.L  #4,A7
     E2H        1A1F                     MOVE.B  (A7)+,D5
     E4H        285F                     MOVE.L  (A7)+,A4
@@ -734,7 +734,7 @@ PROCEDURE Lookup(VAR File; VAR ARRAY CHAR; BOOLEAN);
     38H        4853                     PEA     (A3)
     3AH        4267                     CLR.W   -(A7)
     3CH        486C 0008                PEA     0008(A4)
-    40H        4EB9 0000 0000           JSR     00000000H
+    40H        4EB9 0000 0000           JSR     GEMDOS.Open
     46H        4FEF 000C                LEA     000C(A7),A7
     4AH        285F                     MOVE.L  (A7)+,A4
     4CH        4A6C 0008                TST.W   0008(A4)
@@ -745,7 +745,7 @@ PROCEDURE Lookup(VAR File; VAR ARRAY CHAR; BOOLEAN);
     5CH        3F2C 0008                MOVE.W  0008(A4),-(A7)
     60H        1F3C 0002                MOVE.B  #02H,-(A7)
     64H        486C 0032                PEA     0032(A4)
-    68H        4EB9 0000 0000           JSR     00000000H
+    68H        4EB9 0000 0000           JSR     GEMDOS.Seek
     6EH        4FEF 000C                LEA     000C(A7),A7
     72H        285F                     MOVE.L  (A7)+,A4
     74H        2F0C                     MOVE.L  A4,-(A7)
@@ -753,7 +753,7 @@ PROCEDURE Lookup(VAR File; VAR ARRAY CHAR; BOOLEAN);
     78H        3F2C 0008                MOVE.W  0008(A4),-(A7)
     7CH        4227                     CLR.B   -(A7)
     7EH        486E FFFC                PEA     FFFC(A6)
-    82H        4EB9 0000 0000           JSR     00000000H
+    82H        4EB9 0000 0000           JSR     GEMDOS.Seek
     88H        4FEF 000C                LEA     000C(A7),A7
     8CH        285F                     MOVE.L  (A7)+,A4
     8EH        4EFA 0092                JMP     [0092H] = 00000122H
@@ -766,7 +766,7 @@ PROCEDURE Lookup(VAR File; VAR ARRAY CHAR; BOOLEAN);
     A8H        4853                     PEA     (A3)
     AAH        4267                     CLR.W   -(A7)
     ACH        486C 0008                PEA     0008(A4)
-    B0H        4EB9 0000 0000           JSR     00000000H
+    B0H        4EB9 0000 0000           JSR     GEMDOS.Create
     B6H        4FEF 000C                LEA     000C(A7),A7
     BAH        285F                     MOVE.L  (A7)+,A4
     BCH        4A6C 0008                TST.W   0008(A4)
@@ -774,7 +774,7 @@ PROCEDURE Lookup(VAR File; VAR ARRAY CHAR; BOOLEAN);
     C2H        2F0C                     MOVE.L  A4,-(A7)
     C4H        558F                     SUBQ.L  #2,A7
     C6H        2F2C 0002                MOVE.L  0002(A4),-(A7)
-    CAH        4EB9 0000 0000           JSR     00000000H
+    CAH        4EB9 0000 0000           JSR     GEMDOS.Free
     D0H        588F                     ADDQ.L  #4,A7
     D2H        1A1F                     MOVE.B  (A7)+,D5
     D4H        285F                     MOVE.L  (A7)+,A4
@@ -800,7 +800,7 @@ PROCEDURE Lookup(VAR File; VAR ARRAY CHAR; BOOLEAN);
    10AH        2F0C                     MOVE.L  A4,-(A7)
    10CH        558F                     SUBQ.L  #2,A7
    10EH        2F2C 0002                MOVE.L  0002(A4),-(A7)
-   112H        4EB9 0000 0000           JSR     00000000H
+   112H        4EB9 0000 0000           JSR     GEMDOS.Free
    118H        588F                     ADDQ.L  #4,A7
    11AH        1A1F                     MOVE.B  (A7)+,D5
    11CH        285F                     MOVE.L  (A7)+,A4
@@ -869,13 +869,13 @@ PROCEDURE Rename(VAR File; VAR ARRAY CHAR);
     68H        558F                     SUBQ.L  #2,A7
     6AH        3F3C 003B                MOVE.W  #003BH,-(A7)
     6EH        486E FFC4                PEA     FFC4(A6)
-    72H        4EB9 0000 0000           JSR     00000000H
+    72H        4EB9 0000 0000           JSR     Strings.Length
     78H        5C8F                     ADDQ.L  #6,A7
     7AH        3A1F                     MOVE.W  (A7)+,D5
     7CH        285F                     MOVE.L  (A7)+,A4
     7EH        5345                     SUBQ.W  #1,D5
     80H        3F05                     MOVE.W  D5,-(A7)
-    82H        4EB9 0000 0000           JSR     00000000H
+    82H        4EB9 0000 0000           JSR     Strings.Insert
     88H        4FEF 000E                LEA     000E(A7),A7
     8CH        285F                     MOVE.L  (A7)+,A4
     8EH        5279 0000 0000           ADDQ.W  #1,00000000H
@@ -888,13 +888,13 @@ PROCEDURE Rename(VAR File; VAR ARRAY CHAR);
     AAH        558F                     SUBQ.L  #2,A7
     ACH        3F3C 003B                MOVE.W  #003BH,-(A7)
     B0H        486E FFC4                PEA     FFC4(A6)
-    B4H        4EB9 0000 0000           JSR     00000000H
+    B4H        4EB9 0000 0000           JSR     Strings.Length
     BAH        5C8F                     ADDQ.L  #6,A7
     BCH        3A1F                     MOVE.W  (A7)+,D5
     BEH        285F                     MOVE.L  (A7)+,A4
     C0H        5345                     SUBQ.W  #1,D5
     C2H        3F05                     MOVE.W  D5,-(A7)
-    C4H        4EB9 0000 0000           JSR     00000000H
+    C4H        4EB9 0000 0000           JSR     Strings.Insert
     CAH        4FEF 000E                LEA     000E(A7),A7
     CEH        285F                     MOVE.L  (A7)+,A4
     D0H        2F0C                     MOVE.L  A4,-(A7)
@@ -902,7 +902,7 @@ PROCEDURE Rename(VAR File; VAR ARRAY CHAR);
     D6H        486C 000A                PEA     000A(A4)
     DAH        3F3C 003B                MOVE.W  #003BH,-(A7)
     DEH        486E FFC4                PEA     FFC4(A6)
-    E2H        4EB9 0000 0000           JSR     00000000H
+    E2H        4EB9 0000 0000           JSR     GEMDOS.Rename
     E8H        4FEF 000C                LEA     000C(A7),A7
     ECH        285F                     MOVE.L  (A7)+,A4
     EEH        2F0C                     MOVE.L  A4,-(A7)
@@ -910,7 +910,7 @@ PROCEDURE Rename(VAR File; VAR ARRAY CHAR);
     F4H        486C 000A                PEA     000A(A4)
     F8H        3F3C 003B                MOVE.W  #003BH,-(A7)
     FCH        486E FFC4                PEA     FFC4(A6)
-   100H        4EB9 0000 0000           JSR     00000000H
+   100H        4EB9 0000 0000           JSR     Strings.Assign
    106H        4FEF 000C                LEA     000C(A7),A7
    10AH        285F                     MOVE.L  (A7)+,A4
    10CH        2F0C                     MOVE.L  A4,-(A7)
@@ -928,7 +928,7 @@ PROCEDURE Rename(VAR File; VAR ARRAY CHAR);
    132H        3F2E 000C                MOVE.W  000C(A6),-(A7)
    136H        266E 0008                MOVE.L  0008(A6),A3
    13AH        4853                     PEA     (A3)
-   13CH        4EB9 0000 0000           JSR     00000000H
+   13CH        4EB9 0000 0000           JSR     GEMDOS.Rename
    142H        4FEF 000C                LEA     000C(A7),A7
    146H        285F                     MOVE.L  (A7)+,A4
    148H        2F0C                     MOVE.L  A4,-(A7)
@@ -937,7 +937,7 @@ PROCEDURE Rename(VAR File; VAR ARRAY CHAR);
    152H        3F2E 000C                MOVE.W  000C(A6),-(A7)
    156H        266E 0008                MOVE.L  0008(A6),A3
    15AH        4853                     PEA     (A3)
-   15CH        4EB9 0000 0000           JSR     00000000H
+   15CH        4EB9 0000 0000           JSR     Strings.Assign
    162H        4FEF 000C                LEA     000C(A7),A7
    166H        285F                     MOVE.L  (A7)+,A4
    168H        4E5E                     UNLK    A6
@@ -984,7 +984,7 @@ proc code, procnum = 27, entrypoint =     0H, number of bytes = 110
     1AH        2F0C                     MOVE.L  A4,-(A7)
     1CH        558F                     SUBQ.L  #2,A7
     1EH        3F2C 0008                MOVE.W  0008(A4),-(A7)
-    22H        4EB9 0000 0000           JSR     00000000H
+    22H        4EB9 0000 0000           JSR     GEMDOS.Close
     28H        548F                     ADDQ.L  #2,A7
     2AH        1A1F                     MOVE.B  (A7)+,D5
     2CH        285F                     MOVE.L  (A7)+,A4
@@ -995,7 +995,7 @@ proc code, procnum = 27, entrypoint =     0H, number of bytes = 110
     38H        486C 000A                PEA     000A(A4)
     3CH        3F2E 0008                MOVE.W  0008(A6),-(A7)
     40H        486C 0008                PEA     0008(A4)
-    44H        4EB9 0000 0000           JSR     00000000H
+    44H        4EB9 0000 0000           JSR     GEMDOS.Open
     4AH        4FEF 000C                LEA     000C(A7),A7
     4EH        285F                     MOVE.L  (A7)+,A4
     50H        2F0C                     MOVE.L  A4,-(A7)
@@ -1003,7 +1003,7 @@ proc code, procnum = 27, entrypoint =     0H, number of bytes = 110
     56H        4267                     CLR.W   -(A7)
     58H        4227                     CLR.B   -(A7)
     5AH        486E FFFC                PEA     FFFC(A6)
-    5EH        4EB9 0000 0000           JSR     00000000H
+    5EH        4EB9 0000 0000           JSR     GEMDOS.Seek
     64H        4FEF 000C                LEA     000C(A7),A7
     68H        285F                     MOVE.L  (A7)+,A4
     6AH        4E5E                     UNLK    A6
@@ -1148,7 +1148,7 @@ PROCEDURE SetPos(VAR File; LONGCARD);
     5EH        3F2C 0008                MOVE.W  0008(A4),-(A7)
     62H        4227                     CLR.B   -(A7)
     64H        486E FFFC                PEA     FFFC(A6)
-    68H        4EB9 0000 0000           JSR     00000000H
+    68H        4EB9 0000 0000           JSR     GEMDOS.Seek
     6EH        4FEF 000C                LEA     000C(A7),A7
     72H        285F                     MOVE.L  (A7)+,A4
     74H        296E 0008 003A           MOVE.L  0008(A6),003A(A4)

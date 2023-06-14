@@ -1,6 +1,6 @@
 DEFINITION MODULE FileSystem;
 
-IMPORT SYSTEM;
+FROM SYSTEM IMPORT WORD, ADDRESS;
 
 TYPE
   Response = (done(*0*),
@@ -21,67 +21,66 @@ TYPE
   timeout(*15*),
   harderror(*16*));
 
-TYPE
-  Flag = (er(*0*),
-  ef(*1*),
-  rd(*2*),
-  wr(*3*),
-  bytemode(*4*),
-  ag(*5*),
-  tmp(*6*),
-  dirty(*7*));
+TYPE Flag = (
+  er, (* error occured *)
+  ef, (* eof reached *)
+  rd, (* read access mode *)
+  wr, (* write access mode *)
+  bytemode,
+  ag, (* again; reread the last character *)
+  tmp, (* file is temporary *)
+  dirty);
 
 TYPE FlagSet = SET OF Flag;
 
-TYPE
-  File = RECORD
-           res(*offset: 0H*)  : Response;
-           bufa(*offset: 2H*)  : SYSTEM.ADDRESS;
-           flags(*offset: 6H*)  : FlagSet;
-           eof(*offset: 7H*)  : BOOLEAN;
-           handle(*offset: 8H*)  : INTEGER;
-           name(*offset: AH*)  : ARRAY [0H(*CARDINAL*)..27H(*CARDINAL*)] OF CHAR;
-           endpos(*offset: 32H*)  : LONGCARD;
-           buffpos(*offset: 36H*)  : LONGCARD;
-           filepos(*offset: 3AH*)  : LONGCARD;
-           bufflen(*offset: 3EH*)  : CARDINAL;
-           again(*offset: 40H*)  : SYSTEM.WORD;
-         END;(*size: 42H*);
+TYPE File = RECORD
+   res    : Response;
+   bufa   : ADDRESS;
+   flags  : FlagSet;
+   eof    : BOOLEAN;
+   handle : INTEGER;
+   name   : ARRAY [0..39] OF CHAR;
+   endpos : LONGCARD;
+   buffpos: LONGCARD;
+   filepos: LONGCARD;
+   bufflen: CARDINAL;
+   again  : WORD;
+ END;
        
-(* 1 *) PROCEDURE Create(VAR File; VAR ARRAY CHAR);
+(* 1 *) PROCEDURE Create(VAR f: File; VAR filename: ARRAY OF CHAR);
 
-(* 2 *) PROCEDURE Close(VAR File);
+(* 2 *) PROCEDURE Close(VAR f: File);
 
-(* 3 *) PROCEDURE Lookup(VAR File; VAR ARRAY CHAR; BOOLEAN);
+(* 3 *) PROCEDURE Lookup(VAR f: File; VAR filename: ARRAY OF CHAR; newFile: BOOLEAN);
 
-(* 4 *) PROCEDURE Rename(VAR File; VAR ARRAY CHAR);
+(* 4 *) PROCEDURE Rename(VAR f: File; VAR newname: ARRAY OF CHAR);
 
-(* 5 *) PROCEDURE SetRead(VAR File);
+(* 5 *) PROCEDURE SetRead(VAR f: File);
 
-(* 6 *) PROCEDURE SetWrite(VAR File);
+(* 6 *) PROCEDURE SetWrite(VAR f: File);
 
-(* 7 *) PROCEDURE SetModify(VAR File);
+(* 7 *) PROCEDURE SetModify(VAR f: File);
 
-(* 8 *) PROCEDURE SetOpen(VAR File);
+(* 8 *) PROCEDURE SetOpen(VAR f: File);
 
-(* 9 *) PROCEDURE Doio(VAR File);
+(* 9 *) PROCEDURE Doio(VAR f: File);
 
-(* 10 *) PROCEDURE SetPos(VAR File; LONGCARD);
+(* 10 *) PROCEDURE SetPos(VAR f: File; pos: LONGCARD);
 
-(* 11 *) PROCEDURE GetPos(VAR File; VAR LONGCARD);
+(* 11 *) PROCEDURE GetPos(VAR f: File; VAR pos: LONGCARD);
 
-(* 12 *) PROCEDURE Length(VAR File; VAR LONGCARD);
+(* 12 *) PROCEDURE Length(VAR f: File; VAR length: LONGCARD);
 
-(* 13 *) PROCEDURE Reset(VAR File);
+(* 13 *) PROCEDURE Reset(VAR f: File);
 
-(* 14 *) PROCEDURE Again(VAR File);
+(* 14 *) PROCEDURE Again(VAR f: File);
 
-(* 15 *) PROCEDURE ReadWord(VAR File; VAR SYSTEM.WORD);
+(* 15 *) PROCEDURE ReadWord(VAR f: File; VAR w: WORD);
 
-(* 16 *) PROCEDURE WriteWord(VAR File; SYSTEM.WORD);
+(* 16 *) PROCEDURE WriteWord(VAR f: File; w: WORD);
 
-(* 17 *) PROCEDURE ReadChar(VAR File; VAR CHAR);
+(* 17 *) PROCEDURE ReadChar(VAR f: File; VAR ch: CHAR);
 
-(* 18 *) PROCEDURE WriteChar(VAR File; CHAR);
+(* 18 *) PROCEDURE WriteChar(VAR f: File; ch: CHAR);
 
 END FileSystem.

@@ -78,7 +78,7 @@ CASEX:
 [000100e0] 296e fff0 0016            move.l     -16(a6),22(a4)
 [000100e6] 197c 0001 001a            move.b     #$01,26(a4)
 [000100ec] 2e6e ffe8                 movea.l    -24(a6),a7
-[000100f0] 2039 0001 5cae            move.l     pgm_term,d0
+[000100f0] 2039 0001 5cae            move.l     ErrorProcessor,d0
 [000100f6] 2f40 0002                 move.l     d0,2(a7)
 [000100fa] 3ebc 0000                 move.w     #$0000,(a7)
 [000100fe] 2c56                      movea.l    (a6),a6
@@ -361,6 +361,7 @@ trap7_func7:
 [0001045e] 0257 d8ff                 andi.w     #$D8FF,(a7)
 [00010462] 4e73                      rte
 
+DIVU32:
 [00010464] 4e56 0000                 link       a6,#0
 [00010468] 48e7 7800                 movem.l    d1-d4,-(a7)
 [0001046c] 222e 000c                 move.l     12(a6),d1
@@ -514,8 +515,8 @@ GEMX.init
 [00010620] 204f                      movea.l    a7,a0
 [00010622] 2068 0004                 movea.l    4(a0),a0
 [00010626] 2a08                      move.l     a0,d5
-[00010628] 23c5 0001 5caa            move.l     d5,_base
-[0001062e] 2879 0001 5caa            movea.l    _base,a4
+[00010628] 23c5 0001 5caa            move.l     d5,BasePageAddress
+[0001062e] 2879 0001 5caa            movea.l    BasePageAddress,a4
 [00010634] 23ec 0008 0001 5ce6       move.l     8(a4),textbase
 [0001063c] 2028 000c                 move.l     12(a0),d0
 [00010640] d0a8 0014                 add.l      20(a0),d0
@@ -532,7 +533,7 @@ GEMX.init
 [00010664] 3f3c 004a                 move.w     #$004A,-(a7) ; Mshrink
 [00010668] 4e41                      trap       #1
 [0001066a] dffc 0000 000c            adda.l     #$0000000C,a7
-[00010670] 2879 0001 5caa            movea.l    _base,a4
+[00010670] 2879 0001 5caa            movea.l    BasePageAddress,a4
 [00010676] 2a2c 0008                 move.l     8(a4),d5
 [0001067a] daac 000c                 add.l      12(a4),d5
 [0001067e] daac 0014                 add.l      20(a4),d5
@@ -584,7 +585,7 @@ GEMX.init
 [00010726] 4eb9 0001 051c            jsr        $0001051C
 [0001072c] 5c8f                      addq.l     #6,a7
 
-[0001072e] 23fc 0001 0244 0001 5cae  move.l     #$00010244,pgm_term
+[0001072e] 23fc 0001 0244 0001 5cae  move.l     #$00010244,ErrorProcessor
 [00010738] 7007                      moveq.l    #7,d0
 [0001073a] 4e47                      trap       #7
 [0001073c] 4ef9 0001 0b40            jmp        GEMAESbase.init+6
@@ -2515,6 +2516,7 @@ Strings.init:
 [00012244] 4e5e                      unlk       a6
 [00012246] 4e75                      rts
 
+RunCmd(VAR cmd: ARRAY OF CHAR; VAR tail: ARRAY OF CHAR);
 [00012248] 4e56 0000                 link       a6,#0
 [0001224c] 3f3c 0001                 move.w     #$0001,-(a7)
 [00012250] 3f3c 0001                 move.w     #$0001,-(a7)
@@ -3578,7 +3580,7 @@ BufferedIO.Flush(VAR s: BufferedStreamPtr):
 [00013138] 47ec 003a                 lea.l      58(a4),a3
 [0001313c] 2a0b                      move.l     a3,d5
 [0001313e] 2f05                      move.l     d5,-(a7)
-[00013140] 4eb9 0001 097a            jsr        GEMDOS.Write:
+[00013140] 4eb9 0001 097a            jsr        GEMDOS.Write
 [00013146] 4fef 000a                 lea.l      10(a7),a7
 [0001314a] 285f                      movea.l    (a7)+,a4
 [0001314c] 4aae fffc                 tst.l      -4(a6)
@@ -4337,7 +4339,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013b82] 4efa 0084                 jmp        $00013C08(pc)
 [00013b86] 2f2e 0008                 move.l     8(a6),-(a7)
 [00013b8a] 2f2e fffc                 move.l     -4(a6),-(a7)
-[00013b8e] 4eb9 0001 0464            jsr        $00010464
+[00013b8e] 4eb9 0001 0464            jsr        DIVU32
 [00013b94] 588f                      addq.l     #4,a7
 [00013b96] 2a1f                      move.l     (a7)+,d5
 [00013b98] 3d45 fffa                 move.w     d5,-6(a6)
@@ -4362,7 +4364,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013bde] 1985 4000                 move.b     d5,0(a4,d4.w)
 [00013be2] 2f2e 0008                 move.l     8(a6),-(a7)
 [00013be6] 2f2e fffc                 move.l     -4(a6),-(a7)
-[00013bea] 4eb9 0001 0464            jsr        $00010464
+[00013bea] 4eb9 0001 0464            jsr        DIVU32
 [00013bf0] 2e9f                      move.l     (a7)+,(a7)
 [00013bf2] 2d5f 0008                 move.l     (a7)+,8(a6)
 [00013bf6] 2a2e fffc                 move.l     -4(a6),d5
@@ -4667,7 +4669,7 @@ BufferedIO.Read16Bit(VAR s: BufferedStream; VAR v: WORD)
 [00013fb2] 13fc 0001 0001 6ab4       move.b     #$01,$00016AB4
 [00013fba] 4239 0001 6b06            clr.b      $00016B06
 [00013fc0] 6100 ff30                 bsr        $00013EF2
-[00013fc4] 2879 0001 5caa            movea.l    $00015CAA,a4
+[00013fc4] 2879 0001 5caa            movea.l    BasePageAddress,a4
 [00013fca] 23ec 0020 0001 6b14       move.l     32(a4),$00016B14 _base->p_dta
 [00013fd2] 3f3c 0027                 move.w     #$0027,-(a7)
 [00013fd6] 4879 0001 6ade            pea.l      $00016ADE
@@ -4842,7 +4844,7 @@ casex5_tab:
 [000142f6] 526e fff2                 addq.w     #1,-14(a6)
 [000142fa] 2f2e 0016                 move.l     22(a6),-(a7)
 [000142fe] 2f2e ffea                 move.l     -22(a6),-(a7)
-[00014302] 4eb9 0001 0464            jsr        $00010464
+[00014302] 4eb9 0001 0464            jsr        DIVU32
 [00014308] 2e9f                      move.l     (a7)+,(a7)
 [0001430a] 2d5f ffe6                 move.l     (a7)+,-26(a6)
 [0001430e] 7a0a                      moveq.l    #10,d5
@@ -4861,7 +4863,7 @@ casex5_tab:
 [0001433a] 1985 4000                 move.b     d5,0(a4,d4.w)
 [0001433e] 2f2e 0016                 move.l     22(a6),-(a7)
 [00014342] 2f2e ffea                 move.l     -22(a6),-(a7)
-[00014346] 4eb9 0001 0464            jsr        $00010464
+[00014346] 4eb9 0001 0464            jsr        DIVU32
 [0001434c] 588f                      addq.l     #4,a7
 [0001434e] 2d5f 0016                 move.l     (a7)+,22(a6)
 [00014352] 4aae 0016                 tst.l      22(a6)
@@ -4910,9 +4912,9 @@ casex5_tab:
 
 [000143f0] 4e56 fef6                 link       a6,#-266
 [000143f4] 3f3c 000a                 move.w     #$000A,-(a7)
-[000143f8] 4879 0001 59a6            pea.l      $000159A6
+[000143f8] 4879 0001 59a6            pea.l      $000159A6 "Symbol file"
 [000143fe] 4267                      clr.w      -(a7)
-[00014400] 4879 0001 59b2            pea.l      $000159B2
+[00014400] 4879 0001 59b2            pea.l      $000159B2 ''
 [00014406] 3f3c 0004                 move.w     #$0004,-(a7)
 [0001440a] 4879 0001 6e40            pea.l      $00016E40
 [00014410] 1f3c 0001                 move.b     #$01,-(a7)
@@ -4925,7 +4927,7 @@ casex5_tab:
 [0001442c] 4a2e ffff                 tst.b      -1(a6)
 [00014430] 675a                      beq.s      $0001448C
 [00014432] 558f                      subq.l     #2,a7
-[00014434] 4879 0001 59b4            pea.l      $000159B4
+[00014434] 4879 0001 59b4            pea.l      $000159B4 "List"
 [0001443a] 4eb9 0001 4180            jsr        $00014180
 [00014440] 588f                      addq.l     #4,a7
 [00014442] 3d5f fffc                 move.w     (a7)+,-4(a6)
@@ -4934,7 +4936,7 @@ casex5_tab:
 [0001444e] 4eb9 0001 3c38            jsr        $00013C38
 [00014454] 508f                      addq.l     #8,a7
 [00014456] 3f3c 000a                 move.w     #$000A,-(a7)
-[0001445a] 4879 0001 59ba            pea.l      $000159BA
+[0001445a] 4879 0001 59ba            pea.l      $000159BA "Decode file"
 [00014460] 3f3c 0031                 move.w     #$0031,-(a7)
 [00014464] 486e ffc8                 pea.l      -56(a6)
 [00014468] 3f3c 000e                 move.w     #$000E,-(a7)
@@ -4965,6 +4967,7 @@ casex5_tab:
 [000144c6] 4e5e                      unlk       a6
 [000144c8] 4e75                      rts
 
+(VAR s: ARRAY OF CHAR; 
 [000144ca] 4e56 0000                 link       a6,#0
 [000144ce] 3a2e 000c                 move.w     12(a6),d5
 [000144d2] 3f05                      move.w     d5,-(a7)
@@ -4974,7 +4977,7 @@ casex5_tab:
 [000144e0] 5c8f                      addq.l     #6,a7
 [000144e2] 4eb9 0001 13d8            jsr        $000113D8
 [000144e8] 3f3c 0013                 move.w     #$0013,-(a7)
-[000144ec] 4879 0001 59c6            pea.l      $000159C6
+[000144ec] 4879 0001 59c6            pea.l      $000159C6 " Error in SymbolFile"
 [000144f2] 4eb9 0001 130e            jsr        $0001130E
 [000144f8] 5c8f                      addq.l     #6,a7
 [000144fa] 4eb9 0001 13d8            jsr        $000113D8
@@ -5033,6 +5036,7 @@ InOut.WriteString:
 [000145a4] 4e5e                      unlk       a6
 [000145a6] 4e75                      rts
 
+InOut.WriteCard:
 [000145a8] 4e56 fff6                 link       a6,#-10
 [000145ac] 3f2e 000a                 move.w     10(a6),-(a7)
 [000145b0] 3f2e 0008                 move.w     8(a6),-(a7)
@@ -5259,7 +5263,7 @@ Symfile.NextIf(b: BYTE);
 [00014896] 4eb9 0001 463e            jsr        $0001463E
 [0001489c] 548f                      addq.l     #2,a7
 [0001489e] 3f3c 000e                 move.w     #$000E,-(a7)
-[000148a2] 4879 0001 59fe            pea.l      $000159FE
+[000148a2] 4879 0001 59fe            pea.l      $000159FE '(*module key = '
 [000148a8] 4eb9 0001 456a            jsr        InOut.WriteString
 [000148ae] 5c8f                      addq.l     #6,a7
 [000148b0] 558f                      subq.l     #2,a7
@@ -5278,7 +5282,7 @@ Symfile.NextIf(b: BYTE);
 [000148e4] 4eb9 0001 45da            jsr        $000145DA
 [000148ea] 588f                      addq.l     #4,a7
 [000148ec] 3f3c 0001                 move.w     #$0001,-(a7)
-[000148f0] 4879 0001 5a0e            pea.l      $00015A0E
+[000148f0] 4879 0001 5a0e            pea.l      $00015A0E '*)'
 [000148f6] 4eb9 0001 456a            jsr        InOut.WriteString
 [000148fc] 5c8f                      addq.l     #6,a7
 [000148fe] 4e5e                      unlk       a6
@@ -5289,7 +5293,7 @@ Symfile.NextIf(b: BYTE);
 [00014908] 4eb9 0001 47ca            jsr        $000147CA
 [0001490e] 3d5f fffe                 move.w     (a7)+,-2(a6)
 [00014912] 3f3c 0012                 move.w     #$0012,-(a7)
-[00014916] 4879 0001 5a12            pea.l      $00015A12
+[00014916] 4879 0001 5a12            pea.l      $00015A12 '(*syntax version = '
 [0001491c] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014922] 5c8f                      addq.l     #6,a7
 [00014924] 3f2e fffe                 move.w     -2(a6),-(a7)
@@ -5297,22 +5301,22 @@ Symfile.NextIf(b: BYTE);
 [0001492c] 4eb9 0001 45da            jsr        $000145DA
 [00014932] 588f                      addq.l     #4,a7
 [00014934] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014938] 4879 0001 5a26            pea.l      $00015A26
+[00014938] 4879 0001 5a26            pea.l      $00015A26 '*)'
 [0001493e] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014944] 5c8f                      addq.l     #6,a7
 [00014946] 0c6e 0004 fffe            cmpi.w     #$0004,-2(a6)
 [0001494c] 6738                      beq.s      $00014986
 [0001494e] 3f3c 0023                 move.w     #$0023,-(a7)
-[00014952] 4879 0001 5a2a            pea.l      $00015A2A
+[00014952] 4879 0001 5a2a            pea.l      $00015A2A 'error: SymFileSyntaxVersion must be '
 [00014958] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001495e] 5c8f                      addq.l     #6,a7
 [00014960] 3f3c 0004                 move.w     #$0004,-(a7)
 [00014964] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014968] 4eb9 0001 45a8            jsr        $000145A8
+[00014968] 4eb9 0001 45a8            jsr        InOut.WriteCard
 [0001496e] 588f                      addq.l     #4,a7
 [00014970] 4eb9 0001 451a            jsr        InOut.WriteLn
 [00014976] 4267                      clr.w      -(a7)
-[00014978] 4879 0001 5a50            pea.l      $00015A50
+[00014978] 4879 0001 5a50            pea.l      $00015A50 ''
 [0001497e] 4eb9 0001 44ca            jsr        $000144CA
 [00014984] 5c8f                      addq.l     #6,a7
 [00014986] 4e5e                      unlk       a6
@@ -5328,7 +5332,7 @@ Symfile.NextIf(b: BYTE);
 [000149aa] 5c8f                      addq.l     #6,a7
 [000149ac] 4eb9 0001 451a            jsr        InOut.WriteLn
 [000149b2] 3f3c 0011                 move.w     #$0011,-(a7)
-[000149b6] 4879 0001 5a52            pea.l      $00015A52
+[000149b6] 4879 0001 5a52            pea.l      $00015A52 'DEFINITION MODULE '
 [000149bc] 4eb9 0001 456a            jsr        InOut.WriteString
 [000149c2] 5c8f                      addq.l     #6,a7
 [000149c4] 3f3c 0017                 move.w     #$0017,-(a7)
@@ -5364,7 +5368,7 @@ Symfile.NextIf(b: BYTE);
 [00014a36] 4eb9 0001 463e            jsr        $0001463E
 [00014a3c] 548f                      addq.l     #2,a7
 [00014a3e] 3f3c 0006                 move.w     #$0006,-(a7)
-[00014a42] 4879 0001 5a66            pea.l      $00015A66
+[00014a42] 4879 0001 5a66            pea.l      $00015A66 'MODULE '
 [00014a48] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014a4e] 5c8f                      addq.l     #6,a7
 [00014a50] 3a2e 000c                 move.w     12(a6),d5
@@ -5420,7 +5424,7 @@ Symfile.NextIf(b: BYTE);
 [00014afe] 4eb9 0001 4ab2            jsr        $00014AB2
 [00014b04] 4eb9 0001 4ad6            jsr        $00014AD6
 [00014b0a] 3f3c 001b                 move.w     #$001B,-(a7)
-[00014b0e] 4879 0001 5a6e            pea.l      $00015A6E
+[00014b0e] 4879 0001 5a6e            pea.l      $00015A6E '(*Real-not yet implemented*)'
 [00014b14] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014b1a] 5c8f                      addq.l     #6,a7
 [00014b1c] 4eb9 0001 4664            jsr        Symfile.ReadByte
@@ -5459,15 +5463,15 @@ case 7:
 [00014b8c] 558f                      subq.l     #2,a7
 [00014b8e] 4eb9 0001 47ca            jsr        $000147CA
 [00014b94] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014b98] 4eb9 0001 45a8            jsr        $000145A8
+[00014b98] 4eb9 0001 45a8            jsr        InOut.WriteCard
 [00014b9e] 588f                      addq.l     #4,a7
 [00014ba0] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014ba4] 4879 0001 5a8c            pea.l      $00015A8C
+[00014ba4] 4879 0001 5a8c            pea.l      $00015A8C '(*'
 [00014baa] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014bb0] 5c8f                      addq.l     #6,a7
 [00014bb2] 4eb9 0001 4a80            jsr        $00014A80
 [00014bb8] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014bbc] 4879 0001 5a90            pea.l      $00015A90
+[00014bbc] 4879 0001 5a90            pea.l      $00015A90 '*)'
 [00014bc2] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014bc8] 5c8f                      addq.l     #6,a7
 [00014bca] 4efa 0078                 jmp        $00014C44(pc)
@@ -5478,12 +5482,12 @@ case 6:
 [00014bda] 4eb9 0001 460c            jsr        $0001460C
 [00014be0] 5c8f                      addq.l     #6,a7
 [00014be2] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014be6] 4879 0001 5a94            pea.l      $00015A94
+[00014be6] 4879 0001 5a94            pea.l      $00015A94 '(*'
 [00014bec] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014bf2] 5c8f                      addq.l     #6,a7
 [00014bf4] 4eb9 0001 4a80            jsr        $00014A80
 [00014bfa] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014bfe] 4879 0001 5a98            pea.l      $00015A98
+[00014bfe] 4879 0001 5a98            pea.l      $00015A98 '*)'
 [00014c04] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014c0a] 5c8f                      addq.l     #6,a7
 [00014c0c] 4efa 0036                 jmp        $00014C44(pc)
@@ -5503,7 +5507,7 @@ casex6:
            00a4
            009a
 [00014c32] 3f3c 0024                 move.w     #$0024,-(a7)
-[00014c36] 4879 0001 5a9c            pea.l      $00015A9C
+[00014c36] 4879 0001 5a9c            pea.l      $00015A9C ' illegal symbol in CONST-Declaration '
 [00014c3c] 4eb9 0001 44ca            jsr        $000144CA
 [00014c42] 5c8f                      addq.l     #6,a7
 [00014c44] 4e5e                      unlk       a6
@@ -5521,16 +5525,16 @@ casex6:
 [00014c74] 6662                      bne.s      $00014CD8
 [00014c76] 4eb9 0001 4822            jsr        $00014822
 [00014c7c] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014c80] 4879 0001 5ac2            pea.l      $00015AC2
+[00014c80] 4879 0001 5ac2            pea.l      $00015AC2 '(*'
 [00014c86] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014c8c] 5c8f                      addq.l     #6,a7
 [00014c8e] 558f                      subq.l     #2,a7
 [00014c90] 4eb9 0001 47ca            jsr        $000147CA
 [00014c96] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014c9a] 4eb9 0001 45a8            jsr        $000145A8
+[00014c9a] 4eb9 0001 45a8            jsr        InOut.WriteCard
 [00014ca0] 588f                      addq.l     #4,a7
 [00014ca2] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014ca6] 4879 0001 5ac6            pea.l      $00015AC6
+[00014ca6] 4879 0001 5ac6            pea.l      $00015AC6 '*)'
 [00014cac] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014cb2] 5c8f                      addq.l     #6,a7
 [00014cb4] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
@@ -5563,7 +5567,7 @@ casex6:
 [00014d1a] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014d20] 548f                      addq.l     #2,a7
 [00014d22] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014d26] 4879 0001 5aca            pea.l      $00015ACA
+[00014d26] 4879 0001 5aca            pea.l      $00015ACA '..'
 [00014d2c] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014d32] 5c8f                      addq.l     #6,a7
 [00014d34] 4eb9 0001 4b6c            jsr        $00014B6C
@@ -5609,7 +5613,7 @@ casex7_tab:
 [00014da2] 002a
            0020
 [00014da6] 3f3c                      move.w     #$001e,-(a7)
-[00014da8] 4879 0001 5ace            pea.l      $00015ACE
+[00014da8] 4879 0001 5ace            pea.l      $00015ACE ' illegal symbol in Simple Type '
 [00014db0] 4eb9 0001 44ca            jsr        $000144CA
 [00014db6] 5c8f                      addq.l     #6,a7
 [00014db8] 4e5e                      unlk       a6
@@ -5620,7 +5624,7 @@ casex7_tab:
 [00014dc4] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014dca] 548f                      addq.l     #2,a7
 [00014dcc] 3f3c 0005                 move.w     #$0005,-(a7)
-[00014dd0] 4879 0001 5aee            pea.l      $00015AEE
+[00014dd0] 4879 0001 5aee            pea.l      $00015AEE 'ARRAY '
 [00014dd6] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014ddc] 5c8f                      addq.l     #6,a7
 [00014dde] 4eb9 0001 4d56            jsr        $00014D56
@@ -5628,7 +5632,7 @@ casex7_tab:
 [00014de8] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014dee] 548f                      addq.l     #2,a7
 [00014df0] 3f3c 0003                 move.w     #$0003,-(a7)
-[00014df4] 4879 0001 5af6            pea.l      $00015AF6
+[00014df4] 4879 0001 5af6            pea.l      $00015AF6 ' OF '
 [00014dfa] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014e00] 5c8f                      addq.l     #6,a7
 [00014e02] 4eb9 0001 5256            jsr        $00015256
@@ -5637,7 +5641,7 @@ casex7_tab:
 
 [00014e0c] 4e56 0000                 link       a6,#0
 [00014e10] 3f3c 0007                 move.w     #$0007,-(a7)
-[00014e14] 4879 0001 5afc            pea.l      $00015AFC
+[00014e14] 4879 0001 5afc            pea.l      $00015AFC '(*size: '
 [00014e1a] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014e20] 5c8f                      addq.l     #6,a7
 [00014e22] 598f                      subq.l     #4,a7
@@ -5646,7 +5650,7 @@ casex7_tab:
 [00014e2e] 4eb9 0001 460c            jsr        $0001460C
 [00014e34] 5c8f                      addq.l     #6,a7
 [00014e36] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014e3a] 4879 0001 5b06            pea.l      $00015B06
+[00014e3a] 4879 0001 5b06            pea.l      $00015B06 '*)'
 [00014e40] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014e46] 5c8f                      addq.l     #6,a7
 [00014e48] 4e5e                      unlk       a6
@@ -5654,7 +5658,7 @@ casex7_tab:
 
 [00014e4c] 4e56 0000                 link       a6,#0
 [00014e50] 3f3c 0009                 move.w     #$0009,-(a7)
-[00014e54] 4879 0001 5b0a            pea.l      $00015B0A
+[00014e54] 4879 0001 5b0a            pea.l      $00015B0A '(*offset: '
 [00014e5a] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014e60] 5c8f                      addq.l     #6,a7
 [00014e62] 598f                      subq.l     #4,a7
@@ -5663,7 +5667,7 @@ casex7_tab:
 [00014e6e] 4eb9 0001 460c            jsr        $0001460C
 [00014e74] 5c8f                      addq.l     #6,a7
 [00014e76] 3f3c 0002                 move.w     #$0002,-(a7)
-[00014e7a] 4879 0001 5b16            pea.l      $00015B16
+[00014e7a] 4879 0001 5b16            pea.l      $00015B16 '*) '
 [00014e80] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014e86] 5c8f                      addq.l     #6,a7
 [00014e88] 4e5e                      unlk       a6
@@ -5679,7 +5683,7 @@ casex7_tab:
 [00014eae] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014eb4] 548f                      addq.l     #2,a7
 [00014eb6] 3f3c 0002                 move.w     #$0002,-(a7)
-[00014eba] 4879 0001 5b1a            pea.l      $00015B1A
+[00014eba] 4879 0001 5b1a            pea.l      $00015B1A ' : '
 [00014ec0] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014ec6] 5c8f                      addq.l     #6,a7
 [00014ec8] 4eb9 0001 5256            jsr        $00015256
@@ -5693,7 +5697,7 @@ casex7_tab:
 [00014ee2] 558f                      subq.l     #2,a7
 [00014ee4] 4eb9 0001 47ca            jsr        $000147CA
 [00014eea] 3f3c 0002                 move.w     #$0002,-(a7)
-[00014eee] 4eb9 0001 45a8            jsr        $000145A8
+[00014eee] 4eb9 0001 45a8            jsr        InOut.WriteCard
 [00014ef4] 588f                      addq.l     #4,a7
 [00014ef6] 4e5e                      unlk       a6
 [00014ef8] 4e75                      rts
@@ -5706,19 +5710,19 @@ casex7_tab:
 [00014f10] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014f16] 548f                      addq.l     #2,a7
 [00014f18] 3f3c 0003                 move.w     #$0003,-(a7)
-[00014f1c] 4879 0001 5b1e            pea.l      $00015B1E
+[00014f1c] 4879 0001 5b1e            pea.l      $00015B1E 'CASE'
 [00014f22] 4eb9 0001 4770            jsr        $00014770
 [00014f28] 5c8f                      addq.l     #6,a7
 [00014f2a] 1f3c 0016                 move.b     #$16,-(a7)
 [00014f2e] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014f34] 548f                      addq.l     #2,a7
 [00014f36] 3f3c 0002                 move.w     #$0002,-(a7)
-[00014f3a] 4879 0001 5b24            pea.l      $00015B24
+[00014f3a] 4879 0001 5b24            pea.l      $00015B24 ' : '
 [00014f40] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014f46] 5c8f                      addq.l     #6,a7
 [00014f48] 4eb9 0001 4a80            jsr        $00014A80
 [00014f4e] 3f3c 0003                 move.w     #$0003,-(a7)
-[00014f52] 4879 0001 5b28            pea.l      $00015B28
+[00014f52] 4879 0001 5b28            pea.l      $00015B28 ' OF '
 [00014f58] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014f5e] 5c8f                      addq.l     #6,a7
 [00014f60] 3f39 0001 6e64            move.w     $00016E64,-(a7)
@@ -5735,7 +5739,7 @@ casex7_tab:
 [00014f94] 0c39 0007 0001 6e48       cmpi.b     #$07,Symfile.lastByte
 [00014f9c] 6612                      bne.s      $00014FB0
 [00014f9e] 3f3c 0001                 move.w     #$0001,-(a7)
-[00014fa2] 4879 0001 5b2e            pea.l      $00015B2E
+[00014fa2] 4879 0001 5b2e            pea.l      $00015B2E ', '
 [00014fa8] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014fae] 5c8f                      addq.l     #6,a7
 [00014fb0] 60d2                      bra.s      $00014F84
@@ -5743,7 +5747,7 @@ casex7_tab:
 [00014fb6] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014fbc] 548f                      addq.l     #2,a7
 [00014fbe] 3f3c 0002                 move.w     #$0002,-(a7)
-[00014fc2] 4879 0001 5b32            pea.l      $00015B32
+[00014fc2] 4879 0001 5b32            pea.l      $00015B32 ' : '
 [00014fc8] 4eb9 0001 456a            jsr        InOut.WriteString
 [00014fce] 5c8f                      addq.l     #6,a7
 [00014fd0] 0c39 001c 0001 6e48       cmpi.b     #$1C,Symfile.lastByte
@@ -5758,7 +5762,7 @@ casex7_tab:
 [00014ffa] 4eb9 0001 463e            jsr        $0001463E
 [00015000] 548f                      addq.l     #2,a7
 [00015002] 3f3c 0001                 move.w     #$0001,-(a7)
-[00015006] 4879 0001 5b36            pea.l      $00015B36
+[00015006] 4879 0001 5b36            pea.l      $00015B36 '| '
 [0001500c] 4eb9 0001 456a            jsr        InOut.WriteString
 [00015012] 5c8f                      addq.l     #6,a7
 [00015014] 6000 ff58                 bra        $00014F6E
@@ -5771,7 +5775,7 @@ casex7_tab:
 [00015034] 4eb9 0001 463e            jsr        $0001463E
 [0001503a] 548f                      addq.l     #2,a7
 [0001503c] 3f3c 0004                 move.w     #$0004,-(a7)
-[00015040] 4879 0001 5b3a            pea.l      $00015B3A
+[00015040] 4879 0001 5b3a            pea.l      $00015B3A 'ELSE '
 [00015046] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001504c] 5c8f                      addq.l     #6,a7
 [0001504e] 0c39 001c 0001 6e48       cmpi.b     #$1C,Symfile.lastByte
@@ -5782,7 +5786,7 @@ casex7_tab:
 [00015068] 4eb9 0001 4756            jsr        Symfile.NextIf
 [0001506e] 548f                      addq.l     #2,a7
 [00015070] 3f3c 0003                 move.w     #$0003,-(a7)
-[00015074] 4879 0001 5b40            pea.l      $00015B40
+[00015074] 4879 0001 5b40            pea.l      $00015B40 'END;'
 [0001507a] 4eb9 0001 479a            jsr        $0001479A
 [00015080] 5c8f                      addq.l     #6,a7
 [00015082] 4e5e                      unlk       a6
@@ -5793,7 +5797,7 @@ casex7_tab:
 [0001508e] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00015094] 548f                      addq.l     #2,a7
 [00015096] 3f3c 0005                 move.w     #$0005,-(a7)
-[0001509a] 4879 0001 5b46            pea.l      $00015B46
+[0001509a] 4879 0001 5b46            pea.l      $00015B46 'RECORD'
 [000150a0] 4eb9 0001 4770            jsr        $00014770
 [000150a6] 5c8f                      addq.l     #6,a7
 [000150a8] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
@@ -5807,7 +5811,7 @@ casex7_tab:
 [000150ce] 4eb9 0001 4756            jsr        Symfile.NextIf
 [000150d4] 548f                      addq.l     #2,a7
 [000150d6] 3f3c 0003                 move.w     #$0003,-(a7)
-[000150da] 4879 0001 5b4e            pea.l      $00015B4E
+[000150da] 4879 0001 5b4e            pea.l      $00015B4E 'END;'
 [000150e0] 4eb9 0001 479a            jsr        $0001479A
 [000150e6] 5c8f                      addq.l     #6,a7
 [000150e8] 4eb9 0001 4e0c            jsr        $00014E0C
@@ -5819,7 +5823,7 @@ casex7_tab:
 [000150fa] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00015100] 548f                      addq.l     #2,a7
 [00015102] 3f3c 0006                 move.w     #$0006,-(a7)
-[00015106] 4879 0001 5b54            pea.l      $00015B54
+[00015106] 4879 0001 5b54            pea.l      $00015B54 'SET OF '
 [0001510c] 4eb9 0001 456a            jsr        InOut.WriteString
 [00015112] 5c8f                      addq.l     #6,a7
 [00015114] 4eb9 0001 4d56            jsr        $00014D56
@@ -5831,7 +5835,7 @@ casex7_tab:
 [00015126] 4eb9 0001 4756            jsr        Symfile.NextIf
 [0001512c] 548f                      addq.l     #2,a7
 [0001512e] 3f3c 000a                 move.w     #$000A,-(a7)
-[00015132] 4879 0001 5b5c            pea.l      $00015B5C
+[00015132] 4879 0001 5b5c            pea.l      $00015B5C 'POINTER TO '
 [00015138] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001513e] 5c8f                      addq.l     #6,a7
 [00015140] 4eb9 0001 5256            jsr        $00015256
@@ -5843,7 +5847,7 @@ casex7_tab:
 [00015152] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00015158] 548f                      addq.l     #2,a7
 [0001515a] 3f3c 0009                 move.w     #$0009,-(a7)
-[0001515e] 4879 0001 5b68            pea.l      $00015B68
+[0001515e] 4879 0001 5b68            pea.l      $00015B68 'PROCEDURE '
 [00015164] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001516a] 5c8f                      addq.l     #6,a7
 [0001516c] 1f3c 0018                 move.b     #$18,-(a7)
@@ -5863,14 +5867,14 @@ casex7_tab:
 [000151a8] 0c39 0011 0001 6e48       cmpi.b     #$11,Symfile.lastByte
 [000151b0] 6618                      bne.s      $000151CA
 [000151b2] 3f3c 0003                 move.w     #$0003,-(a7)
-[000151b6] 4879 0001 5b74            pea.l      $00015B74
+[000151b6] 4879 0001 5b74            pea.l      $00015B74 'VAR '
 [000151bc] 4eb9 0001 456a            jsr        InOut.WriteString
 [000151c2] 5c8f                      addq.l     #6,a7
 [000151c4] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [000151ca] 0c39 000c 0001 6e48       cmpi.b     #$0C,Symfile.lastByte
 [000151d2] 6618                      bne.s      $000151EC
 [000151d4] 3f3c 0005                 move.w     #$0005,-(a7)
-[000151d8] 4879 0001 5b7a            pea.l      $00015B7A
+[000151d8] 4879 0001 5b7a            pea.l      $00015B7A 'ARRAY '
 [000151de] 4eb9 0001 456a            jsr        InOut.WriteString
 [000151e4] 5c8f                      addq.l     #6,a7
 [000151e6] 4eb9 0001 4664            jsr        Symfile.ReadByte
@@ -5878,7 +5882,7 @@ casex7_tab:
 [000151f2] 0c39 0019 0001 6e48       cmpi.b     #$19,Symfile.lastByte
 [000151fa] 6712                      beq.s      $0001520E
 [000151fc] 3f3c 0001                 move.w     #$0001,-(a7)
-[00015200] 4879 0001 5b82            pea.l      $00015B82
+[00015200] 4879 0001 5b82            pea.l      $00015B82 '; '
 [00015206] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001520c] 5c8f                      addq.l     #6,a7
 [0001520e] 6000 ff74                 bra        $00015184
@@ -5892,7 +5896,7 @@ casex7_tab:
 [00015232] 661e                      bne.s      $00015252
 [00015234] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [0001523a] 3f3c 0002                 move.w     #$0002,-(a7)
-[0001523e] 4879 0001 5b86            pea.l      $00015B86
+[0001523e] 4879 0001 5b86            pea.l      $00015B86 ' : '
 [00015244] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001524a] 5c8f                      addq.l     #6,a7
 [0001524c] 4eb9 0001 4a80            jsr        $00014A80
@@ -5916,7 +5920,7 @@ case 26:
 case 16:
 [00015280] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [00015286] 3f3c 0010                 move.w     #$0010,-(a7)
-[0001528a] 4879 0001 5b8a            pea.l      $00015B8A
+[0001528a] 4879 0001 5b8a            pea.l      $00015B8A ' (*hidden type*) '
 [00015290] 4eb9 0001 456a            jsr        InOut.WriteString
 [00015296] 5c8f                      addq.l     #6,a7
 [00015298] 4efa 0068                 jmp        $00015302(pc)
@@ -5960,7 +5964,7 @@ casex8_tab:
 [000152ec] 0064
            000c
 [000152f0] 3f3c 0023                 move.w     #$0023,-(a7)
-[000152f4] 4879 0001 5b9c            pea.l      $00015B9C
+[000152f4] 4879 0001 5b9c            pea.l      $00015B9C ' illegal symbol in TYPE-Declaration '
 [000152fa] 4eb9 0001 44ca            jsr        $000144CA
 [00015300] 5c8f                      addq.l     #6,a7
 [00015302] 4e5e                      unlk       a6
@@ -5972,7 +5976,7 @@ casex8_tab:
 [00015316] 548f                      addq.l     #2,a7
 [00015318] 4eb9 0001 4822            jsr        $00014822
 [0001531e] 3f3c 0002                 move.w     #$0002,-(a7)
-[00015322] 4879 0001 5bc2            pea.l      $00015BC2
+[00015322] 4879 0001 5bc2            pea.l      $00015BC2 ' = '
 [00015328] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001532e] 5c8f                      addq.l     #6,a7
 [00015330] 4eb9 0001 4b6c            jsr        $00014B6C
@@ -5988,7 +5992,7 @@ casex8_tab:
 [00015356] 548f                      addq.l     #2,a7
 [00015358] 4eb9 0001 4822            jsr        $00014822
 [0001535e] 3f3c 0002                 move.w     #$0002,-(a7)
-[00015362] 4879 0001 5bc6            pea.l      $00015BC6
+[00015362] 4879 0001 5bc6            pea.l      $00015BC6 ' = '
 [00015368] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001536e] 5c8f                      addq.l     #6,a7
 [00015370] 4eb9 0001 5256            jsr        $00015256
@@ -6000,16 +6004,16 @@ casex8_tab:
 
 [00015386] 4e56 0000                 link       a6,#0
 [0001538a] 3f3c 000a                 move.w     #$000A,-(a7)
-[0001538e] 4879 0001 5bca            pea.l      $00015BCA
+[0001538e] 4879 0001 5bca            pea.l      $00015BCA '(* ProcNum:'
 [00015394] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001539a] 5c8f                      addq.l     #6,a7
 [0001539c] 558f                      subq.l     #2,a7
 [0001539e] 4eb9 0001 47ca            jsr        $000147CA
 [000153a4] 3f3c 0001                 move.w     #$0001,-(a7)
-[000153a8] 4eb9 0001 45a8            jsr        $000145A8
+[000153a8] 4eb9 0001 45a8            jsr        InOut.WriteCard
 [000153ae] 588f                      addq.l     #4,a7
 [000153b0] 3f3c 0002                 move.w     #$0002,-(a7)
-[000153b4] 4879 0001 5bd6            pea.l      $00015BD6
+[000153b4] 4879 0001 5bd6            pea.l      $00015BD6 ' *)'
 [000153ba] 4eb9 0001 456a            jsr        InOut.WriteString
 [000153c0] 5c8f                      addq.l     #6,a7
 [000153c2] 4e5e                      unlk       a6
@@ -6036,14 +6040,14 @@ casex8_tab:
 [00015412] 0c39 0011 0001 6e48       cmpi.b     #$11,Symfile.lastByte
 [0001541a] 6618                      bne.s      $00015434
 [0001541c] 3f3c 0003                 move.w     #$0003,-(a7)
-[00015420] 4879 0001 5bda            pea.l      $00015BDA
+[00015420] 4879 0001 5bda            pea.l      $00015BDA 'VAR '
 [00015426] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001542c] 5c8f                      addq.l     #6,a7
 [0001542e] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [00015434] 0c39 000c 0001 6e48       cmpi.b     #$0C,Symfile.lastByte
 [0001543c] 6618                      bne.s      $00015456
 [0001543e] 3f3c 0005                 move.w     #$0005,-(a7)
-[00015442] 4879 0001 5be0            pea.l      $00015BE0
+[00015442] 4879 0001 5be0            pea.l      $00015BE0 'ARRAY '
 [00015448] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001544e] 5c8f                      addq.l     #6,a7
 [00015450] 4eb9 0001 4664            jsr        Symfile.ReadByte
@@ -6051,7 +6055,7 @@ casex8_tab:
 [0001545c] 0c39 0019 0001 6e48       cmpi.b     #$19,Symfile.lastByte
 [00015464] 6712                      beq.s      $00015478
 [00015466] 3f3c 0001                 move.w     #$0001,-(a7)
-[0001546a] 4879 0001 5be8            pea.l      $00015BE8
+[0001546a] 4879 0001 5be8            pea.l      $00015BE8 '; '
 [00015470] 4eb9 0001 456a            jsr        InOut.WriteString
 [00015476] 5c8f                      addq.l     #6,a7
 [00015478] 6000 ff74                 bra        $000153EE
@@ -6065,7 +6069,7 @@ casex8_tab:
 [0001549c] 661e                      bne.s      $000154BC
 [0001549e] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [000154a4] 3f3c 0002                 move.w     #$0002,-(a7)
-[000154a8] 4879 0001 5bec            pea.l      $00015BEC
+[000154a8] 4879 0001 5bec            pea.l      $00015BEC ' : '
 [000154ae] 4eb9 0001 456a            jsr        InOut.WriteString
 [000154b4] 5c8f                      addq.l     #6,a7
 [000154b6] 4eb9 0001 4a80            jsr        $00014A80
@@ -6084,13 +6088,13 @@ casex8_tab:
 
 [000154e6] 4e56 0000                 link       a6,#0
 [000154ea] 3f3c 0003                 move.w     #$0003,-(a7)
-[000154ee] 4879 0001 5bf0            pea.l      $00015BF0
+[000154ee] 4879 0001 5bf0            pea.l      $00015BF0 ' (* '
 [000154f4] 4eb9 0001 456a            jsr        InOut.WriteString
 [000154fa] 5c8f                      addq.l     #6,a7
 [000154fc] 0c39 001a 0001 6e48       cmpi.b     #$1A,Symfile.lastByte
 [00015504] 6642                      bne.s      $00015548
 [00015506] 3f3c 0008                 move.w     #$0008,-(a7)
-[0001550a] 4879 0001 5bf6            pea.l      $00015BF6
+[0001550a] 4879 0001 5bf6            pea.l      $00015BF6 'absaddr: '
 [00015510] 4eb9 0001 456a            jsr        InOut.WriteString
 [00015516] 5c8f                      addq.l     #6,a7
 [00015518] 1f3c 001a                 move.b     #$1A,-(a7)
@@ -6106,7 +6110,7 @@ casex8_tab:
 [00015542] 548f                      addq.l     #2,a7
 [00015544] 4efa 0028                 jmp        $0001556E(pc)
 [00015548] 3f3c 0008                 move.w     #$0008,-(a7)
-[0001554c] 4879 0001 5c00            pea.l      $00015C00
+[0001554c] 4879 0001 5c00            pea.l      $00015C00 'reladdr: '
 [00015552] 4eb9 0001 456a            jsr        InOut.WriteString
 [00015558] 5c8f                      addq.l     #6,a7
 [0001555a] 598f                      subq.l     #4,a7
@@ -6115,7 +6119,7 @@ casex8_tab:
 [00015566] 4eb9 0001 460c            jsr        $0001460C
 [0001556c] 5c8f                      addq.l     #6,a7
 [0001556e] 3f3c 0002                 move.w     #$0002,-(a7)
-[00015572] 4879 0001 5c0a            pea.l      $00015C0A
+[00015572] 4879 0001 5c0a            pea.l      $00015C0A '*) '
 [00015578] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001557e] 5c8f                      addq.l     #6,a7
 [00015580] 4e5e                      unlk       a6
@@ -6131,7 +6135,7 @@ casex8_tab:
 [000155a6] 4eb9 0001 4756            jsr        Symfile.NextIf
 [000155ac] 548f                      addq.l     #2,a7
 [000155ae] 3f3c 0002                 move.w     #$0002,-(a7)
-[000155b2] 4879 0001 5c0e            pea.l      $00015C0E
+[000155b2] 4879 0001 5c0e            pea.l      $00015C0E ' : '
 [000155b8] 4eb9 0001 456a            jsr        InOut.WriteString
 [000155be] 5c8f                      addq.l     #6,a7
 [000155c0] 4eb9 0001 5256            jsr        $00015256
@@ -6156,7 +6160,7 @@ casex9:
 [00015608] 0000 00bc                 dc.l casex9_tab-casex9
 case 5:
 [0001560c] 3f3c 0004                 move.w     #$0004,-(a7)
-[00015610] 4879 0001 5c12            pea.l      $00015C12
+[00015610] 4879 0001 5c12            pea.l      $00015C12 'CONST'
 [00015616] 4eb9 0001 4770            jsr        $00014770
 [0001561c] 5c8f                      addq.l     #6,a7
 [0001561e] 4eb9 0001 4664            jsr        Symfile.ReadByte
@@ -6167,7 +6171,7 @@ case 5:
 [00015636] 4efa 00b2                 jmp        $000156EA(pc)
 case 11:
 [0001563a] 3f3c 0003                 move.w     #$0003,-(a7)
-[0001563e] 4879 0001 5c18            pea.l      $00015C18
+[0001563e] 4879 0001 5c18            pea.l      $00015C18 'TYPE'
 [00015644] 4eb9 0001 4770            jsr        $00014770
 [0001564a] 5c8f                      addq.l     #6,a7
 [0001564c] 4eb9 0001 4664            jsr        Symfile.ReadByte
@@ -6178,7 +6182,7 @@ case 11:
 [00015664] 4efa 0084                 jmp        $000156EA(pc)
 case 18:
 [00015668] 3f3c 0009                 move.w     #$0009,-(a7)
-[0001566c] 4879 0001 5c1e            pea.l      $00015C1E
+[0001566c] 4879 0001 5c1e            pea.l      $00015C1E 'PROCEDURE '
 [00015672] 4eb9 0001 4770            jsr        $00014770
 [00015678] 5c8f                      addq.l     #6,a7
 [0001567a] 4eb9 0001 4664            jsr        Symfile.ReadByte
@@ -6186,7 +6190,7 @@ case 18:
 [00015686] 4efa 0062                 jmp        $000156EA(pc)
 case 17:
 [0001568a] 3f3c 0002                 move.w     #$0002,-(a7)
-[0001568e] 4879 0001 5c2a            pea.l      $00015C2A
+[0001568e] 4879 0001 5c2a            pea.l      $00015C2A 'VAR '
 [00015694] 4eb9 0001 4770            jsr        $00014770
 [0001569a] 5c8f                      addq.l     #6,a7
 [0001569c] 4eb9 0001 4664            jsr        Symfile.ReadByte
@@ -6223,11 +6227,11 @@ casex9_tab:
            008a
 [000156d6] 0068
 [000156d8] 3f3c 0016                 move.w     #$0016,-(a7)
-[000156dc] 4879 0001 5c2e            pea.l      $00015C2E
+[000156dc] 4879 0001 5c2e            pea.l      $00015C2E ' illegal SymFileSymbol '
 [000156e2] 4eb9 0001 44ca            jsr        $000144CA
 [000156e8] 5c8f                      addq.l     #6,a7
 [000156ea] 4267                      clr.w      -(a7)
-[000156ec] 4879 0001 5c46            pea.l      $00015C46
+[000156ec] 4879 0001 5c46            pea.l      $00015C46 ''
 [000156f2] 4eb9 0001 479a            jsr        $0001479A
 [000156f8] 5c8f                      addq.l     #6,a7
 [000156fa] 4e5e                      unlk       a6
@@ -6250,7 +6254,7 @@ casex9_tab:
 [00015740] 4eb9 0001 463e            jsr        $0001463E
 [00015746] 548f                      addq.l     #2,a7
 [00015748] 3f3c 0006                 move.w     #$0006,-(a7)
-[0001574c] 4879 0001 5c48            pea.l      $00015C48
+[0001574c] 4879 0001 5c48            pea.l      $00015C48 'IMPORT '
 [00015752] 4eb9 0001 456a            jsr        InOut.WriteString
 [00015758] 5c8f                      addq.l     #6,a7
 [0001575a] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
@@ -6259,7 +6263,7 @@ casex9_tab:
 [0001576a] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [00015772] 6616                      bne.s      $0001578A
 [00015774] 3f3c 0001                 move.w     #$0001,-(a7)
-[00015778] 4879 0001 5c50            pea.l      $00015C50
+[00015778] 4879 0001 5c50            pea.l      $00015C50 ', '
 [0001577e] 4eb9 0001 456a            jsr        InOut.WriteString
 [00015784] 5c8f                      addq.l     #6,a7
 [00015786] 4efa 0014                 jmp        $0001579C(pc)
@@ -6279,7 +6283,7 @@ casex9_tab:
 [000157c0] 4eb9 0001 463e            jsr        $0001463E
 [000157c6] 548f                      addq.l     #2,a7
 [000157c8] 3f3c 0010                 move.w     #$0010,-(a7)
-[000157cc] 4879 0001 5c54            pea.l      $00015C54
+[000157cc] 4879 0001 5c54            pea.l      $00015C54 'EXPORT QUALIFIED '
 [000157d2] 4eb9 0001 456a            jsr        InOut.WriteString
 [000157d8] 5c8f                      addq.l     #6,a7
 [000157da] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
@@ -6288,7 +6292,7 @@ casex9_tab:
 [000157ea] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [000157f2] 6616                      bne.s      $0001580A
 [000157f4] 3f3c 0001                 move.w     #$0001,-(a7)
-[000157f8] 4879 0001 5c66            pea.l      $00015C66
+[000157f8] 4879 0001 5c66            pea.l      $00015C66 ', '
 [000157fe] 4eb9 0001 456a            jsr        InOut.WriteString
 [00015804] 5c8f                      addq.l     #6,a7
 [00015806] 4efa 0014                 jmp        $0001581C(pc)
@@ -6319,7 +6323,7 @@ casex9_tab:
 [00015874] 4eb9 0001 463e            jsr        $0001463E
 [0001587a] 548f                      addq.l     #2,a7
 [0001587c] 3f3c 0003                 move.w     #$0003,-(a7)
-[00015880] 4879 0001 5c6a            pea.l      $00015C6A
+[00015880] 4879 0001 5c6a            pea.l      $00015C6A 'END '
 [00015886] 4eb9 0001 456a            jsr        InOut.WriteString
 [0001588c] 5c8f                      addq.l     #6,a7
 [0001588e] 3f3c 0050                 move.w     #$0050,-(a7)
@@ -6344,7 +6348,7 @@ casex9_tab:
 [000158d4] 4eb9 0001 451a            jsr        InOut.WriteLn
 [000158da] 4eb9 0001 451a            jsr        InOut.WriteLn
 [000158e0] 3f3c 0003                 move.w     #$0003,-(a7)
-[000158e4] 4879 0001 5c70            pea.l      $00015C70
+[000158e4] 4879 0001 5c70            pea.l      $00015C70 'END '
 [000158ea] 4eb9 0001 456a            jsr        InOut.WriteString
 [000158f0] 5c8f                      addq.l     #6,a7
 [000158f2] 3f3c 0017                 move.w     #$0017,-(a7)
@@ -6364,7 +6368,7 @@ DecSym.init:
 
 [00015926] 4e56 0000                 link       a6,#0
 [0001592a] 3f3c 0023                 move.w     #$0023,-(a7)
-[0001592e] 4879 0001 5c76            pea.l      $00015C76
+[0001592e] 4879 0001 5c76            pea.l      $00015C76 'Symbol file decoder   Version  3.00a'
 [00015934] 4eb9 0001 130e            jsr        $0001130E
 [0001593a] 5c8f                      addq.l     #6,a7
 [0001593c] 4eb9 0001 13d8            jsr        $000113D8
@@ -6379,7 +6383,7 @@ DecSym.init:
 [0001596e] 4eb9 0001 449e            jsr        $0001449E
 [00015974] 4eb9 0001 13d8            jsr        $000113D8
 [0001597a] 3f3c 000c                 move.w     #$000C,-(a7)
-[0001597e] 4879 0001 5c9c            pea.l      $00015C9C
+[0001597e] 4879 0001 5c9c            pea.l      $00015C9C 'End of decode'
 [00015984] 4eb9 0001 130e            jsr        $0001130E
 [0001598a] 5c8f                      addq.l     #6,a7
 [0001598c] 4eb9 0001 13d8            jsr        $000113D8
@@ -6392,280 +6396,88 @@ DecSym.init:
 
 [000159a2] 0000                      dc.w       $0000
 [000159a4] 0000
-[000159a6] .ascii "Symbol file"
-[000159b2] 0000                 bcs.w      $000159B2
-[000159b4] .ascii "List"
-[000159ba] .ascii "Decode file"
-[000159c6] .ascii " Error in SymbolFile"
-[000159c8] 7272                      moveq.l    #114,d1
-[000159ca] 6f72                      ble.s      $00015A3E
-[000159cc] 2069 6e20                 movea.l    28192(a1),a0
-[000159d0] 5379 6d62 6f6c            subq.w     #1,$6D626F6C
-[000159d6] 4669 6c65                 not.w      27749(a1)
-[000159da] 0000
-[000159dc] .ascii "incorrect symbol on symbol file"
+[000159a6] .asciiz "Symbol file"
+[000159b2] .asciiz ''
+[000159b4] .asciiz "List"
+[000159ba] .asciiz "Decode file"
+[000159c6] .asciiz " Error in SymbolFile"
+[000159dc] .asciiz "incorrect symbol on symbol file"
 [000159fc] 0000                      .asciiz ''
-[000159fe] 282a 6d6f                 move.l     28015(a2),d4
-[00015a02] 6475                      bcc.s      $00015A79
-[00015a04] 6c65                      bge.s      $00015A6B
-[00015a06] 206b 6579                 movea.l    25977(a3),a0
-[00015a0a] 203d                      move.l     ???,d0
-[00015a0c] 2000                      move.l     d0,d0
-[00015a0e] 2a29 0000                 move.l     0(a1),d5
-[00015a12] 282a 7379                 move.l     29561(a2),d4
-[00015a16] 6e74                      bgt.s      $00015A8C
-[00015a18] 6178                      bsr.s      $00015A92
-[00015a1a] 2076 6572 7369 6f6e 203d  movea.l    ([$73696F6E,a6,zd6.w*4],$203D),a0 ; 68020+ only
-[00015a24] 2000                      move.l     d0,d0
-[00015a26] 2a29 0000                 move.l     0(a1),d5
-[00015a2a] 6572                      bcs.s      $00015A9E
-[00015a2c] 726f                      moveq.l    #111,d1
-[00015a2e] 723a                      moveq.l    #58,d1
-[00015a30] 2053                      movea.l    (a3),a0
-[00015a32] 796d                      ???
-[00015a34] 4669 6c65                 not.w      27749(a1)
-[00015a38] 5379 6e74 6178            subq.w     #1,$6E746178
-[00015a3e] 5665                      addq.w     #3,-(a5)
-[00015a40] 7273                      moveq.l    #115,d1
-[00015a42] 696f                      bvs.s      $00015AB3
-[00015a44] 6e20                      bgt.s      $00015A66
-[00015a46] 6d75                      blt.s      $00015ABD
-[00015a48] 7374                      ???
-[00015a4a] 2062                      movea.l    -(a2),a0
-[00015a4c] 6520                      bcs.s      $00015A6E
-[00015a4e] 0000                      dc.w       $0000
-[00015a50] 0000 4445                 ori.b      #$45,d0
-[00015a54] 4649                      not.w      a1 ; apollo only
-[00015a56] 4e49                      trap       #9
-[00015a58] 5449                      addq.w     #2,a1
-[00015a5a] 4f4e                      lea.l      (b6),b7 ; apollo only
-[00015a5c] 204d                      movea.l    a5,a0
-[00015a5e] 4f44                      lea.l      d4,b7 ; apollo only
-[00015a60] 554c                      subq.w     #2,a4
-[00015a62] 4520                      chk.l      -(a0),d2 ; 68020+ only
-[00015a64] 0000 4d4f                 ori.b      #$4F,d0
-[00015a68] 4455                      neg.w      (a5)
-[00015a6a] 4c45 2000                 divul.l    d5,d0:d2 ; remu.l for ColdFire
-[00015a6e] 282a 5265                 move.l     21093(a2),d4
-[00015a72] 616c                      bsr.s      $00015AE0
-[00015a74] 2d6e 6f74 2079            move.l     28532(a6),8313(a6)
-[00015a7a] 6574                      bcs.s      $00015AF0
-[00015a7c] 2069 6d70                 movea.l    28016(a1),a0
-[00015a80] 6c65                      bge.s      $00015AE7
-[00015a82] 6d65                      blt.s      $00015AE9
-[00015a84] 6e74                      bgt.s      $00015AFA
-[00015a86] 6564                      bcs.s      $00015AEC
-[00015a88] 2a29 0000                 move.l     0(a1),d5
-[00015a8c] 282a 0000                 move.l     0(a2),d4
-[00015a90] 2a29 0000                 move.l     0(a1),d5
-[00015a94] 282a 0000                 move.l     0(a2),d4
-[00015a98] 2a29 0000                 move.l     0(a1),d5
-[00015a9c] 2069 6c6c                 movea.l    27756(a1),a0
-[00015aa0] 6567                      bcs.s      $00015B09
-[00015aa2] 616c                      bsr.s      $00015B10
-[00015aa4] 2073 796d 626f            movea.l    ([$626F,a3]),a0 ; 68020+ only; reserved OD=1
-[00015aaa] 6c20                      bge.s      $00015ACC
-[00015aac] 696e                      bvs.s      $00015B1C
-[00015aae] 2043                      movea.l    d3,a0
-[00015ab0] 4f4e                      lea.l      (b6),b7 ; apollo only
-[00015ab2] 5354                      subq.w     #1,(a4)
-[00015ab4] 2d44 6563                 move.l     d4,25955(a6)
-[00015ab8] 6c61                      bge.s      $00015B1B
-[00015aba] 7261                      moveq.l    #97,d1
-[00015abc] 7469                      moveq.l    #105,d2
-[00015abe] 6f6e                      ble.s      $00015B2E
-[00015ac0] 2000                      move.l     d0,d0
-[00015ac2] 282a 0000                 move.l     0(a2),d4
-[00015ac6] 2a29 0000                 move.l     0(a1),d5
-[00015aca] 2e2e 0000                 move.l     0(a6),d7
-[00015ace] 2069 6c6c                 movea.l    27756(a1),a0
-[00015ad2] 6567                      bcs.s      $00015B3B
-[00015ad4] 616c                      bsr.s      $00015B42
-[00015ad6] 2073 796d 626f            movea.l    ([$626F,a3]),a0 ; 68020+ only; reserved OD=1
-[00015adc] 6c20                      bge.s      $00015AFE
-[00015ade] 696e                      bvs.s      $00015B4E
-[00015ae0] 2053                      movea.l    (a3),a0
-[00015ae2] 696d                      bvs.s      $00015B51
-[00015ae4] 706c                      moveq.l    #108,d0
-[00015ae6] 6520                      bcs.s      $00015B08
-[00015ae8] 5479 7065 2000            addq.w     #2,$70652000
-[00015aee] 4152                      lea.l      (a2),b0 ; apollo only
-[00015af0] 5241                      addq.w     #1,d1
-[00015af2] 5920                      subq.b     #4,-(a0)
-[00015af4] 0000 204f                 ori.b      #$4F,d0
-[00015af8] 4620                      not.b      -(a0)
-[00015afa] 0000 282a                 ori.b      #$2A,d0
-[00015afe] 7369                      ???
-[00015b00] 7a65                      moveq.l    #101,d5
-[00015b02] 3a20                      move.w     -(a0),d5
-[00015b04] 0000 2a29                 ori.b      #$29,d0
-[00015b08] 0000 282a                 ori.b      #$2A,d0
-[00015b0c] 6f66                      ble.s      $00015B74
-[00015b0e] 6673                      bne.s      $00015B83
-[00015b10] 6574                      bcs.s      $00015B86
-[00015b12] 3a20                      move.w     -(a0),d5
-[00015b14] 0000 2a29                 ori.b      #$29,d0
-[00015b18] 2000                      move.l     d0,d0
-[00015b1a] 203a 2000                 move.l     $00017B1C(pc),d0
-[00015b1e] 4341                      lea.l      d1,b1 ; apollo only
-[00015b20] 5345                      subq.w     #1,d5
-[00015b22] 0000 203a                 ori.b      #$3A,d0
-[00015b26] 2000                      move.l     d0,d0
-[00015b28] 204f                      movea.l    a7,a0
-[00015b2a] 4620                      not.b      -(a0)
-[00015b2c] 0000 2c20                 ori.b      #$20,d0
-[00015b30] 0000 203a                 ori.b      #$3A,d0
-[00015b34] 2000                      move.l     d0,d0
-[00015b36] 7c20                      moveq.l    #32,d6
-[00015b38] 0000 454c                 ori.b      #$4C,d0
-[00015b3c] 5345                      subq.w     #1,d5
-[00015b3e] 2000                      move.l     d0,d0
-[00015b40] 454e                      lea.l      (b6),b2 ; apollo only
-[00015b42] 443b 0000                 neg.b      $00015B44(pc,d0.w) ; apollo only
-[00015b46] 5245                      addq.w     #1,d5
-[00015b48] 434f                      lea.l      (b7),b1 ; apollo only
-[00015b4a] 5244                      addq.w     #1,d4
-[00015b4c] 0000 454e                 ori.b      #$4E,d0
-[00015b50] 443b 0000                 neg.b      $00015B52(pc,d0.w) ; apollo only
-[00015b54] 5345                      subq.w     #1,d5
-[00015b56] 5420                      addq.b     #2,-(a0)
-[00015b58] 4f46                      lea.l      d6,b7 ; apollo only
-[00015b5a] 2000                      move.l     d0,d0
-[00015b5c] 504f                      addq.w     #8,a7
-[00015b5e] 494e                      lea.l      (b6),b4 ; apollo only
-[00015b60] 5445                      addq.w     #2,d5
-[00015b62] 5220                      addq.b     #1,-(a0)
-[00015b64] 544f                      addq.w     #2,a7
-[00015b66] 2000                      move.l     d0,d0
-[00015b68] 5052                      addq.w     #8,(a2)
-[00015b6a] 4f43                      lea.l      d3,b7 ; apollo only
-[00015b6c] 4544                      lea.l      d4,b2 ; apollo only
-[00015b6e] 5552                      subq.w     #2,(a2)
-[00015b70] 4520                      chk.l      -(a0),d2 ; 68020+ only
-[00015b72] 0000 5641                 ori.b      #$41,d0
-[00015b76] 5220                      addq.b     #1,-(a0)
-[00015b78] 0000 4152                 ori.b      #$52,d0
-[00015b7c] 5241                      addq.w     #1,d1
-[00015b7e] 5920                      subq.b     #4,-(a0)
-[00015b80] 0000 3b20                 ori.b      #$20,d0
-[00015b84] 0000 203a                 ori.b      #$3A,d0
-[00015b88] 2000                      move.l     d0,d0
-[00015b8a] 2028 2a68                 move.l     10856(a0),d0
-[00015b8e] 6964                      bvs.s      $00015BF4
-[00015b90] 6465                      bcc.s      $00015BF7
-[00015b92] 6e20                      bgt.s      $00015BB4
-[00015b94] 7479                      moveq.l    #121,d2
-[00015b96] 7065                      moveq.l    #101,d0
-[00015b98] 2a29 2000                 move.l     8192(a1),d5
-[00015b9c] 2069 6c6c                 movea.l    27756(a1),a0
-[00015ba0] 6567                      bcs.s      $00015C09
-[00015ba2] 616c                      bsr.s      $00015C10
-[00015ba4] 2073 796d 626f            movea.l    ([$626F,a3]),a0 ; 68020+ only; reserved OD=1
-[00015baa] 6c20                      bge.s      $00015BCC
-[00015bac] 696e                      bvs.s      $00015C1C
-[00015bae] 2054                      movea.l    (a4),a0
-[00015bb0] 5950                      subq.w     #4,(a0)
-[00015bb2] 452d 4465                 chk.l      17509(a5),d2 ; 68020+ only
-[00015bb6] 636c                      bls.s      $00015C24
-[00015bb8] 6172                      bsr.s      $00015C2C
-[00015bba] 6174                      bsr.s      $00015C30
-[00015bbc] 696f                      bvs.s      $00015C2D
-[00015bbe] 6e20                      bgt.s      $00015BE0
-[00015bc0] 0000 203d                 ori.b      #$3D,d0
-[00015bc4] 2000                      move.l     d0,d0
-[00015bc6] 203d                      move.l     ???,d0
-[00015bc8] 2000                      move.l     d0,d0
-[00015bca] 282a 2050                 move.l     8272(a2),d4
-[00015bce] 726f                      moveq.l    #111,d1
-[00015bd0] 634e                      bls.s      $00015C20
-[00015bd2] 756d                      ???
-[00015bd4] 3a00                      move.w     d0,d5
-[00015bd6] 202a 2900                 move.l     10496(a2),d0
-[00015bda] 5641                      addq.w     #3,d1
-[00015bdc] 5220                      addq.b     #1,-(a0)
-[00015bde] 0000 4152                 ori.b      #$52,d0
-[00015be2] 5241                      addq.w     #1,d1
-[00015be4] 5920                      subq.b     #4,-(a0)
-[00015be6] 0000 3b20                 ori.b      #$20,d0
-[00015bea] 0000 203a                 ori.b      #$3A,d0
-[00015bee] 2000                      move.l     d0,d0
-[00015bf0] 2028 2a20                 move.l     10784(a0),d0
-[00015bf4] 0000 6162                 ori.b      #$62,d0
-[00015bf8] 7361                      ???
-[00015bfa] 6464                      bcc.s      $00015C60
-[00015bfc] 723a                      moveq.l    #58,d1
-[00015bfe] 2000                      move.l     d0,d0
-[00015c00] 7265                      moveq.l    #101,d1
-[00015c02] 6c61                      bge.s      $00015C65
-[00015c04] 6464                      bcc.s      $00015C6A
-[00015c06] 723a                      moveq.l    #58,d1
-[00015c08] 2000                      move.l     d0,d0
-[00015c0a] 2a29 2000                 move.l     8192(a1),d5
-[00015c0e] 203a 2000                 move.l     $00017C10(pc),d0
-[00015c12] 434f                      lea.l      (b7),b1 ; apollo only
-[00015c14] 4e53 5400                 link       a3,#21504
-[00015c18] 5459                      addq.w     #2,(a1)+
-[00015c1a] 5045                      addq.w     #8,d5
-[00015c1c] 0000 5052                 ori.b      #$52,d0
-[00015c20] 4f43                      lea.l      d3,b7 ; apollo only
-[00015c22] 4544                      lea.l      d4,b2 ; apollo only
-[00015c24] 5552                      subq.w     #2,(a2)
-[00015c26] 4520                      chk.l      -(a0),d2 ; 68020+ only
-[00015c28] 0000 5641                 ori.b      #$41,d0
-[00015c2c] 5200                      addq.b     #1,d0
-[00015c2e] 2069 6c6c                 movea.l    27756(a1),a0
-[00015c32] 6567                      bcs.s      $00015C9B
-[00015c34] 616c                      bsr.s      $00015CA2
-[00015c36] 2053                      movea.l    (a3),a0
-[00015c38] 796d                      ???
-[00015c3a] 4669 6c65                 not.w      27749(a1)
-[00015c3e] 5379 6d62 6f6c            subq.w     #1,$6D626F6C
-[00015c44] 2000                      move.l     d0,d0
-[00015c46] 0000 494d                 ori.b      #$4D,d0
-[00015c4a] 504f                      addq.w     #8,a7
-[00015c4c] 5254                      addq.w     #1,(a4)
-[00015c4e] 2000                      move.l     d0,d0
-[00015c50] 2c20                      move.l     -(a0),d6
-[00015c52] 0000 4558                 ori.b      #$58,d0
-[00015c56] 504f                      addq.w     #8,a7
-[00015c58] 5254                      addq.w     #1,(a4)
-[00015c5a] 2051                      movea.l    (a1),a0
-[00015c5c] 5541                      subq.w     #2,d1
-[00015c5e] 4c49 4649                 divu.l     a1,a1:d4 ; apollo only
-[00015c62] 4544                      lea.l      d4,b2 ; apollo only
-[00015c64] 2000                      move.l     d0,d0
-[00015c66] 2c20                      move.l     -(a0),d6
-[00015c68] 0000 454e                 ori.b      #$4E,d0
-[00015c6c] 4420                      neg.b      -(a0)
-[00015c6e] 0000 454e                 ori.b      #$4E,d0
-[00015c72] 4420                      neg.b      -(a0)
-[00015c74] 0000 5379                 ori.b      #$79,d0
-[00015c78] 6d62                      blt.s      $00015CDC
-[00015c7a] 6f6c                      ble.s      $00015CE8
-[00015c7c] 2066                      movea.l    -(a6),a0
-[00015c7e] 696c                      bvs.s      $00015CEC
-[00015c80] 6520                      bcs.s      $00015CA2
-[00015c82] 6465                      bcc.s      $00015CE9
-[00015c84] 636f                      bls.s      $00015CF5
-[00015c86] 6465                      bcc.s      $00015CED
-[00015c88] 7220                      moveq.l    #32,d1
-[00015c8a] 2020                      move.l     -(a0),d0
-[00015c8c] 5665                      addq.w     #3,-(a5)
-[00015c8e] 7273                      moveq.l    #115,d1
-[00015c90] 696f                      bvs.s      $00015D01
-[00015c92] 6e20                      bgt.s      $00015CB4
-[00015c94] 2033 2e30                 move.l     48(a3,d2.l*8),d0 ; 68020+ only
-[00015c98] 3061                      movea.w    -(a1),a0
-[00015c9a] 0000 456e                 ori.b      #$6E,d0
-[00015c9e] 6420                      bcc.s      $00015CC0
-[00015ca0] 6f66                      ble.s      $00015D08
-[00015ca2] 2064                      movea.l    -(a4),a0
-[00015ca4] 6563                      bcs.s      $00015D09
-[00015ca6] 6f64                      ble.s      $00015D0C
-[00015ca8] 6500 0000                 bcs.w      $00015CAA
+[000159fe] 282a 6d6f                 .asciiz '(*module key = '
+[00015a0e] 2a29 0000                 .asciiz '*)'
+[00015a12] 282a 7379                 .asciiz '(*syntax version = '
+[00015a26] 2a29 0000                 .asciiz '*)'
+[00015a2a] 6572                      .asciiz 'error: SymFileSyntaxVersion must be '
+[00015a4e] 0000                      .asciiz ''
+[00015a50] 0000                      .asciiz ''
+[00015a52] 4445                      .asciiz 'DEFINITION MODULE '
+[00015a66] 4d4f                      .asciiz 'MODULE '
+[00015a6e] 282a 5265                 .asciiz '(*Real-not yet implemented*)'
+[00015a8c] 282a 0000                 .asciiz '(*'
+[00015a90] 2a29 0000                 .asciiz '*)'
+[00015a94] 282a 0000                 .asciiz '(*'
+[00015a98] 2a29 0000                 .asciiz '*)'
+[00015a9c] 2069 6c6c                 .asciiz ' illegal symbol in CONST-Declaration '
+[00015ac2] 282a 0000                 .asciiz '(*'
+[00015ac6] 2a29 0000                 .asciiz '*)'
+[00015aca] 2e2e 0000                 .asciiz '..'
+[00015ace] 2069 6c6c                 .asciiz ' illegal symbol in Simple Type '
+[00015aee] 4152                      .asciiz 'ARRAY '
+[00015af6] 204f                      .asciiz ' OF '
+[00015afc] 282a                      .asciiz '(*size: '
+[00015b06] 2a29                      .asciiz '*)'
+[00015b0a] 282a                      .asciiz '(*offset: '
+[00015b16] 2a29                      .asciiz '*) '
+[00015b1a] 203a 2000                 .asciiz ' : '
+[00015b1e] 4341                      .asciiz 'CASE'
+[00015b24] 203a                      .asciiz ' : '
+[00015b28] 204f                      .asciiz ' OF '
+[00015b2e] 2c20                      .asciiz ', '
+[00015b32] 203a                      .asciiz ' : '
+[00015b36] 7c20                      .asciiz '| '
+[00015b3a] 454c                      .asciiz 'ELSE '
+[00015b40] 454e                      .asciiz 'END;'
+[00015b46] 5245                      .asciiz 'RECORD'
+[00015b4e] 454e                      .asciiz 'END;'
+[00015b54] 5345                      .asciiz 'SET OF '
+[00015b5c] 504f                      .asciiz 'POINTER TO '
+[00015b68] 5052                      .asciiz 'PROCEDURE '
+[00015b74] 5641                      .asciiz 'VAR '
+[00015b7a] 4152                      .asciiz 'ARRAY '
+[00015b82] 3b20                      .asciiz '; '
+[00015b86] 203a                      .asciiz ' : '
+[00015b8a] 2028 2a68                 .asciiz ' (*hidden type*) '
+[00015b9c] 2069 6c6c                 .asciiz ' illegal symbol in TYPE-Declaration '
+[00015bc2] 203d                      .asciiz ' = '
+[00015bc6] 203d                      .asciiz ' = '
+[00015bca] 282a 2050                 .asciiz '(* ProcNum:'
+[00015bd6] 202a 2900                 .asciiz ' *)'
+[00015bda] 5641                      .asciiz 'VAR '
+[00015be0] 4152                      .asciiz 'ARRAY '
+[00015be8] 3b20                      .asciiz '; '
+[00015bec] 203a                      .asciiz ' : '
+[00015bf0] 2028 2a20                 .asciiz ' (* '
+[00015bf6] 6162                      .asciiz 'absaddr: '
+[00015c00] 7265                      .asciiz 'reladdr: '
+[00015c0a] 2a29 2000                 .asciiz '*) '
+[00015c0e] 203a 2000                 .asciiz ' : '
+[00015c12] 434f                      .asciiz 'CONST'
+[00015c18] 5459                      .asciiz 'TYPE'
+[00015c1e] 5052                      .asciiz 'PROCEDURE '
+[00015c2a] 5641                      .asciiz 'VAR '
+[00015c2e] 2069 6c6c                 .asciiz ' illegal SymFileSymbol '
+[00015c46] 0000                      .asciiz ''
+[00015c48] 494d                      .asciiz 'IMPORT '
+[00015c50] 2c20                      .asciiz ', '
+[00015c54] 4558                      .asciiz 'EXPORT QUALIFIED '
+[00015c66] 2c20                      .asciiz ', '
+[00015c6a] 454e                      .asciiz 'END '
+[00015c70] 454e                      .asciiz 'END '
+[00015c76] 5379                      .asciiz 'Symbol file decoder   Version  3.00a'
+[00015c9c] 456e                      .asciiz 'End of decode'
 
-15caa: _base
-15cae: pgm_term
+15caa: BasePageAddress
+15cae: ErrorProcessor
 15ce6: textbase
 15cea: PgmSize
 15cee: ExceptionVecs1 ds.l 12
