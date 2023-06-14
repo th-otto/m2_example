@@ -152,7 +152,10 @@ CONST
   Low    = 0;
   Medium = 1;
   High   = 2;
-
+  Videl  = 3;
+  TTMed  = 4;
+  TTHigh = 6;
+  TTLow  = 7;
 
   (* normal value given for virgin floppies *)
   VirginMedia = 0E5E5H;
