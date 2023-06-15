@@ -29,3 +29,8 @@ $S: Generate code at the entry of each procedure to check the stack space
 available.
 
 $T: Generate code to perform range checking on array subscripts etc.
+    Index test (arrays, case).
+
+$R: Subrange and type conversion test.
+
+$A: short (bsr) calls

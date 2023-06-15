@@ -61,178 +61,195 @@ CONST
   EGSBF         = -67;         (* Setblock failure due to growth restr *)
 
 TYPE
-  IOMode = (read, write)
+  IOMode = (read, write);
 
-  SeekMode = (beginning, relative, end)
+  SeekMode = (beginning, relative, end);
 
-  ExecMode = (loadExecute, resrvd1, resrvd2, load)
+  ExecMode = (loadExecute, resrvd1, resrvd2, load);
 
-  SetOrGet = (set, get)
+  SetOrGet = (set, get);
 
-  DiskInfoBuffer = RECORD 
+  DiskInfoBuffer = RECORD
                      freeSpace   : LONGCARD; (* in clusters *)
                      clusters    : LONGCARD; (* num on disk *)
                      sectorSize  : LONGCARD; (* in bytes *)
                      clusterSize : LONGCARD; (* sectors per cluster *)
                    END;
 
-(* 1 *) PROCEDURE OldTerm (); 
 (* Terminate process (old version) *)
+PROCEDURE OldTerm();
 
-(* 2 *) PROCEDURE ConIn(VAR Ch: CHAR) 
 (* Read character from standard input *)
+PROCEDURE ConIn(VAR Ch: CHAR);
 
-(* 3 *) PROCEDURE ConScanIn(VAR Ch, Scan: CHAR); 
 (* Read character and scan code from standard input *)
+PROCEDURE ConScanIn(VAR Ch, Scan: CHAR);
 
-(* 4 *) PROCEDURE ConOut(Ch: CHAR); 
 (* Write character to standard output *)
+PROCEDURE ConOut(Ch: CHAR);
 
-(* 5 *) PROCEDURE AuxIn(VAR Ch: CHAR); 
 (* Read character from auxiliary port *)
+PROCEDURE AuxIn(VAR Ch: CHAR);
 
-(* 6 *) PROCEDURE AuxOut(Ch: CHAR); 
 (* Write character to auxiliary port *)
+PROCEDURE AuxOut(Ch: CHAR);
 
-(* 7 *) PROCEDURE PrnOut(Ch: CHAR); 
 (* Write character to printer port *)
+PROCEDURE PrnOut(Ch: CHAR);
 
-(* 8 *) PROCEDURE RawIO(VAR Ch: CHAR; Mode: IOMode); 
 (* Raw IO to standard input/output device *)
+PROCEDURE RawIO(VAR Ch: CHAR; Mode: IOMode);
 
-(* 9 *) PROCEDURE RawIn(VAR Ch: CHAR); 
 (* Raw input from standard input *)
+PROCEDURE RawIn(VAR Ch: CHAR);
 
-(* 10 *) PROCEDURE RawScanIn(VAR Ch, Scan: CHAR); 
-(* Raw inpput of character and scan code from standard input *)
+(* Raw input of character and scan code from standard input *)
+PROCEDURE RawScanIn(VAR Ch, Scan: CHAR);
 
-(* 11 *) PROCEDURE NecIn(VAR Ch: CHAR); 
 (* Read character from standard input with no echo *)
+PROCEDURE NecIn(VAR Ch: CHAR);
 
-(* 12 *) PROCEDURE ConWS(VAR String: ARRAY OF CHAR); 
 (* Write null terminated string to standard output device *)
+PROCEDURE ConWS(VAR String: ARRAY OF CHAR);
 
-(* 13 *) PROCEDURE ConRS(VAR String: ARRAY OF CHAR); 
 (* Read edited string from standard input device *)
+PROCEDURE ConRS(VAR String: ARRAY OF CHAR);
 
-(* 14 *) PROCEDURE ConIS (): BOOLEAN; 
 (* Return status of standard input *)
+PROCEDURE ConIS(): BOOLEAN;
 
-(* 15 *) PROCEDURE SetDrv(Drive: CARDINAL; VAR DriveMap: LONGCARD); 
 (* Set default drive *)
+PROCEDURE SetDrv(Drive: CARDINAL; VAR DriveMap: LONGCARD);
 
-(* 16 *) PROCEDURE ConOS (): BOOLEAN; 
 (* Return output status of standard output *)
+PROCEDURE ConOS(): BOOLEAN;
 
-(* 17 *) PROCEDURE PrnOS (): BOOLEAN; 
 (* Return output status of standard printer *)
+PROCEDURE PrnOS(): BOOLEAN;
 
-(* 18 *) PROCEDURE AuxIS (): BOOLEAN; 
 (* Return status of standard auxiliary *)
+PROCEDURE AuxIS(): BOOLEAN;
 
-(* 19 *) PROCEDURE AuxOS (): BOOLEAN; 
 (* Return output status of standard auxiliary *)
+PROCEDURE AuxOS(): BOOLEAN;
 
-(* 20 *) PROCEDURE GetDrv(VAR Drive: CARDINAL); 
+(* Register 'Alternative' RAM with GEMDOS *)
+PROCEDURE Maddalt(start: ADDRESS; size: LONGCARD): LONGINT;
+
+(* Allocate screen memory *)
+PROCEDURE Srealloc(size: LONGCARD): LONGINT;
+
 (* Get default drive *)
+PROCEDURE GetDrv(VAR Drive: CARDINAL);
 
-(* 21 *) PROCEDURE SetDTA(Address: ADDRESS); 
 (* Set disk transfer address *)
+PROCEDURE SetDTA(Address: ADDRESS);
 
-(* 22 *) PROCEDURE GetDate(VAR Date: CARDINAL); 
 (* Get Date *)
+PROCEDURE GetDate(VAR Date: CARDINAL);
 
-(* 23 *) PROCEDURE SetDate(Date: CARDINAL); 
 (* Set Date *)
+PROCEDURE SetDate(Date: CARDINAL);
 
-(* 24 *) PROCEDURE GetTime(VAR Time: CARDINAL); 
 (* Get Date *)
+PROCEDURE GetTime(VAR Time: CARDINAL);
 
-(* 25 *) PROCEDURE SetTime(Time: CARDINAL); 
 (* Set Date *)
+PROCEDURE SetTime(Time: CARDINAL);
 
-(* 26 *) PROCEDURE GetDTA(VAR Addr: ADDRESS); 
 (* Get disk transfer address *)
+PROCEDURE GetDTA(VAR Addr: ADDRESS);
 
-(* 27 *) PROCEDURE Version(VAR Ver: CARDINAL); 
 (* Get version number *)
+PROCEDURE Version(VAR Ver: CARDINAL);
 
-(* 28 *) PROCEDURE TermRes(NumBytes: LONGCARD; ExitCode: CARDINAL); 
 (* Terminate and stay resident *)
+PROCEDURE TermRes(NumBytes: LONGCARD; ExitCode: CARDINAL);
 
-(* 29 *) PROCEDURE DFree (VAR InfoBuffer: DiskInfoBuffer; Drive: CARDINAL); 
+(* Configuration of parts of the operating system *)
+PROCEDURE Sconfig(mode: INTEGER; flags: LONGCARD): LONGINT;
+
 (* Get drive free space *)
+PROCEDURE DFree(VAR InfoBuffer: DiskInfoBuffer; Drive: CARDINAL);
 
-(* 30 *) PROCEDURE DirCreate(VAR Path: ARRAY OF CHAR ): BOOLEAN; 
 (* Create a subdirectory *)
+PROCEDURE DirCreate(VAR Path: ARRAY OF CHAR): BOOLEAN;
 
-(* 31 *) PROCEDURE DirDelete(VAR Path: ARRAY OF CHAR ): BOOLEAN; 
 (* Delete a subdirectory *)
+PROCEDURE DirDelete(VAR Path: ARRAY OF CHAR): BOOLEAN;
 
-(* 32 *) PROCEDURE SetPath(VAR Path: ARRAY OF CHAR ): BOOLEAN; 
 (* Set current directory *)
+PROCEDURE SetPath(VAR Path: ARRAY OF CHAR): BOOLEAN;
 
-(* 33 *) PROCEDURE Create(VAR Name: ARRAY OF CHAR; Attr: CARDINAL; 
-                   VAR Handle: INTEGER );
 (* Create a file *)
+PROCEDURE Create(VAR Name: ARRAY OF CHAR; Attr: CARDINAL; VAR Handle: INTEGER);
 
-(* 34 *) PROCEDURE Open(VAR Name: ARRAY OF CHAR; Mode: CARDINAL; 
-                 VAR Handle: INTEGER);
 (* Open a file *)
+PROCEDURE Open(VAR Name: ARRAY OF CHAR; Mode: CARDINAL; VAR Handle: INTEGER);
 
-(* 35 *) PROCEDURE Close(Handle: INTEGER ): BOOLEAN; 
 (* Close a file *)
+PROCEDURE Close(Handle: INTEGER): BOOLEAN;
 
-(* 36 *) PROCEDURE Read(Handle: INTEGER; VAR Count: LONGCARD; Buffer: ADDRESS); 
 (* Read file *)
+PROCEDURE Read(Handle: INTEGER; VAR Count: LONGCARD; Buffer: ADDRESS);
 
-(* 37 *) PROCEDURE Write(Handle: INTEGER; VAR Count: LONGCARD; Buffer: ADDRESS);(* Write file *) 
+(* Write file *)
+PROCEDURE Write(Handle: INTEGER; VAR Count: LONGCARD; Buffer: ADDRESS);
 
-(* 38 *) PROCEDURE Delete(VAR Name: ARRAY OF CHAR ): BOOLEAN; 
 (* Delete file *)
+PROCEDURE Delete(VAR Name: ARRAY OF CHAR): BOOLEAN;
 
-(* 39 *) PROCEDURE Seek(Offset: LONGINT; Handle: INTEGER; Mode: SeekMode; VAR Position: LONGCARD);
 (* Seek file pointer *)
+PROCEDURE Seek(Offset: LONGINT; Handle: INTEGER; Mode: SeekMode; VAR Position: LONGCARD);
 
-(* 40 *) PROCEDURE Attrib(VAR Name: ARRAY OF CHAR; Which: SetOrGet;  
-                   VAR Attr: CARDINAL);
 (* Get/Set file attributes *)
+PROCEDURE Attrib(VAR Name: ARRAY OF CHAR; Which: SetOrGet; VAR Attr: CARDINAL);
 
-(* 41 *) PROCEDURE GetPath(VAR PathName: ARRAY OF CHAR; Drive: CARDINAL); 
+(* 'Mxalloc': extended Alloc-function for the Atari TT. *)
+PROCEDURE Xalloc(Bytes: LONGCARD; mode: CARDINAL; VAR Addr: ADDRESS);
+
+(* 'Fdup': returns a copy of a standard-handle (0-5) *)
+PROCEDURE Dup(stdHandle: INTEGER; VAR newHandle: INTEGER);
+
+(* 'Fforce': Redirect standard file *)
+PROCEDURE Force(stdHandle, newHandle: INTEGER): BOOLEAN;
+
 (* Get current directory *)
+PROCEDURE GetPath(VAR PathName: ARRAY OF CHAR; Drive: CARDINAL);
 
-(* 42 *) PROCEDURE Alloc(Bytes: LONGCARD; VAR Addr: ADDRESS); 
 (* Allocate memory *)
+PROCEDURE Alloc(Bytes: LONGCARD; VAR Addr: ADDRESS);
 
-(* 43 *) PROCEDURE Free(Addr: ADDRESS ): BOOLEAN; 
 (* Free memory *)
+PROCEDURE Free(Addr: ADDRESS): BOOLEAN;
 
-(* 44 *) PROCEDURE Shrink(Addr: ADDRESS; NewSize: LONGCARD ): BOOLEAN; 
 (* Shrink size of allocated memory *)
+PROCEDURE Shrink(Addr: ADDRESS; NewSize: LONGCARD): BOOLEAN;
 
-(* 45 *) PROCEDURE Exec(Mode: ExecMode; VAR Name: ARRAY OF CHAR;  
+(* Load or execute a process *)
+PROCEDURE Exec(Mode: ExecMode; VAR Name: ARRAY OF CHAR;
                  VAR Tail: ARRAY OF CHAR; VAR EnvStr: ARRAY OF CHAR;
                  VAR Result: INTEGER);
-(* Load or execute a process *)
 
-(* 46 *) PROCEDURE Term(Code: INTEGER ): BOOLEAN; 
 (* Terminate a process *)
+(* Why BOOLEAN? that function does not return *)
+PROCEDURE Term(Code: INTEGER): BOOLEAN;
 
-(* 47 *) PROCEDURE SFirst(VAR Name: ARRAY OF CHAR; Attr: CARDINAL; 
-                   VAR Result: INTEGER);
 (* Search for first file *)
+PROCEDURE SFirst(VAR Name: ARRAY OF CHAR; Attr: CARDINAL; VAR Result: INTEGER);
 
-(* 48 *) PROCEDURE SNext(VAR Result: INTEGER); 
 (* Search for next file *)
+PROCEDURE SNext(VAR Result: INTEGER);
 
-(* 49 *) PROCEDURE Rename(VAR CurrentName, NewName: ARRAY OF CHAR); 
 (* Rename a file *)
+(* Why no return value here? *)
+PROCEDURE Rename(VAR CurrentName, NewName: ARRAY OF CHAR);
 
-(* 50 *) PROCEDURE DaTime(Handle: INTEGER; Buffer: ADDRESS; Which: SetOrGet); 
 (* Get/Set file date and time stamp *)
+PROCEDURE DaTime(Handle: INTEGER; Buffer: ADDRESS; Which: SetOrGet);
 
-(* 51 *) PROCEDURE Super(VAR stack: ADDRESS); 
 (* enter supervisor mode if stack = 0, otherwise come out of
    supervisor mode with the given stack. *)
+PROCEDURE Super(VAR stack: ADDRESS);
 
 END GEMDOS.

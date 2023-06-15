@@ -202,20 +202,20 @@ END trap_1_wwwll;
 
 
 
-PROCEDURE OldTerm () <* noreturn *>;
+PROCEDURE OldTerm() <* noreturn *>;
 BEGIN
   trap_1_w(0);
   HALT;
 END OldTerm;
 
 
-PROCEDURE ConIn (VAR ch: CHAR);
+PROCEDURE ConIn(VAR ch: CHAR);
 BEGIN
   ch := trap_1_w(1);
 END ConIn;
 
 
-PROCEDURE ConScanIn (VAR ch: CHAR; VAR scan: CHAR);
+PROCEDURE ConScanIn(VAR ch: CHAR; VAR scan: CHAR);
 VAR c: CARDINAL32;
 BEGIN
   c := trap_1_w(1);
@@ -224,31 +224,31 @@ BEGIN
 END ConScanIn;
 
 
-PROCEDURE ConOut (ch: CHAR);
+PROCEDURE ConOut(ch: CHAR);
 BEGIN
   trap_1_ww(2, ORD(ch));
 END ConOut;
 
 
-PROCEDURE AuxIn (VAR ch: CHAR);
+PROCEDURE AuxIn(VAR ch: CHAR);
 BEGIN
   ch := trap_1_w(3);
 END AuxIn;
 
 
-PROCEDURE AuxOut (ch: CHAR);
+PROCEDURE AuxOut(ch: CHAR);
 BEGIN
   trap_1_ww(4, ORD(ch));
 END AuxOut;
 
 
-PROCEDURE PrnOut (ch: CHAR);
+PROCEDURE PrnOut(ch: CHAR);
 BEGIN
   trap_1_ww(5, ORD(ch));
 END PrnOut;
 
 
-PROCEDURE RawIO (VAR ch: CHAR; rw: IOMode);
+PROCEDURE RawIO(VAR ch: CHAR; rw: IOMode);
 BEGIN
   IF rw <> read THEN
     trap_1_ww(6, ORD(ch))
@@ -258,13 +258,13 @@ BEGIN
 END RawIO;
 
 
-PROCEDURE RawIn (VAR ch: CHAR);
+PROCEDURE RawIn(VAR ch: CHAR);
 BEGIN
   ch := trap_1_w(7);
 END RawIn;
 
 
-PROCEDURE RawScanIn (VAR ch: CHAR; VAR scan: CHAR);
+PROCEDURE RawScanIn(VAR ch: CHAR; VAR scan: CHAR);
 VAR c: CARDINAL32;
 BEGIN
   c := trap_1_w(7);
@@ -273,13 +273,13 @@ BEGIN
 END RawScanIn;
 
 
-PROCEDURE NecIn (VAR ch: CHAR);
+PROCEDURE NecIn(VAR ch: CHAR);
 BEGIN
   ch := trap_1_w(8);
 END NecIn;
 
 
-PROCEDURE ConWS (REF str: ARRAY OF CHAR);
+PROCEDURE ConWS(REF str: ARRAY OF CHAR);
 VAR s: strtmp;
 BEGIN
   str0(s, str);
@@ -287,55 +287,55 @@ BEGIN
 END ConWS;
 
 
-PROCEDURE ConRS (VAR str: ARRAY OF BYTE);
+PROCEDURE ConRS(VAR str: ARRAY OF BYTE);
 BEGIN
   trap_1_wl(10, INTEGER32(ADR(str)));
 END ConRS;
 
 
-PROCEDURE ConIS (): BOOLEAN;
+PROCEDURE ConIS(): BOOLEAN;
 BEGIN
   RETURN trap_1_w(11) <> 0;
 END ConIS;
 
 
-PROCEDURE SetDrv (drive: CARDINAL; VAR DriveMap: CARDINAL32);
+PROCEDURE SetDrv(drive: CARDINAL; VAR DriveMap: CARDINAL32);
 BEGIN
   DriveMap := trap_1_w(drive);
 END SetDrv;
 
 
-PROCEDURE ConOS (): BOOLEAN;
+PROCEDURE ConOS(): BOOLEAN;
 BEGIN
   RETURN trap_1_w(16) <> 0;
 END ConOS;
 
 
-PROCEDURE PrnOS (): BOOLEAN;
+PROCEDURE PrnOS(): BOOLEAN;
 BEGIN
   RETURN trap_1_w(17) <> 0;
 END PrnOS;
 
 
-PROCEDURE AuxIS (): BOOLEAN;
+PROCEDURE AuxIS(): BOOLEAN;
 BEGIN
   RETURN trap_1_w(18) <> 0;
 END AuxIS;
 
 
-PROCEDURE AuxOS (): BOOLEAN;
+PROCEDURE AuxOS(): BOOLEAN;
 BEGIN
   RETURN trap_1_w(19) <> 0;
 END AuxOS;
 
 
-PROCEDURE Maddalt ( start: ADDRESS; size: INTEGER32 ) : [ INTEGER32 ];
+PROCEDURE Maddalt(start: ADDRESS; size: INTEGER32): [ INTEGER32 ];
 BEGIN
   RETURN trap_1_wll(20, INTEGER32(start), size);
 END Maddalt;
 
 
-PROCEDURE Srealloc ( size: INTEGER32 ) : [ INTEGER32 ];
+PROCEDURE Srealloc(size: INTEGER32): [ INTEGER32 ];
 BEGIN
   RETURN trap_1_wl(21, size);
 END Srealloc;
@@ -350,86 +350,86 @@ BEGIN
 END Slbopen;
 
 
-PROCEDURE Slbclose(sl: SHARED_LIB) : [ INTEGER32 ];
+PROCEDURE Slbclose(sl: SHARED_LIB): [ INTEGER32 ];
 BEGIN
   RETURN trap_1_wl(23, INTEGER32(sl));
 END Slbclose;
 
 
-PROCEDURE GetDrv (VAR drive: CARDINAL);
+PROCEDURE GetDrv(VAR drive: CARDINAL);
 BEGIN
   drive := trap_1_w(25);
 END GetDrv;
 
 
-PROCEDURE SetDTA (addr: DTAPtr);
+PROCEDURE SetDTA(addr: DTAPtr);
 BEGIN
   trap_1_wl(26, INTEGER32(addr))
 END SetDTA;
 
 
-PROCEDURE Super (stack: INTEGER32): [ INTEGER32 ];
+PROCEDURE Super(stack: INTEGER32): [ INTEGER32 ];
 BEGIN
   RETURN trap_1_wl(32, stack);
 END Super;
 
 
-PROCEDURE GetDate (VAR packeddate: CARDINAL16);
+PROCEDURE GetDate(VAR packeddate: CARDINAL16);
 BEGIN
   packeddate := trap_1_w(42);
 END GetDate;
 
 
-PROCEDURE SetDate (packeddate: CARDINAL16);
+PROCEDURE SetDate(packeddate: CARDINAL16);
 BEGIN
   trap_1_ww(43, packeddate);
 END SetDate;
 
 
-PROCEDURE GetTime (VAR packedtime: CARDINAL16);
+PROCEDURE GetTime(VAR packedtime: CARDINAL16);
 BEGIN
   packedtime := trap_1_w(44);
 END GetTime;
 
 
-PROCEDURE SetTime (packedtime: CARDINAL16);
+PROCEDURE SetTime(packedtime: CARDINAL16);
 BEGIN
   trap_1_ww(45, packedtime);
 END SetTime;
 
 
-PROCEDURE GetDTA (VAR addr: DTAPtr);
+PROCEDURE GetDTA(VAR addr: DTAPtr);
 BEGIN
   addr := ADDRESS(trap_1_w(47));
 END GetDTA;
 
 
-PROCEDURE Version (VAR versionNo: CARDINAL);
+PROCEDURE Version(VAR versionNo: CARDINAL);
 BEGIN
   versionNo := trap_1_w(48);
 END Version;
 
 
-PROCEDURE TermRes (keepAmount: CARDINAL32; exitcode: INTEGER) <* noreturn *>;
+PROCEDURE TermRes(keepAmount: CARDINAL32; exitcode: INTEGER) <* noreturn *>;
 BEGIN
   trap_1_wlw(49, keepAmount, exitcode);
   HALT;
 END TermRes;
 
 
-PROCEDURE Sconfig(mode: INTEGER16; flags: INTEGER32) : [ INTEGER32 ];
+PROCEDURE Sconfig(mode: INTEGER16; flags: INTEGER32): [ INTEGER32 ];
 BEGIN
   RETURN trap_1_wwl(51, mode, flags);
 END Sconfig;
 
 
-PROCEDURE DFree (VAR infoblock: DiskInfoBuffer; drive: CARDINAL) : [ INTEGER32 ];
+PROCEDURE DFree(VAR infoblock: DiskInfoBuffer; drive: CARDINAL): [ INTEGER32 ];
 BEGIN
   RETURN trap_1_wlw(54, INTEGER32(ADR(infoblock)), drive);
 END DFree;
 
 
-PROCEDURE DirCreate (REF path: ARRAY OF CHAR): [ INTEGER32 ];
+PROCEDURE DirCreate(REF path: ARRAY OF CHAR): [ INTEGER32 ];
 VAR s: strtmp;
 BEGIN
   str0(s, path);
@@ -437,7 +437,7 @@ BEGIN
 END DirCreate;
 
 
-PROCEDURE DirDelete (REF path: ARRAY OF CHAR): [ INTEGER32 ];
+PROCEDURE DirDelete(REF path: ARRAY OF CHAR): [ INTEGER32 ];
 VAR s: strtmp;
 BEGIN
   str0(s, path);
@@ -445,7 +445,7 @@ BEGIN
 END DirDelete;
 
 
-PROCEDURE SetPath (REF path: ARRAY OF CHAR): [ INTEGER32 ];
+PROCEDURE SetPath(REF path: ARRAY OF CHAR): [ INTEGER32 ];
 VAR s: strtmp;
 BEGIN
   str0(s, path);
@@ -453,7 +453,7 @@ BEGIN
 END SetPath;
 
 
-PROCEDURE Create (REF fname: ARRAY OF CHAR; attr: CARDINAL; VAR handle: INTEGER);
+PROCEDURE Create(REF fname: ARRAY OF CHAR; attr: CARDINAL; VAR handle: INTEGER);
 VAR s: strtmp;
 BEGIN
   str0(s, fname);
@@ -461,7 +461,7 @@ BEGIN
 END Create;
 
 
-PROCEDURE Open (REF fname: ARRAY OF CHAR; mode: CARDINAL; VAR handle: INTEGER);
+PROCEDURE Open(REF fname: ARRAY OF CHAR; mode: CARDINAL; VAR handle: INTEGER);
 VAR s: strtmp;
 BEGIN
   str0(s, fname);
@@ -469,13 +469,13 @@ BEGIN
 END Open;
 
 
-PROCEDURE Close (handle: INTEGER): [ BOOLEAN ];
+PROCEDURE Close(handle: INTEGER): [ BOOLEAN ];
 BEGIN
   RETURN trap_1_ww(62, handle) >= 0;
 END Close;
 
 
-PROCEDURE Read (handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS);
+PROCEDURE Read(handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS);
 VAR nread: INTEGER32;
 BEGIN
   nread := trap_1_wwll(63, handle, count, INTEGER32(buffer));
@@ -487,7 +487,7 @@ BEGIN
 END Read;
 
 
-PROCEDURE Write (handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS);
+PROCEDURE Write(handle: INTEGER; VAR count: CARDINAL32; buffer: ADDRESS);
 VAR nwritten: INTEGER32;
 BEGIN
   nwritten := trap_1_wwll(64, handle, count, INTEGER32(buffer));
@@ -499,7 +499,7 @@ BEGIN
 END Write;
 
 
-PROCEDURE Delete (REF fname: ARRAY OF CHAR): [ INTEGER32 ];
+PROCEDURE Delete(REF fname: ARRAY OF CHAR): [ INTEGER32 ];
 VAR s: strtmp;
 BEGIN
   str0(s, fname);
@@ -507,13 +507,13 @@ BEGIN
 END Delete;
 
 
-PROCEDURE Seek (offset: INTEGER32; handle: INTEGER; mode: SeekMode; VAR newPosFromBeginning: INTEGER32);
+PROCEDURE Seek(offset: INTEGER32; handle: INTEGER; mode: SeekMode; VAR newPosFromBeginning: INTEGER32);
 BEGIN
   newPosFromBeginning := trap_1_wlww(66, offset, handle, INTEGER(mode));
 END Seek;
 
 
-PROCEDURE Attrib (REF fname: ARRAY OF CHAR; getOrSet: TimeAccessMode; VAR attr: CARDINAL) : [ INTEGER32 ];
+PROCEDURE Attrib(REF fname: ARRAY OF CHAR; getOrSet: TimeAccessMode; VAR attr: CARDINAL): [ INTEGER32 ];
 VAR r: INTEGER32;
 VAR s: strtmp;
 BEGIN
@@ -524,62 +524,62 @@ BEGIN
 END Attrib;
 
 
-PROCEDURE Xalloc ( Bytes: INTEGER32; mode: CARDINAL; VAR Addr: ADDRESS );
+PROCEDURE Xalloc(Bytes: INTEGER32; mode: CARDINAL; VAR Addr: ADDRESS);
 BEGIN
   Addr := ADDRESS(trap_1_wlw(68, Bytes, mode));
 END Xalloc;
 
 
-PROCEDURE Dup ( stdHandle: INTEGER; VAR newHandle: INTEGER );
+PROCEDURE Dup(stdHandle: INTEGER; VAR newHandle: INTEGER);
 BEGIN
   newHandle := trap_1_ww(69, stdHandle);
 END Dup;
 
 
-PROCEDURE Force ( stdHandle, newHandle: INTEGER ): BOOLEAN;
+PROCEDURE Force(stdHandle, newHandle: INTEGER): BOOLEAN;
 BEGIN
   RETURN trap_1_www(70, stdHandle, newHandle) = 0;
 END Force;
 
 
-PROCEDURE GetPath (VAR path: ARRAY OF CHAR; driveno: CARDINAL) : [ BOOLEAN ];
+PROCEDURE GetPath(VAR path: ARRAY OF CHAR; driveno: CARDINAL): [ BOOLEAN ];
 BEGIN
   RETURN trap_1_wlw(71, INTEGER32(ADR(path)), driveno) = 0;
 END GetPath;
 
 
-PROCEDURE Alloc (amount: INTEGER32; VAR Addr: ADDRESS);
+PROCEDURE Alloc(amount: INTEGER32; VAR Addr: ADDRESS);
 BEGIN
   Addr := trap_1_wl(72, amount);
 END Alloc;
 
 
-PROCEDURE Free (Addr: ADDRESS): [ BOOLEAN ];
+PROCEDURE Free(Addr: ADDRESS): [ BOOLEAN ];
 BEGIN
   RETURN trap_1_wl(73, INTEGER32(Addr)) >= 0;
 END Free;
 
 
-PROCEDURE Shrink (Addr: ADDRESS; NewSize: CARDINAL32): [ BOOLEAN ];
+PROCEDURE Shrink(Addr: ADDRESS; NewSize: CARDINAL32): [ BOOLEAN ];
 BEGIN
   RETURN trap_1_wwll(74, 0, INTEGER32(Addr), NewSize) >= 0;
 END Shrink;
 
 
-PROCEDURE Pexec ( Mode: CARDINAL; Name, Arguments, Environment: ADDRESS; VAR Result: INTEGER32 );
+PROCEDURE Pexec(Mode: CARDINAL; Name, Arguments, Environment: ADDRESS; VAR Result: INTEGER32);
 BEGIN
   Result := trap_1_wwlll(75, Mode, INTEGER32(Name), INTEGER32(Arguments), INTEGER32(Environment));
 END Pexec;
 
 
-PROCEDURE Term (exitcode: INTEGER) <* noreturn *>;
+PROCEDURE Term(exitcode: INTEGER) <* noreturn *>;
 BEGIN
   trap_1_ww(76, exitcode);
   HALT;
 END Term;
 
 
-PROCEDURE SFirst (REF fname: ARRAY OF CHAR; Attr: CARDINAL; VAR Result: INTEGER);
+PROCEDURE SFirst(REF fname: ARRAY OF CHAR; Attr: CARDINAL; VAR Result: INTEGER);
 VAR s: strtmp;
 BEGIN
   str0(s, fname);
@@ -587,13 +587,13 @@ BEGIN
 END SFirst;
 
 
-PROCEDURE SNext (VAR Result: INTEGER);
+PROCEDURE SNext(VAR Result: INTEGER);
 BEGIN
   Result := trap_1_w(79);
 END SNext;
 
 
-PROCEDURE Rename (REF oldname, newname: ARRAY OF CHAR) : [ INTEGER32 ];
+PROCEDURE Rename(REF oldname, newname: ARRAY OF CHAR): [ INTEGER32 ];
 VAR s, s2: strtmp;
 BEGIN
   str0(s, oldname);
@@ -602,7 +602,7 @@ BEGIN
 END Rename;
 
 
-PROCEDURE DaTime (handle: INTEGER; Buffer: ADDRESS; getOrSet: TimeAccessMode) : [ BOOLEAN ];
+PROCEDURE DaTime(handle: INTEGER; Buffer: ADDRESS; getOrSet: TimeAccessMode): [ BOOLEAN ];
 BEGIN
   RETURN trap_1_wlww(87, INTEGER32(Buffer), handle, INTEGER(getOrSet)) >= 0;
 END DaTime;
