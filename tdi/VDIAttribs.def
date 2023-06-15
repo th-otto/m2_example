@@ -1,50 +1,49 @@
 DEFINITION MODULE VDIAttribs;
 
-
 FROM GEMVDIbase IMPORT PxyArrayType;
 
-(* 1 *) PROCEDURE SetWritingMode(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetWritingMode(handle: INTEGER; mode: INTEGER): INTEGER;
 
-(* 2 *) PROCEDURE SetColour(INTEGER; INTEGER; PxyArrayType);
+PROCEDURE SetColour(handle: INTEGER; color: INTEGER; rgb: PxyArrayType);
 
-(* 3 *) PROCEDURE SetLineType(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetLineType(handle: INTEGER; type: INTEGER): INTEGER;
 
-(* 4 *) PROCEDURE DefineLineStyle(INTEGER; INTEGER);
+PROCEDURE DefineLineStyle(handle: INTEGER; pattern: INTEGER);
 
-(* 5 *) PROCEDURE SetLineWidth(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetLineWidth(handle: INTEGER; width: INTEGER): INTEGER;
 
-(* 6 *) PROCEDURE SetLineColour(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetLineColour(handle: INTEGER; color: INTEGER): INTEGER;
 
-(* 7 *) PROCEDURE SetEndLineStyle(INTEGER; INTEGER; INTEGER);
+PROCEDURE SetEndLineStyle(handle: INTEGER; begin, end: INTEGER);
 
-(* 8 *) PROCEDURE SetMarkerType(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetMarkerType(handle: INTEGER; type: INTEGER): INTEGER;
 
-(* 9 *) PROCEDURE SetMarkerHeight(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetMarkerHeight(handle: INTEGER; height: INTEGER): INTEGER;
 
-(* 10 *) PROCEDURE SetMarkerColour(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetMarkerColour(handle: INTEGER; color: INTEGER): INTEGER;
 
-(* 11 *) PROCEDURE SetAbsCharHeight(INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE SetAbsCharHeight(handle: INTEGER; height: INTEGER; VAR charW, charH, cellW, cellH: INTEGER);
 
-(* 12 *) PROCEDURE SetPointCharHeight(INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER) : INTEGER;
+PROCEDURE SetPointCharHeight(handle: INTEGER; height: INTEGER; VAR charW, charH, cellW, cellH: INTEGER): INTEGER;
 
-(* 13 *) PROCEDURE SetRotation(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetRotation(handle: INTEGER; angle: INTEGER): INTEGER;
 
-(* 14 *) PROCEDURE SetFont(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetFont(handle: INTEGER; font: INTEGER): INTEGER;
 
-(* 15 *) PROCEDURE SetGraphicTextColour(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetGraphicTextColour(handle: INTEGER; color: INTEGER): INTEGER;
 
-(* 16 *) PROCEDURE SetGraphicTextEffects(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetGraphicTextEffects(handle: INTEGER; effects: INTEGER): INTEGER;
 
-(* 17 *) PROCEDURE SetGraphicTextAlignment(INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE SetGraphicTextAlignment(handle: INTEGER; hor, ver: INTEGER; VAR horout, verout: INTEGER);
 
-(* 18 *) PROCEDURE SetFillInteriorStyle(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetFillInteriorStyle(handle: INTEGER; type: INTEGER): INTEGER;
 
-(* 19 *) PROCEDURE SetFillStyle(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetFillStyle(handle: INTEGER; index: INTEGER): INTEGER;
 
-(* 20 *) PROCEDURE SetFillColour(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetFillColour(handle: INTEGER; color: INTEGER): INTEGER;
 
-(* 21 *) PROCEDURE SetFillPerimeterVisibility(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SetFillPerimeterVisibility(handle: INTEGER; visible: INTEGER): INTEGER;
 
-(* 22 *) PROCEDURE DefineFillPattern(INTEGER; VAR ARRAY INTEGER; INTEGER);
+PROCEDURE DefineFillPattern(handle: INTEGER; VAR pattern: ARRAY OF INTEGER; planes: INTEGER);
 
 END VDIAttribs.

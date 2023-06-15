@@ -22,6 +22,14 @@ VAR ptsin:  CtrlArrayType;
 VAR intout: CtrlArrayType;
 VAR ptsout: CtrlArrayType;
 
+TYPE VDIParameterType = RECORD
+  contrl: ADDRESS;
+  intin:  ADDRESS;
+  ptsin:  ADDRESS;
+  intout: ADDRESS;
+  ptsout: ADDRESS;
+END;
+
 VAR i: INTEGER;
 VAR h: INTEGER;
 
@@ -31,6 +39,7 @@ VAR ADRintout: ADDRESS;
 VAR ADRptsout: ADDRESS;
 VAR ADRParams: ADDRESS;
 
+(* FIXME: should be VDIParameterType *)
 VAR parameterBlock : ARRAY [0..4] OF ADDRESS;
 
 PROCEDURE CallVDI();

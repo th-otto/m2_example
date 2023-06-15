@@ -1,34 +1,33 @@
 DEFINITION MODULE GEMFont;
 
-
 FROM SYSTEM IMPORT ADDRESS;
 
 TYPE GEMFontType = RECORD
-  FaceID(*offset: 0H*)  : CARDINAL;
-  FontSize(*offset: 2H*)  : CARDINAL;
-  FaceName(*offset: 4H*)  : ARRAY [0..31] OF CHAR;
-  LowADE(*offset: 24H*)  : CARDINAL;
-  HighADE(*offset: 26H*)  : CARDINAL;
-  TopLine(*offset: 28H*)  : CARDINAL;
-  AscentLine(*offset: 2AH*)  : CARDINAL;
-  HalfLine(*offset: 2CH*)  : CARDINAL;
-  DescentLine(*offset: 2EH*)  : CARDINAL;
-  BottomLine(*offset: 30H*)  : CARDINAL;
-  MaxFontWidth(*offset: 32H*)  : CARDINAL;
-  MaxFaceWidth(*offset: 34H*)  : CARDINAL;
-  LeftOffset(*offset: 36H*)  : CARDINAL;
-  RightOffset(*offset: 38H*)  : CARDINAL;
-  Thickening(*offset: 3AH*)  : CARDINAL;
-  UnderlineSize(*offset: 3CH*)  : CARDINAL;
-  LightMask(*offset: 3EH*)  : BITSET;
-  SkewMask(*offset: 40H*)  : BITSET;
-  Flags(*offset: 42H*)  : BITSET;
-  HorizOffsetTab(*offset: 44H*)  : POINTER TO ARRAY [0..255] OF CARDINAL;
-  CharOffsetTab(*offset: 48H*)  : POINTER TO ARRAY [0..255] OF CARDINAL;
-  FontData(*offset: 4CH*)  : ADDRESS;
-  FormWidth(*offset: 50H*)  : CARDINAL;
-  FormHeight(*offset: 52H*)  : CARDINAL;
-  NextFont(*offset: 54H*)  : ADDRESS;
+  FaceID        : CARDINAL;
+  FontSize      : CARDINAL;
+  FaceName      : ARRAY [0..31] OF CHAR;
+  LowADE        : CARDINAL;
+  HighADE       : CARDINAL;
+  TopLine       : CARDINAL;
+  AscentLine    : CARDINAL;
+  HalfLine      : CARDINAL;
+  DescentLine   : CARDINAL;
+  BottomLine    : CARDINAL;
+  MaxFontWidth  : CARDINAL;
+  MaxFaceWidth  : CARDINAL;
+  LeftOffset    : CARDINAL;
+  RightOffset   : CARDINAL;
+  Thickening    : CARDINAL;
+  UnderlineSize : CARDINAL;
+  LightMask     : BITSET;
+  SkewMask      : BITSET;
+  Flags         : BITSET;
+  HorizOffsetTab: POINTER TO ARRAY [0..255] OF CARDINAL;
+  CharOffsetTab : POINTER TO ARRAY [0..255] OF CARDINAL;
+  FontData      : ADDRESS;
+  FormWidth     : CARDINAL;
+  FormHeight    : CARDINAL;
+  NextFont      : ADDRESS;
 END;
-              
+
 END GEMFont.

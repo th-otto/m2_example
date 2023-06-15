@@ -152,7 +152,7 @@ PROCEDURE SetAbsTHeight(handle: DeviceHandle; height: CARDINAL16; VAR charW, cha
  *
  *  Die VAR-Parameter entsprechen denen von 'SetAbsTHeight'.
  *)
-PROCEDURE SetPtsTHeight(handle: DeviceHandle; height: CARDINAL16; VAR charW, charH, cellW, cellH: CARDINAL16);
+PROCEDURE SetPtsTHeight(handle: DeviceHandle; height: CARDINAL16; VAR charW, charH, cellW, cellH: CARDINAL16): [ CARDINAL16 ];
 CONST SetPointCharHeight = SetPtsTHeight;
 
 (*  Die Ausrichtung der Grundlinie (base line) wird in 1/10 Grad

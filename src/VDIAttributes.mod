@@ -157,7 +157,7 @@ END SetMarkerType;
 (*  ==============  *)
 
 PROCEDURE SetPtsTHeight(handle:DeviceHandle; height:CARDINAL16;
-                        VAR charW,charH,cellW,cellH:CARDINAL16);
+                        VAR charW,charH,cellW,cellH:CARDINAL16): [ CARDINAL16 ];
 BEGIN
   GEMShare.our_cb^.pubs.vINTIN[0] := height;
   GEMShare.vdi_if(handle, VDI_CTRL_CODE(GEMOps.SET_TEXT_HEIGHT_PTS, 0, 0, 1));
@@ -165,6 +165,7 @@ BEGIN
   charH := GEMShare.our_cb^.pubs.PTSOUT[1];
   cellW := GEMShare.our_cb^.pubs.PTSOUT[2];
   cellH := GEMShare.our_cb^.pubs.PTSOUT[3];
+  RETURN GEMShare.our_cb^.pubs.vINTOUT[0];
 END SetPtsTHeight;
 
 
