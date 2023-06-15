@@ -262,14 +262,14 @@ TYPE AESParameterType = RECORD
    addrOut : POINTER TO AESAddrOutType;
 END;
                    
-VAR AESParameters (* reladdr: 0H*)  : AESParameterType;
-VAR AESGlobal (* reladdr: 18H*)  : AESGlobalType;
-VAR AESControl (* reladdr: 36H*)  : AESControlType;
-VAR AESIntIn (* reladdr: 40H*)  : AESIntInType;
-VAR AESIntOut (* reladdr: 62H*)  : AESIntOutType;
-VAR AESAddrIn (* reladdr: 72H*)  : AESAddrInType;
-VAR AESAddrOut (* reladdr: 7EH*)  : AESAddrOutType;
-VAR AESCallResult (* reladdr: 86H*)  : INTEGER;
+VAR AESParameters : AESParameterType;
+VAR AESGlobal : AESGlobalType;
+VAR AESControl : AESControlType;
+VAR AESIntIn : AESIntInType;
+VAR AESIntOut : AESIntOutType;
+VAR AESAddrIn : AESAddrInType;
+VAR AESAddrOut : AESAddrOutType;
+VAR AESCallResult : INTEGER;
 
 PROCEDURE GemCall(Opcode: INTEGER; nintin: INTEGER; nintout: INTEGER; naddrin: INTEGER; naddrout: INTEGER): INTEGER;
 

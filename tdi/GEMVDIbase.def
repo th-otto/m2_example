@@ -1,61 +1,40 @@
 DEFINITION MODULE GEMVDIbase;
 
-IMPORT SYSTEM;
+FROM SYSTEM IMPORT ADDRESS;
 
 TYPE VDIWorkInType = ARRAY [0..10] OF INTEGER;
-
 TYPE VDIWorkOutType = ARRAY [0..57] OF INTEGER;
-
 TYPE PxyArrayType = ARRAY [0..3] OF INTEGER;
-
 TYPE BigPxyArrayType = ARRAY [0..7] OF INTEGER;
-
 TYPE MouseArrayType = ARRAY [0..38] OF INTEGER;
-
 TYPE SmallArrayType = ARRAY [0..1] OF INTEGER;
-
 TYPE RGBArrayType = ARRAY [0..2] OF INTEGER;
-
 TYPE TextAttrArrayType = ARRAY [0..9] OF INTEGER;
-
 TYPE FontNameType = ARRAY [0..31] OF CHAR;
-
 TYPE DistanceArrayType = ARRAY [0..4] OF INTEGER;
-
 TYPE FilmNameType = ARRAY [0..124] OF CHAR;
-
 TYPE FilmIndexType = ARRAY [0..7] OF ARRAY [0..1] OF INTEGER;
-
 TYPE CtrlArrayType = ARRAY [0..127] OF INTEGER;
 
-VAR contrl (* reladdr: 0H*)  : ARRAY [0..11] OF INTEGER;
+VAR contrl: ARRAY [0..11] OF INTEGER;
+VAR intin:  CtrlArrayType;
+VAR ptsin:  CtrlArrayType;
+VAR intout: CtrlArrayType;
+VAR ptsout: CtrlArrayType;
 
-VAR intin (* reladdr: 18H*)  : CtrlArrayType;
+VAR i: INTEGER;
+VAR h: INTEGER;
 
-VAR ptsin (* reladdr: 118H*)  : CtrlArrayType;
+VAR ADRintin:  ADDRESS;
+VAR ADRptsin:  ADDRESS;
+VAR ADRintout: ADDRESS;
+VAR ADRptsout: ADDRESS;
+VAR ADRParams: ADDRESS;
 
-VARintout (* reladdr: 218H*)  : CtrlArrayType;
+VAR parameterBlock : ARRAY [0..4] OF ADDRESS;
 
-VAR ptsout (* reladdr: 318H*)  : CtrlArrayType;
+PROCEDURE CallVDI();
 
-VAR i (* reladdr: 418H*)  : INTEGER;
-
-VAR h (* reladdr: 41AH*)  : INTEGER;
-
-VAR ADRintin (* reladdr: 41CH*)  : SYSTEM.ADDRESS;
-
-VAR ADRptsin (* reladdr: 420H*)  : SYSTEM.ADDRESS;
-
-VAR ADRintout (* reladdr: 424H*)  : SYSTEM.ADDRESS;
-
-VAR ADRptsout (* reladdr: 428H*)  : SYSTEM.ADDRESS;
-
-VAR ADRParams (* reladdr: 42CH*)  : SYSTEM.ADDRESS;
-
-VAR parameterBlock (* reladdr: 430H*)  : ARRAY [0..4] OF SYSTEM.ADDRESS;;
-
-(* 1 *) PROCEDURE CallVDI();
-
-(* 2 *) PROCEDURE SetContrl(OpCode: INTEGER; nptsin: INTEGER; nintin: INTEGER; subcmd: INTEGER; handle: INTEGER);
+PROCEDURE SetContrl(OpCode: INTEGER; nptsin: INTEGER; nintin: INTEGER; subcmd: INTEGER; handle: INTEGER);
 
 END GEMVDIbase.
