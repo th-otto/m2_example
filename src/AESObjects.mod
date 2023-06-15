@@ -45,6 +45,20 @@ BEGIN
   GEMShare.aes_if(AES_CTRL_CODE(GEMOps.OBJC_DRAW, 6, 1, 1));
   GEMShare.testINTOUT0();
 END DrawObject;
+
+
+PROCEDURE ObjectDraw(tree: ADDRESS; start, depth: INTEGER; x, y, w, h: INTEGER);
+BEGIN
+  GEMShare.our_cb^.pubs.ADDRIN[0] := tree;
+  GEMShare.our_cb^.pubs.aINTIN[0] := start;
+  GEMShare.our_cb^.pubs.aINTIN[1] := depth;
+  GEMShare.our_cb^.pubs.aINTIN[2] := x;
+  GEMShare.our_cb^.pubs.aINTIN[3] := y;
+  GEMShare.our_cb^.pubs.aINTIN[4] := w;
+  GEMShare.our_cb^.pubs.aINTIN[5] := h;
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.OBJC_DRAW, 6, 1, 1));
+  GEMShare.testINTOUT0();
+END ObjectDraw;
         
 
 PROCEDURE ChangeObjState(tree: PtrObjTree; index: CARDINAL; frame: Rectangle; newState: OStateSet; redraw: BOOLEAN);
@@ -63,6 +77,22 @@ BEGIN
 END ChangeObjState;
 
 
+PROCEDURE ObjectChange(tree: ADDRESS; index, depth: INTEGER; x, y, w, h: INTEGER; newState: INTEGER; redraw: INTEGER);
+BEGIN
+  GEMShare.our_cb^.pubs.ADDRIN[0] := tree;
+  GEMShare.our_cb^.pubs.aINTIN[0] := index;
+  GEMShare.our_cb^.pubs.aINTIN[1] := depth;
+  GEMShare.our_cb^.pubs.aINTIN[2] := x;
+  GEMShare.our_cb^.pubs.aINTIN[3] := y;
+  GEMShare.our_cb^.pubs.aINTIN[4] := w;
+  GEMShare.our_cb^.pubs.aINTIN[5] := h;
+  GEMShare.our_cb^.pubs.aINTIN[6] := VAL(INTEGER, newState);
+  GEMShare.our_cb^.pubs.aINTIN[7] := redraw;
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.OBJC_CHANGE, 8, 1, 1));
+  GEMShare.testINTOUT0();
+END ObjectChange;
+
+
 PROCEDURE FindObject(tree:PtrObjTree;start,depth:CARDINAL;spot:Point):CARDINAL;
 BEGIN
   GEMShare.our_cb^.pubs.ADDRIN[0] := tree;
@@ -73,6 +103,18 @@ BEGIN
   GEMShare.aes_if(AES_CTRL_CODE(GEMOps.OBJC_FIND, 4, 1, 1));
   RETURN GEMShare.our_cb^.pubs.aINTOUT[0];
 END FindObject;
+
+
+PROCEDURE ObjectFind(tree: ADDRESS; start, depth: INTEGER; x, y: INTEGER): INTEGER;
+BEGIN
+  GEMShare.our_cb^.pubs.ADDRIN[0] := tree;
+  GEMShare.our_cb^.pubs.aINTIN[0] := start;
+  GEMShare.our_cb^.pubs.aINTIN[1] := depth;
+  GEMShare.our_cb^.pubs.aINTIN[2] := x;
+  GEMShare.our_cb^.pubs.aINTIN[3] := y;
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.OBJC_FIND, 4, 1, 1));
+  RETURN GEMShare.our_cb^.pubs.aINTOUT[0];
+END ObjectFind;
 
 
 PROCEDURE ObjectOffset(tree:PtrObjTree;index:CARDINAL):Point;
@@ -128,7 +170,20 @@ BEGIN
   GEMShare.testINTOUT0();
   charPos := GEMShare.our_cb^.pubs.aINTIN[1];
 END EditObjText;
-        
+
+
+PROCEDURE ObjectEdit(tree: ADDRESS; index: INTEGER; ch: INTEGER; pos: INTEGER; kind: INTEGER; VAR newpos: INTEGER);
+BEGIN
+  GEMShare.our_cb^.pubs.ADDRIN[0] := tree;
+  GEMShare.our_cb^.pubs.aINTIN[0] := index;
+  GEMShare.our_cb^.pubs.aINTIN[1] := ch;
+  GEMShare.our_cb^.pubs.aINTIN[2] := pos;
+  GEMShare.our_cb^.pubs.aINTIN[3] := ORD(kind);
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.OBJC_EDIT, 4, 2, 1));
+  GEMShare.testINTOUT0();
+  newpos := GEMShare.our_cb^.pubs.aINTIN[1];
+END ObjectEdit;
+
 
 BEGIN
   IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;

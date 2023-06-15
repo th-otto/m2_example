@@ -13,6 +13,7 @@ DEFINITION MODULE AESObjects;
  *)
  
  
+FROM SYSTEM IMPORT ADDRESS;
 FROM    GrafBase   IMPORT Point, Rectangle;
 
 FROM    GEMGlobals IMPORT PtrObjTree, OStateSet, GemChar;
@@ -34,6 +35,7 @@ FROM    GEMGlobals IMPORT PtrObjTree, OStateSet, GemChar;
  *                 Element diese Objekbaumes sein.
  *)
 PROCEDURE AddObject(tree: PtrObjTree; parent, child: CARDINAL);
+CONST ObjectAdd = AddObject;
 
 (*  Ein Objekt wird aus einem Objektbaum entfernt.
  *
@@ -41,6 +43,7 @@ PROCEDURE AddObject(tree: PtrObjTree; parent, child: CARDINAL);
  *  'tree'      -- Der Objektbaum, dessen Element 'index' sein muss.
  *)
 PROCEDURE DeleteObject(tree: PtrObjTree; index: CARDINAL);
+CONST ObjectDelete = DeleteObject;
 
 (*  Ein Objektbaum wird bis zu der gewuenschten Tiefe auf dem
  *  Bildschirm dargestellt. Es werden nur die Teile sichtbar,
@@ -66,6 +69,7 @@ PROCEDURE DeleteObject(tree: PtrObjTree; index: CARDINAL);
  *  'MaxDepth' kann aus 'GEMGlobals' importiert werden.
  *)
 PROCEDURE DrawObject(tree: PtrObjTree; start,depth: CARDINAL; frame: Rectangle);
+PROCEDURE ObjectDraw(tree: ADDRESS; start, depth: INTEGER; x, y, w, h: INTEGER);
 
 (*  Diese Prozedur sucht ein Objekt in einem Baum, das sich beim
  *  darstellen des Baumes an einer bestimmten Stellen auf dem
@@ -82,6 +86,7 @@ PROCEDURE DrawObject(tree: PtrObjTree; start,depth: CARDINAL; frame: Rectangle);
  *  an dieser Stelle kein Objekt. Zu 'depth' siehe 'DrawObject'.
  *)
 PROCEDURE FindObject(tree: PtrObjTree; start, depth: CARDINAL; spot: Point): CARDINAL;
+PROCEDURE ObjectFind(tree: ADDRESS; start, depth: INTEGER; x, y: INTEGER): INTEGER;
 
 (*  Diese Funktion liefert die Bildschirmposition auf der ein
  *  Objekt beim Zeichnen seines Baumes dargestellt wird.
@@ -90,6 +95,7 @@ PROCEDURE FindObject(tree: PtrObjTree; start, depth: CARDINAL; spot: Point): CAR
  *  'tree'      -- der Objektbaum
  *)
 PROCEDURE ObjectOffset(tree: PtrObjTree; index: CARDINAL): Point;
+(* PROCEDURE ObjectOffset(tree: ADDRESS; index: INTEGER; VAR x, y: INTEGER); *)
 
 (*  Ein Objekt wird in seiner Nachfolgerliste an ein neue Posi-
  *  tion bewegt.
@@ -134,6 +140,7 @@ PROCEDURE ObjectOrder(tree: PtrObjTree; index : CARDINAL; newPos: INTEGER);
  *)
 TYPE    EditObjMode     = (startEdit, initEdit, charEdit, endEdit);
 PROCEDURE EditObjText(tree : PtrObjTree; index: CARDINAL; ch: GemChar; VAR charPos: CARDINAL; edKind: EditObjMode);
+PROCEDURE ObjectEdit(tree: ADDRESS; index: INTEGER; ch: INTEGER; pos: INTEGER; kind: INTEGER; VAR newpos: INTEGER);
 
 (*  Diese Prozedur dient zum Aendern des Objektstatus eines Objektes
  *
@@ -148,6 +155,7 @@ PROCEDURE EditObjText(tree : PtrObjTree; index: CARDINAL; ch: GemChar; VAR charP
  *  Element der Statusmenge geaendert wird.
  *)
 PROCEDURE ChangeObjState(tree: PtrObjTree; index: CARDINAL; frame: Rectangle; newState: OStateSet; redraw: BOOLEAN);
+PROCEDURE ObjectChange(tree: ADDRESS; index, depth: INTEGER; x, y, w, h: INTEGER; newState: INTEGER; redraw: INTEGER);
 
 
 END AESObjects.
