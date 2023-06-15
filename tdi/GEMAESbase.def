@@ -271,18 +271,18 @@ VAR AESAddrIn (* reladdr: 72H*)  : AESAddrInType;
 VAR AESAddrOut (* reladdr: 7EH*)  : AESAddrOutType;
 VAR AESCallResult (* reladdr: 86H*)  : INTEGER;
 
-(* 1 *) PROCEDURE GemCall(opcode: INTEGER; nintin: INTEGER; nintout: INTEGER; naddrin: INTEGER; naddrout: INTEGER): INTEGER;
+PROCEDURE GemCall(Opcode: INTEGER; nintin: INTEGER; nintout: INTEGER; naddrin: INTEGER; naddrout: INTEGER): INTEGER;
 
-(* 2 *) PROCEDURE IntIn2(intin0, intin1: INTEGER);
+PROCEDURE IntIn2(intin0, intin1: INTEGER);
 
-(* 3 *) PROCEDURE IntIn3(intin0, intin1, intin2: INTEGER);
+PROCEDURE IntIn3(intin0, intin1, intin2: INTEGER);
 
-(* 4 *) PROCEDURE IntIn4(intin0, intin1, intin2, intin3: INTEGER);
+PROCEDURE IntIn4(intin0, intin1, intin2, intin3: INTEGER);
 
-(* 5 *) PROCEDURE IntIn8(intin0, intin1, intin2, intin3, intin4, intin5, intin6, intin7: INTEGER);
+PROCEDURE IntIn8(intin0, intin1, intin2, intin3, intin4, intin5, intin6, intin7: INTEGER);
 
-(* 6 *) PROCEDURE IntOut2(VAR intout0: INTEGER; VAR intout1: INTEGER);
+PROCEDURE IntOut2(VAR intout1: INTEGER; VAR intout2: INTEGER);
 
-(* 7 *) PROCEDURE IntOut4(VAR intout0: INTEGER; VAR intout1: INTEGER; VAR intout2: INTEGER; VAR intout3: INTEGER);
+PROCEDURE IntOut4(VAR intout1: INTEGER; VAR intout2: INTEGER; VAR intout3: INTEGER; VAR intout4: INTEGER);
 
 END GEMAESbase.
