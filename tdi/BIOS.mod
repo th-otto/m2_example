@@ -1,6 +1,6 @@
 IMPLEMENTATION MODULE BIOS;
-(*$S-*)
-(*$T-*)
+(*$S-*) (* no stack check *)
+(*$T-*) (* no range check *)
 
 FROM SYSTEM IMPORT CODE, ADR, PUSH, REGISTER, ADDRESS;
 

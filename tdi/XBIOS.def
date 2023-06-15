@@ -2,6 +2,7 @@ DEFINITION MODULE XBIOS;
 
 FROM SYSTEM IMPORT BYTE, ADDRESS;
 
+(* InitMouse *)
 TYPE MouseType = (DisableMouse, RelativeMouse, AbsoluteMouse, UnusedMouse, KeycodeMouse);
 
 TYPE ParamBlk = RECORD
@@ -35,6 +36,7 @@ TYPE IOREC = RECORD
     ibufhi   : CARDINAL;
 END;
         
+(* passed to ConfigurePrinter *)
 TYPE PrtConfig = (DaisyWheel,    (* dot/daisy *)
                Monochrome,    (* colour/mono *)
                EpsonPrinter,  (* Atari/Epson *)
@@ -62,10 +64,16 @@ TYPE KeyTable = RECORD
    capslock : KeyTransPtr;
 END;
            
+(* resolutions for GetScreenResolution and SetScreen *)
 CONST Low = 0;
 CONST Medium = 1;
 CONST High = 2;
+CONST Videl  = 3;
+CONST TTMed  = 4;
+CONST TTHigh = 6;
+CONST TTLow  = 7;
 
+(* normal value given for virgin floppies *)
 CONST VirginMedia = 0E5E5H;
 
 TYPE Timer = (TimerA, TimerB, TimerC, TimerD);
@@ -82,80 +90,229 @@ TYPE KBVector = RECORD
    joyvec  : ADDRESS;
 END;
            
-(* 1 *) PROCEDURE InitMouse(mtyp: MouseType; VAR param: ParamBlk; serveproc: PROC);
+(* initialise mouse packet handler. *)
+PROCEDURE InitMouse(mtyp: MouseType; VAR param: ParamBlk; serveproc: PROC);
 
-(* 2 *) PROCEDURE ScreenPhysicalBase(): ADDRESS;
+(* get the screen's physical base address at beginning of next vblank. *)
+PROCEDURE ScreenPhysicalBase(): ADDRESS;
 
-(* 3 *) PROCEDURE ScreenLogicalBase(): ADDRESS;
+(* get the screen's logical (GSX) base address. *)
+PROCEDURE ScreenLogicalBase(): ADDRESS;
 
-(* 4 *) PROCEDURE GetResolution(): INTEGER;
+(* return the screen's current resolution *)
+PROCEDURE GetResolution(): INTEGER;
 
-(* 5 *) PROCEDURE SetScreenBase(logLoc, physLoc: ADDRESS; rez: INTEGER);
+(* set screen base address and resolutions.
+   logLoc: new logical screen location.
+   physLoc: new physical screen resolution.
+   rez: new resolution.
+   NOTE: specifying -1 for any of the above will not change the
+           current value. *)
+PROCEDURE SetScreenBase(logLoc, physLoc: ADDRESS; rez: INTEGER);
 
-(* 6 *) PROCEDURE SetPalette(VAR palette: Palette);
+(* set the contents of the hardware palette register. *)
+PROCEDURE SetPalette(VAR palette: Palette);
 
-(* 7 *) PROCEDURE SetColour(colorNum, color: CARDINAL): CARDINAL;
+(* set the colour of a palette table entry.
+   colourNum: the palette entry to set colour of.
+   colour: the new colour.
+   returns: the old value of the palette entry. *)
+PROCEDURE SetColour(colorNum, color: CARDINAL): CARDINAL;
 
-(* 8 *) PROCEDURE FloppyRead(buffer: ADDRESS; drive: CARDINAL; sector, track, side: CARDINAL; count: CARDINAL): INTEGER;
+(* read floppy disk sector(s) into buffer.
+   buf: the buffer origin for the data.
+   drive: 0 => A:, 1 => B:
+   sector: sector number to start read from, normally 1..9.
+   track: the track to seek to.
+   side: the side to select.
+   count: the number of sectors to read.
+   returns: 0 => no error, otherwise DOS error code. *)
+PROCEDURE FloppyRead(buffer: ADDRESS; drive: CARDINAL; sector, track, side: CARDINAL; count: CARDINAL): INTEGER;
 
-(* 9 *) PROCEDURE FloppyWrite(buffer: ADDRESS; drive: CARDINAL; sector, track, side: CARDINAL; count: CARDINAL): INTEGER;
+(* write buffer to floppy disk sector(s).
+   parameters as for FloppyRead, except data is written from the buffer.
+   returns: 0 => no error, otherwise DOS error code. *)
+PROCEDURE FloppyWrite(buffer: ADDRESS; drive: CARDINAL; sector, track, side: CARDINAL; count: CARDINAL): INTEGER;
 
-(* 10 *) PROCEDURE FloppyFormat(buffer: ADDRESS; drive: CARDINAL; spt, track, side: CARDINAL; interleave: CARDINAL; virgin: CARDINAL): INTEGER;
+(* format a floppy disk track.
+   buf: buffer large enough to hold bit image of a track (8K for 9 spt)
+   drive: the drive to format, 0 => A:, 1 => B:
+   spt: the number of sectors per track, normally 9
+   track: the track to format, 0 through 79.
+   side: the side to format, 0 or 1.
+   interleave: the interleave factor, normally 1.
+   virgin: the word fill value for new sectors.
+   returns: 0 => no error, otherwise DOS error code.
+   note: on return buf holds zero terminated list of sectors that would
+         not format. *)
+PROCEDURE FloppyFormat(buffer: ADDRESS; drive: CARDINAL; spt, track, side: CARDINAL; interleave: CARDINAL; virgin: CARDINAL): INTEGER;
 
-(* 11 *) PROCEDURE MIDIWS(VAR str: ARRAY OF BYTE; len: CARDINAL);
+(* write a string of characters to the MIDI port.
+   str: the string to write.
+   len: the number of characters to write - 1. *)
+PROCEDURE MIDIWS(VAR str: ARRAY OF BYTE; len: CARDINAL);
 
-(* 12 *) PROCEDURE MFPint(intNo: CARDINAL; vector: PROC);
+(* set MFP interrupt vector.
+   intNo: the MFP interrupt vector to set.
+   vector: the interrupt handler code. *)
+PROCEDURE MFPint(intNo: CARDINAL; vector: PROC);
 
-(* 13 *) PROCEDURE IORec(dev: SerialDevice): IORECPTR;
+(* return pointer to serial device IO record.
+   NOTE: for the RS232 device, an output record immediately follows the
+           input record returned by this function. It may be accessed by:
+         VAR x: IORECPTR;
+         x := IORec(RS232);
+         INC(x, TSIZE(IOREC)); *)
+PROCEDURE IORec(dev: SerialDevice): IORECPTR;
 
-(* 14 *) PROCEDURE ConfigureRS232(baud: SerialSpeed; handshake: FlowFlavor; ucr, rsr, tsr, scr: INTEGER);
+(* configure RS232 port.
+   speed: the new RS232 speed.
+   flowctl: the handshaking used.
+   ucr, rsr, tsr, scr: set the appropriate 68901 registers. *)
+PROCEDURE ConfigureRS232(baud: SerialSpeed; handshake: FlowFlavor; ucr, rsr, tsr, scr: INTEGER);
 
-(* 15 *) PROCEDURE SetKeyTable(VAR unshift, shift, capslock: KeyTransPtr): KeyTablePtr;
+(* set pointers to keyboard translation tables. *)
+PROCEDURE SetKeyTable(VAR unshift, shift, capslock: KeyTransPtr): KeyTablePtr;
 
-(* 16 *) PROCEDURE Random(): LONGCARD;
+(* return a random number. *)
+PROCEDURE Random(): LONGCARD;
 
-(* 17 *) PROCEDURE PrototypeBootSector(buffer: ADDRESS; serialNo: LONGINT; disktype: INTEGER; execFlag: INTEGER);
+(* prototype an image of a boot sector.
+   buf: the buffer to put the image into. (512 bytes)
+   serialNo: -1 => leave boot sector serial number unchanged.
+             00000000..00FFFFFF => new serial number for disk.
+             01000000..FFFFFFFE => generate random serial number.
+   disktype: -1 => leave information alone.
+              0 = 40 tracks, SS (180K)
+              1 = 40 tracks, DS (360K)
+              2 = 80 tracks, SS (360K)
+              3 = 80 tracks, DS (720K)
+   execFlag: 1 => bootable, 0 => non-bootable, -1 => leave alone. *)
+PROCEDURE PrototypeBootSector(buffer: ADDRESS; serialNo: LONGINT; disktype: INTEGER; execFlag: INTEGER);
 
-(* 18 *) PROCEDURE FloppyVerify(buffer: ADDRESS; drive: CARDINAL; sector, track, side: CARDINAL; count: CARDINAL): INTEGER;
+(* verify floppy disk sectors are readable.
+   parameters as for FloppyRead, except buffer must br 1024 bytes long. *)
+PROCEDURE FloppyVerify(buffer: ADDRESS; drive: CARDINAL; sector, track, side: CARDINAL; count: CARDINAL): INTEGER;
 
-(* 19 *) PROCEDURE ScreenDump();
+(* dump screen to printer. *)
+PROCEDURE ScreenDump();
 
-(* 20 *) PROCEDURE ConfigureCursor(mode, rate: INTEGER): INTEGER;
+(* configure cursor blink rate and attributes.
+   mode: based on video scan rate; -1 => no change.
+   rate: 0 => flash, 1 => steady, -1 => no change.
+   returns: hi byte = old blink rate, lo byte = old attributes. *)
+PROCEDURE ConfigureCursor(rate, mode: INTEGER): INTEGER;
 
-(* 21 *) PROCEDURE SetDateTime(datetime: LONGCARD);
+(* set the keyboard date and time.
+   datetime: DOS format date & time; hi word = date, lo word = time. *)
+PROCEDURE SetDateTime(datetime: LONGCARD);
 
-(* 22 *) PROCEDURE GetDateTime(): LONGCARD;
+(* get the date and time.
+   returns: DOS format date & time. *)
+PROCEDURE GetDateTime(): LONGCARD;
 
-(* 23 *) PROCEDURE BiosKeys();
+(* restore keymappings to power up settings *)
+PROCEDURE BiosKeys();
 
-(* 24 *) PROCEDURE KeyboardWS(VAR str: ARRAY OF BYTE; len: CARDINAL);
+(* write string to intelligent keyboard.
+   str: the string to write.
+   len: the number of characters to write - 1. *)
+PROCEDURE KeyboardWS(VAR str: ARRAY OF BYTE; len: CARDINAL);
 
-(* 25 *) PROCEDURE DisableInterrupt(intNo: CARDINAL);
+(* disable given 68901 interrupt. *)
+PROCEDURE DisableInterrupt(intNo: CARDINAL);
 
-(* 26 *) PROCEDURE EnableInterrupt(intNo: CARDINAL);
+(* enable given 68901 interrupt. *)
+PROCEDURE EnableInterrupt(intNo: CARDINAL);
 
-(* 27 *) PROCEDURE GIRead(regno: CARDINAL): CARDINAL;
+(* read register on the sound chip.
+   regno: the register number to read.
+   returns: data in the register. *)
+PROCEDURE GIRead(regno: CARDINAL): CARDINAL;
 
-(* 28 *) PROCEDURE GIWrite(regno: CARDINAL; data: CARDINAL);
+(* write register on the sound chip.
+   regno: the register number to write.
+   data: the data to write to the register. *)
+PROCEDURE GIWrite(regno: CARDINAL; data: CARDINAL);
 
-(* 29 *) PROCEDURE GIOffBit(bitno: CARDINAL);
+(* set a bit in the port A register to zero.
+   bitno: the bit number to set to zero. *)
+PROCEDURE GIOffBit(bitno: CARDINAL);
 
-(* 30 *) PROCEDURE GIOnBit(bitno: CARDINAL);
+(* set a bit in the port A register to one.
+   bitno: the bit number to set to one. *)
+PROCEDURE GIOnBit(bitno: CARDINAL);
 
-(* 31 *) PROCEDURE SetTimerInterrupt(which: Timer; control, data: CARDINAL; vec: PROC);
+(* set an interrupt handler for timer.
+   timer: the timer to install interrupt handler for.
+   control: timer's control register setting.
+   data: byte put into timer's data register.
+   vec: the interrupt procedure. *)
+PROCEDURE SetTimerInterrupt(which: Timer; control, data: CARDINAL; vec: PROC);
 
-(* 32 *) PROCEDURE DoSound(data: ADDRESS);
+(* set sound daemon's "program counter".
+   x: the new program counter; program is a sequence of bytes of the
+      form:
+      { <opcode> <operand1> [<operand2> <operand3> ] }
+      00 - 0F   sound register <opcode> := <operand1>
+      80        temporary register := <operand1>
+      81        sound register <operand1> := temporary register
+                INC(temporary register,<operand2>) (*signed*)
+                IF temporary register = <operand3> THEN
+                  go to next instuction
+                ELSE
+                  wait for next update
+                  repeat instruction
+                END
+      82 - FF   IF <operand1> = 0 THEN stop sound daemon
+                ELSE set next update to <operand1> 50Hz ticks time
+                END
+      e.g. data for "bell" type sound:
+      00 34 01 00 02 00 03 00 04 00 05 00 06 00 07 FE 08 10 09 00
+      0A 00 0B 00 0C 10 0D 09 FF 00
+*)
+PROCEDURE DoSound(data: ADDRESS);
 
-(* 33 *) PROCEDURE ConfigurePrinter(config: PrtConfigSet): PrtConfigSet;
+(* configure printer.
+   config: the new printer configuration.
+   returns: old printer configuration.
+   NOTE: ConfigurePrinter(NoAlter) does not alter the old setting. *)
+PROCEDURE ConfigurePrinter(config: PrtConfigSet): PrtConfigSet;
 
-(* 34 *) PROCEDURE KeyboardVectors(): KBVectorPtr;
+(* return pointer to keyboard vector table. *)
+PROCEDURE KeyboardVectors(): KBVectorPtr;
 
-(* 35 *) PROCEDURE KeyboardRate(initial, repeat: INTEGER): CARDINAL;
+(* set keyboard repeat rate and delay.
+   initial: -1 => no change, otherwise initial delay, 50Hz.
+   repeat: -1 => no change, otherwise repeat rate, 50Hz.
+   returns: hi byte = old initial delay, lo byte = old repeat rate. *)
+PROCEDURE KeyboardRate(initial, repeat: INTEGER): CARDINAL;
 
-(* 36 *) PROCEDURE VSync();
+(* wait for next vertical blank interrupt. *)
+PROCEDURE VSync();
 
-(* 37 *) PROCEDURE SuperExec(Code: PROC);
+(* Run code in supervisor mode with supervisor stack.
+   Code: The code to run in supervisor mode, terminated with RTS.
+   Note: The code is run with the supervisor stack. Do NOT attempt
+         to allocate large amounts of local data as the supervisor
+         stack will overflow. Note that the code in the "Code" proc
+         must have stack checking turned off (with a -fno-stack-check option)
+         otherwise a "stack overflow" error will be generated on entry
+         to the procedure. *)
+PROCEDURE SuperExec(Code: PROC);
 
-(* 38 *) PROCEDURE PuntAES();
+(* Throws away the GEM AES, freeing up memory. A re-boot will always be
+   performed after this call (unless AES is in ROM) *)
+PROCEDURE PuntAES();
+
+(* Returns current seek rate of the floppy disk if -1 is passed to 'rate'.
+   Otherwise the new 'rate' value is set.
+   Works with ALL TOS-versions!
+     drive: 0 => A:, 1 => B:, other values are not allowed!
+     rate: -1 -> return current rate, 0: 6ms, 1: 12ms, 2: 2ms, 3: 3ms  *)
+PROCEDURE FlopRate(drive: CARDINAL; rate: INTEGER): INTEGER;
+
+(* Is only available on Blitter TOS (version 1.2) and higher! *)
+PROCEDURE BlitMode(flag: INTEGER): BITSET;
 
 END XBIOS.

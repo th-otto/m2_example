@@ -1,6 +1,6 @@
 IMPLEMENTATION MODULE XBIOS;
-(*$S-*)
-(*$T-*)
+(*$S-*) (* no stack check *)
+(*$T-*) (* no range check *)
 
 FROM SYSTEM IMPORT CODE, ADR, PUSH, REGISTER, BYTE, ADDRESS;
 
@@ -368,6 +368,25 @@ BEGIN
   PUSH(39);
   CODE(TRAP14);
 END PuntAES;
+
+
+PROCEDURE FlopRate(drive: CARDINAL; rate: INTEGER): INTEGER;
+BEGIN
+  PUSH(rate);
+  PUSH(drive);
+  PUSH(41);
+  CODE(TRAP14);
+  RETURN INTEGER(REGISTER(0));
+END FlopRate;
+
+
+PROCEDURE BlitMode(flag: INTEGER): BITSET;
+BEGIN
+  PUSH(flag);
+  PUSH(64);
+  CODE(TRAP14);
+  RETURN BITSET(REGISTER(0));
+END BlitMode;
 
 
 END XBIOS.

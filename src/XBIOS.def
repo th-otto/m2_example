@@ -413,33 +413,33 @@ PROCEDURE PuntAES;
    Works with ALL TOS-versions!
      drive: 0 => A:, 1 => B:, other values are not allowed!
      rate: -1 -> return current rate, 0: 6ms, 1: 12ms, 2: 2ms, 3: 3ms  *)
-PROCEDURE FlopRate (drive: CARDINAL16; rate: INTEGER16): [ INTEGER16 ];
+PROCEDURE FlopRate(drive: CARDINAL16; rate: INTEGER16): [ INTEGER16 ];
 
-PROCEDURE BlitMode (flag: INTEGER16): [ BITSET ];
-  (* Is only available on Blitter TOS (version 1.2) and higher! *)
+(* Is only available on Blitter TOS (version 1.2) and higher! *)
+PROCEDURE BlitMode(flag: INTEGER16): [ BITSET ];
 
 (*
  * Die folgenden Funktionen sind nur auf einem Atari TT verfuegbar:
  *)
 
-PROCEDURE Bconmap (devNo: INTEGER16): [ INTEGER32 ];
+PROCEDURE Bconmap(devNo: INTEGER16): [ INTEGER32 ];
 
-PROCEDURE DMAread (sector: CARDINAL32; count: CARDINAL16; buffer: ADDRESS;
+PROCEDURE DMAread(sector: CARDINAL32; count: CARDINAL16; buffer: ADDRESS;
                    devNo: CARDINAL16): INTEGER16;
-PROCEDURE DMAwrite (sector: CARDINAL32; count: CARDINAL16; buffer: ADDRESS;
+PROCEDURE DMAwrite(sector: CARDINAL32; count: CARDINAL16; buffer: ADDRESS;
                    devNo: CARDINAL16): INTEGER16;
 
-PROCEDURE NVMaccess (op, start, count: CARDINAL16; buffer: ADDRESS): [ INTEGER16 ];
+PROCEDURE NVMaccess(op, start, count: CARDINAL16; buffer: ADDRESS): [ INTEGER16 ];
 PROCEDURE Waketime(date, time: CARDINAL16);
 
-PROCEDURE EsetShift (shftMode: INTEGER16): [ INTEGER16 ];
-PROCEDURE EgetShift (): INTEGER16;
-PROCEDURE EsetBank (bankNum: INTEGER16): [ INTEGER16 ];
-PROCEDURE EsetColor (colorNum, color: INTEGER16): [ INTEGER16 ];
-PROCEDURE EsetPalette (colorNum, count: INTEGER16; palettePtr: ADDRESS);
-PROCEDURE EgetPalette (colorNum, count: INTEGER16; palettePtr: ADDRESS);
-PROCEDURE EsetGray (swtch: INTEGER16): [ INTEGER16 ];
-PROCEDURE EsetSmear (swtch: INTEGER16): [ INTEGER16 ];
+PROCEDURE EsetShift(shftMode: INTEGER16): [ INTEGER16 ];
+PROCEDURE EgetShift(): INTEGER16;
+PROCEDURE EsetBank(bankNum: INTEGER16): [ INTEGER16 ];
+PROCEDURE EsetColor(colorNum, color: INTEGER16): [ INTEGER16 ];
+PROCEDURE EsetPalette(colorNum, count: INTEGER16; palettePtr: ADDRESS);
+PROCEDURE EgetPalette(colorNum, count: INTEGER16; palettePtr: ADDRESS);
+PROCEDURE EsetGray(swtch: INTEGER16): [ INTEGER16 ];
+PROCEDURE EsetSmear(swtch: INTEGER16): [ INTEGER16 ];
 PROCEDURE CacheCtrl(opcode, param: INTEGER16): [ INTEGER32 ];
 PROCEDURE WdgCtrl(opcode: INTEGER16): [ INTEGER32 ];
 PROCEDURE ExtRsConf(command, device: INTEGER16; param: INTEGER32): [ INTEGER32 ];
