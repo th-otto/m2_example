@@ -68,6 +68,22 @@ BEGIN
 END FormDial;
 
 
+PROCEDURE FormDialogue(flag: INTEGER; littlex, littley, littlew, littleh: INTEGER; bigx, bigy, bigw, bigh: INTEGER);
+BEGIN
+  GEMShare.our_cb^.pubs.aINTIN[0] := ORD(flag);
+  GEMShare.our_cb^.pubs.aINTIN[1] := littlex;
+  GEMShare.our_cb^.pubs.aINTIN[2] := littley;
+  GEMShare.our_cb^.pubs.aINTIN[3] := littlew;
+  GEMShare.our_cb^.pubs.aINTIN[4] := littleh;
+  GEMShare.our_cb^.pubs.aINTIN[5] := bigx;
+  GEMShare.our_cb^.pubs.aINTIN[6] := bigy;
+  GEMShare.our_cb^.pubs.aINTIN[7] := bigw;
+  GEMShare.our_cb^.pubs.aINTIN[8] := bigh;
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.FORM_DIAL, 9, 1, 0));
+  (* GEMShare.testINTOUT0(); GEM bringt immer aINTOUT[0]=1 *)
+END FormDialogue;
+
+
 PROCEDURE FormDo(tree: PtrObjTree; first: CARDINAL; VAR retBut: CARDINAL);
 BEGIN
   GEMShare.our_cb^.pubs.ADDRIN[0] := tree;
@@ -100,7 +116,7 @@ BEGIN
   GEMShare.our_cb^.pubs.ADDRIN[0] := tree;
   GEMShare.our_cb^.pubs.aINTIN[0] := index;
   GEMShare.our_cb^.pubs.aINTIN[1] := VAL(INTEGER, SHIFT(VAL(BITSET, ch.scan), 8) + VAL(BITSET, ch.ascii));
-  GEMShare.our_cb^.pubs.aINTIN[2] := 0 (* nextObj *);
+  GEMShare.our_cb^.pubs.aINTIN[2] := nextObj;
   GEMShare.aes_if(AES_CTRL_CODE(GEMOps.FORM_KEYBD, 3, 3, 1));
   nextObj := GEMShare.our_cb^.pubs.aINTOUT[1];
   ch.scan := VAL(CHAR, SHIFT(VAL(BITSET, GEMShare.our_cb^.pubs.aINTOUT[2]), -8));

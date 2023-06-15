@@ -3,6 +3,7 @@ DEFINITION MODULE AESApplications;
 FROM SYSTEM IMPORT ADDRESS;
 
 PROCEDURE ApplInitialise(): INTEGER;
+CONST ApplInitialize = ApplInitialise;
 
 PROCEDURE ApplRead(id: INTEGER; noBytes: INTEGER; buffer: ADDRESS);
 

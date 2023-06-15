@@ -72,6 +72,7 @@ TYPE    FormDialMode    = (reserveForm, growForm, shrinkForm, freeForm);
  *  Bildschirmausschnitte, zu erzwingen.
  *)
 PROCEDURE FormDial(flag: FormDialMode; little, big: Rectangle);
+PROCEDURE FormDialogue(flag: INTEGER; littlex, littley, littlew, littleh: INTEGER; bigx, bigy, bigw, bigh: INTEGER);
 
 (*  Fuehrt einen Teildialog durch, dass heisst alle vom Benutzer inner-
  *  halb der Dialogbox durchgefuehrten Aktionen werden selbstaendig
