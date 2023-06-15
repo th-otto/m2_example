@@ -1141,7 +1141,7 @@ AESWindows.WindowUpdate:
 [00010eb8] 4e75                      rts
 
 ***
-* MODULE GEMVDIBase
+* MODULE GEMVDIbase
 ***
 
 GEMVDIbase.CallVDI:

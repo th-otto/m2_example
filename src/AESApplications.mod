@@ -14,7 +14,7 @@ BEGIN
 END AES_CTRL_CODE;
 
 
-PROCEDURE ApplInitialise() : INTEGER;
+PROCEDURE ApplInitialise(): INTEGER;
 BEGIN
   aes_if(AES_CTRL_CODE(GEMOps.APPL_INIT, 0, 1, 0));
   RETURN our_cb^.pubs.aINTOUT[0];
@@ -41,7 +41,7 @@ BEGIN
 END ApplWrite;
 
 
-PROCEDURE ApplFind(VAR fname: ARRAY OF CHAR) : INTEGER;
+PROCEDURE ApplFind(VAR fname: ARRAY OF CHAR): INTEGER;
 BEGIN
   our_cb^.pubs.ADDRIN[0] := ADR(fname);
   aes_if(AES_CTRL_CODE(GEMOps.APPL_FIND, 0, 1, 1));
@@ -58,7 +58,7 @@ BEGIN
 END ApplTPlayback;
 
 
-PROCEDURE ApplTRecord(buffer: ADDRESS; no: INTEGER) : [ INTEGER ];
+PROCEDURE ApplTRecord(buffer: ADDRESS; no: INTEGER): [ INTEGER ];
 BEGIN
   our_cb^.pubs.aINTIN[0] := no;
   our_cb^.pubs.ADDRIN[0] := buffer;

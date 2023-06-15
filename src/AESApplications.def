@@ -2,13 +2,13 @@ DEFINITION MODULE AESApplications;
 
 FROM SYSTEM IMPORT ADDRESS;
 
-PROCEDURE ApplInitialise() : INTEGER;
+PROCEDURE ApplInitialise(): INTEGER;
 
 PROCEDURE ApplRead(id: INTEGER; noBytes: INTEGER; buffer: ADDRESS);
 
 PROCEDURE ApplWrite(id: INTEGER; noBytes: INTEGER; buffer: ADDRESS);
 
-PROCEDURE ApplFind(VAR fname: ARRAY OF CHAR) : INTEGER;
+PROCEDURE ApplFind(VAR fname: ARRAY OF CHAR): INTEGER;
 
 PROCEDURE ApplTPlayback(buffer: ADDRESS; no: INTEGER; scale: INTEGER);
 
