@@ -17,6 +17,7 @@ DEFINITION MODULE AESMenus;
 
 
 FROM GEMGlobals IMPORT PtrObjTree, PtrMaxStr;
+FROM SYSTEM IMPORT ADDRESS;
 
 
 (*  Menu Manager  *)
@@ -53,6 +54,7 @@ PROCEDURE MenuBar(tree: PtrObjTree; show: BOOLEAN);
  *                 'FALSE': der Haken wird geloescht.
  *)
 PROCEDURE CheckItem(tree: PtrObjTree; item: CARDINAL; check: BOOLEAN);
+CONST MenuItemCheck = CheckItem;
 
 (*  Der Eintrag einer Menuezeile wird aktiviert oder deakti-
  *  viert. Der Schriftzug eines deativierten Eintrages wird
@@ -68,6 +70,7 @@ PROCEDURE CheckItem(tree: PtrObjTree; item: CARDINAL; check: BOOLEAN);
  *                 'FALSE': Eintrag wird deaktiviert
  *)
 PROCEDURE EnableItem(tree: PtrObjTree; item: CARDINAL; enable: BOOLEAN);
+CONST MenuItemEnable = EnableItem;
 
 (*  Der Titel in einer Menuezeile wird normal oder invers
  *  dargestellt. Die inverse Darstellung bedeutet, dass der
@@ -84,6 +87,7 @@ PROCEDURE EnableItem(tree: PtrObjTree; item: CARDINAL; enable: BOOLEAN);
  *
  *)
 PROCEDURE NormalTitle(tree: PtrObjTree; title: CARDINAL; normal: BOOLEAN);
+CONST MenuTitleNormal = NormalTitle;
 
 (*  Diese Routine erlaubt es, einem Menueeintrag einen neuen
  *  Text zuzuweisen.
@@ -125,6 +129,7 @@ PROCEDURE MenuText(tree: PtrObjTree; item: CARDINAL; REF text: ARRAY OF CHAR);
  *  ist!
  *)
 PROCEDURE RegisterAcc(title: PtrMaxStr; VAR id: CARDINAL; VAR success: BOOLEAN);
+PROCEDURE MenuRegister(id:INTEGER; VAR title: ARRAY OF CHAR): INTEGER;
 
 
 END AESMenus.

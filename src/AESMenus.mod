@@ -98,6 +98,15 @@ BEGIN
 END RegisterAcc;
 
 
+PROCEDURE MenuRegister(id:INTEGER; VAR title: ARRAY OF CHAR): INTEGER;
+BEGIN
+  GEMShare.our_cb^.pubs.ADDRIN[0] := ADR(title);
+  GEMShare.our_cb^.pubs.aINTIN[0] := id;
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.MENU_REGISTER, 1, 1, 1));
+  RETURN GEMShare.our_cb^.pubs.aINTOUT[0];
+END MenuRegister;
+
+
 BEGIN
   IF MOSGlobals.TraceInit THEN MOSGlobals.traceInit(__FILE__); END;
 END AESMenus.

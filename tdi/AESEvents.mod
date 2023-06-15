@@ -5,6 +5,8 @@ IMPLEMENTATION MODULE AESEvents;
 FROM SYSTEM IMPORT ADDRESS, ADR;
 FROM GEMAESbase IMPORT GemCall, IntIn2, IntIn3, IntIn4, IntIn8, IntOut2, IntOut4, AESCallResult, AESIntIn, AESIntOut, AESAddrIn;
 
+CONST NULL = ADDRESS(0);
+
 
 PROCEDURE EventKeyboard(): INTEGER;
 BEGIN
@@ -69,6 +71,7 @@ BEGIN
   AESIntIn[13] := move2h;
   AESIntIn[14] := timelo;
   AESIntIn[15] := timehi;
+  IF msg = NIL THEN msg := NULL; END;
   AESAddrIn[0] := msg;
   result := GemCall(25, 16, 7, 1, 0);
   IntOut4(mox, moy, buttons, keyState);
