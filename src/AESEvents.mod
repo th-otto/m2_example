@@ -24,7 +24,7 @@ IMPLEMENTATION MODULE AESEvents;
  *  07.06.23 THO| Port to gm2
  *)
 
-FROM SYSTEM IMPORT CARDINAL32, SHIFT, ADR;
+FROM SYSTEM IMPORT CARDINAL32, SHIFT, ADR, ADDRESS;
 
 FROM    GrafBase        IMPORT Point, Rectangle;
  
@@ -64,6 +64,13 @@ BEGIN
 END KeyboardEvent;
 
 
+PROCEDURE EventKeyboard(): INTEGER;
+BEGIN
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.EVNT_KEYBD, 0, 1, 0));
+  RETURN GEMShare.our_cb^.pubs.aINTOUT[0];
+END EventKeyboard;
+
+
 PROCEDURE buttonEvent (    clicks     : CARDINAL;
                            mask, state: MButtonSet;
                        VAR mouseLoc   : Point;
@@ -99,6 +106,21 @@ BEGIN
   END;
   doneClicks := clickResult;
 END ButtonEvent;
+
+
+PROCEDURE EventButton(clicks, mask, state: INTEGER; VAR mox, moy, buttons, keyState: INTEGER): INTEGER;
+VAR loc: Point;
+    doneClicks: INTEGER;
+    buttonset: MButtonSet;
+    keys: SpecialKeySet;
+BEGIN
+  doneClicks := buttonEvent(clicks, VAL(MButtonSet, mask), VAL(MButtonSet, state), loc, buttonset, keys);
+  mox := loc.x;
+  moy := loc.y;
+  buttons := VAL(INTEGER, buttonset);
+  keyState := VAL(INTEGER, keys);
+  RETURN doneClicks;
+END EventButton;
 
 
 PROCEDURE mouseEvent (    moveDirec: RectEnterMode;
@@ -147,6 +169,24 @@ BEGIN
 END MouseEvent;
 
 
+PROCEDURE EventMouse(direction: INTEGER; x, y, w, h: INTEGER; VAR buttons, keyState, mox, moy: INTEGER);
+VAR   locResult: Point;
+      frame: Rectangle;
+    buttonset: MButtonSet;
+    keys: SpecialKeySet;
+BEGIN
+  frame.x := x;
+  frame.y := y;
+  frame.w := w;
+  frame.h := h;
+  locResult := mouseEvent(VAL(RectEnterMode, direction), frame, buttonset, keys);
+  buttons := VAL(INTEGER, buttonset);
+  keyState := VAL(INTEGER, keys);
+  mox := locResult.x;
+  moy := locResult.y;
+END EventMouse;
+
+
 PROCEDURE TimerEvent (time: CARDINAL32);
 BEGIN
   LOOP
@@ -159,6 +199,14 @@ BEGIN
 END TimerEvent;
 
 
+PROCEDURE EventTimer(lo, hi: INTEGER);
+BEGIN
+    GEMShare.our_cb^.pubs.aINTIN[0] := lo;
+    GEMShare.our_cb^.pubs.aINTIN[1] := hi;
+    GEMShare.aes_if(AES_CTRL_CODE(GEMOps.EVNT_TIMER, 2, 1, 0));
+END EventTimer;
+
+
 PROCEDURE MessageEvent (VAR msg: MessageBuffer);
 BEGIN
   LOOP
@@ -168,6 +216,13 @@ BEGIN
     IF GEMShare.messagePlug(msg) THEN EXIT END;
   END;
 END MessageEvent;
+
+
+PROCEDURE EventMessage(msg: ADDRESS);
+BEGIN
+    GEMShare.our_cb^.pubs.ADDRIN[0] := msg;
+    GEMShare.aes_if(AES_CTRL_CODE(GEMOps.EVNT_MESAG, 0, 1, 1));
+END EventMessage;
 
 
 PROCEDURE multiEvent (    events       : EventSet;
@@ -281,6 +336,41 @@ BEGIN
   occuredEvents := eventResult;
 END MultiEvent;
 
+
+PROCEDURE EventMultiple(events: INTEGER; noclicks, butMask, butState: INTEGER;
+      moveDirect1, move1x, move1y, move1w, move1h: INTEGER;
+      moveDirect2, move2x, move2y, move2w, move2h: INTEGER;
+      msg: ADDRESS;
+      timelo, timehi: INTEGER;
+      VAR mox, moy, buttons, keyState, key, doneClicks: INTEGER): INTEGER;
+BEGIN
+    GEMShare.our_cb^.pubs.ADDRIN[0] := msg;
+    GEMShare.our_cb^.pubs.aINTIN[0] := events;
+    GEMShare.our_cb^.pubs.aINTIN[1] := noclicks;
+    GEMShare.our_cb^.pubs.aINTIN[2] := butMask;
+    GEMShare.our_cb^.pubs.aINTIN[3] := butState;
+    GEMShare.our_cb^.pubs.aINTIN[4] := moveDirect1;
+    GEMShare.our_cb^.pubs.aINTIN[5] := move1x;
+    GEMShare.our_cb^.pubs.aINTIN[6] := move1y;
+    GEMShare.our_cb^.pubs.aINTIN[7] := move1w;
+    GEMShare.our_cb^.pubs.aINTIN[8] := move1h;
+    GEMShare.our_cb^.pubs.aINTIN[9] := moveDirect2;
+    GEMShare.our_cb^.pubs.aINTIN[10] := move2x;
+    GEMShare.our_cb^.pubs.aINTIN[11] := move2y;
+    GEMShare.our_cb^.pubs.aINTIN[12] := move2w;
+    GEMShare.our_cb^.pubs.aINTIN[13] := move2h;
+    GEMShare.our_cb^.pubs.aINTIN[14] := timelo;
+    GEMShare.our_cb^.pubs.aINTIN[15] := timehi;
+    GEMShare.aes_if(AES_CTRL_CODE(GEMOps.EVNT_MULTI, 16, 7, 1));
+    mox := GEMShare.our_cb^.pubs.aINTOUT[1];
+    moy := GEMShare.our_cb^.pubs.aINTOUT[2];
+    buttons := GEMShare.our_cb^.pubs.aINTOUT[3];
+    keyState := GEMShare.our_cb^.pubs.aINTOUT[4];
+    key := GEMShare.our_cb^.pubs.aINTOUT[5];
+    doneClicks := GEMShare.our_cb^.pubs.aINTOUT[6];
+    RETURN GEMShare.our_cb^.pubs.aINTOUT[0];
+END EventMultiple;
+
                      
 PROCEDURE SetDClickSpeed (speed: CARDINAL);
 BEGIN
@@ -296,6 +386,14 @@ BEGIN
   GEMShare.aes_if(AES_CTRL_CODE(GEMOps.EVNT_DCLICK, 2, 1, 0));
   RETURN GEMShare.our_cb^.pubs.aINTOUT[0];
 END DClickSpeed;
+
+
+PROCEDURE EventDoubleClick(val: INTEGER; setorget: INTEGER): INTEGER;
+BEGIN
+  GEMShare.our_cb^.pubs.aINTIN[0] := val;
+  GEMShare.our_cb^.pubs.aINTIN[1] := setorget;
+  RETURN GEMShare.our_cb^.pubs.aINTOUT[0];
+END EventDoubleClick;
 
 
 BEGIN

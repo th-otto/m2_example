@@ -1,21 +1,24 @@
 DEFINITION MODULE AESEvents;
 
-IMPORT SYSTEM;
+FROM SYSTEM IMPORT ADDRESS;
 
-(* 1 *) PROCEDURE EventKeyboard() : INTEGER;
+PROCEDURE EventKeyboard(): INTEGER;
 
-(* 2 *) PROCEDURE EventButton(INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER) : INTEGER;
+PROCEDURE EventButton(clicks, mask, state: INTEGER; VAR mox, moy, buttons, keyState: INTEGER): INTEGER;
 
-(* 3 *) PROCEDURE EventMouse(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE EventMouse(direction: INTEGER; x, y, w, h: INTEGER; VAR buttons, keyState, mox, moy: INTEGER);
 
-(* 4 *) PROCEDURE EventMessage(SYSTEM.ADDRESS);
+PROCEDURE EventMessage(msg: ADDRESS);
 
-(* 5 *) PROCEDURE EventTimer(INTEGER; INTEGER);
+PROCEDURE EventTimer(lo, hi: INTEGER);
 
-(* 6 *) PROCEDURE EventMultiple(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER;
-      INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER;
-      SYSTEM.ADDRESS; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER) : INTEGER;
+PROCEDURE EventMultiple(events: INTEGER; noclicks, butMask, butState: INTEGER;
+      moveDirect1, move1x, move1y, move1w, move1h: INTEGER;
+      moveDirect2, move2x, move2y, move2w, move2h: INTEGER;
+      msg: ADDRESS;
+      timelo, timehi: INTEGER;
+      VAR mox, moy, buttons, keyState, key, doneClicks: INTEGER): INTEGER;
 
-(* 7 *) PROCEDURE EventDoubleClick(INTEGER; INTEGER) : INTEGER;
+PROCEDURE EventDoubleClick(val: INTEGER; setorget: INTEGER): INTEGER;
     
 END AESEvents.

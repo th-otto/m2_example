@@ -16,7 +16,7 @@ DEFINITION MODULE AESEvents;
  *      werden ('MultiEvent').
  *)
  
-FROM SYSTEM     IMPORT CARDINAL16, CARDINAL32, INTEGER16;
+FROM SYSTEM     IMPORT CARDINAL16, CARDINAL32, INTEGER16, ADDRESS;
  
 FROM GrafBase   IMPORT Point, Rectangle;
  
@@ -124,7 +124,8 @@ TYPE    ArrowedMode = (pageUp, pageDown, rowUp, rowDown, pageLeft,
  *  In 'ch' wird der Scancode und falls vorhanden der zugehoerige
  *  ASCII-Code geliefert.
  *)
-PROCEDURE KeyboardEvent (VAR ch: GemChar);
+PROCEDURE KeyboardEvent(VAR ch: GemChar);
+PROCEDURE EventKeyboard(): INTEGER;
 
 (*  Wartet auf ein Maustastenereignis (d.h. darauf, das die Maus-
  *  tasten auf eine bestimmte Art gedrueckt oder losgelassen werden).
@@ -161,12 +162,13 @@ PROCEDURE KeyboardEvent (VAR ch: GemChar);
  *  'doneclicks'-- Liefert wie oft der gewuenschte Zustand der Maus-
  *                 tasten waehrend der Abfrage erreicht wurde.
  *)
-PROCEDURE ButtonEvent (    clicks     : CARDINAL;
+PROCEDURE ButtonEvent(    clicks     : CARDINAL;
                            mask, state: MButtonSet;
                        VAR mouseLoc   : Point;
                        VAR buttons    : MButtonSet;
                        VAR keyState   : SpecialKeySet;
                        VAR doneClicks : CARDINAL);
+PROCEDURE EventButton(clicks, mask, state: INTEGER; VAR mox, moy, buttons, keyState: INTEGER): INTEGER;
                       
 
 TYPE    RectEnterMode   = (lookForEntry, lookForExit);
@@ -191,18 +193,20 @@ TYPE    RectEnterMode   = (lookForEntry, lookForExit);
  *  'mouseLoc'  -- Liefert die Mausposition, zum Zeitpunkt des Er-
  *                 eingnisses.
  *)
-PROCEDURE MouseEvent (    moveDirec: RectEnterMode;
+PROCEDURE MouseEvent(    moveDirec: RectEnterMode;
                           frame    : Rectangle;
                       VAR buttons  : MButtonSet;
                       VAR keyState : SpecialKeySet;
                       VAR mouseLoc : Point);
+PROCEDURE EventMouse(direction: INTEGER; x, y, w, h: INTEGER; VAR buttons, keyState, mox, moy: INTEGER);
              
 (*  Wartet auf ein Zeitereignis (d.h. bis eine bestimmte Zeitspanne
  *  vergangen ist).
  *
  *  'time' -- Zeitspanne in Millisekunden.
  *)
-PROCEDURE TimerEvent (time: CARDINAL32);
+PROCEDURE TimerEvent(time: CARDINAL32);
+PROCEDURE EventTimer(lo, hi: INTEGER);
 
 (*  Wartet auf ein Nachrichtenereignis (sowohl vom AES als auch von
  *  einer anderen Applikation).
@@ -213,7 +217,8 @@ PROCEDURE TimerEvent (time: CARDINAL32);
  *           keiten besitzt, muss eine von zwei Applikationen, die
  *           miteinander kommunizieren wollen, ein Accessory sein.
  *)
-PROCEDURE MessageEvent (VAR msg: MessageBuffer);
+PROCEDURE MessageEvent(VAR msg: MessageBuffer);
+PROCEDURE EventMessage(msg: ADDRESS);
 
 
 TYPE    Event           = (keyboard, mouseButton, firstRect, secondRect,
@@ -233,7 +238,7 @@ TYPE    Event           = (keyboard, mouseButton, firstRect, secondRect,
  *  den Wert, der beim Druck der Taste anstand! Wenn Sie dies naeher
  *  interessiert, beachten Sie das Modul "KbdEvent".
  *)
-PROCEDURE MultiEvent (    events       : EventSet;
+PROCEDURE MultiEvent(    events       : EventSet;
                           noClicks     : CARDINAL;
                           butMask,
                           butState     : MButtonSet;
@@ -247,17 +252,24 @@ PROCEDURE MultiEvent (    events       : EventSet;
                       VAR key          : GemChar;
                       VAR doneClicks   : CARDINAL;
                       VAR occuredEvents: EventSet);
+PROCEDURE EventMultiple(events: INTEGER; noclicks, butMask, butState: INTEGER;
+      moveDirect1, move1x, move1y, move1w, move1h: INTEGER;
+      moveDirect2, move2x, move2y, move2w, move2h: INTEGER;
+      msg: ADDRESS;
+      timelo, timehi: INTEGER;
+      VAR mox, moy, buttons, keyState, key, doneClicks: INTEGER): INTEGER;
                      
 (*  Legt die Zeitspanne fest, innerhalb derer zwei Klicks als Doppel-
  *  klick gewertet werden.
  *
  *  'speed' -- Zeitspanne (Wertebereich: [0..4])
  *)
-PROCEDURE SetDClickSpeed (speed: CARDINAL);
+PROCEDURE SetDClickSpeed(speed: CARDINAL);
 
 (*  Erfragt die mit 'SetDClickSpeed' gesetzte Zeitspanne.
  *)
-PROCEDURE DClickSpeed (): CARDINAL;
+PROCEDURE DClickSpeed(): CARDINAL;
+PROCEDURE EventDoubleClick(val: INTEGER; setorget: INTEGER): INTEGER;
                      
                      
 END AESEvents.
