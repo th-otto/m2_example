@@ -53,6 +53,25 @@ BEGIN
 END CreateWindow;
 
 
+PROCEDURE WindowCreate(elems: INTEGER; maxx, maxy, maxw, maxh: INTEGER): INTEGER;
+VAR handle: CARDINAL;
+BEGIN
+  GEMShare.our_cb^.pubs.aINTIN[0] := elems;
+  GEMShare.our_cb^.pubs.aINTIN[1] := maxx;
+  GEMShare.our_cb^.pubs.aINTIN[2] := maxy;
+  GEMShare.our_cb^.pubs.aINTIN[3] := maxw;
+  GEMShare.our_cb^.pubs.aINTIN[4] := maxh;
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.WIND_CREATE, 5, 1, 0));
+  handle := VAL(CARDINAL16, GEMShare.our_cb^.pubs.aINTOUT[0]);
+  IF doSupervision THEN
+    IF (handle <> NoWindow) AND (handle <= MAX(GEMShare.windowSet)) THEN
+      INCL(GEMShare.our_cb^.SUPERVISION.createWinds, handle);
+    END;
+  END;
+  RETURN handle;
+END WindowCreate;
+
+
 PROCEDURE OpenWindow(handle:CARDINAL;frame:Rectangle);
 BEGIN
   GEMShare.our_cb^.pubs.aINTIN[0] := handle;
@@ -68,6 +87,23 @@ BEGIN
     END;
   END;
 END OpenWindow;
+
+
+PROCEDURE WindowOpen(handle: INTEGER; x, y, w, h: INTEGER);
+BEGIN
+  GEMShare.our_cb^.pubs.aINTIN[0] := handle;
+  GEMShare.our_cb^.pubs.aINTIN[1] := x;
+  GEMShare.our_cb^.pubs.aINTIN[2] := y;
+  GEMShare.our_cb^.pubs.aINTIN[3] := w;
+  GEMShare.our_cb^.pubs.aINTIN[4] := h;
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.WIND_OPEN, 5, 1, 0));
+  GEMShare.testINTOUT0();
+  IF doSupervision THEN
+    IF (GEMShare.our_cb^.pubs.aINTOUT[0] <> 0) AND (handle <= MAX(GEMShare.windowSet)) THEN
+      INCL(GEMShare.our_cb^.SUPERVISION.openWinds, handle);
+    END;
+  END;
+END WindowOpen;
 
 
 PROCEDURE CloseWindow(handle:CARDINAL);
@@ -243,6 +279,15 @@ BEGIN
 END FindWindow;
 
 
+PROCEDURE WindowFind(x, y: INTEGER): INTEGER;
+BEGIN
+  GEMShare.our_cb^.pubs.aINTIN[0] := x;
+  GEMShare.our_cb^.pubs.aINTIN[1] := y;
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.WIND_FIND, 2, 1, 0));
+  RETURN CARDINAL16(GEMShare.our_cb^.pubs.aINTOUT[0]);
+END WindowFind;
+
+
 PROCEDURE MouseControl(user:BOOLEAN);
 VAR typ: GEMShare.UpdateWindowType;
 BEGIN
@@ -257,6 +302,18 @@ BEGIN
   IF update THEN typ := GEMShare.BegUpdate ELSE typ := GEMShare.EndUpdate END;
   GEMShare.updateWindow(typ);             (* Rufe eigentliche Routine auf *)
 END UpdateWindow;
+
+
+PROCEDURE WindowUpdate(mode: INTEGER);
+BEGIN
+  CASE mode OF 
+    GEMShare.EndUpdate: UpdateWindow(FALSE);
+  | GEMShare.BegUpdate: UpdateWindow(TRUE);
+  | GEMShare.EndMctrl: MouseControl(FALSE);
+  | GEMShare.BegMctrl: MouseControl(TRUE);
+  | ELSE
+  END;
+END WindowUpdate;
 
 
 PROCEDURE CalcWindow(typ:WCalcMode;elems:WElementSet;in:Rectangle):Rectangle;
@@ -276,6 +333,23 @@ BEGIN
   r.h := GEMShare.our_cb^.pubs.aINTOUT[4];
   RETURN r;
 END CalcWindow;
+
+
+PROCEDURE WindowCalc(typ: INTEGER; elems: INTEGER; x, y, w, h: INTEGER; VAR outx, outy, outw, outh: INTEGER);
+BEGIN
+  GEMShare.our_cb^.pubs.aINTIN[0] := ORD(typ);
+  GEMShare.our_cb^.pubs.aINTIN[1] := VAL(CARDINAL, elems);
+  GEMShare.our_cb^.pubs.aINTIN[2] := x;
+  GEMShare.our_cb^.pubs.aINTIN[3] := y;
+  GEMShare.our_cb^.pubs.aINTIN[4] := w;
+  GEMShare.our_cb^.pubs.aINTIN[5] := h;
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.WIND_CALC, 6, 5, 0));
+  GEMShare.testINTOUT0();
+  outx := GEMShare.our_cb^.pubs.aINTOUT[1];
+  outy := GEMShare.our_cb^.pubs.aINTOUT[2];
+  outw := GEMShare.our_cb^.pubs.aINTOUT[3];
+  outh := GEMShare.our_cb^.pubs.aINTOUT[4];
+END WindowCalc;
 
 
 PROCEDURE ResetWindows();

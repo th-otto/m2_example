@@ -130,23 +130,27 @@ CONST
  *                 Fenstern ausgelegt).
  *)
 PROCEDURE CreateWindow(elems: WElementSet; max: Rectangle; VAR handle: CARDINAL);
+PROCEDURE WindowCreate(elems: INTEGER; maxx, maxy, maxw, maxh: INTEGER): INTEGER;
 
 (*  Das Fenster mit der Kennung 'handle' wird in der Groesse 'frame'
  *  auf den Bildschirm gebracht.
  *)
 PROCEDURE OpenWindow(handle: CARDINAL; frame: Rectangle);
+PROCEDURE WindowOpen(handle: INTEGER; x, y, w, h: INTEGER);
 
 (*  Das durch die Kennung 'handle' bezeichnete Fenster wird vom
  *  Bildschirm entfernt. Es wird dabei nicht aus dem Speicher
  *  geloescht.
  *)
 PROCEDURE CloseWindow(handle: CARDINAL);
+CONST WindowClose = CloseWindow;
 
 (*  Das Fenster, das die Kennung 'handle' besitzt wird abgemeldet.
  *  Das bedeutet, dass dieses Fenster nicht mehr angesprochen werden
  *  darf, es ist geloescht.
  *)
 PROCEDURE DeleteWindow(handle: CARDINAL);
+CONST WindowDelete = DeleteWindow;
 
 
 TYPE    WSizeMode       = (workSize, borderSize, previousSize, fullSize);
@@ -263,6 +267,7 @@ PROCEDURE SetNewDesk(tree: PtrObjTree; first: CARDINAL);
  *  'loc' befindet. Als Ergebnis wird die Fensterkennung geliefert.
  *)
 PROCEDURE FindWindow(loc: Point): CARDINAL;
+PROCEDURE WindowFind(x, y: INTEGER): INTEGER;
 
 (*  Hiermit wird dem AES mitgeteilt, zu welchem Zeitpunkt eine An-
  *  wendung Ausgaben in ein Fenster taetigen will. Waehrend dieser
@@ -275,6 +280,7 @@ PROCEDURE FindWindow(loc: Point): CARDINAL;
  *  muessen.
  *)
 PROCEDURE UpdateWindow(update: BOOLEAN);
+PROCEDURE WindowUpdate(mode: INTEGER);
 
 (*  Die Reaktion des AES auf diese Routine entspricht im wesentlichen
  *  der auf 'UpdateWindow', nur ist dafuer vorgesehen, dass die Anwen-
@@ -298,6 +304,7 @@ TYPE    WCalcMode       = (calcBorder, calcWork);
  *                   die Arbeitsbereichsgroesse.
  *)
 PROCEDURE CalcWindow(typ: WCalcMode; elems: WElementSet; in: Rectangle  ): Rectangle;
+PROCEDURE WindowCalc(typ: INTEGER; elems: INTEGER; x, y, w, h: INTEGER; VAR outx, outy, outw, outh: INTEGER);
 
 
 (*  Es werden alle noch offenen Fenster der Applikation geschlossen,
@@ -308,6 +315,7 @@ PROCEDURE CalcWindow(typ: WCalcMode; elems: WElementSet; in: Rectangle  ): Recta
  *           werden.
  *)
 PROCEDURE ResetWindows();
+CONST WindowNew = ResetWindows;
 
 
 END AESWindows.
