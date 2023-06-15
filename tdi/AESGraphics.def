@@ -1,25 +1,25 @@
 DEFINITION MODULE AESGraphics;
 
-IMPORT SYSTEM;
+FROM SYSTEM IMPORT ADDRESS;
 
-(* 1 *) PROCEDURE GrafRubberBox(INTEGER; INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE GrafRubberBox(x, y, w, h: INTEGER; VAR destx, desty: INTEGER);
 
-(* 2 *) PROCEDURE GrafDragBox(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE GrafDragBox(startx, starty, startw, starth: INTEGER; boundx, boundy, boundw, boundh: INTEGER; VAR destx, desty: INTEGER);
 
-(* 3 *) PROCEDURE GrafMoveBox(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE GrafMoveBox(w, h, x, y: INTEGER; destx, desty: INTEGER);
 
-(* 4 *) PROCEDURE GrafGrowBox(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE GrafGrowBox(startx, starty, startw, starth: INTEGER; destx, desty, destw, desth: INTEGER);
 
-(* 5 *) PROCEDURE GrafShrinkBox(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE GrafShrinkBox(destx, desty, destw, desth: INTEGER; startx, starty, startw, starth: INTEGER);
 
-(* 6 *) PROCEDURE GrafWatchBox(SYSTEM.ADDRESS; INTEGER; INTEGER; INTEGER) : INTEGER;
+PROCEDURE GrafWatchBox(tree: ADDRESS; index: INTEGER; inState, outState: INTEGER): INTEGER;
 
-(* 7 *) PROCEDURE GrafSlideBox(SYSTEM.ADDRESS; INTEGER; INTEGER; INTEGER) : INTEGER;
+PROCEDURE GrafSlideBox(tree: ADDRESS; parent, child: INTEGER; dir: INTEGER): INTEGER;
 
-(* 8 *) PROCEDURE GrafHandle(VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER) : INTEGER;
+PROCEDURE GrafHandle(VAR wchar, hchar, wbox, hbox: INTEGER): INTEGER;
 
-(* 9 *) PROCEDURE GrafMouse(INTEGER; SYSTEM.ADDRESS);
+PROCEDURE GrafMouse(form: INTEGER; mouseFormPtr: ADDRESS);
 
-(* 10 *) PROCEDURE GrafMouseKeyboardState(VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE GrafMouseKeyboardState(VAR x, y, mouseButs, key: INTEGER);
     
 END AESGraphics.

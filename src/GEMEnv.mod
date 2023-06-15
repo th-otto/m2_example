@@ -468,7 +468,7 @@ BEGIN
 
   cb^.A_CONTRL.naddrout := 0;
 
-  (*  AES-/VDI-Paramterbloecke mit Array-Adresse init.
+  (*  AES-/VDI-Parameterbloecke mit Array-Adresse init.
    *)
   cb^.aespb.pcontrl  := ADR (cb^.A_CONTRL);
   cb^.aespb.pglobal  := ADR (cb^.GLOBAL);

@@ -28,7 +28,7 @@ TYPE MCState = (NoChange,        (* definately no change *)
                 Changed);        (* definately has changed *)
 
 TYPE BPBPtr = POINTER TO BPB ;
-     BPB = RECORD (* BIOS Paramter Block *)
+     BPB = RECORD (* BIOS Parameter Block *)
              recsiz : CARDINAL ; (* physical sector size in bytes *)
              clsiz  : CARDINAL ; (* cluster size in sectors *)
              clsizb : CARDINAL ; (* cluster size in bytes *)

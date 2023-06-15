@@ -12,7 +12,8 @@ DEFINITION MODULE AESGraphics;
 FROM GrafBase   IMPORT Point, Rectangle, PtrMouseFormDef;
 
 FROM GEMGlobals IMPORT MButtonSet, SpecialKeySet, OStateSet, PtrObjTree;
-IMPORT  GEMShare;
+IMPORT GEMShare;
+IMPORT GEMEnv;
 
 
                         (*  Graphic Manager  *)
@@ -29,7 +30,8 @@ IMPORT  GEMShare;
  *  mens (Breite und Hoehe) zum Zeitpunkt des Loslassens der Maus-
  *  taste geliefert.
  *)
-PROCEDURE RubberBox (start: Rectangle; VAR loc: Point);
+PROCEDURE RubberBox(start: Rectangle; VAR loc: Point);
+PROCEDURE GrafRubberBox(x, y, w, h: INTEGER; VAR destx, desty: INTEGER);
 
 (*  Ein vom Benutzer verschiebarer Rahmen wird auf dem Bildschirm
  *  animiert.
@@ -41,7 +43,7 @@ PROCEDURE RubberBox (start: Rectangle; VAR loc: Point);
  *  'bound'  -- Ausmasse und Position der Bildschirmflaeche, inner-
  *              halb derer der Rahmen bewegt werden kann.
  *
- *  Ausgabeparamter:
+ *  Ausgabeparameter:
  *  ----------------
  *
  *  'loc'    -- Position des Rahmens beim Loslassen des linken Maus-
@@ -50,7 +52,8 @@ PROCEDURE RubberBox (start: Rectangle; VAR loc: Point);
  *  Die linke Maustaste muss beim Aufruf der Routine gedrueckt sein.
  *  Sie kehrt zurueck, sobald die Taste losgelassen wird.
  *)
-PROCEDURE DragBox (start, bound: Rectangle; VAR loc: Point);
+PROCEDURE DragBox(start, bound: Rectangle; VAR loc: Point);
+PROCEDURE GrafDragBox(startx, starty, startw, starth: INTEGER; boundx, boundy, boundw, boundh: INTEGER; VAR destx, desty: INTEGER);
 
 (*  Es wird ein sich bewegender Rahmen animiert.
  *
@@ -60,16 +63,19 @@ PROCEDURE DragBox (start, bound: Rectangle; VAR loc: Point);
  *  'origin'    -- Startposition und Ausmasse dews Rahmens
  *  'dest'      -- Zielpunkt des Rahmens
  *)
-PROCEDURE MoveBox (origin: Rectangle; dest: Point);
+PROCEDURE MoveBox(origin: Rectangle; dest: Point);
+PROCEDURE GrafMoveBox(w, h, x, y: INTEGER; destx, desty: INTEGER);
 
 (*  Es wird ein Rahmen gezeichnet der von 'origin' nach
  *  'dest'  anwaechst.
  *)
-PROCEDURE GrowBox (origin, dest: Rectangle);
+PROCEDURE GrowBox(origin, dest: Rectangle);
+PROCEDURE GrafGrowBox(startx, starty, startw, starth: INTEGER; destx, desty, destw, desth: INTEGER);
 
 (*  Der sich von 'origin' nach 'dest' bewegende Rahmen schrumpft.
  *)
-PROCEDURE ShrinkBox (origin, dest: Rectangle);
+PROCEDURE ShrinkBox(origin, dest: Rectangle);
+PROCEDURE GrafShrinkBox(destx, desty, destw, desth: INTEGER; startx, starty, startw, starth: INTEGER);
 
 (*  Diese Routine ueberwacht die Maus daraufhin, ob sich der Maus-
  *  zeiger beim Loslassen der linken Taste innerhalb oder ausser-
@@ -101,6 +107,7 @@ PROCEDURE WatchBox (    tree             : PtrObjTree;
                         index            : CARDINAL;
                         inState, outState: OStateSet;
                     VAR inside           : BOOLEAN);
+PROCEDURE GrafWatchBox(tree: PtrObjTree; index: INTEGER; inState, outState: INTEGER): INTEGER;
 
 
 TYPE    SlideDirection  = (horSlide, vertSlide);
@@ -133,6 +140,7 @@ PROCEDURE SlideBox (tree         : PtrObjTree;
                     parent, child: CARDINAL;
                     dir          : SlideDirection;
                 VAR newPos       : CARDINAL);
+PROCEDURE GrafSlideBox(tree: PtrObjTree; parent, child: INTEGER; dir: INTEGER): INTEGER;
 
 
 (*  'bee' entspricht dem 'hourglass' andere GEM-Library's, der
@@ -156,7 +164,8 @@ TYPE    MouseForm       = (arrow, textCursor, bee, pointHand, flatHand,
  *  nauso oft wieder sichtbar gemacht werden.
  *)
 CONST GrafMouse = GEMShare.GrafMouse;
-(* PROCEDURE GrafMouse (form: MouseForm; mouseFormPtr: PtrMouseFormDef); *)
+
+CONST GrafHandle = GEMEnv.GrafHandle;
 
 
 (*  Erfragt den Zustand von Maus und Tastatur.
@@ -171,6 +180,7 @@ CONST GrafMouse = GEMShare.GrafMouse;
 PROCEDURE MouseKeyState (VAR mouseLoc  : Point;
                          VAR mouseButs : MButtonSet;
                          VAR keys      : SpecialKeySet);
+PROCEDURE GrafMouseKeyboardState(VAR x, y, mouseButs, key: INTEGER);
 
 
 END AESGraphics.
