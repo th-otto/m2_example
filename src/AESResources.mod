@@ -63,6 +63,19 @@ BEGIN
 END ResourceAddr;
 
 
+PROCEDURE ResourceGetAddr(typ: INTEGER; index: INTEGER; VAR addr: ADDRESS);
+BEGIN
+  GEMShare.our_cb^.pubs.aINTIN[0] := ORD(typ);
+  GEMShare.our_cb^.pubs.aINTIN[1] := index;
+  (* This is (currently) the only function that needs naddrout to be set *)
+  GEMShare.our_cb^.A_CONTRL.naddrout := 1;
+  GEMShare.aes_if(AES_CTRL_CODE(GEMOps.RSRC_GADDR, 2, 1, 0));
+  GEMShare.our_cb^.A_CONTRL.naddrout := 0;
+  GEMShare.testINTOUT0();
+  addr := GEMShare.our_cb^.pubs.ADDROUT[0];
+END ResourceGetAddr;
+
+
 PROCEDURE SetResourceAddr(typ:ResourcePart;index:CARDINAL;objAddr:ADDRESS);
 BEGIN
   GEMShare.our_cb^.pubs.ADDRIN[0] := objAddr;

@@ -1,15 +1,44 @@
 DEFINITION MODULE AESResources;
 
-IMPORT SYSTEM;
+FROM SYSTEM IMPORT ADDRESS;
 
-(* 1 *) PROCEDURE ResourceLoad(VAR ARRAY CHAR);
+TYPE    ResourcePart  = (treeRsrc,    objectRsrc,  tEdInfo,   iconBlk, bitBlk,
+                 textString,  imageData,   objSpec,   tEdTextPtr,
+                 tEdTmpltPtr, tEdValidPtr, ibMaskPtr, ibDataPtr,
+                 ibTextPtr,   biDataPtr,   frStrPtr,  frImgPtr);
 
-(* 2 *) PROCEDURE ResourceFree();
+TYPE RSHDR = RECORD
+       vrsn: CARDINAL;      (* Null                              *)
+       object: CARDINAL;    (* Position of the object field      *)
+       tedinfo: CARDINAL;   (* Position of the TEDINFO structs   *)
+       iconblk: CARDINAL;   (* Position of the ICONBLK structs   *)
+       bitblk: CARDINAL;    (* Position of the BITBLK structs    *)
+       frstr: CARDINAL;     (* Position of the free strings      *)
+       string: CARDINAL;    (* Unused                            *)
+       imdata: CARDINAL;    (* Position of image data            *)
+       frimg: CARDINAL;     (* Position of the free images       *)
+       trindex: CARDINAL;   (* Position of the object tree table *)
+       nobs: CARDINAL;      (* Total number of objects           *)
+       ntree: CARDINAL;     (* Total number of trees             *)
+       nted: CARDINAL;      (* Total number of TEDINFO structs   *)
+       nib: CARDINAL;       (* Total number of ICONBLK structs   *)
+       nbb: CARDINAL;       (* Total number of BITBLK structs    *)
+       nstring: CARDINAL;   (* Total number of strings           *)
+       nimages: CARDINAL;   (* Total number of images            *)
+       rssize: CARDINAL;    (* Total bytes in resource           *)
+     END;
+     PtrRSHDR = POINTER TO RSHDR;
 
-(* 3 *) PROCEDURE ResourceGetAddr(INTEGER; INTEGER; VAR SYSTEM.ADDRESS);
+PROCEDURE ResourceLoad(VAR pathname: ARRAY OF CHAR);
 
-(* 4 *) PROCEDURE ResourceSetAddr(INTEGER; INTEGER; SYSTEM.ADDRESS);
+PROCEDURE ResourceFree();
 
-(* 5 *) PROCEDURE ResourceObjectFix(SYSTEM.ADDRESS; INTEGER);
-    
+PROCEDURE ResourceGetAddr(typ: INTEGER; index: INTEGER; VAR addr: ADDRESS);
+
+PROCEDURE ResourceSetAddr(typ: INTEGER; index: INTEGER; objAddr: ADDRESS);
+
+PROCEDURE ResourceObjectFix(tree: ADDRESS; index: INTEGER);
+
+PROCEDURE ResourceFix(hdr: PtrRSHDR);
+
 END AESResources.

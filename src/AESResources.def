@@ -33,24 +33,24 @@ TYPE    ResourcePart  = (treeRsrc,    objectRsrc,  tEdInfo,   iconBlk, bitBlk,
                  ibTextPtr,   biDataPtr,   frStrPtr,  frImgPtr);
 
 TYPE RSHDR = RECORD
-       rsh_vrsn: CARDINAL16;      /* Null                              */
-       rsh_object: CARDINAL16;    /* Position of the object field      */
-       rsh_tedinfo: CARDINAL16;   /* Position of the TEDINFO structs   */
-       rsh_iconblk: CARDINAL16;   /* Position of the ICONBLK structs   */
-       rsh_bitblk: CARDINAL16;    /* Position of the BITBLK structs    */
-       rsh_frstr: CARDINAL16;     /* Position of the free strings      */
-       rsh_string: CARDINAL16;    /* Unused                            */
-       rsh_imdata: CARDINAL16;    /* Position of image data            */
-       rsh_frimg: CARDINAL16;     /* Position of the free images       */
-       rsh_trindex: CARDINAL16;   /* Position of the object tree table */
-       rsh_nobs: CARDINAL16;      /* Total number of objects           */
-       rsh_ntree: CARDINAL16;     /* Total number of trees             */
-       rsh_nted: CARDINAL16;      /* Total number of TEDINFO structs   */
-       rsh_nib: CARDINAL16;       /* Total number of ICONBLK structs   */
-       rsh_nbb: CARDINAL16;       /* Total number of BITBLK structs    */
-       rsh_nstring: CARDINAL16;   /* Total number of strings           */
-       rsh_nimages: CARDINAL16;   /* Total number of images            */
-       rsh_rssize: CARDINAL16;    /* Total bytes in resource           */
+       rsh_vrsn: CARDINAL16;      (* Null                              *)
+       rsh_object: CARDINAL16;    (* Position of the object field      *)
+       rsh_tedinfo: CARDINAL16;   (* Position of the TEDINFO structs   *)
+       rsh_iconblk: CARDINAL16;   (* Position of the ICONBLK structs   *)
+       rsh_bitblk: CARDINAL16;    (* Position of the BITBLK structs    *)
+       rsh_frstr: CARDINAL16;     (* Position of the free strings      *)
+       rsh_string: CARDINAL16;    (* Unused                            *)
+       rsh_imdata: CARDINAL16;    (* Position of image data            *)
+       rsh_frimg: CARDINAL16;     (* Position of the free images       *)
+       rsh_trindex: CARDINAL16;   (* Position of the object tree table *)
+       rsh_nobs: CARDINAL16;      (* Total number of objects           *)
+       rsh_ntree: CARDINAL16;     (* Total number of trees             *)
+       rsh_nted: CARDINAL16;      (* Total number of TEDINFO structs   *)
+       rsh_nib: CARDINAL16;       (* Total number of ICONBLK structs   *)
+       rsh_nbb: CARDINAL16;       (* Total number of BITBLK structs    *)
+       rsh_nstring: CARDINAL16;   (* Total number of strings           *)
+       rsh_nimages: CARDINAL16;   (* Total number of images            *)
+       rsh_rssize: CARDINAL16;    (* Total bytes in resource           *)
      END;
      PtrRSHDR = POINTER TO RSHDR;
 
@@ -63,11 +63,13 @@ TYPE RSHDR = RECORD
  *                 zurueck und 'GemError' liefert den Wert 'TRUE'.
  *)
 PROCEDURE LoadResource(REF pathname: ARRAY OF CHAR): [ BOOLEAN ];
+CONST ResourceLoad = LoadResource;
 
 (*  Damit wird der Speicherplatz der zuletzt geladenen Resource
  *  wieder freigegeben.
  *)
 PROCEDURE FreeResource;
+CONST ResourceFree = FreeResource;
 
 
 (*  Es wird die Adresse eines Resource-Elementes geliefert.
@@ -97,6 +99,7 @@ PROCEDURE FreeResource;
  *  'frImgPtr'    -- Adresse eines Zeigers auf ein Bitmuster
  *)
 PROCEDURE ResourceAddr(typ: ResourcePart; index: CARDINAL): ADDRESS;
+PROCEDURE ResourceGetAddr(typ: INTEGER; index: INTEGER; VAR addr: ADDRESS);
 
 (*  Mit dieser Routine kann man Adressen in eine Resource eintragen.
  *
@@ -106,11 +109,13 @@ PROCEDURE ResourceAddr(typ: ResourcePart; index: CARDINAL): ADDRESS;
  *  Siehe auch 'ResourceAddr'.
  *)
 PROCEDURE SetResourceAddr(typ: ResourcePart; index: CARDINAL; objAddr: ADDRESS);
+CONST ResourceSetAddr = SetResourceAddr;
 
 (*  Die Koordinaten des Objektes 'index' im Baum 'tree' werden
  *  von Zeichenkoordinaten in Pixelkoordinaten umgewandelt.
  *)
 PROCEDURE ConvertCoor(tree: PtrObjTree; index: CARDINAL);
+CONST ResourceObjectFix = ConvertCoor;
 
 PROCEDURE ResourceFix(hdr: PtrRSHDR): [ BOOLEAN ];
 
