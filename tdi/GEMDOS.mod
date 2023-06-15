@@ -6,6 +6,7 @@ IMPLEMENTATION MODULE GEMDOS;
 FROM SYSTEM IMPORT CODE, ADR, PUSH, REGISTER, ADDRESS, SETREG;
 
 CONST TRAP1 = 04E41H;
+CONST NULL = ADDRESS(0);
 
 PROCEDURE trap1w(n: INTEGER): LONGCARD;
 BEGIN
@@ -516,6 +517,21 @@ BEGIN
 *)
   Result := INTEGER(REGISTER(0));
 END Exec;
+
+
+PROCEDURE Pexec(Mode: CARDINAL; Name, Arguments, Environment: ADDRESS; VAR Result: LONGINT);
+BEGIN
+  IF Name = NIL THEN Name := NULL; END;
+  IF Arguments = NIL THEN Arguments := NULL; END;
+  IF Environment = NIL THEN Environment := NULL; END;
+  PUSH(Environment);
+  PUSH(Arguments);
+  PUSH(Name);
+  PUSH(ORD(Mode));
+  PUSH(75);
+  CODE(TRAP1);
+  Result := LONGINT(REGISTER(0));
+END Pexec;
 
 
 (* Terminate a process *)

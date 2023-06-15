@@ -65,7 +65,7 @@ TYPE
 
   SeekMode = (beginning, relative, end);
 
-  ExecMode = (loadExecute, resrvd1, resrvd2, load);
+  ExecMode = (loadExecute, resrvd1, resrvd2, load, execute, createBasepage, executeAndFree, createBPwMode);
 
   SetOrGet = (set, get);
 
@@ -227,9 +227,15 @@ PROCEDURE Free(Addr: ADDRESS): BOOLEAN;
 PROCEDURE Shrink(Addr: ADDRESS; NewSize: LONGCARD): BOOLEAN;
 
 (* Load or execute a process *)
+(* Buggy binding: depending on mode,
+   Name and/or Tail can be NULL. EnvStr can always be NULL;
+   for createBasepage at least, Result is a pointer *)
 PROCEDURE Exec(Mode: ExecMode; VAR Name: ARRAY OF CHAR;
                  VAR Tail: ARRAY OF CHAR; VAR EnvStr: ARRAY OF CHAR;
                  VAR Result: INTEGER);
+(* correct binding *)
+PROCEDURE Pexec(Mode: CARDINAL; Name, Arguments, Environment: ADDRESS; VAR Result: LONGINT);
+
 
 (* Terminate a process *)
 (* Why BOOLEAN? that function does not return *)
