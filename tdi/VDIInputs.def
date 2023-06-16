@@ -3,40 +3,40 @@ DEFINITION MODULE VDIInputs;
 FROM GEMVDIbase IMPORT SmallArrayType, MouseArrayType;
 FROM SYSTEM IMPORT ADDRESS;
 
-(* 1 *) PROCEDURE SetInputMode(handle: INTEGER; dev: INTEGER; mode: INTEGER);
+PROCEDURE SetInputMode(handle: INTEGER; dev: INTEGER; mode: INTEGER);
 
-(* 2 *) PROCEDURE InputLocatorRQ(handle INTEGER; x: INTEGER; y: INTEGER; VAR locX: INTEGER; VAR locY: INTEGER; VAR termBut: INTEGER);
+PROCEDURE InputLocatorRQ(handle: INTEGER; x, y: INTEGER; VAR locX, locY: INTEGER; VAR termBut: INTEGER);
 
-(* 3 *) PROCEDURE InputLocatorSM(handle: INTEGER; x: INTEGER; y: INTEGER; VAR locX: INTEGER; VAR locY: INTEGER; VAR termBut: INTEGER) : INTEGER;
+PROCEDURE InputLocatorSM(handle: INTEGER; x, y: INTEGER; VAR locX, locY: INTEGER; VAR termBut: INTEGER): INTEGER;
 
-(* 4 *) PROCEDURE InputValuatorRQ(handle: INTEGER; valuator_in: INTEGER; VAR valuator_out: INTEGER; VAR terminator: INTEGER);
+PROCEDURE InputValuatorRQ(handle: INTEGER; valuatorIn: INTEGER; VAR valuatorOut: INTEGER; VAR terminator: INTEGER);
 
-(* 5 *) PROCEDURE InputValuatorSM(handle: INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE InputValuatorSM(handle: INTEGER; valuatorIn: INTEGER; VAR valuatorOut: INTEGER; VAR terminator: INTEGER; VAR status: INTEGER);
 
-(* 6 *) PROCEDURE InputChoiceRQ(handle: INTEGER; INTEGER; VAR INTEGER);
+PROCEDURE InputChoiceRQ(handle: INTEGER; chIn: INTEGER; VAR chOut: INTEGER);
 
-(* 7 *) PROCEDURE InputChoiceSM(handle: INTEGER; VAR INTEGER) : INTEGER;
+PROCEDURE InputChoiceSM(handle: INTEGER; VAR choice: INTEGER): INTEGER;
 
-(* 8 *) PROCEDURE InputStringRQ(handle: INTEGER; INTEGER; INTEGER; VAR SmallArrayType; VAR ARRAY CHAR);
+PROCEDURE InputStringRQ(handle: INTEGER; maxLength: INTEGER; echoMode: INTEGER; VAR echoXy: SmallArrayType; VAR str: ARRAY OF CHAR);
 
-(* 9 *) PROCEDURE InputStringSM(handle: INTEGER; INTEGER; INTEGER; VAR SmallArrayType; VAR ARRAY CHAR) : INTEGER;
+PROCEDURE InputStringSM(handle: INTEGER; maxLength: INTEGER; echoMode: INTEGER; VAR echoXy: SmallArrayType; VAR str: ARRAY OF CHAR): INTEGER;
 
-(* 10 *) PROCEDURE SetMouseForm(handle: INTEGER; MouseArrayType);
+PROCEDURE SetMouseForm(handle: INTEGER; form: MouseArrayType);
 
-(* 11 *) PROCEDURE ExchangeTimerV(handle: INTEGER; ADDRESS; VAR ADDRESS; VAR INTEGER);
+PROCEDURE ExchangeTimerV(handle: INTEGER; adr: ADDRESS; VAR old: ADDRESS; VAR conv: INTEGER);
 
-(* 12 *) PROCEDURE ShowCursor(handle: INTEGER; INTEGER);
+PROCEDURE ShowCursor(handle: INTEGER; reset: INTEGER);
 
-(* 13 *) PROCEDURE HideCursor(handle: INTEGER);
+PROCEDURE HideCursor(handle: INTEGER);
 
-(* 14 *) PROCEDURE SampleMouseButton(handle: INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE SampleMouseButton(handle: INTEGER; VAR status: INTEGER; VAR x, y: INTEGER);
 
-(* 15 *) PROCEDURE ExchangeButtonV(handle: INTEGER; ADDRESS; VAR ADDRESS);
+PROCEDURE ExchangeButtonV(handle: INTEGER; adr: ADDRESS; VAR old: ADDRESS);
 
-(* 16 *) PROCEDURE ExchangeMovementV(handle: INTEGER; ADDRESS; VAR ADDRESS);
+PROCEDURE ExchangeMovementV(handle: INTEGER; adr: ADDRESS; VAR old: ADDRESS);
 
-(* 17 *) PROCEDURE ExchangeCursorV(handle: INTEGER; ADDRESS; VAR ADDRESS);
+PROCEDURE ExchangeCursorV(handle: INTEGER; adr: ADDRESS; VAR old: ADDRESS);
 
-(* 18 *) PROCEDURE SampleKeyboard(handle: INTEGER; VAR INTEGER);
+PROCEDURE SampleKeyboard(handle: INTEGER; VAR status: INTEGER);
 
 END VDIInputs.
