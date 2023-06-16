@@ -22,8 +22,8 @@ TYPE GEMFontType = RECORD
   LightMask     : BITSET;
   SkewMask      : BITSET;
   Flags         : BITSET;
-  HorizOffsetTab: POINTER TO ARRAY [0..255] OF CARDINAL;
-  CharOffsetTab : POINTER TO ARRAY [0..255] OF CARDINAL;
+  HorizOffsetTab: POINTER TO ARRAY [0C..377C] OF CARDINAL;
+  CharOffsetTab : POINTER TO ARRAY [0C..377C] OF CARDINAL;
   FontData      : ADDRESS;
   FormWidth     : CARDINAL;
   FormHeight    : CARDINAL;

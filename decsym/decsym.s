@@ -1409,9 +1409,9 @@ VDIRasters.CopyRasterOpaque:
 
 [0001129c] 4e56 0000                 link       a6,#0
 [000112a0] 23fc 0001 128e 0001 6250  move.l     #$0001128E,$00016250
-[000112aa] 33fc ffff 0001 624a       move.w     #$FFFF,$0001624A
-[000112b2] 33fc ffff 0001 624e       move.w     #$FFFF,$0001624E
-[000112ba] 33fc ffff 0001 624c       move.w     #$FFFF,$0001624C
+[000112aa] 33fc ffff 0001 624a       move.w     #$FFFF,$0001624A ; apid
+[000112b2] 33fc ffff 0001 624e       move.w     #$FFFF,$0001624E ; vdihandle
+[000112ba] 33fc ffff 0001 624c       move.w     #$FFFF,$0001624C ; window handle
 [000112c2] 42b9 0001 6254            clr.l      $00016254
 [000112c8] 42b9 0001 6258            clr.l      $00016258
 [000112ce] 4239 0001 625c            clr.b      $0001625C

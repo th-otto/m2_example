@@ -2,132 +2,52 @@ DEFINITION MODULE ASCII;
 
 IMPORT SYSTEM;
 
-CONST
-  NUL = 0H(*CHAR*);
+CONST NUL = 000C;
+CONST SOH = 001C;
+CONST STX = 002C;
+CONST ETX = 003C;
+CONST EOT = 004C;
+CONST ENQ = 005C;
+CONST ACK = 006C;
+CONST BEL = 007C;
+CONST BS  = 010C;
+CONST HT  = 011C;
+CONST LF  = 012C;
+CONST VT  = 013C;
+CONST FF  = 014C;
+CONST CR  = 015C;
+CONST SO  = 016C;
+CONST SI  = 017C;
+CONST DLE = 020C;
+CONST DC1 = 021C;
+CONST DC2 = 022C;
+CONST DC3 = 023C;
+CONST DC4 = 024C;
+CONST NAK = 025C;
+CONST SYN = 026C;
+CONST ETB = 027C;
+CONST CAN = 030C;
+CONST EM  = 031C;
+CONST SUB = 032C;
+CONST ESC = 033C;
+CONST FS  = 034C;
+CONST GS  = 035C;
+CONST RS  = 036C;
+CONST US  = 037C;
+CONST DEL = 177C;
 
-CONST
-  SOH = 1H(*CHAR*);
+CONST OctalChars = "01234567";
+CONST DecimalChars = "0123456789";
+CONST HexadecimalChars = "0123456789ABCDEF";
+CONST AlphabetChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+CONST RealChars = "0123456789.E+-";
 
-CONST
-  STX = 2H(*CHAR*);
+TYPE CharCases = (Upper, Lower, UpperOrLower, Shift, Control, ControlShift);
 
-CONST
-  ETX = 3H(*CHAR*);
+PROCEDURE CharIsPrintable(ch: CHAR): BOOLEAN;
 
-CONST
-  EOT = 4H(*CHAR*);
+PROCEDURE CharIsControl(ch: CHAR): BOOLEAN;
 
-CONST
-  ENQ = 5H(*CHAR*);
-
-CONST
-  ACK = 6H(*CHAR*);
-
-CONST
-  BEL = 7H(*CHAR*);
-
-CONST
-  BS = 8H(*CHAR*);
-
-CONST
-  HT = 9H(*CHAR*);
-
-CONST
-  LF = AH(*CHAR*);
-
-CONST
-  VT = BH(*CHAR*);
-
-CONST
-  FF = CH(*CHAR*);
-
-CONST
-  CR = DH(*CHAR*);
-
-CONST
-  SO = EH(*CHAR*);
-
-CONST
-  SI = FH(*CHAR*);
-
-CONST
-  DLE = 10H(*CHAR*);
-
-CONST
-  DC1 = 11H(*CHAR*);
-
-CONST
-  DC2 = 12H(*CHAR*);
-
-CONST
-  DC3 = 13H(*CHAR*);
-
-CONST
-  DC4 = 14H(*CHAR*);
-
-CONST
-  NAK = 15H(*CHAR*);
-
-CONST
-  SYN = 16H(*CHAR*);
-
-CONST
-  ETB = 17H(*CHAR*);
-
-CONST
-  CAN = 18H(*CHAR*);
-
-CONST
-  EM = 19H(*CHAR*);
-
-CONST
-  SUB = 1AH(*CHAR*);
-
-CONST
-  ESC = 1BH(*CHAR*);
-
-CONST
-  FS = 1CH(*CHAR*);
-
-CONST
-  GS = 1DH(*CHAR*);
-
-CONST
-  RS = 1EH(*CHAR*);
-
-CONST
-  US = 1FH(*CHAR*);
-
-CONST
-  DEL = 7FH(*CHAR*);
-
-CONST
-  OctalChars = "01234567";
-
-CONST
-  DecimalChars = "0123456789";
-
-CONST
-  HexadecimalChars = "0123456789ABCDEF";
-
-CONST
-  AlphabetChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-CONST
-  RealChars = "0123456789.E+-";
-
-TYPE
-  CharCases = (Upper(*0*),
-  Lower(*1*),
-  UpperOrLower(*2*),
-  Shift(*3*),
-  Control(*4*),
-  ControlShift(*5*));
-
-(* 1 *) PROCEDURE CharIsPrintable(CHAR) : BOOLEAN;
-
-(* 2 *) PROCEDURE CharIsControl(CHAR) : BOOLEAN;
-
-(* 3 *) PROCEDURE CharIsASCII(CHAR) : BOOLEAN;
+PROCEDURE CharIsASCII(ch: CHAR): BOOLEAN;
     
 END ASCII.

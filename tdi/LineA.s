@@ -8,6 +8,7 @@ import GEMFont, key =  2102H  CB5AH  47FCH, modnum =  1  checksum: o.k.
 data size, number of bytes = 16  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 34
+InitialiseLineA
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        A000                     ILLEGAL
@@ -28,6 +29,7 @@ ref own data at    12H  checksum: o.k.
 ref own data at    1AH  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 50
+DoPutPixel
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        2879 0000 0000           MOVE.L  00000000H,A4
@@ -47,6 +49,7 @@ proc code, procnum =  2, entrypoint =     0H, number of bytes = 50
 ref own data at     6H  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 48
+DoGetPixel
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        2879 0000 0000           MOVE.L  00000000H,A4
@@ -66,6 +69,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 48
 ref own data at     6H  checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 92
+DoLine
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        2879 0000 0000           MOVE.L  00000000H,A4
@@ -93,6 +97,7 @@ proc code, procnum =  4, entrypoint =     0H, number of bytes = 92
 ref own data at     6H  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 98
+DoHorizLine
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        2879 0000 0000           MOVE.L  00000000H,A4
@@ -121,6 +126,7 @@ proc code, procnum =  5, entrypoint =     0H, number of bytes = 98
 ref own data at     6H  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 18
+DoShowMouse
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 0006                MOVEM.L #0006H,-(A7)
@@ -131,6 +137,7 @@ proc code, procnum =  6, entrypoint =     0H, number of bytes = 18
   checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 18
+DoHideMouse
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        48E7 0006                MOVEM.L #0006H,-(A7)
@@ -141,6 +148,7 @@ proc code, procnum =  7, entrypoint =     0H, number of bytes = 18
   checksum: o.k.
 
 proc code, procnum =  8, entrypoint =     0H, number of bytes = 22
+DoUnSprite
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        246E 0008                MOVE.L  0008(A6),A2
@@ -152,6 +160,7 @@ proc code, procnum =  8, entrypoint =     0H, number of bytes = 22
   checksum: o.k.
 
 proc code, procnum =  9, entrypoint =     0H, number of bytes = 38
+DoSprite
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        302E 0012                MOVE.W  0012(A6),D0
@@ -168,6 +177,7 @@ proc code, procnum =  9, entrypoint =     0H, number of bytes = 38
   checksum: o.k.
 
 proc code, procnum = 10, entrypoint =     0H, number of bytes = 282
+DoChar
  DECODE --------                        INSTRUCTION
      0H        4E56 FE68                LINK    A6,#FE68H
      4H        2D6E 0008 FFFA           MOVE.L  0008(A6),FFFA(A6)
@@ -248,6 +258,7 @@ ref own data at    AAH  checksum: o.k.
 ref own data at    BAH  checksum: o.k.
 
 proc code, procnum = 11, entrypoint =     0H, number of bytes = 310
+DoString
  DECODE --------                        INSTRUCTION
      0H        4E56 FE62                LINK    A6,#FE62H
      4H        2D6E 0008 FFFC           MOVE.L  0008(A6),FFFC(A6)

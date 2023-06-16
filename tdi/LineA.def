@@ -25,31 +25,31 @@ DEFINITION MODULE LineA;
 (* ---------------------------------------------------------------------- *)
 
 
-FROM SYSTEM IMPORT ADDRESS ;
-FROM GEMFont IMPORT GEMFontType ;
+FROM SYSTEM IMPORT ADDRESS;
+FROM GEMFont IMPORT GEMFontType;
 
 CONST
   (* 68000 EM1101 line opcodes (LineA). Each opcode also describes the data
      that must be preset for the opcode. *)
-  Init       = 0A000H ;      (* initialise LineA processor
+  Init       = 0A000H;      (* initialise LineA processor
                                 Input : none.
-                                Output: D0 = ADR(LineAVars)
+                                Output: D0/A0 = ADR(LineAVars)
                                         A1 = ADR(LineAFonts) 
                                         A2 = ADR(LineAVectors)          *)
 
-  PutPixel   = 0A001H ;      (* Plot pixel 
+  PutPixel   = 0A001H;      (* Plot pixel 
                                 Input : INTIN[0] = pixel value
                                         PTSIN[0] = X coord
                                         PTSIN[1] = Y coord
                                 Output: none                            *)
 
-  GetPixel   = 0A002H ;      (* Get value of pixel
+  GetPixel   = 0A002H;      (* Get value of pixel
                                 Input : PTSIN[0] = X coord
                                         PTSIN[1] = Y coord
                                 Output: D0 = pixel value                *)
 
 
-  Line       = 0A003H ;      (* Plot a line
+  Line       = 0A003H;      (* Plot a line
                                 Input : X1 = start X coord
                                         Y1 = start Y coord
                                         X2 = end X coord
@@ -63,7 +63,7 @@ CONST
                                         LstLin = -1 if XOR write mode
                                 Output: LineStyle rotated to right end point *)
 
-  HorizLine  = 0A004H ;      (* Plot horizontal line
+  HorizLine  = 0A004H;      (* Plot horizontal line
                                 Input : X1 = start X coord
                                         Y1 = start Y coord
                                         X2 = end X coord
@@ -76,7 +76,7 @@ CONST
                                         PatMask = pattern index
                                         MultiFill = multi-plane pattern flag*)
 
-  FillRect   = 0A005H ;      (* Fill rectangle
+  FillRect   = 0A005H;      (* Fill rectangle
                                 Input : X1 = left X coord
                                         Y1 = upper Y coord
                                         X2 = right X coord
@@ -95,7 +95,7 @@ CONST
                                         YMinClip = min Y for clipping
                                         YMaxClip = max Y for clipping   *)
 
-  FillPoly   = 0A006H ;      (* fill polygon line by line
+  FillPoly   = 0A006H;      (* fill polygon line by line
                                 Input : PTSIN[] = array of coords
                                         CONTROL[1] = number of vertices
                                         Y1 = y coord of scan line to fill
@@ -114,13 +114,13 @@ CONST
                                         YMaxClip = max Y for clipping   *)
                                          
 
-  BitBlt     = 0A007H ;      (* Bit blit
+  BitBlt     = 0A007H;      (* Bit blit
                                 Input : A6 = pointer to input parameters
                                         (No information available at this
                                          time.)
                                                                         *) 
 
-  TextBlt    = 0A008H ;      (* text blit of one char
+  TextBlt    = 0A008H;      (* text blit of one char
                                 Input : WriteMode = writing mode
                                         TextFG = foreground colour
                                         TextBG = background colour
@@ -148,162 +148,162 @@ CONST
                                         Scrpt2 = offset of scaling buffer *)
                                         
 
-  ShowMouse  = 0A009H ;
-  HideMouse  = 0A00AH ;
+  ShowMouse  = 0A009H;
+  HideMouse  = 0A00AH;
 
-  TranMouse  = 0A00BH ;      (* transform mouse
+  TranMouse  = 0A00BH;      (* transform mouse
                                 Input : As GEM VDI                      *)
 
   (* NB. The sprite save area size should be 10+(VideoPlanes*64) bytes *)
-  UnSprite   = 0A00CH ;      (* Undraw sprite
+  UnSprite   = 0A00CH;      (* Undraw sprite
                                 Input : A2 = pointer to sprite save block *)
 
-  Sprite     = 0A00DH ;      (* Draw a sprite
+  Sprite     = 0A00DH;      (* Draw a sprite
                                 Input : D0 = x hot-spot
                                         D1 = y hot-spot
                                         A0 = pointer to sprite definition
                                         A2 = pointer to sprite save block  *)
 
-  CopyRaster = 0A00EH ;      (* Copy raster form
+  CopyRaster = 0A00EH;      (* Copy raster form
                                 Input : As GEM VDI                         *)
 
 
   (* Style bits *)
-  Thickened = 0 ;
-  Intensity = 1 ;
-  Skewed    = 2 ;
-  Underlined= 3 ;
-  OutLine   = 4 ;
-  Shadow    = 5 ;
+  Thickened = 0;
+  Intensity = 1;
+  Skewed    = 2;
+  Underlined= 3;
+  OutLine   = 4;
+  Shadow    = 5;
   
 TYPE 
-  LineAFontsArray = ARRAY [0..2] OF POINTER TO GEMFontType ; 
+  LineAFontsArray = ARRAY [0..2] OF POINTER TO GEMFontType; 
   (* pointers to 3 system fonts *)
   
-  LineAVectorsArray = ARRAY [0..14] OF ADDRESS ; (* LineA vectors *)
+  LineAVectorsArray = ARRAY [0..14] OF ADDRESS; (* LineA vectors *)
 
   LineAVarRecord = RECORD
-                     VideoPlanes : CARDINAL ; (* number of planes *)
-                     VBytesLine  : CARDINAL ; (* bytes per video line *)
+                     VideoPlanes : CARDINAL; (* number of planes *)
+                     VBytesLine  : CARDINAL; (* bytes per video line *)
                      (* Control arrays *)
-                     Control     : POINTER TO ARRAY [0..11] OF INTEGER ;
-                     IntIn       : POINTER TO ARRAY [0..127] OF INTEGER ;
-                     PtsIn       : POINTER TO ARRAY [0..127] OF INTEGER ;
-                     IntOut      : POINTER TO ARRAY [0..127] OF INTEGER ;
-                     PtsOut      : POINTER TO ARRAY [0..127] OF INTEGER ;
-                     FGBp1       : CARDINAL ; (* current colour bit plane 0 *)
-                     FGBp2       : CARDINAL ; (* current colour bit plane 1 *)
-                     FGBp3       : CARDINAL ; (* current colour bit plane 2 *)
-                     FGBp4       : CARDINAL ; (* current colour bit plane 3 *)
-                     LstLin      : INTEGER ;  (* set to -1 *)
-                     LineStyle   : CARDINAL ;  (* VDI type line style *)
-                     WriteMode   : CARDINAL ;  (* Writing mode *)
-                     X1          : CARDINAL ;  (* coords *)
-                     Y1          : CARDINAL ;
-                     X2          : CARDINAL ;
-                     Y2          : CARDINAL ;
-                     PatPtr      : ADDRESS ;  (* pointer to fill pattern *)
-                     PatMask     : BITSET ;   (* fill pattern mask *)
-                     MultiFill   : CARDINAL ; (* multi plane fill flag *)
-                     Clip        : CARDINAL ; (* clipping flag *)
-                     XMinClip    : CARDINAL ; (* clipping coords *)
-                     YMinClip    : CARDINAL ;
-                     XMaxClip    : CARDINAL ;
-                     YMaxClip    : CARDINAL ;
-                     XAccData    : CARDINAL ;  (* accumulator for textblt *)
-                     DDAInc      : CARDINAL ;  (* fractional scaling value *)
-                     ScaleDir    : CARDINAL ;  (* scale direction *)
-                     MonoStatus  : CARDINAL ;  (* mono spaced font flag *)
-                     SourceX     : CARDINAL ;  (* coords of char in font *)
-                     SourceY     : CARDINAL ;
-                     DestX       : CARDINAL ;  (* char coords *)
-                     DestY       : CARDINAL ;
-                     DeltaX      : CARDINAL ;  (* width of char *)
-                     DeltaY      : CARDINAL ;  (* height of char *)
-                     FontBase    : ADDRESS ;  
-                     FontWidth   : CARDINAL ;
-                     Style       : BITSET ;    (* textblt effects flags *)
-                     LightMask   : BITSET ;    (* lightning mask *)
-                     SkewMask    : BITSET ;
-                     Weight      : CARDINAL ;  (* width to thicken text by *)
-                     ROff        : CARDINAL ;  (* skewing offsets from base *)
-                     LOff        : CARDINAL ;
-                     Scale       : CARDINAL ;  (* Scaling flag *)
-                     CharUp      : CARDINAL ;  (* Character rotation vector *)
-                     TextFG      : CARDINAL ;  (* text foreground colour *)
-                     Scrtchp     : ADDRESS ;  (* pointer to special fx buffer*)
-                     Scrpt2      : CARDINAL ; (* offset of scaling buffer *)
-                     TextBG      : CARDINAL ; (* text background colour *)
-                     CopyTran    : CARDINAL ; (* copy raster form type flag *)
-                   END ;
+                     Control     : POINTER TO ARRAY [0..11] OF INTEGER;
+                     IntIn       : POINTER TO ARRAY [0..127] OF INTEGER;
+                     PtsIn       : POINTER TO ARRAY [0..127] OF INTEGER;
+                     IntOut      : POINTER TO ARRAY [0..127] OF INTEGER;
+                     PtsOut      : POINTER TO ARRAY [0..127] OF INTEGER;
+                     FGBp1       : CARDINAL; (* current colour bit plane 0 *)
+                     FGBp2       : CARDINAL; (* current colour bit plane 1 *)
+                     FGBp3       : CARDINAL; (* current colour bit plane 2 *)
+                     FGBp4       : CARDINAL; (* current colour bit plane 3 *)
+                     LstLin      : INTEGER;  (* set to -1 *)
+                     LineStyle   : CARDINAL;  (* VDI type line style *)
+                     WriteMode   : CARDINAL;  (* Writing mode *)
+                     X1          : CARDINAL;  (* coords *)
+                     Y1          : CARDINAL;
+                     X2          : CARDINAL;
+                     Y2          : CARDINAL;
+                     PatPtr      : ADDRESS;  (* pointer to fill pattern *)
+                     PatMask     : BITSET;   (* fill pattern mask *)
+                     MultiFill   : CARDINAL; (* multi plane fill flag *)
+                     Clip        : CARDINAL; (* clipping flag *)
+                     XMinClip    : CARDINAL; (* clipping coords *)
+                     YMinClip    : CARDINAL;
+                     XMaxClip    : CARDINAL;
+                     YMaxClip    : CARDINAL;
+                     XAccData    : CARDINAL;  (* accumulator for textblt *)
+                     DDAInc      : CARDINAL;  (* fractional scaling value *)
+                     ScaleDir    : CARDINAL;  (* scale direction *)
+                     MonoStatus  : CARDINAL;  (* mono spaced font flag *)
+                     SourceX     : CARDINAL;  (* coords of char in font *)
+                     SourceY     : CARDINAL;
+                     DestX       : CARDINAL;  (* char coords *)
+                     DestY       : CARDINAL;
+                     DeltaX      : CARDINAL;  (* width of char *)
+                     DeltaY      : CARDINAL;  (* height of char *)
+                     FontBase    : ADDRESS;  
+                     FontWidth   : CARDINAL;
+                     Style       : BITSET;    (* textblt effects flags *)
+                     LightMask   : BITSET;    (* lightning mask *)
+                     SkewMask    : BITSET;
+                     Weight      : CARDINAL;  (* width to thicken text by *)
+                     ROff        : CARDINAL;  (* skewing offsets from base *)
+                     LOff        : CARDINAL;
+                     Scale       : CARDINAL;  (* Scaling flag *)
+                     CharUp      : CARDINAL;  (* Character rotation vector *)
+                     TextFG      : CARDINAL;  (* text foreground colour *)
+                     Scrtchp     : ADDRESS;  (* pointer to special fx buffer*)
+                     Scrpt2      : CARDINAL; (* offset of scaling buffer *)
+                     TextBG      : CARDINAL; (* text background colour *)
+                     CopyTran    : CARDINAL; (* copy raster form type flag *)
+                   END;
                      
 
   SpriteDefinitionBlock = RECORD
                             XHot,
-                            YHot    : CARDINAL ; (* coords of hot-spot *)
-                            Format  : INTEGER ;  (* format flag
+                            YHot    : CARDINAL; (* coords of hot-spot *)
+                            Format  : INTEGER;  (* format flag
                                                     1 = VDI, -1 = XOR   *)
-                            BGColour: CARDINAL ; (* background colour *)
-                            FGColour: CARDINAL ; (* foreground colour *)
+                            BGColour: CARDINAL; (* background colour *)
+                            FGColour: CARDINAL; (* foreground colour *)
                             (* Interleved BG/FG image (ie. even index = BG) *)
-                            Image   : ARRAY [0..31] OF BITSET ; 
-                          END ;
+                            Image   : ARRAY [0..31] OF BITSET; 
+                          END;
 
   Styles = ( Thicken, 
              Lighten, 
              Skew, 
              UnderLine (* not implemented *), 
              Outline );
-  StyleSet = SET OF Styles ;
+  StyleSet = SET OF Styles;
 
   WritingMode = ( Replace,
                   Transparent,
                   XOR,
-                  InverseTransparent ) ;
+                  InverseTransparent );
 
 VAR
-  LineAVars    : POINTER TO LineAVarRecord ;
-  LineAFonts   : POINTER TO LineAFontsArray ;
-  LineAVectors : POINTER TO LineAVectorsArray ;
+  LineAVars    : POINTER TO LineAVarRecord;
+  LineAFonts   : POINTER TO LineAFontsArray;
+  LineAVectors : POINTER TO LineAVectorsArray;
 
 
-PROCEDURE InitialiseLineA ;
 (* Initialise the lineA module and its data. *)
+PROCEDURE InitialiseLineA();
 
 (* Simple calls to LineA routines *)
 
-PROCEDURE DoPutPixel ( x, y : CARDINAL ; value : CARDINAL ) ;
+PROCEDURE DoPutPixel ( x, y : CARDINAL; value : CARDINAL );
 
-PROCEDURE DoGetPixel ( x, y : CARDINAL ) : CARDINAL ;
+PROCEDURE DoGetPixel ( x, y : CARDINAL ) : CARDINAL;
 
-PROCEDURE DoLine ( x1, y1, x2, y2 : CARDINAL ;
-                   bp1, bp2, bp3, bp4 : CARDINAL ;
-                   style : StyleSet ;
-                   mode : WritingMode ) ;
+PROCEDURE DoLine ( x1, y1, x2, y2 : CARDINAL;
+                   bp1, bp2, bp3, bp4 : CARDINAL;
+                   style : StyleSet;
+                   mode : WritingMode );
 
-PROCEDURE DoHorizLine ( x1, y1, x2 : CARDINAL ;
-                        bp1, bp2, bp3, bp4 : CARDINAL ;
-                        mode : WritingMode ;
-                        pattern : ADDRESS ; patternMask : BITSET ;
-                        multiFill : BOOLEAN ) ;
+PROCEDURE DoHorizLine ( x1, y1, x2 : CARDINAL;
+                        bp1, bp2, bp3, bp4 : CARDINAL;
+                        mode : WritingMode;
+                        pattern : ADDRESS; patternMask : BITSET;
+                        multiFill : BOOLEAN );
 
-PROCEDURE DoShowMouse ;
-PROCEDURE DoHideMouse ;
+PROCEDURE DoShowMouse();
+PROCEDURE DoHideMouse();
 
-PROCEDURE DoUnSprite ( saveBlock : ADDRESS ) ;
-PROCEDURE DoSprite ( xHot, yHot : CARDINAL ;
-                     VAR spriteDefinition : SpriteDefinitionBlock ;
-                     saveBlock : ADDRESS ) ;
+PROCEDURE DoUnSprite ( saveBlock : ADDRESS );
+PROCEDURE DoSprite ( xHot, yHot : CARDINAL;
+                     VAR spriteDefinition : SpriteDefinitionBlock;
+                     saveBlock : ADDRESS );
 
 (* Other procedures *)
 
-PROCEDURE DoChar ( char : CHAR ; x, y : CARDINAL ; Font : ADDRESS ) ;
 (* This routine does a simple TextBlt of a char. It is useful when 
    the many special effects etc. of the TextBlt call are not needed. *)
+PROCEDURE DoChar(ch: CHAR; x, y: CARDINAL; Font: ADDRESS);
 
-PROCEDURE DoString(str: ADDRESS; n, x, y: INTEGER; Font: ADDRESS);
-  (* As DoChar; n characters from str are written to the
+(* As DoChar; n characters from str are written to the
      screen at x, y *)
+PROCEDURE DoString(str: ADDRESS; n, x, y: INTEGER; Font: ADDRESS);
 
 
 END LineA.
