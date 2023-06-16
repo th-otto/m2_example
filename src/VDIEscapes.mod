@@ -90,7 +90,7 @@ BEGIN
 END EraseToEndOfLine;
 
 
-PROCEDURE LocateCursor(handle:DeviceHandle;column,row:CARDINAL16);
+PROCEDURE LocateCursor(handle:DeviceHandle;row,column:CARDINAL16);
 BEGIN
   GEMShare.our_cb^.pubs.vINTIN[0] := row;
   GEMShare.our_cb^.pubs.vINTIN[1] := column;
@@ -118,7 +118,7 @@ BEGIN
 END ReverseVideoOff;
 
 
-PROCEDURE GetCursorLocation(handle:DeviceHandle;VAR column,row:CARDINAL16);
+PROCEDURE GetCursorLocation(handle:DeviceHandle;VAR row,column:CARDINAL16);
 BEGIN
   GEMShare.vdi_if(handle, VDI_CTRL_CODE(GEMOps.ESCAPE, GEMOps.VQ_CURADDRESS, 0, 0));
   row := GEMShare.our_cb^.pubs.vINTOUT[0];

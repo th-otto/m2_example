@@ -2,51 +2,51 @@ DEFINITION MODULE VDIEscapes;
 
 FROM GEMVDIbase IMPORT PxyArrayType, FilmNameType, FilmIndexType;
 
-(* 1 *) PROCEDURE InquireCharCells(INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE InquireCharCells(handle: INTEGER; VAR rows, columns: INTEGER);
 
-(* 2 *) PROCEDURE ExitAlphaMode(INTEGER);
+PROCEDURE ExitAlphaMode(handle: INTEGER);
 
-(* 3 *) PROCEDURE EnterAlphaMode(INTEGER);
+PROCEDURE EnterAlphaMode(handle: INTEGER);
 
-(* 4 *) PROCEDURE CursorUp(INTEGER);
+PROCEDURE CursorUp(handle: INTEGER);
 
-(* 5 *) PROCEDURE CursorDown(INTEGER);
+PROCEDURE CursorDown(handle: INTEGER);
 
-(* 6 *) PROCEDURE CursorRight(INTEGER);
+PROCEDURE CursorRight(handle: INTEGER);
 
-(* 7 *) PROCEDURE CursorLeft(INTEGER);
+PROCEDURE CursorLeft(handle: INTEGER);
 
-(* 8 *) PROCEDURE CursorHome(INTEGER);
+PROCEDURE CursorHome(handle: INTEGER);
 
-(* 9 *) PROCEDURE EraseToEOS(INTEGER);
+PROCEDURE EraseToEOS(handle: INTEGER);
 
-(* 10 *) PROCEDURE EraseToEOL(INTEGER);
+PROCEDURE EraseToEOL(handle: INTEGER);
 
-(* 11 *) PROCEDURE CursorAddress(INTEGER; INTEGER; INTEGER);
+PROCEDURE CursorAddress(handle: INTEGER; row, column: INTEGER);
 
-(* 12 *) PROCEDURE OutputText(INTEGER; VAR ARRAY CHAR);
+PROCEDURE OutputText(handle: INTEGER; VAR str: ARRAY OF CHAR);
 
-(* 13 *) PROCEDURE ReverseVideoOn(INTEGER);
+PROCEDURE ReverseVideoOn(handle: INTEGER);
 
-(* 14 *) PROCEDURE ReverseVideoOff(INTEGER);
+PROCEDURE ReverseVideoOff(handle: INTEGER);
 
-(* 15 *) PROCEDURE InquireCursorAddress(INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE InquireCursorAddress(handle: INTEGER; VAR row, column: INTEGER);
 
-(* 16 *) PROCEDURE InquireTabletStatus(INTEGER) : INTEGER;
+PROCEDURE InquireTabletStatus(handle: INTEGER): INTEGER;
 
-(* 17 *) PROCEDURE HardCopy(INTEGER);
+PROCEDURE HardCopy(handle: INTEGER);
 
-(* 18 *) PROCEDURE DisplayCursor(INTEGER; INTEGER; INTEGER);
+PROCEDURE DisplayCursor(handle: INTEGER; row, column: INTEGER);
 
-(* 19 *) PROCEDURE RemoveCursor(INTEGER);
+PROCEDURE RemoveCursor(handle: INTEGER);
 
-(* 20 *) PROCEDURE FormAdvance(INTEGER);
+PROCEDURE FormAdvance(handle: INTEGER);
 
-(* 21 *) PROCEDURE OutputWindow(INTEGER; PxyArrayType);
+PROCEDURE OutputWindow(handle: INTEGER; pxy: PxyArrayType);
 
-(* 22 *) PROCEDURE ClearDisplayList(INTEGER);
+PROCEDURE ClearDisplayList(handle: INTEGER);
 
-(* 23 *) PROCEDURE OutputBitImageFile(
+PROCEDURE OutputBitImageFile(
       handle:INTEGER;
       VAR fname: ARRAY OF CHAR;
       aspect: INTEGER;
@@ -54,24 +54,24 @@ FROM GEMVDIbase IMPORT PxyArrayType, FilmNameType, FilmIndexType;
       numPts: INTEGER;
       VAR frame: PxyArrayType);
 
-(* 24 *) PROCEDURE SelectPalette(INTEGER; INTEGER) : INTEGER;
+PROCEDURE SelectPalette(handle: INTEGER; palette: INTEGER): INTEGER;
 
-(* 25 *) PROCEDURE InquirePaletteFilms(INTEGER; VAR FilmNameType);
+PROCEDURE InquirePaletteFilms(handle: INTEGER; VAR films: FilmNameType);
 
-(* 26 *) PROCEDURE InquirePaletteState(INTEGER; VAR port: INTEGER; VAR film: INTEGER; VAR lightness: INTEGER; VAR interlace: INTEGER; VAR planes: INTEGER; VAR FilmIndexType);
+PROCEDURE InquirePaletteState(handle: INTEGER; VAR port: INTEGER; VAR film: INTEGER; VAR lightness: INTEGER; VAR interlace: INTEGER; VAR planes: INTEGER; VAR indexes: FilmIndexType);
 
-(* 27 *) PROCEDURE SetPaletteState(handle: INTEGER; port: INTEGER; film: INTEGER; lightnes: INTEGER; interlace: INTEGER; planes: INTEGER; VAR FilmIndexType);
+PROCEDURE SetPaletteState(handle: INTEGER; port: INTEGER; film: INTEGER; lightnes: INTEGER; interlace: INTEGER; planes: INTEGER; VAR indexes: FilmIndexType);
 
-(* 28 *) PROCEDURE SavePaletteState(INTEGER);
+PROCEDURE SavePaletteState(handle: INTEGER);
 
-(* 29 *) PROCEDURE SuppressPaletteMessages(INTEGER);
+PROCEDURE SuppressPaletteMessages(handle: INTEGER);
 
-(* 30 *) PROCEDURE PaletteErrorInquire(INTEGER) : INTEGER;
+PROCEDURE PaletteErrorInquire(handle: INTEGER): INTEGER;
 
-(* 31 *) PROCEDURE UpdateMetafileExtents(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE UpdateMetafileExtents(handle: INTEGER; minx, miny, maxx, maxy: INTEGER);
 
-(* 32 *) PROCEDURE WriteMetafile(INTEGER; INTEGER; VAR ARRAY INTEGER; INTEGER; VAR ARRAY INTEGER);
+PROCEDURE WriteMetafile(handle: INTEGER; numIntin: INTEGER; VAR intin: ARRAY OF INTEGER; numPtsin: INTEGER; VAR ptsin: ARRAY OF INTEGER);
 
-(* 33 *) PROCEDURE ChangeFileName(INTEGER; VAR ARRAY CHAR);
+PROCEDURE ChangeFileName(handle: INTEGER; VAR fname: ARRAY OF CHAR);
 
 END VDIEscapes.

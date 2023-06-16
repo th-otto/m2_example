@@ -90,7 +90,7 @@ CONST EraseToEOL = EraseToEndOfLine;
 (*  Der Textcursor wird in der Spalte 'column' und der Zeile 'row'
  *  positioniert.
  *)
-PROCEDURE LocateCursor(handle: DeviceHandle; column, row: CARDINAL16);
+PROCEDURE LocateCursor(handle: DeviceHandle; row, column: CARDINAL16);
 CONST CursorAddress = LocateCursor;
 
 (*  Ab der aktuellen Cursorposition wird der in 'str' ange-
@@ -112,7 +112,7 @@ PROCEDURE ReverseVideoOff(handle: DeviceHandle);
 (*  Spalte 'column' und Zeile 'row', in der sich der Cursor augen-
  *  blicklich befindet, wird ermittelt.
  *)
-PROCEDURE GetCursorLocation(handle: DeviceHandle; VAR column, row: CARDINAL16);
+PROCEDURE GetCursorLocation(handle: DeviceHandle; VAR row, column: CARDINAL16);
 CONST InquireCursorAddress = GetCursorLocation;
 
 (*  Erfragt, ob eine Maus, ein Joystick, ein Grafiktablett oder
