@@ -1,29 +1,32 @@
 DEFINITION MODULE VDIInquires;
 
-IMPORT GEMVDIbase;
+FROM GEMVDIbase IMPORT VDIWorkOutType, RGBArrayType, PxyArrayType, TextAttrArrayType, BigPxyArrayType, FontNameType, DistanceArrayType;
 
-(* 1 *) PROCEDURE ExtendedInquire(handle: INTEGER; owflag: INTEGER; VAR GEMVDIbase.VDIWorkOutType);
+PROCEDURE ExtendedInquire(handle: INTEGER; owflag: INTEGER; VAR workout: VDIWorkOutType);
 
-(* 2 *) PROCEDURE InquireColour(handle: INTEGER; color: INTEGER; set: INTEGER; VAR rgb: GEMVDIbase.RGBArrayType);
+PROCEDURE InquireColour(handle: INTEGER; color: INTEGER; set: INTEGER; VAR rgb: RGBArrayType);
 
-(* 3 *) PROCEDURE InquireLineAttributes(handle: INTEGER; VAR attr: GEMVDIbase.PxyArrayType);
+(* FIXME: may return up to 6 attributes *)
+PROCEDURE InquireLineAttributes(handle: INTEGER; VAR attr: PxyArrayType);
 
-(* 4 *) PROCEDURE InquireMarkerAttributes(handle: INTEGER; VAR attr: GEMVDIbase.PxyArrayType);
+(* FIXME: returns 5 attributes *)
+PROCEDURE InquireMarkerAttributes(handle: INTEGER; VAR attr: PxyArrayType);
 
-(* 5 *) PROCEDURE InquireFillAttributes(handle: INTEGER; VAR attr: GEMVDIbase.PxyArrayType);
+(* FIXME: returns 5 attributes *)
+PROCEDURE InquireFillAttributes(handle: INTEGER; VAR attr: PxyArrayType);
 
-(* 6 *) PROCEDURE InquireTextAttributes(handle: INTEGER; VAR attr: GEMVDIbase.TextAttrArrayType);
+PROCEDURE InquireTextAttributes(handle: INTEGER; VAR attr: TextAttrArrayType);
 
-(* 7 *) PROCEDURE InquireTextExtent(handle: INTEGER; VAR str: ARRAY CHAR; extent: GEMVDIbase.BigPxyArrayType); (* BUG: extents passed by value *)
+PROCEDURE InquireTextExtent(handle: INTEGER; VAR str: ARRAY OF CHAR; extent: BigPxyArrayType); (* BUG: extents passed by value *)
 
-(* 8 *) PROCEDURE InquireCharWidth(handle: INTEGER; ch: CHAR; VAR width: INTEGER; VAR dLeft: INTEGER; VAR dRight: INTEGER) : INTEGER;
+PROCEDURE InquireCharWidth(handle: INTEGER; ch: CHAR; VAR width: INTEGER; VAR dLeft: INTEGER; VAR dRight: INTEGER): INTEGER;
 
-(* 9 *) PROCEDURE InquireFaceName(handle: INTEGER; INTEGER; VAR GEMVDIbase.FontNameType) : INTEGER;
+PROCEDURE InquireFaceName(handle: INTEGER; font: INTEGER; VAR name: FontNameType): INTEGER;
 
-(* 10 *) PROCEDURE InquireCellArray(handle: INTEGER; VAR GEMVDIbase.PxyArrayType; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER; VAR INTEGER; VAR ARRAY INTEGER);
+PROCEDURE InquireCellArray(handle: INTEGER; VAR pxy: PxyArrayType; rowLength: INTEGER; numRows: INTEGER; VAR elUsed: INTEGER; VAR rowsUsed: INTEGER; VAR status: INTEGER; VAR colarray: ARRAY OF INTEGER);
 
-(* 11 *) PROCEDURE InquireInputMode(handle: INTEGER; handle: INTEGER; VAR INTEGER);
+PROCEDURE InquireInputMode(handle: INTEGER; dev: INTEGER; VAR input: INTEGER);
 
-(* 12 *) PROCEDURE InquireFaceInfo(handle: INTEGER; VAR minADE: INTEGER; VAR maxADE: INTEGER; VAR dist: GEMVDIbase.DistanceArrayType; VAR maxWidth: INTEGER; VAR effects: GEMVDIbase.RGBArrayType);
+PROCEDURE InquireFaceInfo(handle: INTEGER; VAR minADE: INTEGER; VAR maxADE: INTEGER; VAR dist: DistanceArrayType; VAR maxWidth: INTEGER; VAR effects: RGBArrayType);
 
 END VDIInquires.
