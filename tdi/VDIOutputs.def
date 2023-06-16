@@ -2,38 +2,38 @@ DEFINITION MODULE VDIOutputs;
 
 FROM GEMVDIbase IMPORT PxyArrayType;
 
-(* 1 *) PROCEDURE PolyLine(INTEGER; INTEGER; VAR ARRAY INTEGER);
+PROCEDURE PolyLine(handle: INTEGER; noLines: INTEGER; VAR pts: ARRAY OF INTEGER);
 
-(* 2 *) PROCEDURE PolyMarker(INTEGER; INTEGER; VAR ARRAY INTEGER);
+PROCEDURE PolyMarker(handle: INTEGER; noMarks: INTEGER; VAR pts: ARRAY OF INTEGER);
 
-(* 3 *) PROCEDURE GraphicText(INTEGER; INTEGER; INTEGER; VAR ARRAY CHAR);
+PROCEDURE GraphicText(handle: INTEGER; x, y: INTEGER; VAR text: ARRAY OF CHAR);
 
-(* 4 *) PROCEDURE FillArea(INTEGER; INTEGER; VAR ARRAY INTEGER);
+PROCEDURE FillArea(handle: INTEGER; noEdges: INTEGER; VAR pts: ARRAY OF INTEGER);
 
-(* 5 *) PROCEDURE CellArray(INTEGER; VAR PxyArrayType; INTEGER; INTEGER; INTEGER; INTEGER; VAR ARRAY INTEGER);
+PROCEDURE CellArray(handle: INTEGER; VAR pxy: PxyArrayType; rowLength: INTEGER; elUsed: INTEGER; numRows: INTEGER; wrtMode: INTEGER; VAR colarray: ARRAY OF INTEGER);
 
-(* 6 *) PROCEDURE ContourFill(INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE ContourFill(handle: INTEGER; x, y: INTEGER; color: INTEGER);
 
-(* 7 *) PROCEDURE FillRectangle(INTEGER; VAR PxyArrayType);
+PROCEDURE FillRectangle(handle: INTEGER; VAR pxy: PxyArrayType);
 
-(* 8 *) PROCEDURE DrawBar(INTEGER; VAR PxyArrayType);
+PROCEDURE DrawBar(handle: INTEGER; VAR pxy: PxyArrayType);
 
-(* 9 *) PROCEDURE DrawArc(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE DrawArc(handle: INTEGER; x, y, radius, beg, end: INTEGER);
 
-(* 10 *) PROCEDURE DrawPieSlice(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE DrawPieSlice(handle: INTEGER; x, y, radius, beg, end: INTEGER);
 
-(* 11 *) PROCEDURE DrawCircle(INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE DrawCircle(handle: INTEGER; x, y, radius: INTEGER);
 
-(* 12 *) PROCEDURE DrawEllipticalArc(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE DrawEllipticalArc(handle: INTEGER; x, y, xradius, yradius, beg, end: INTEGER);
 
-(* 13 *) PROCEDURE DrawEllipticalPie(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE DrawEllipticalPie(handle: INTEGER; x, y, xradius, yradius, beg, end: INTEGER);
 
-(* 14 *) PROCEDURE DrawEllipse(INTEGER; INTEGER; INTEGER; INTEGER; INTEGER);
+PROCEDURE DrawEllipse(handle: INTEGER; x, y, xradius, yradius: INTEGER);
 
-(* 15 *) PROCEDURE DrawRoundedBox(INTEGER; VAR PxyArrayType);
+PROCEDURE DrawRoundedBox(handle: INTEGER; VAR pxy: PxyArrayType);
 
-(* 16 *) PROCEDURE DrawRoundedFilledBox(INTEGER; VAR PxyArrayType);
+PROCEDURE DrawRoundedFilledBox(handle: INTEGER; VAR pxy: PxyArrayType);
 
-(* 17 *) PROCEDURE JustifiedText(INTEGER; INTEGER; INTEGER; VAR ARRAY CHAR; INTEGER; INTEGER; INTEGER);
+PROCEDURE JustifiedText(handle: INTEGER; x, y: INTEGER; VAR str: ARRAY OF CHAR; length: INTEGER; wSpace, cSpace: INTEGER);
 
 END VDIOutputs.
