@@ -1,24 +1,25 @@
 DEFINITION MODULE VDIRasters;
 
 FROM GEMVDIbase IMPORT BigPxyArrayType, SmallArrayType;
+FROM SYSTEM IMPORT ADDRESS;
 
 TYPE MFDBType = RECORD
-   pointer(*offset: 0H*)  : SYSTEM.ADDRESS;
-   width(*offset: 4H*)  : CARDINAL;
-   height(*offset: 6H*)  : CARDINAL;
-   widthW(*offset: 8H*)  : CARDINAL;
-   format(*offset: AH*)  : CARDINAL;
-   planes(*offset: CH*)  : CARDINAL;
-   rsrvd1(*offset: EH*)  : CARDINAL;
-   rsrvd2(*offset: 10H*)  : CARDINAL;
+   pointer : ADDRESS;
+   width   : CARDINAL;
+   height  : CARDINAL;
+   widthW  : CARDINAL;
+   format  : CARDINAL;
+   planes  : CARDINAL;
+   rsrvd1  : CARDINAL;
+   rsrvd2  : CARDINAL;
 END;
 
-(* 1 *) PROCEDURE CopyRasterOpaque(INTEGER; INTEGER; VAR GEMVDIbase.BigPxyArrayType; SYSTEM.ADDRESS; SYSTEM.ADDRESS);
+PROCEDURE CopyRasterOpaque(handle: INTEGER; mode: INTEGER; VAR pxy: BigPxyArrayType; sourceMem: ADDRESS; destMem: ADDRESS);
 
-(* 2 *) PROCEDURE CopyRasterTransparent(INTEGER; INTEGER; VAR GEMVDIbase.BigPxyArrayType; VAR SYSTEM.ADDRESS; VAR SYSTEM.ADDRESS; VAR GEMVDIbase.SmallArrayType);
+PROCEDURE CopyRasterTransparent(handle: INTEGER; mode: INTEGER; VAR pxy: BigPxyArrayType; VAR sourceMem: ADDRESS; VAR destMem: ADDRESS; VAR setCol: SmallArrayType);
 
-(* 3 *) PROCEDURE TransformForm(INTEGER; SYSTEM.ADDRESS; SYSTEM.ADDRESS);
+PROCEDURE TransformForm(handle: INTEGER; sourceMem: ADDRESS; destMem: ADDRESS);
 
-(* 4 *) PROCEDURE GetPixel(INTEGER; INTEGER; INTEGER; VAR INTEGER; VAR INTEGER);
+PROCEDURE GetPixel(handle: INTEGER; x, y: INTEGER; VAR pel: INTEGER; VAR color: INTEGER);
 
 END VDIRasters.
