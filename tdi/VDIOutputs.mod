@@ -1,5 +1,4 @@
 IMPLEMENTATION MODULE VDIOutputs;
-
 (*$S-*) (* no stack check *)
 (*$T-*) (* no range check *)
 

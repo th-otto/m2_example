@@ -2,22 +2,26 @@ DEFINITION MODULE VDIControls;
 
 FROM GEMVDIbase IMPORT VDIWorkInType, VDIWorkOutType, PxyArrayType;
 
-(* 1 *) PROCEDURE OpenWorkstation(VAR VDIWorkInType; VAR INTEGER; VAR VDIWorkOutType);
+PROCEDURE OpenWorkstation(VAR workin: VDIWorkInType; VAR handle: INTEGER; VAR workout: VDIWorkOutType);
 
-(* 2 *) PROCEDURE CloseWorkstation(INTEGER);
+PROCEDURE CloseWorkstation(handle: INTEGER);
 
-(* 3 *) PROCEDURE OpenVirtualWorkstation(VAR VDIWorkInType; VAR INTEGER; VAR VDIWorkOutType);
+PROCEDURE OpenVirtualWorkstation(VAR workin: VDIWorkInType; VAR handle: INTEGER; VAR workout: VDIWorkOutType);
 
-(* 4 *) PROCEDURE CloseVirtualWorkstation(INTEGER);
+PROCEDURE CloseVirtualWorkstation(handle: INTEGER);
 
-(* 5 *) PROCEDURE ClearWorkstation(INTEGER);
+PROCEDURE ClearWorkstation(handle: INTEGER);
 
-(* 6 *) PROCEDURE UpdateWorkstation(INTEGER);
+PROCEDURE UpdateWorkstation(handle: INTEGER);
 
-(* 7 *) PROCEDURE LoadFonts(INTEGER; INTEGER) : INTEGER;
+PROCEDURE LoadFonts(handle: INTEGER; select: INTEGER): INTEGER;
 
-(* 8 *) PROCEDURE UnloadFonts(INTEGER; INTEGER);
+PROCEDURE UnloadFonts(handle: INTEGER; select: INTEGER);
 
-(* 9 *) PROCEDURE SetClipping(INTEGER; INTEGER; VAR PxyArrayType);
+PROCEDURE SetClipping(handle: INTEGER; on: INTEGER; VAR pxy: PxyArrayType);
+
+PROCEDURE GDOSAvailable(): BOOLEAN;
+
+PROCEDURE GDOSVersion(): LONGCARD;
 
 END VDIControls.
