@@ -8,10 +8,10 @@ TYPE WriteProc = PROCEDURE(CHAR);
 
 TYPE StatusProc = PROCEDURE(): BOOLEAN;
 
-VAR DoRead (* reladdr: 0H*)  : ReadProc;
+VAR DoRead : ReadProc;
 
-VAR DoWrite (* reladdr: 4H*)  : WriteProc;
+VAR DoWrite: WriteProc;
 
-VAR DoStatus (* reladdr: 8H*)  : StatusProc;
+VAR DoStatus: StatusProc;
 
 END TermBase.

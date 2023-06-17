@@ -6,7 +6,7 @@ scmod header: MODULE  Display, key =  2102H  F1E7H  6763H  checksum: o.k.
 data size, number of bytes = 0  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 22
-PROCEDURE Write(CHAR);
+PROCEDURE Write(ch: CHAR);
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        7A00                     MOVEQ   #00H,D5

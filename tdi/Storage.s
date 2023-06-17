@@ -17,7 +17,7 @@ PROCEDURE ALLOCATE(VAR addr: ADDRESS; amount: LONGCARD);
      EH        558F                     SUBQ.L  #2,A7
     10H        4878 4000                PEA     4000H
     14H        4227                     CLR.B   -(A7)
-    16H        6100 0000                BSR     [0000H] = 00000018H
+    16H        6100 0000                BSR     CreateHeap
     1AH        5C8F                     ADDQ.L  #6,A7
     1CH        4A1F                     TST.B   (A7)+
     1EH        6608                     BNE     [08H] = 00000028H
@@ -141,7 +141,7 @@ PROCEDURE DEALLOCATE(VAR addr: ADDRESS; amount: LONGCARD);
 ref own data at     6H  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 148
-PROCEDURE CreateHeap(amount: LONGCARD; BOOLEAN): BOOLEAN;
+PROCEDURE CreateHeap(amount: LONGCARD; shared: BOOLEAN): BOOLEAN;
  DECODE --------                        INSTRUCTION
      0H        4E56 FFF8                LINK    A6,#FFF8H
      4H        7AFF                     MOVEQ   #FFH,D5

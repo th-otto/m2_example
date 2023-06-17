@@ -12,8 +12,7 @@ TYPE words = RECORD CASE : BOOLEAN OF
   END;
 END;
 
-VAR dummy: LONGCARD;
-    w: words;
+VAR w: words;
 
 PROCEDURE CopyRasterOpaque(handle: INTEGER; mode: INTEGER; VAR pxy: BigPxyArrayType; sourceMem: ADDRESS; destMem: ADDRESS);
 BEGIN

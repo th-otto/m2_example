@@ -2,20 +2,20 @@ DEFINITION MODULE Terminal;
 
 IMPORT SYSTEM;
 
-VAR termCH (* reladdr: 0H*)  : CHAR;
+VAR termCH: CHAR;
 
-(* 1 *) PROCEDURE Read(VAR ch: CHAR);
+PROCEDURE Read(VAR ch: CHAR);
 
-(* 2 *) PROCEDURE BusyRead(VAR ch: CHAR);
+PROCEDURE BusyRead(VAR ch: CHAR);
 
-(* 3 *) PROCEDURE ReadAgain();
+PROCEDURE ReadAgain();
 
-(* 4 *) PROCEDURE Write(ch: CHAR);
+PROCEDURE Write(ch: CHAR);
 
-(* 5 *) PROCEDURE WriteLn();
+PROCEDURE WriteLn();
 
-(* 6 *) PROCEDURE WriteString(VAR str: ARRAY OF CHAR);
+PROCEDURE WriteString(VAR str: ARRAY OF CHAR);
 
-(* 7 *) PROCEDURE ReadString(VAR str: ARRAY OF CHAR);
+PROCEDURE ReadString(VAR str: ARRAY OF CHAR);
 
 END Terminal.

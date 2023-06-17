@@ -1,8 +1,7 @@
 DEFINITION MODULE Display;
 
-
 IMPORT SYSTEM;
 
-(* 1 *) PROCEDURE Write(CHAR);
-    
+PROCEDURE Write(ch: CHAR);
+
 END Display.
