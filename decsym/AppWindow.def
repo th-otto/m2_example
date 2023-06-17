@@ -1,0 +1,9 @@
+DEFINITION MODULE AppWindow;
+
+PROCEDURE WriteString(VAR text: ARRAY OF CHAR);
+
+PROCEDURE WriteLn();
+
+PROCEDURE Clear();
+
+END AppWindow.

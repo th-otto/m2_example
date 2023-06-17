@@ -1,0 +1,17 @@
+DEFINITION MODULE AppBase;
+
+VAR apId: INTEGER;
+VAR wdwHandle: INTEGER;
+VAR vdiHandle: INTEGER;
+
+TYPE UpdateWindowProc = PROCEDURE();
+
+VAR doUpdateWindow: UpdateWindowProc;
+TYPE FileSet = SET OF [0..31];
+VAR openFiles: FileSet;
+TYPE StreamType = (none, tmp, mod, ref, sym, lnk, lst, ttp, prg, map, cor, erm, xrf, dec, prt, ind, rsc);
+TYPE StreamSet = SET OF StreamType;
+VAR openStreams: StreamSet;
+VAR shellTail: ARRAY [0..79] OF CHAR;
+
+END AppBase.

@@ -1397,7 +1397,7 @@ VDIRasters.CopyRasterOpaque:
 [0001128c] 4e75                      rts
 
 ***
-* MODULE 
+* MODULE AppBase 
 ***
 
 [0001128e] 4e56 0000                 link       a6,#0
@@ -1408,18 +1408,18 @@ VDIRasters.CopyRasterOpaque:
 [00011296] 4ef9 0001 0efc            jmp        GEMVDIbase.init
 
 [0001129c] 4e56 0000                 link       a6,#0
-[000112a0] 23fc 0001 128e 0001 6250  move.l     #$0001128E,$00016250
-[000112aa] 33fc ffff 0001 624a       move.w     #$FFFF,$0001624A ; apid
-[000112b2] 33fc ffff 0001 624e       move.w     #$FFFF,$0001624E ; vdihandle
-[000112ba] 33fc ffff 0001 624c       move.w     #$FFFF,$0001624C ; window handle
-[000112c2] 42b9 0001 6254            clr.l      $00016254
-[000112c8] 42b9 0001 6258            clr.l      $00016258
-[000112ce] 4239 0001 625c            clr.b      $0001625C
+[000112a0] 23fc 0001 128e 0001 6250  move.l     #$0001128E,AppBase.doUpdateWindow
+[000112aa] 33fc ffff 0001 624a       move.w     #$FFFF,AppBase.apId ; apid
+[000112b2] 33fc ffff 0001 624e       move.w     #$FFFF,AppBase.vdiHandle ; vdihandle
+[000112ba] 33fc ffff 0001 624c       move.w     #$FFFF,AppBase.wdwHandle ; window handle
+[000112c2] 42b9 0001 6254            clr.l      AppBase.openFiles
+[000112c8] 42b9 0001 6258            clr.l      AppBase.openStreams
+[000112ce] 4239 0001 625c            clr.b      AppBase.shellTail
 [000112d4] 4e5e                      unlk       a6
 [000112d6] 4ef9 0001 19e0            jmp        $000119E0
 
 ***
-* MODULE 
+* MODULE AppWindow
 ***
 
 PROCEDURE mouseOn(on: BOOLEAN);
@@ -1440,18 +1440,19 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [0001130a] 4e5e                      unlk       a6
 [0001130c] 4e75                      rts
 
+AppWindow.WriteString:
 [0001130e] 4e56 fffc                 link       a6,#-4
 [00011312] 4227                      clr.b      -(a7)
 [00011314] 4eb9 0001 12dc            jsr        mouseOn
 [0001131a] 548f                      addq.l     #2,a7
-[0001131c] 3f39 0001 624e            move.w     $0001624E,-(a7)
-[00011322] 3a39 0001 62be            move.w     $000162BE,d5
-[00011328] cbf9 0001 62ae            muls.w     $000162AE,d5
-[0001132e] da79 0001 62b6            add.w      $000162B6,d5
+[0001131c] 3f39 0001 624e            move.w     AppBase.vdiHandle,-(a7)
+[00011322] 3a39 0001 62be            move.w     AppWindow.CursorX,d5
+[00011328] cbf9 0001 62ae            muls.w     AppWindow.wchar,d5
+[0001132e] da79 0001 62b6            add.w      AppWindow.workx,d5
 [00011334] 3f05                      move.w     d5,-(a7)
-[00011336] 3a39 0001 62c0            move.w     $000162C0,d5
-[0001133c] cbf9 0001 62b0            muls.w     $000162B0,d5
-[00011342] da79 0001 62b8            add.w      $000162B8,d5
+[00011336] 3a39 0001 62c0            move.w     AppWindow.CursorY,d5
+[0001133c] cbf9 0001 62b0            muls.w     AppWindow.hchar,d5
+[00011342] da79 0001 62b8            add.w      AppWindow.worky,d5
 [00011348] 3f05                      move.w     d5,-(a7)
 [0001134a] 3a2e 000c                 move.w     12(a6),d5
 [0001134e] 3f05                      move.w     d5,-(a7)
@@ -1467,44 +1468,45 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [00011372] 286e 0008                 movea.l    8(a6),a4
 [00011376] 4a34 5000                 tst.b      0(a4,d5.w)
 [0001137a] 6742                      beq.s      $000113BE
-[0001137c] 3a39 0001 62be            move.w     $000162BE,d5
+[0001137c] 3a39 0001 62be            move.w     AppWindow.CursorX,d5
 [00011382] da6e fffc                 add.w      -4(a6),d5
 [00011386] 0c45 0010                 cmpi.w     #$0010,d5
 [0001138a] 652c                      bcs.s      $000113B8
 [0001138c] 3a2e fffc                 move.w     -4(a6),d5
 [00011390] 286e 0008                 movea.l    8(a6),a4
-[00011394] 3839 0001 62c0            move.w     $000162C0,d4
+[00011394] 3839 0001 62c0            move.w     AppWindow.CursorY,d4
 [0001139a] c8fc 0032                 mulu.w     #$0032,d4
-[0001139e] 47f9 0001 6292            lea.l      $00016292,a3
-[000113a4] 3639 0001 62be            move.w     $000162BE,d3
+[0001139e] 47f9 0001 6292            lea.l      $00016292,a3 AppWindow.screenBuffer
+[000113a4] 3639 0001 62be            move.w     AppWindow.CursorX,d3
 [000113aa] d66e fffc                 add.w      -4(a6),d3
 [000113ae] 47f3 40f0                 lea.l      -16(a3,d4.w),a3
 [000113b2] 17b4 5000 3000            move.b     0(a4,d5.w),0(a3,d3.w)
 [000113b8] 526e fffc                 addq.w     #1,-4(a6)
 [000113bc] 60a6                      bra.s      $00011364
 [000113be] 3a2e fffc                 move.w     -4(a6),d5
-[000113c2] db79 0001 62be            add.w      d5,$000162BE
+[000113c2] db79 0001 62be            add.w      d5,AppWindow.CursorX
 [000113c8] 1f3c 0001                 move.b     #$01,-(a7)
 [000113cc] 4eb9 0001 12dc            jsr        mouseOn
 [000113d2] 548f                      addq.l     #2,a7
 [000113d4] 4e5e                      unlk       a6
 [000113d6] 4e75                      rts
 
+AppWindow.WriteLn
 [000113d8] 4e56 ffdc                 link       a6,#-36
-[000113dc] 3a39 0001 62be            move.w     $000162BE,d5
+[000113dc] 3a39 0001 62be            move.w     AppWindow.CursorX,d5
 [000113e2] 5345                      subq.w     #1,d5
-[000113e4] 3839 0001 62c0            move.w     $000162C0,d4
+[000113e4] 3839 0001 62c0            move.w     AppWindow.CursorY,d4
 [000113ea] d844                      add.w      d4,d4
-[000113ec] 49f9 0001 6772            lea.l      $00016772,a4
+[000113ec] 49f9 0001 6772            lea.l      $00016772,a4 lineLength
 [000113f2] 3985 4000                 move.w     d5,0(a4,d4.w)
-[000113f6] 3a39 0001 62c0            move.w     $000162C0,d5
-[000113fc] ba79 0001 62c2            cmp.w      $000162C2,d5
+[000113f6] 3a39 0001 62c0            move.w     AppWindow.CursorY,d5
+[000113fc] ba79 0001 62c2            cmp.w      winrows,d5
 [00011402] 6d02                      blt.s      $00011406
 [00011404] 6004                      bra.s      $0001140A
 [00011406] 4efa 0218                 jmp        $00011620(pc)
 [0001140a] 3d79 0001 6774 ffdc       move.w     $00016774,-36(a6)
 [00011412] 3d7c 0002 ffde            move.w     #$0002,-34(a6)
-[00011418] 3a39 0001 62c2            move.w     $000162C2,d5
+[00011418] 3a39 0001 62c2            move.w     winrows,d5
 [0001141e] 3f05                      move.w     d5,-(a7)
 [00011420] 302e ffde                 move.w     -34(a6),d0
 [00011424] b057                      cmp.w      (a7),d0
@@ -1512,29 +1514,29 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [00011428] 4efa 0088                 jmp        $000114B2(pc)
 [0001142c] 3a2e ffde                 move.w     -34(a6),d5
 [00011430] da45                      add.w      d5,d5
-[00011432] 49f9 0001 6772            lea.l      $00016772,a4
+[00011432] 49f9 0001 6772            lea.l      $00016772,a4 lineLength
 [00011438] 3834 5000                 move.w     0(a4,d5.w),d4
 [0001143c] b86e ffdc                 cmp.w      -36(a6),d4
 [00011440] 6312                      bls.s      $00011454
 [00011442] 3a2e ffde                 move.w     -34(a6),d5
 [00011446] da45                      add.w      d5,d5
-[00011448] 49f9 0001 6772            lea.l      $00016772,a4
+[00011448] 49f9 0001 6772            lea.l      $00016772,a4 lineLength
 [0001144e] 3d74 5000 ffdc            move.w     0(a4,d5.w),-36(a6)
 [00011454] 3a2e ffde                 move.w     -34(a6),d5
 [00011458] da45                      add.w      d5,d5
-[0001145a] 49f9 0001 6772            lea.l      $00016772,a4
+[0001145a] 49f9 0001 6772            lea.l      $00016772,a4 lineLength
 [00011460] 382e ffde                 move.w     -34(a6),d4
 [00011464] 5344                      subq.w     #1,d4
 [00011466] d844                      add.w      d4,d4
-[00011468] 47f9 0001 6772            lea.l      $00016772,a3
+[00011468] 47f9 0001 6772            lea.l      $00016772,a3 lineLength
 [0001146e] 37b4 5000 4000            move.w     0(a4,d5.w),0(a3,d4.w)
 [00011474] 3a2e ffde                 move.w     -34(a6),d5
 [00011478] cafc 0032                 mulu.w     #$0032,d5
-[0001147c] 49f9 0001 6292            lea.l      $00016292,a4
+[0001147c] 49f9 0001 6292            lea.l      $00016292,a4 AppWindow.screenBuffer
 [00011482] 382e ffde                 move.w     -34(a6),d4
 [00011486] 5344                      subq.w     #1,d4
 [00011488] c8fc 0032                 mulu.w     #$0032,d4
-[0001148c] 47f9 0001 6292            lea.l      $00016292,a3
+[0001148c] 47f9 0001 6292            lea.l      $00016292,a3 AppWindow.screenBuffer
 [00011492] 49f4 5000                 lea.l      0(a4,d5.w),a4
 [00011496] 47f3 4000                 lea.l      0(a3,d4.w),a3
 [0001149a] 7a18                      moveq.l    #24,d5
@@ -1548,32 +1550,32 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [000114b2] 548f                      addq.l     #2,a7
 [000114b4] 42ae fffc                 clr.l      -4(a6)
 [000114b8] 42ae fff8                 clr.l      -8(a6)
-[000114bc] 3a39 0001 62b6            move.w     $000162B6,d5
-[000114c2] da79 0001 62ae            add.w      $000162AE,d5
+[000114bc] 3a39 0001 62b6            move.w     AppWindow.workx,d5
+[000114c2] da79 0001 62ae            add.w      AppWindow.wchar,d5
 [000114c8] 3d45 ffe8                 move.w     d5,-24(a6)
-[000114cc] 3a39 0001 62b8            move.w     $000162B8,d5
-[000114d2] da79 0001 62b0            add.w      $000162B0,d5
+[000114cc] 3a39 0001 62b8            move.w     AppWindow.worky,d5
+[000114d2] da79 0001 62b0            add.w      AppWindow.hchar,d5
 [000114d8] 3d45 ffea                 move.w     d5,-22(a6)
 [000114dc] 3a2e ffdc                 move.w     -36(a6),d5
 [000114e0] 5245                      addq.w     #1,d5
-[000114e2] cbf9 0001 62ae            muls.w     $000162AE,d5
-[000114e8] da79 0001 62b6            add.w      $000162B6,d5
+[000114e2] cbf9 0001 62ae            muls.w     AppWindow.wchar,d5
+[000114e8] da79 0001 62b6            add.w      AppWindow.workx,d5
 [000114ee] 3d45 ffec                 move.w     d5,-20(a6)
-[000114f2] 3a39 0001 62b8            move.w     $000162B8,d5
-[000114f8] da79 0001 62bc            add.w      $000162BC,d5
+[000114f2] 3a39 0001 62b8            move.w     AppWindow.worky,d5
+[000114f8] da79 0001 62bc            add.w      AppWindow.workh,d5
 [000114fe] 3d45 ffee                 move.w     d5,-18(a6)
-[00011502] 3a39 0001 62b6            move.w     $000162B6,d5
-[00011508] da79 0001 62ae            add.w      $000162AE,d5
+[00011502] 3a39 0001 62b6            move.w     AppWindow.workx,d5
+[00011508] da79 0001 62ae            add.w      AppWindow.wchar,d5
 [0001150e] 3d45 fff0                 move.w     d5,-16(a6)
-[00011512] 3d79 0001 62b8 fff2       move.w     $000162B8,-14(a6)
+[00011512] 3d79 0001 62b8 fff2       move.w     AppWindow.worky,-14(a6)
 [0001151a] 3d6e ffec fff4            move.w     -20(a6),-12(a6)
 [00011520] 3a2e ffee                 move.w     -18(a6),d5
-[00011524] 9a79 0001 62b0            sub.w      $000162B0,d5
+[00011524] 9a79 0001 62b0            sub.w      AppWindow.hchar,d5
 [0001152a] 3d45 fff6                 move.w     d5,-10(a6)
 [0001152e] 4227                      clr.b      -(a7)
 [00011530] 4eb9 0001 12dc            jsr        mouseOn
 [00011536] 548f                      addq.l     #2,a7
-[00011538] 3f39 0001 624e            move.w     $0001624E,-(a7)
+[00011538] 3f39 0001 624e            move.w     AppBase.vdiHandle,-(a7)
 [0001153e] 3f3c 0003                 move.w     #$0003,-(a7)
 [00011542] 486e ffe8                 pea.l      -24(a6)
 [00011546] 49ee fffc                 lea.l      -4(a6),a4
@@ -1584,28 +1586,28 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [00011554] 2f05                      move.l     d5,-(a7)
 [00011556] 4eb9 0001 121c            jsr        VDIRasters.CopyRasterOpaque
 [0001155c] 4fef 0010                 lea.l      16(a7),a7
-[00011560] 3a39 0001 62b6            move.w     $000162B6,d5
-[00011566] da79 0001 62ae            add.w      $000162AE,d5
+[00011560] 3a39 0001 62b6            move.w     AppWindow.workx,d5
+[00011566] da79 0001 62ae            add.w      AppWindow.wchar,d5
 [0001156c] 3d45 ffe0                 move.w     d5,-32(a6)
-[00011570] 3a39 0001 62c2            move.w     $000162C2,d5
+[00011570] 3a39 0001 62c2            move.w     winrows,d5
 [00011576] 5345                      subq.w     #1,d5
-[00011578] cbf9 0001 62b0            muls.w     $000162B0,d5
-[0001157e] da79 0001 62b8            add.w      $000162B8,d5
+[00011578] cbf9 0001 62b0            muls.w     AppWindow.hchar,d5
+[0001157e] da79 0001 62b8            add.w      AppWindow.worky,d5
 [00011584] 5245                      addq.w     #1,d5
 [00011586] 3d45 ffe2                 move.w     d5,-30(a6)
-[0001158a] 3a39 0001 62c2            move.w     $000162C2,d5
+[0001158a] 3a39 0001 62c2            move.w     winrows,d5
 [00011590] da45                      add.w      d5,d5
-[00011592] 49f9 0001 6772            lea.l      $00016772,a4
+[00011592] 49f9 0001 6772            lea.l      $00016772,a4 lineLength
 [00011598] 3834 5000                 move.w     0(a4,d5.w),d4
 [0001159c] 5244                      addq.w     #1,d4
-[0001159e] c9f9 0001 62ae            muls.w     $000162AE,d4
-[000115a4] d879 0001 62b6            add.w      $000162B6,d4
+[0001159e] c9f9 0001 62ae            muls.w     AppWindow.wchar,d4
+[000115a4] d879 0001 62b6            add.w      AppWindow.workx,d4
 [000115aa] 3d44 ffe4                 move.w     d4,-28(a6)
 [000115ae] 3a2e ffe2                 move.w     -30(a6),d5
-[000115b2] da79 0001 62b0            add.w      $000162B0,d5
+[000115b2] da79 0001 62b0            add.w      AppWindow.hchar,d5
 [000115b8] 5345                      subq.w     #1,d5
 [000115ba] 3d45 ffe6                 move.w     d5,-26(a6)
-[000115be] 3f39 0001 624e            move.w     $0001624E,-(a7)
+[000115be] 3f39 0001 624e            move.w     AppBase.vdiHandle,-(a7)
 [000115c4] 486e ffe0                 pea.l      -32(a6)
 [000115c8] 4eb9 0001 10dc            jsr        VDIOutputs.FillRectangle
 [000115ce] 5c8f                      addq.l     #6,a7
@@ -1613,34 +1615,35 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [000115d4] 4eb9 0001 12dc            jsr        mouseOn
 [000115da] 548f                      addq.l     #2,a7
 [000115dc] 3d7c 0010 ffde            move.w     #$0010,-34(a6)
-[000115e2] 3a39 0001 62c2            move.w     $000162C2,d5
+[000115e2] 3a39 0001 62c2            move.w     winrows,d5
 [000115e8] cafc 0032                 mulu.w     #$0032,d5
-[000115ec] 49f9 0001 6292            lea.l      $00016292,a4
+[000115ec] 49f9 0001 6292            lea.l      $00016292,a4 AppWindow.screenBuffer
 [000115f2] 382e ffde                 move.w     -34(a6),d4
 [000115f6] 49f4 50f0                 lea.l      -16(a4,d5.w),a4
 [000115fa] 4234 4000                 clr.b      0(a4,d4.w)
 [000115fe] 526e ffde                 addq.w     #1,-34(a6)
 [00011602] 0c6e 0042 ffde            cmpi.w     #$0042,-34(a6)
 [00011608] 66d8                      bne.s      $000115E2
-[0001160a] 3a39 0001 62c2            move.w     $000162C2,d5
+[0001160a] 3a39 0001 62c2            move.w     winrows,d5
 [00011610] da45                      add.w      d5,d5
-[00011612] 49f9 0001 6772            lea.l      $00016772,a4
+[00011612] 49f9 0001 6772            lea.l      $00016772,a4 lineLength
 [00011618] 4274 5000                 clr.w      0(a4,d5.w)
 [0001161c] 4efa 0008                 jmp        $00011626(pc)
-[00011620] 5279 0001 62c0            addq.w     #1,$000162C0
-[00011626] 33fc 0001 0001 62be       move.w     #$0001,$000162BE
+[00011620] 5279 0001 62c0            addq.w     #1,AppWindow.CursorY
+[00011626] 33fc 0001 0001 62be       move.w     #$0001,AppWindow.CursorX
 [0001162e] 4e5e                      unlk       a6
 [00011630] 4e75                      rts
 
+AppWindow.initWin:
 [00011632] 4e56 ff70                 link       a6,#-144
 [00011636] 558f                      subq.l     #2,a7
-[00011638] 4879 0001 62ae            pea.l      $000162AE
-[0001163e] 4879 0001 62b0            pea.l      $000162B0
-[00011644] 4879 0001 62b2            pea.l      $000162B2
-[0001164a] 4879 0001 62b4            pea.l      $000162B4
+[00011638] 4879 0001 62ae            pea.l      AppWindow.wchar
+[0001163e] 4879 0001 62b0            pea.l      AppWindow.hchar
+[00011644] 4879 0001 62b2            pea.l      AppWindow.wbox
+[0001164a] 4879 0001 62b4            pea.l      AppWindow.hbox
 [00011650] 4eb9 0001 0c5a            jsr        AESGraphics.GrafHandle
 [00011656] 4fef 0010                 lea.l      16(a7),a7
-[0001165a] 33df 0001 624e            move.w     (a7)+,$0001624E
+[0001165a] 33df 0001 624e            move.w     (a7)+,AppBase.vdiHandle
 [00011660] 426e fffe                 clr.w      -2(a6)
 [00011664] 3a2e fffe                 move.w     -2(a6),d5
 [00011668] da45                      add.w      d5,d5
@@ -1651,7 +1654,7 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [0001167e] 66e4                      bne.s      $00011664
 [00011680] 3d7c 0002 fffc            move.w     #$0002,-4(a6)
 [00011686] 486e ffe8                 pea.l      -24(a6)
-[0001168a] 4879 0001 624e            pea.l      $0001624E
+[0001168a] 4879 0001 624e            pea.l      AppBase.vdiHandle
 [00011690] 486e ff74                 pea.l      -140(a6)
 [00011694] 4eb9 0001 111a            jsr        VDIControls.OpenVirtualWorkstation
 [0001169a] 4fef 000c                 lea.l      12(a7),a7
@@ -1672,7 +1675,7 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [000116d4] 3f05                      move.w     d5,-(a7)
 [000116d6] 4eb9 0001 0ce4            jsr        AESWindows.WindowCreate
 [000116dc] 4fef 000a                 lea.l      10(a7),a7
-[000116e0] 33df 0001 624c            move.w     (a7)+,$0001624C
+[000116e0] 33df 0001 624c            move.w     (a7)+,AppBase.wdwHandle
 [000116e6] 3f3c 000a                 move.w     #$000A,-(a7)
 [000116ea] 3f3c 0019                 move.w     #$0019,-(a7)
 [000116ee] 3f3c 0001                 move.w     #$0001,-(a7)
@@ -1687,7 +1690,7 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [00011710] 3f05                      move.w     d5,-(a7)
 [00011712] 4eb9 0001 0bb2            jsr        AESGraphics.GrafGrowBox
 [00011718] 4fef 0010                 lea.l      16(a7),a7
-[0001171c] 3f39 0001 624c            move.w     $0001624C,-(a7)
+[0001171c] 3f39 0001 624c            move.w     AppBase.wdwHandle,-(a7)
 [00011722] 3f3c 000a                 move.w     #$000A,-(a7)
 [00011726] 3f3c 0019                 move.w     #$0019,-(a7)
 [0001172a] 3a2e ff72                 move.w     -142(a6),d5
@@ -1698,24 +1701,24 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [0001173c] 3f05                      move.w     d5,-(a7)
 [0001173e] 4eb9 0001 0d2c            jsr        AESWindows.WindowOpen
 [00011744] 4fef 000a                 lea.l      10(a7),a7
-[00011748] 3f39 0001 624c            move.w     $0001624C,-(a7)
+[00011748] 3f39 0001 624c            move.w     AppBase.wdwHandle,-(a7)
 [0001174e] 3f3c 0004                 move.w     #$0004,-(a7)
-[00011752] 4879 0001 62b6            pea.l      $000162B6
-[00011758] 4879 0001 62b8            pea.l      $000162B8
-[0001175e] 4879 0001 62ba            pea.l      $000162BA
-[00011764] 4879 0001 62bc            pea.l      $000162BC
+[00011752] 4879 0001 62b6            pea.l      AppWindow.workx
+[00011758] 4879 0001 62b8            pea.l      AppWindow.worky
+[0001175e] 4879 0001 62ba            pea.l      AppWindow.workw
+[00011764] 4879 0001 62bc            pea.l      AppWindow.workh
 [0001176a] 4eb9 0001 0dda            jsr        AESWindows.WindowGet
 [00011770] 4fef 0014                 lea.l      20(a7),a7
-[00011774] 3a39 0001 62bc            move.w     $000162BC,d5
+[00011774] 3a39 0001 62bc            move.w     AppWindow.workh,d5
 [0001177a] 48c5                      ext.l      d5
-[0001177c] 8bf9 0001 62b0            divs.w     $000162B0,d5
-[00011782] 33c5 0001 62c2            move.w     d5,$000162C2
+[0001177c] 8bf9 0001 62b0            divs.w     AppWindow.hchar,d5
+[00011782] 33c5 0001 62c2            move.w     d5,winrows
 [00011788] 49f9 0001 1a0c            lea.l      $00011A0C,a4 ' Modula-2/ST     Release 3.00a'
 [0001178e] 47f9 0001 67a4            lea.l      $000167A4,a3
 [00011794] 7a1f                      moveq.l    #31,d5
 [00011796] 16dc                      move.b     (a4)+,(a3)+
 [00011798] 57cd fffc                 dbeq       d5,$00011796
-[0001179c] 3f39 0001 624c            move.w     $0001624C,-(a7)
+[0001179c] 3f39 0001 624c            move.w     AppBase.wdwHandle,-(a7)
 [000117a2] 3f3c 0002                 move.w     #$0002,-(a7)
 [000117a6] 49f9 0001 67a4            lea.l      $000167A4,a4
 [000117ac] 2a0c                      move.l     a4,d5
@@ -1731,54 +1734,55 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [000117c8] 4eb9 0001 0e36            jsr        AESWindows.WindowSet
 [000117ce] 4fef 000c                 lea.l      12(a7),a7
 [000117d2] 558f                      subq.l     #2,a7
-[000117d4] 3f39 0001 624e            move.w     $0001624E,-(a7)
+[000117d4] 3f39 0001 624e            move.w     AppBase.vdiHandle,-(a7)
 [000117da] 3f3c 0001                 move.w     #$0001,-(a7)
 [000117de] 4eb9 0001 0fd6            jsr        VDIAttribs.SetFillInteriorStyle
 [000117e4] 588f                      addq.l     #4,a7
 [000117e6] 3d5f fffe                 move.w     (a7)+,-2(a6)
 [000117ea] 558f                      subq.l     #2,a7
-[000117ec] 3f39 0001 624e            move.w     $0001624E,-(a7)
+[000117ec] 3f39 0001 624e            move.w     AppBase.vdiHandle,-(a7)
 [000117f2] 4267                      clr.w      -(a7)
 [000117f4] 4eb9 0001 100e            jsr        VDIAttribs.SetFillColour
 [000117fa] 588f                      addq.l     #4,a7
 [000117fc] 3d5f fffe                 move.w     (a7)+,-2(a6)
-[00011800] 3f39 0001 624e            move.w     $0001624E,-(a7)
+[00011800] 3f39 0001 624e            move.w     AppBase.vdiHandle,-(a7)
 [00011806] 4267                      clr.w      -(a7)
 [00011808] 3f3c 0003                 move.w     #$0003,-(a7)
 [0001180c] 486e fffe                 pea.l      -2(a6)
 [00011810] 486e fffe                 pea.l      -2(a6)
 [00011814] 4eb9 0001 0f8a            jsr        VDIAttribs.SetGraphicTextAlignment
 [0001181a] 4fef 000e                 lea.l      14(a7),a7
-[0001181e] 4eb9 0001 183a            jsr        $0001183A
-[00011824] 4eb9 0001 13d8            jsr        $000113D8
+[0001181e] 4eb9 0001 183a            jsr        AppWindow.Clear
+[00011824] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [0001182a] 1f3c 0001                 move.b     #$01,-(a7)
 [0001182e] 4eb9 0001 12dc            jsr        mouseOn
 [00011834] 548f                      addq.l     #2,a7
 [00011836] 4e5e                      unlk       a6
 [00011838] 4e75                      rts
 
+AppWindow.Clear:
 [0001183a] 4e56 fff4                 link       a6,#-12
-[0001183e] 3d79 0001 62b6 fff8       move.w     $000162B6,-8(a6)
-[00011846] 3d79 0001 62b8 fffa       move.w     $000162B8,-6(a6)
-[0001184e] 3a39 0001 62b6            move.w     $000162B6,d5
-[00011854] da79 0001 62ba            add.w      $000162BA,d5
+[0001183e] 3d79 0001 62b6 fff8       move.w     AppWindow.workx,-8(a6)
+[00011846] 3d79 0001 62b8 fffa       move.w     AppWindow.worky,-6(a6)
+[0001184e] 3a39 0001 62b6            move.w     AppWindow.workx,d5
+[00011854] da79 0001 62ba            add.w      AppWindow.workw,d5
 [0001185a] 3d45 fffc                 move.w     d5,-4(a6)
-[0001185e] 3a39 0001 62b8            move.w     $000162B8,d5
-[00011864] da79 0001 62bc            add.w      $000162BC,d5
+[0001185e] 3a39 0001 62b8            move.w     AppWindow.worky,d5
+[00011864] da79 0001 62bc            add.w      AppWindow.workh,d5
 [0001186a] 3d45 fffe                 move.w     d5,-2(a6)
-[0001186e] 3f39 0001 624e            move.w     $0001624E,-(a7)
+[0001186e] 3f39 0001 624e            move.w     AppBase.vdiHandle,-(a7)
 [00011874] 486e fff8                 pea.l      -8(a6)
 [00011878] 4eb9 0001 10dc            jsr        VDIOutputs.FillRectangle
 [0001187e] 5c8f                      addq.l     #6,a7
 [00011880] 3d7c 0001 fff4            move.w     #$0001,-12(a6)
 [00011886] 3a2e fff4                 move.w     -12(a6),d5
 [0001188a] da45                      add.w      d5,d5
-[0001188c] 49f9 0001 6772            lea.l      $00016772,a4
+[0001188c] 49f9 0001 6772            lea.l      $00016772,a4 lineLength
 [00011892] 4274 5000                 clr.w      0(a4,d5.w)
 [00011896] 3d7c 0010 fff6            move.w     #$0010,-10(a6)
 [0001189c] 3a2e fff4                 move.w     -12(a6),d5
 [000118a0] cafc 0032                 mulu.w     #$0032,d5
-[000118a4] 49f9 0001 6292            lea.l      $00016292,a4
+[000118a4] 49f9 0001 6292            lea.l      $00016292,a4 AppWindow.screenBuffer
 [000118aa] 382e fff6                 move.w     -10(a6),d4
 [000118ae] 49f4 50f0                 lea.l      -16(a4,d5.w),a4
 [000118b2] 4234 4000                 clr.b      0(a4,d4.w)
@@ -1788,11 +1792,12 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [000118c2] 526e fff4                 addq.w     #1,-12(a6)
 [000118c6] 0c6e 0019 fff4            cmpi.w     #$0019,-12(a6)
 [000118cc] 66b8                      bne.s      $00011886
-[000118ce] 33fc 0001 0001 62be       move.w     #$0001,$000162BE
-[000118d6] 33fc 0001 0001 62c0       move.w     #$0001,$000162C0
+[000118ce] 33fc 0001 0001 62be       move.w     #$0001,AppWindow.CursorX
+[000118d6] 33fc 0001 0001 62c0       move.w     #$0001,AppWindow.CursorY
 [000118de] 4e5e                      unlk       a6
 [000118e0] 4e75                      rts
 
+AppWindow.updateWindow
 [000118e2] 4e56 fff4                 link       a6,#-12
 [000118e6] 4227                      clr.b      -(a7)
 [000118e8] 4eb9 0001 12dc            jsr        mouseOn
@@ -1801,40 +1806,40 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [000118f4] 4eb9 0001 0e88            jsr        AESWindows.WindowUpdate
 [000118fa] 548f                      addq.l     #2,a7
 [000118fc] 7a10                      moveq.l    #16,d5
-[000118fe] caf9 0001 62ae            mulu.w     $000162AE,d5
-[00011904] da79 0001 62b6            add.w      $000162B6,d5
+[000118fe] caf9 0001 62ae            mulu.w     AppWindow.wchar,d5
+[00011904] da79 0001 62b6            add.w      AppWindow.workx,d5
 [0001190a] 3d45 fff4                 move.w     d5,-12(a6)
-[0001190e] 3d79 0001 62b8 fff6       move.w     $000162B8,-10(a6)
-[00011916] 3a39 0001 62b6            move.w     $000162B6,d5
-[0001191c] da79 0001 62ba            add.w      $000162BA,d5
+[0001190e] 3d79 0001 62b8 fff6       move.w     AppWindow.worky,-10(a6)
+[00011916] 3a39 0001 62b6            move.w     AppWindow.workx,d5
+[0001191c] da79 0001 62ba            add.w      AppWindow.workw,d5
 [00011922] 3d45 fff8                 move.w     d5,-8(a6)
-[00011926] 3a39 0001 62b8            move.w     $000162B8,d5
-[0001192c] da79 0001 62bc            add.w      $000162BC,d5
+[00011926] 3a39 0001 62b8            move.w     AppWindow.worky,d5
+[0001192c] da79 0001 62bc            add.w      AppWindow.workh,d5
 [00011932] 3d45 fffa                 move.w     d5,-6(a6)
-[00011936] 3f39 0001 624e            move.w     $0001624E,-(a7)
+[00011936] 3f39 0001 624e            move.w     AppBase.vdiHandle,-(a7)
 [0001193c] 486e fff4                 pea.l      -12(a6)
 [00011940] 4eb9 0001 10dc            jsr        VDIOutputs.FillRectangle
 [00011946] 5c8f                      addq.l     #6,a7
 [00011948] 7a10                      moveq.l    #16,d5
-[0001194a] caf9 0001 62ae            mulu.w     $000162AE,d5
-[00011950] da79 0001 62b6            add.w      $000162B6,d5
+[0001194a] caf9 0001 62ae            mulu.w     AppWindow.wchar,d5
+[00011950] da79 0001 62b6            add.w      AppWindow.workx,d5
 [00011956] 3d45 fffe                 move.w     d5,-2(a6)
 [0001195a] 3d7c 0001 fffc            move.w     #$0001,-4(a6)
-[00011960] 3a39 0001 62c2            move.w     $000162C2,d5
+[00011960] 3a39 0001 62c2            move.w     winrows,d5
 [00011966] 3f05                      move.w     d5,-(a7)
 [00011968] 302e fffc                 move.w     -4(a6),d0
 [0001196c] b057                      cmp.w      (a7),d0
 [0001196e] 6f04                      ble.s      $00011974
 [00011970] 4efa 004c                 jmp        $000119BE(pc)
-[00011974] 3f39 0001 624e            move.w     $0001624E,-(a7)
+[00011974] 3f39 0001 624e            move.w     AppBase.vdiHandle,-(a7)
 [0001197a] 3f2e fffe                 move.w     -2(a6),-(a7)
 [0001197e] 3a2e fffc                 move.w     -4(a6),d5
-[00011982] cbf9 0001 62b0            muls.w     $000162B0,d5
-[00011988] da79 0001 62b8            add.w      $000162B8,d5
+[00011982] cbf9 0001 62b0            muls.w     AppWindow.hchar,d5
+[00011988] da79 0001 62b8            add.w      AppWindow.worky,d5
 [0001198e] 3f05                      move.w     d5,-(a7)
 [00011990] 3a2e fffc                 move.w     -4(a6),d5
 [00011994] cafc 0032                 mulu.w     #$0032,d5
-[00011998] 49f9 0001 6292            lea.l      $00016292,a4
+[00011998] 49f9 0001 6292            lea.l      $00016292,a4 AppWindow.screenBuffer
 [0001199e] 3f3c 0031                 move.w     #$0031,-(a7)
 [000119a2] 4874 5000                 pea.l      0(a4,d5.w)
 [000119a6] 4eb9 0001 1046            jsr        VDIOutputs.GraphicText
@@ -1864,7 +1869,7 @@ PROCEDURE mouseOn(on: BOOLEAN);
 [000119ec] 4eb9 0001 0ca8            jsr        AESGraphics.GrafMouse
 [000119f2] 5c8f                      addq.l     #6,a7
 [000119f4] 4eb9 0001 1632            jsr        $00011632
-[000119fa] 23fc 0001 18e2 0001 6250  move.l     #$000118E2,$00016250
+[000119fa] 23fc 0001 18e2 0001 6250  move.l     #$000118E2,AppBase.doUpdateWindow
 [00011a04] 4e5e                      unlk       a6
 [00011a06] 4ef9 0001 1fc6            jmp        Strings.init+6
 
@@ -2395,9 +2400,9 @@ Strings.init:
 [00012080] 2f05                      move.l     d5,-(a7)
 [00012082] 4eb9 0001 0ca8            jsr        AESGraphics.GrafMouse
 [00012088] 5c8f                      addq.l     #6,a7
-[0001208a] 4a79 0001 624c            tst.w      $0001624C
+[0001208a] 4a79 0001 624c            tst.w      AppBase.wdwHandle
 [00012090] 6d6a                      blt.s      $000120FC
-[00012092] 3f39 0001 624c            move.w     $0001624C,-(a7)
+[00012092] 3f39 0001 624c            move.w     AppBase.wdwHandle,-(a7)
 [00012098] 3f3c 0005                 move.w     #$0005,-(a7)
 [0001209c] 486e fffe                 pea.l      -2(a6)
 [000120a0] 486e fffc                 pea.l      -4(a6)
@@ -2415,15 +2420,15 @@ Strings.init:
 [000120d2] 3f2e fff8                 move.w     -8(a6),-(a7)
 [000120d6] 4eb9 0001 0c06            jsr        AESGraphics.GrafShrinkBox
 [000120dc] 4fef 0010                 lea.l      16(a7),a7
-[000120e0] 3f39 0001 624c            move.w     $0001624C,-(a7)
+[000120e0] 3f39 0001 624c            move.w     AppBase.wdwHandle,-(a7)
 [000120e6] 4eb9 0001 0d76            jsr        AESWindows.WindowClose
 [000120ec] 548f                      addq.l     #2,a7
-[000120ee] 3f39 0001 624c            move.w     $0001624C,-(a7)
+[000120ee] 3f39 0001 624c            move.w     AppBase.wdwHandle,-(a7)
 [000120f4] 4eb9 0001 0da8            jsr        AESWindows.WindowDelete
 [000120fa] 548f                      addq.l     #2,a7
-[000120fc] 4a79 0001 624e            tst.w      $0001624E
+[000120fc] 4a79 0001 624e            tst.w      AppBase.vdiHandle
 [00012102] 6d0e                      blt.s      $00012112
-[00012104] 3f39 0001 624e            move.w     $0001624E,-(a7)
+[00012104] 3f39 0001 624e            move.w     AppBase.vdiHandle,-(a7)
 [0001210a] 4eb9 0001 11f6            jsr        CloseVirtualWorkstation
 [00012110] 548f                      addq.l     #2,a7
 [00012112] 3f3c 0101                 move.w     #$0101,-(a7)
@@ -2534,22 +2539,22 @@ RunCmd(VAR cmd: ARRAY OF CHAR; VAR tail: ARRAY OF CHAR);
 
 OpenStream:
 [00012276] 4e56 fffc                 link       a6,#-4
-[0001227a] 2a39 0001 6258            move.l     $00016258,d5
+[0001227a] 2a39 0001 6258            move.l     AppBase.openStreams,d5
 [00012280] 0805 000c                 btst       #12,d5
 [00012284] 660c                      bne.s      $00012292
-[00012286] 2a39 0001 6258            move.l     $00016258,d5
+[00012286] 2a39 0001 6258            move.l     AppBase.openStreams,d5
 [0001228c] 0805 000b                 btst       #11,d5
 [00012290] 6720                      beq.s      $000122B2
 [00012292] 3f3c 0009                 move.w     #$0009,-(a7)
 [00012296] 4879 0001 2656            pea.l      $00012656
 [0001229c] 3f3c 004f                 move.w     #$004F,-(a7)
-[000122a0] 4879 0001 625c            pea.l      $0001625C
+[000122a0] 4879 0001 625c            pea.l      AppBase.shellTail
 [000122a6] 6100 ffa0                 bsr.w      $00012248
 [000122aa] 4fef 000c                 lea.l      12(a7),a7
 [000122ae] 4efa 0112                 jmp        $000123C2(pc)
 [000122b2] 558f                      subq.l     #2,a7
 [000122b4] 3f3c 004f                 move.w     #$004F,-(a7)
-[000122b8] 4879 0001 625c            pea.l      $0001625C
+[000122b8] 4879 0001 625c            pea.l      AppBase.shellTail
 [000122be] 3f3c 0003                 move.w     #$0003,-(a7)
 [000122c2] 4879 0001 2662            pea.l      $00012662
 [000122c8] 4267                      clr.w      -(a7)
@@ -2561,13 +2566,13 @@ OpenStream:
 [000122dc] 6004                      bra.s      $000122E2
 [000122de] 4efa 00aa                 jmp        $0001238A(pc)
 [000122e2] 3f3c 004f                 move.w     #$004F,-(a7)
-[000122e6] 4879 0001 625c            pea.l      $0001625C
+[000122e6] 4879 0001 625c            pea.l      AppBase.shellTail
 [000122ec] 3f3c 0002                 move.w     #$0002,-(a7)
 [000122f0] 4879 0001 2668            pea.l      $00012668
 [000122f6] 6100 fe3c                 bsr        $00012134
 [000122fa] 4fef 000c                 lea.l      12(a7),a7
 [000122fe] 3f3c 004f                 move.w     #$004F,-(a7)
-[00012302] 4879 0001 625c            pea.l      $0001625C
+[00012302] 4879 0001 625c            pea.l      AppBase.shellTail
 [00012308] 4267                      clr.w      -(a7)
 [0001230a] 486e fffc                 pea.l      -4(a6)
 [0001230e] 4eb9 0001 0906            jsr        GEMDOS.Open
@@ -2575,7 +2580,7 @@ OpenStream:
 [00012318] 4a6e fffc                 tst.w      -4(a6)
 [0001231c] 6c3c                      bge.s      $0001235A
 [0001231e] 3f3c 004f                 move.w     #$004F,-(a7)
-[00012322] 4879 0001 625c            pea.l      $0001625C
+[00012322] 4879 0001 625c            pea.l      AppBase.shellTail
 [00012328] 3f3c 0002                 move.w     #$0002,-(a7)
 [0001232c] 4879 0001 266c            pea.l      $0001266C
 [00012332] 6100 fe00                 bsr        $00012134
@@ -2583,7 +2588,7 @@ OpenStream:
 [0001233a] 3f3c 0009                 move.w     #$0009,-(a7)
 [0001233e] 4879 0001 2670            pea.l      $00012670
 [00012344] 3f3c 004f                 move.w     #$004F,-(a7)
-[00012348] 4879 0001 625c            pea.l      $0001625C
+[00012348] 4879 0001 625c            pea.l      AppBase.shellTail
 [0001234e] 6100 fef8                 bsr        $00012248
 [00012352] 4fef 000c                 lea.l      12(a7),a7
 [00012356] 4efa 002e                 jmp        $00012386(pc)
@@ -2601,7 +2606,7 @@ OpenStream:
 [00012382] 4fef 000c                 lea.l      12(a7),a7
 [00012386] 4efa 003a                 jmp        $000123C2(pc)
 [0001238a] 3f3c 004f                 move.w     #$004F,-(a7)
-[0001238e] 4879 0001 625c            pea.l      $0001625C
+[0001238e] 4879 0001 625c            pea.l      AppBase.shellTail
 [00012394] 3f3c 0002                 move.w     #$0002,-(a7)
 [00012398] 4879 0001 268a            pea.l      $0001268A
 [0001239e] 6100 fd94                 bsr        $00012134
@@ -2609,21 +2614,21 @@ OpenStream:
 [000123a6] 3f3c 0009                 move.w     #$0009,-(a7)
 [000123aa] 4879 0001 268e            pea.l      $0001268E
 [000123b0] 3f3c 004f                 move.w     #$004F,-(a7)
-[000123b4] 4879 0001 625c            pea.l      $0001625C
+[000123b4] 4879 0001 625c            pea.l      AppBase.shellTail
 [000123ba] 6100 fe8c                 bsr        $00012248
 [000123be] 4fef 000c                 lea.l      12(a7),a7
 [000123c2] 4e5e                      unlk       a6
 [000123c4] 4e75                      rts
 
 [000123c6] 4e56 0000                 link       a6,#0
-[000123ca] 2a39 0001 6258            move.l     $00016258,d5
+[000123ca] 2a39 0001 6258            move.l     AppBase.openStreams,d5
 [000123d0] 0805 0007                 btst       #7,d5
 [000123d4] 6746                      beq.s      $0001241C
 [000123d6] 286d fffc                 movea.l    -4(a5),a4
 [000123da] 4a2c 0008                 tst.b      8(a4)
 [000123de] 663c                      bne.s      $0001241C
 [000123e0] 3f3c 004f                 move.w     #$004F,-(a7)
-[000123e4] 4879 0001 625c            pea.l      $0001625C
+[000123e4] 4879 0001 625c            pea.l      AppBase.shellTail
 [000123ea] 3f3c 0002                 move.w     #$0002,-(a7)
 [000123ee] 4879 0001 269a            pea.l      $0001269A
 [000123f4] 6100 fd3e                 bsr        $00012134
@@ -2631,7 +2636,7 @@ OpenStream:
 [000123fc] 3f3c 0007                 move.w     #$0007,-(a7)
 [00012400] 4879 0001 269e            pea.l      $0001269E
 [00012406] 3f3c 004f                 move.w     #$004F,-(a7)
-[0001240a] 4879 0001 625c            pea.l      $0001625C
+[0001240a] 4879 0001 625c            pea.l      AppBase.shellTail
 [00012410] 6100 fe36                 bsr        $00012248
 [00012414] 4fef 000c                 lea.l      12(a7),a7
 [00012418] 4efa 0008                 jmp        $00012422(pc)
@@ -2646,7 +2651,7 @@ OpenStream:
 [00012434] 3f3c 0009                 move.w     #$0009,-(a7)
 [00012438] 4879 0001 26a8            pea.l      $000126A8
 [0001243e] 3f3c 004f                 move.w     #$004F,-(a7)
-[00012442] 4879 0001 625c            pea.l      $0001625C
+[00012442] 4879 0001 625c            pea.l      AppBase.shellTail
 [00012448] 6100 fdfe                 bsr        $00012248
 [0001244c] 4fef 000c                 lea.l      12(a7),a7
 [00012450] 4efa 0008                 jmp        $0001245A(pc)
@@ -2805,7 +2810,7 @@ casex2_tab:
 [00012634] 23c5 0001 6800            move.l     d5,$00016800
 [0001263a] 558f                      subq.l     #2,a7
 [0001263c] 4eb9 0001 1a2c            jsr        AESApplications.ApplInitialise
-[00012642] 33df 0001 624a            move.w     (a7)+,$0001624A
+[00012642] 33df 0001 624a            move.w     (a7)+,AppBase.apId
 [00012648] 4239 0001 6806            clr.b      $00016806
 [0001264e] 4e5e                      unlk       a6
 [00012650] 4ef9 0001 2b42            jmp        $00012B42
@@ -2858,7 +2863,7 @@ AESEvents.EventMessage:
 
 [00012762] 4e56 0000                 link       a6,#0
 [00012766] 33fc 0046 0001 680a       move.w     #$0046,$0001680A
-[0001276e] 33f9 0001 624a 0001 680c  move.w     $0001624A,$0001680C
+[0001276e] 33f9 0001 624a 0001 680c  move.w     AppBase.apId,$0001680C
 [00012778] 4279 0001 680e            clr.w      $0001680E
 [0001277e] 33ee 0008 0001 6810       move.w     8(a6),$00016810
 [00012786] 3f39 0001 6808            move.w     $00016808,-(a7)
@@ -3882,11 +3887,11 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013518] 3f05                      move.w     d5,-(a7)
 [0001351a] 286e 0022                 movea.l    34(a6),a4
 [0001351e] 4854                      pea.l      (a4)
-[00013520] 4eb9 0001 130e            jsr        $0001130E
+[00013520] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [00013526] 5c8f                      addq.l     #6,a7
 [00013528] 3f3c 0002                 move.w     #$0002,-(a7)
 [0001352c] 4879 0001 4142            pea.l      $00014142 ' : '
-[00013532] 4eb9 0001 130e            jsr        $0001130E
+[00013532] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [00013538] 5c8f                      addq.l     #6,a7
 [0001353a] 426e ff34                 clr.w      -204(a6)
 [0001353e] 4a2e ff33                 tst.b      -205(a6)
@@ -3958,7 +3963,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013628] 4eb9 0001 0ca8            jsr        AESGraphics.GrafMouse
 [0001362e] 5c8f                      addq.l     #6,a7
 [00013630] 3d79 0001 5df0 fffe       move.w     $00015DF0,-2(a6)
-[00013638] 2879 0001 6250            movea.l    $00016250,a4
+[00013638] 2879 0001 6250            movea.l    AppBase.doUpdateWindow,a4
 [0001363e] 4e94                      jsr        (a4)
 [00013640] 4a6e fffe                 tst.w      -2(a6)
 [00013644] 6706                      beq.s      $0001364C
@@ -3966,7 +3971,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [0001364a] 6616                      bne.s      $00013662
 [0001364c] 4a2e ff37                 tst.b      -201(a6)
 [00013650] 6706                      beq.s      $00013658
-[00013652] 4eb9 0001 13d8            jsr        $000113D8
+[00013652] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [00013658] 286e 0008                 movea.l    8(a6),a4
 [0001365c] 4214                      clr.b      (a4)
 [0001365e] 4e5e                      unlk       a6
@@ -4110,7 +4115,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013848] 6710                      beq.s      $0001385A
 [0001384a] 4a2e ff37                 tst.b      -201(a6)
 [0001384e] 6706                      beq.s      $00013856
-[00013850] 4eb9 0001 13d8            jsr        $000113D8
+[00013850] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [00013856] 4efa 0078                 jmp        $000138D0(pc)
 [0001385a] 1d7c 0001 0014            move.b     #$01,20(a6)
 [00013860] 422e ff33                 clr.b      -205(a6)
@@ -4139,15 +4144,15 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000138b0] 6716                      beq.s      $000138C8
 [000138b2] 3f3c 003c                 move.w     #$003C,-(a7)
 [000138b6] 486e ff42                 pea.l      -190(a6)
-[000138ba] 4eb9 0001 130e            jsr        $0001130E
+[000138ba] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [000138c0] 5c8f                      addq.l     #6,a7
-[000138c2] 4eb9 0001 13d8            jsr        $000113D8
+[000138c2] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [000138c8] 4efa 0006                 jmp        $000138D0(pc)
 [000138cc] 6000 fc70                 bra        $0001353E
 [000138d0] 4a39 0001 6ab4            tst.b      $00016AB4
 [000138d6] 671c                      beq.s      $000138F4
 [000138d8] 3f3c 004f                 move.w     #$004F,-(a7)
-[000138dc] 4879 0001 625c            pea.l      $0001625C
+[000138dc] 4879 0001 625c            pea.l      AppBase.shellTail
 [000138e2] 3f3c 003c                 move.w     #$003C,-(a7)
 [000138e6] 486e ff42                 pea.l      -190(a6)
 [000138ea] 4eb9 0001 1c40            jsr        Strings.Assign
@@ -4156,7 +4161,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000138fa] 3a2e 001a                 move.w     26(a6),d5
 [000138fe] 7000                      moveq.l    #0,d0
 [00013900] 0bc0                      bset       d5,d0
-[00013902] 81b9 0001 6254            or.l       d0,$00016254
+[00013902] 81b9 0001 6254            or.l       d0,AppBase.openFiles
 [00013908] 4e5e                      unlk       a6
 [0001390a] 4e75                      rts
 
@@ -4219,7 +4224,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000139d6] 4eb9 0001 0ca8            jsr        AESGraphics.GrafMouse
 [000139dc] 5c8f                      addq.l     #6,a7
 [000139de] 3d79 0001 5df0 fffe       move.w     $00015DF0,-2(a6)
-[000139e6] 2879 0001 6250            movea.l    $00016250,a4
+[000139e6] 2879 0001 6250            movea.l    AppBase.doUpdateWindow,a4
 [000139ec] 4e94                      jsr        (a4)
 [000139ee] 4a6e fffe                 tst.w      -2(a6)
 [000139f2] 6706                      beq.s      $000139FA
@@ -4310,23 +4315,23 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013b18] 3f05                      move.w     d5,-(a7)
 [00013b1a] 286e 0022                 movea.l    34(a6),a4
 [00013b1e] 4854                      pea.l      (a4)
-[00013b20] 4eb9 0001 130e            jsr        $0001130E
+[00013b20] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [00013b26] 5c8f                      addq.l     #6,a7
 [00013b28] 3f3c 0002                 move.w     #$0002,-(a7)
 [00013b2c] 4879 0001 4148            pea.l      $00014148 ' : '
-[00013b32] 4eb9 0001 130e            jsr        $0001130E
+[00013b32] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [00013b38] 5c8f                      addq.l     #6,a7
 [00013b3a] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013b3e] 486e ffba                 pea.l      -70(a6)
-[00013b42] 4eb9 0001 130e            jsr        $0001130E
+[00013b42] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [00013b48] 5c8f                      addq.l     #6,a7
-[00013b4a] 4eb9 0001 13d8            jsr        $000113D8
+[00013b4a] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [00013b50] 286e 0008                 movea.l    8(a6),a4
 [00013b54] 18bc 0001                 move.b     #$01,(a4)
 [00013b58] 3a2e 001a                 move.w     26(a6),d5
 [00013b5c] 7000                      moveq.l    #0,d0
 [00013b5e] 0bc0                      bset       d5,d0
-[00013b60] 81b9 0001 6258            or.l       d0,$00016258
+[00013b60] 81b9 0001 6258            or.l       d0,AppBase.openStreams
 [00013b66] 4e5e                      unlk       a6
 [00013b68] 4e75                      rts
 
@@ -4647,8 +4652,8 @@ BufferedIO.Read16Bit(VAR s: BufferedStream; VAR v: WORD)
 [00013f3c] 4ef9 0001 2b3c            jmp        $00012B3C
 
 [00013f42] 4e56 0000                 link       a6,#0
-[00013f46] 42b9 0001 6258            clr.l      $00016258
-[00013f4c] 42b9 0001 6254            clr.l      $00016254
+[00013f46] 42b9 0001 6258            clr.l      AppBase.openStreams
+[00013f4c] 42b9 0001 6254            clr.l      AppBase.openFiles
 [00013f52] 4879 0001 6b07            pea.l      $00016B07
 [00013f58] 4879 0001 6b08            pea.l      $00016B08
 [00013f5e] 4879 0001 62ac            pea.l      $000162AC
@@ -4973,14 +4978,14 @@ casex5_tab:
 [000144d2] 3f05                      move.w     d5,-(a7)
 [000144d4] 286e 0008                 movea.l    8(a6),a4
 [000144d8] 4854                      pea.l      (a4)
-[000144da] 4eb9 0001 130e            jsr        $0001130E
+[000144da] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [000144e0] 5c8f                      addq.l     #6,a7
-[000144e2] 4eb9 0001 13d8            jsr        $000113D8
+[000144e2] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [000144e8] 3f3c 0013                 move.w     #$0013,-(a7)
 [000144ec] 4879 0001 59c6            pea.l      $000159C6 " Error in SymbolFile"
-[000144f2] 4eb9 0001 130e            jsr        $0001130E
+[000144f2] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [000144f8] 5c8f                      addq.l     #6,a7
-[000144fa] 4eb9 0001 13d8            jsr        $000113D8
+[000144fa] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [00014500] 4eb9 0001 449e            jsr        $0001449E
 [00014506] 3f3c 0004                 move.w     #$0004,-(a7)
 [0001450a] 1f3c 0001                 move.b     #$01,-(a7)
@@ -6369,10 +6374,10 @@ DecSym.init:
 [00015926] 4e56 0000                 link       a6,#0
 [0001592a] 3f3c 0023                 move.w     #$0023,-(a7)
 [0001592e] 4879 0001 5c76            pea.l      $00015C76 'Symbol file decoder   Version  3.00a'
-[00015934] 4eb9 0001 130e            jsr        $0001130E
+[00015934] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [0001593a] 5c8f                      addq.l     #6,a7
-[0001593c] 4eb9 0001 13d8            jsr        $000113D8
-[00015942] 4eb9 0001 13d8            jsr        $000113D8
+[0001593c] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
+[00015942] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [00015948] 4239 0001 6e3e            clr.b      $00016E3E
 [0001594e] 4eb9 0001 43f0            jsr        $000143F0
 [00015954] 4a39 0001 6e3e            tst.b      $00016E3E
@@ -6381,12 +6386,12 @@ DecSym.init:
 [00015962] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [00015968] 4eb9 0001 58ae            jsr        $000158AE
 [0001596e] 4eb9 0001 449e            jsr        $0001449E
-[00015974] 4eb9 0001 13d8            jsr        $000113D8
+[00015974] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [0001597a] 3f3c 000c                 move.w     #$000C,-(a7)
 [0001597e] 4879 0001 5c9c            pea.l      $00015C9C 'End of decode'
-[00015984] 4eb9 0001 130e            jsr        $0001130E
+[00015984] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [0001598a] 5c8f                      addq.l     #6,a7
-[0001598c] 4eb9 0001 13d8            jsr        $000113D8
+[0001598c] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [00015992] 4267                      clr.w      -(a7)
 [00015994] 4227                      clr.b      -(a7)
 [00015996] 4eb9 0001 245e            jsr        $0001245E
@@ -6482,5 +6487,25 @@ DecSym.init:
 15cea: PgmSize
 15cee: ExceptionVecs1 ds.l 12
 15d1e: ExceptionVecs2 ds.l
+1624a: AppBase.apId
+1624c: AppBase.wdwHandle
+16250: AppBase.doUpdateWindow
+16254: AppBase.openFiles
+16258: AppBase.openStreams
+1625c: AppBase.shellTail
+162ae: AppWindow.wchar
+162b0: AppWindow.hchar
+162b2: AppWindow.wbox
+162b4: AppWindow.hbox
+162b6: AppWindow.workx
+162b8: AppWindow.worky
+162ba: AppWindow.workw
+162bc: AppWindow.workh
+162be: AppWindow.cursorX
+162c0: AppWindow.cursorY
+162c2: AppWindow.winrows
+162c4: AppWindow.screenBuffer
+16774: AppWindow.lineLength
+167a4: AppWindow.windowtitle
 167cc: Strings.terminator
 16e48: Symfile.lastByte
