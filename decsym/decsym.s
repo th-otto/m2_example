@@ -2340,9 +2340,10 @@ Strings.init:
 [00011fd0] 4ef9 0001 2046            jmp        $00012046
 
 ***
-* MODULE 
+* MODULE Buffers
 ***
 
+Buffers.FreeAll:
 [00011fd6] 4e56 0000                 link       a6,#0
 [00011fda] 4a79 0001 67d2            tst.w      $000167D2
 [00011fe0] 6d52                      blt.s      $00012034
@@ -2382,9 +2383,10 @@ Strings.init:
 [00012054] 4ef9 0001 2622            jmp        $00012622
 
 ***
-* MODULE 
+* MODULE ExecUtil
 ***
 
+ExecUtil.FreeBuffers.
 [0001205a] 4e56 0000                 link       a6,#0
 [0001205e] 4eb9 0001 1fd6            jsr        $00011FD6
 [00012064] 4e5e                      unlk       a6
@@ -2662,7 +2664,7 @@ OpenStream:
 [0001245e] 4e56 ff5a                 link       a6,#-166
 [00012462] 2f2d fffc                 move.l     -4(a5),-(a7)
 [00012466] 2b4e fffc                 move.l     a6,-4(a5)
-[0001246a] 6100 fbee                 bsr        $0001205A
+[0001246a] 6100 fbee                 bsr        ExecUtil.FreeBuffers
 [0001246e] 4267                      clr.w      -(a7)
 [00012470] 7aff                      moveq.l    #-1,d5
 [00012472] 2f05                      move.l     d5,-(a7)
@@ -6508,4 +6510,6 @@ DecSym.init:
 16774: AppWindow.lineLength
 167a4: AppWindow.windowtitle
 167cc: Strings.terminator
+167ce: Buffers.bufptr
+167d2: Buffers.count
 16e48: Symfile.lastByte

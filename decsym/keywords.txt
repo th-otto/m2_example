@@ -38,3 +38,5 @@ $A: short (bsr) calls
 $H: block names?
 
 $V: trapv
+
+$U: allow underscores in identifiers

@@ -1,0 +1,5 @@
+DEFINITION MODULE Buffers;
+
+PROCEDURE FreeAll();
+
+END Buffers.
