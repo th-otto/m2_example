@@ -1,0 +1,189 @@
+0: illegal character in source file
+2: constant out of range
+3: open comment at end of file
+4: string terminator not on this line
+5: too many errors
+6: string too long
+7: too many identifiers (identifier table full)
+8: too many identifiers (hash table full)
+10: illegal character in octal constant
+11: illegal character in decimal constant
+12: illegal character in hexadecimal constant
+13: illegal character in character constant
+14: number too large
+15: value out of CHAR range (must be <400C)
+16: real number too large or precision too great
+20: identifier expected
+21: integer constant expected
+22: ']' expected
+23: ';'expected
+24: block name at the END does not match
+25: error in block
+26: ':=' expected
+27: error in expression
+28: THEN expected
+29: error in LOOP statement
+30: constant must not be CARDINAL
+31: error in REPEAT statement
+32: UNTIL expected
+33: error in WHILE statement
+34: DO expected
+35: error in CASE statement
+36: OF expected
+37: ':' expected
+38: BEGIN expected
+39: error in WITH statement
+40: END expected
+41: ')'expected
+42: error in constant
+43: '=' expected
+44: error in TYPE declaration
+45: '(' expected
+46: MODULE expected
+47: QUALIFIED expected
+48: error in factor
+49: error in simple type
+50: ',' expected
+51: error in formal type
+52: error in statement sequence
+53: '.' expected
+54: export at global level not allowed
+55: body in definition module not allowed
+56: TO expected
+57: nested module in definition module not allowed
+58: '}' expected
+59: '..' expected
+60: error in FOR statement
+61: IMPORT expected
+70: identifier supplied twice in importlist
+71: identifier not exported from qualifying module
+72: identifier declared twice
+73: identifier not declared
+74: type not declared
+75: identifier already declared in module environment
+76: dynamic array must not be value parameter
+77: too many nesting levels
+78: value of absolute address must be of type CARDINAL
+79: scope table overflow in compiler
+80: illegal priority
+81: definition module belonging to implementation not found
+82: structure not allowed for implementation of hidden type
+83: procedure implementation different from definition
+84: not all defined procedures or hidden types implemented
+85: name conflict of exported object or enumeration constant in environment
+86: incompatible versions of symbolic modules
+88: function type is not scalar or basic type
+90: pointer-referenced type not declared
+91: tagfield type expected
+92: incompatible type of variant constant
+93: constant used twice
+94: arithmetic error in evaluation  of constant expression
+95: incorrect range
+96: range only with scalar types
+97: type-incompatible constructor element
+98: elemant value out of bounds
+99: set-type identifier expected
+100: declaration needs too much space
+101: undeclared identifier in export list of module
+102: range not belonging to basic type
+103: wrong class of identifier
+104: no such module name found
+105: module name expected
+106: scalar type expected
+107: set too large
+108: type must not be INTEGER or CARDINAL or ADDRESS
+109: scalar or subrange type expected
+110: variant value out of bounds
+111: illegal export from program module
+112: code block for modules not allowed
+120: incompatible types in conversion
+121: this type is not expected
+122: variable expected
+123: incorrect constant
+124: no procedure found for substitution
+125: unsatisfying parameters of substituted procedure
+126: set constant out of range
+127: error in standard procedure parameters
+128: type incompatibility
+129: type identifier expected
+130: type impossible to index
+131: field not belonging to a record variable
+132: too many parameters
+134: reference not to a variable
+135: illegal parameter substitution
+136: constant expected
+137: expected parameters
+138: BOOLEAN type expected
+139: scalar types expected
+140: operation with incompatible type
+141: only global procedure or function allowed in expression
+142: incompatible element type
+143: type incompatible operands
+144: no selectors allowed for procedures
+145: only function call allowed in expression
+146: arrow not belonging to a pointer variable
+147: standard function or procedure must not be assigned
+148: constant not allowed as a variant
+149: SET type expected
+150: illegal substitution to word parameter
+151: EXIT only in LOOP
+152: RETURN only in PROCEDURE
+153: expression expected
+154: expression not allowed
+155: type of function expected
+156: integer constant expected
+157: procedure call expected
+158: identifer not exported from qualifying module
+159: code buffer overflow
+160: illegal value for code
+161: call of procedure with lower priority not allowed
+198: CARDINAL constant expected
+199: BITSET type expected
+200: size of structured type too large for this processor
+201: array index too large for this element type
+202: array element size too large for this processor
+203: array index type too large for this processor
+204: subrange too large for this processor
+206: illegal subrange type
+207: case label range too large
+208: global data too large for this processor
+209: local data too large for this processor
+210: parameter data too large for this processor
+211: offset of record field too large for this processor
+300: index out of range
+301: division by zero
+303: CASE label defined twice
+304: this constant is not allowed as case label
+400: expression too complicated (register overflow)
+401: expression too complicated (codetable overflow)
+402: expression too complicated (branch too long)
+403: expression too complicated (jumptable overflow)
+404: too many globals, externals and calls
+405: procedure or module body too long (codetable)
+406: expression too complicated (level overflow)
+923: standard procedure or function not implemented 
+924: parameter must not be accessed by a WITH
+941: displacement overflow in index addressing mode
+942: 32 bit by 32 bit multiply/divide not yet implemented
+943: index range must not exceed positive integer range
+944: jump too long (overflow in pc-relative offset)
+945: offset too long (overflow in pc-relative offset)
+946: FOR control variable is not of simple addressing mode
+950: can only pass variables and constants to large set value parameters
+951: implementation of INLINE procedure not allowed
+952: too many INLINE opcodes (max. 4)
+953: INLINE function or procedure must not be assigned
+973: DOWNTO only implemented for step -1
+974: step 0 in FOR statement
+981: constant out of legal range
+982: overflow/underflow in range/offset/address calculation
+990: too many WITH nested
+991: CARDINAL divisor too large (> 8000H)
+992: FOR control variable must not have byte size (for step <> -1 or 1)
+993: INC, DEC not implemented with 2 argument for byte variable
+994: too many nested procedures
+995: FOR step too large (> 7FFFH)
+996: CASE label too large (> 7FFFH)
+997: type transfer function not implemented
+998: FOR limit too large
+999: missing symbol file(s)

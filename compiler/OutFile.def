@@ -1,0 +1,10 @@
+DEFINITION MODULE OutFile;
+
+FROM FileSystem IMPORT File;
+
+PROCEDURE WriteChar(VAR f: File; ch: CHAR);
+PROCEDURE WriteOct(VAR f: File; w: CARDINAL; l: CARDINAL);
+PROCEDURE WriteLine(VAR f: File);
+PROCEDURE WriteWriteString(VAR f: File; s: ARRAY OF CHAR; l: CARDINAL);
+
+END OutFile.

@@ -1,0 +1,7 @@
+DEFINITION MODULE Program;
+
+TYPE Status = (normal);
+
+PROCEDURE Call(s: ARRAY OF CHAR; f: BOOLEAN; VAR err: Status);
+
+END Program.

@@ -35,6 +35,8 @@ $R: Subrange and type conversion test.
 
 $A: short (bsr) calls
 
+$Q: short (bsr) calls for local functions
+
 $H: block names?
 
 $V: trapv

@@ -9,130 +9,6 @@
 ; first relocation = 0x00000002
 ; relocation bytes = 0x000016e6
 
-TYPE Symbol = (
-(* pass 1 *)
-  eop,        (* 00 *)
-  andsy,      (* 01 *)
-  divsy,      (* 02 *)
-  times,      (* 03 *)
-  slash,      (* 04 *)
-  modsy,      (* 05 *)
-  notsy,      (* 06 *)
-  plus,       (* 07 *)
-  minus,      (* 08 *)
-  orsy,       (* 09 *)
-  eql,        (* 0a *)
-  neq,        (* 0b *)
-  grt,        (* 0c *)
-  geq,        (* 0d *)
-  lss,        (* 0e *)
-  leq,        (* 0f *)
-  insy,       (* 10 *)
-  lparent,    (* 11 *)
-  rparent,    (* 12 *)
-  lbrack,     (* 13 *)
-  rbrack,     (* 14 *)
-  lconbr,     (* 15 *)
-  rconbr,     (* 16 *)
-  comma,      (* 17 *)
-  semicolon,  (* 18 *)
-  period,     (* 19 *)
-  colon,      (* 1a *)
-  range,      (* 1b *)
-  constsy,    (* 1c *)
-  typesy,     (* 1d *)
-  varsy,      (* 1e *)
-  arraysy,    (* 1f *)
-  recordsy,   (* 20 *)
-  variant,    (* 21 *)
-  setsy,      (* 22 *)
-  pointersy,  (* 23 *)
-  tosy,       (* 24 *)
-  arrow,      (* 25 *)
-  hidden,     (* 26 *)
-  importsy,   (* 27 *)
-  exportsy,   (* 28 *)
-  fromsy,     (* 29 *)
-  qualifiedsy,(* 2a *)
-  beginsy,    (* 2b *)
-  casesy,     (* 2c *)
-  ofsy,       (* 2d *)
-  ifsy,       (* 2e *)
-  thensy,     (* 2f *)
-  elsifsy,    (* 30 *)
-  elsesy,     (* 31 *)
-  loopsy,     (* 32 *)
-  exitsy,     (* 33 *)
-  repeatsy,   (* 34 *)
-  untilsy,    (* 35 *)
-  whilesy,    (* 36 *)
-  dosy,       (* 37 *)
-  withsy,     (* 38 *)
-  forsy,      (* 39 *)
-  bysy,       (* 3a *)
-  returnsy,   (* 3b *)
-
-  becomes,    (* 3e *)
-  endsy,      (* 3f *)
-
-  call,       (*  *)
-  codesy,     (*  *)
-  
-  endblock,   (* 41 *)
-  definitionsy, (* 42 *)
-  implementationsy, (* 43 *)
-  proceduresy, (* 44 *)
-  modulesy,   (* 45 *)
-  symbolsy,   (* 46 *)
-  ident,      (* 47 *)
-  inlinesy,   (* 48 *)
-  intcon,   
-  cardcon,    (* 4a *)
-  intcarcon,  (* 4b *)
-  realcon,  
-  charcon,  
-  stringcon,  (* 4e *)
-  option,     (* 4f *)
-  errorsy,    (* 50 *)
-  eol,        (* 51 *)
-(* pass 2 *)
-  namesy,     (* 52 *)
-(* pass 3 *)
-  field,      (* 53 *)
-  anycon);    (* 54 *)
-
-TYPE SymFileSymbols = (
-  endfileSS,       0
-  unitSS,          1
-  endunitSS,       2
-  importSS,        3
-  exportSS,        4
-  constSS,         5
-  normalconstSS,   6
-  realconstSS,
-  stringconstSS,
-  typSS,
-  arraytypSS,
-  recordtypSS,
-  settypSS,
-  pointertypSS,
-  hiddentypSS,
-  varSS,
-  procSS,
-  funcSS,
-  identSS,
-  periodSS,
-  colonSS,
-  rangeSS,
-  lparentSS,
-  rparentSS,
-  lbracketSS,
-  rbracketSS,
-  caseSS,
-  ofSS,
-  elseSS,
-  endSS);
-
 [00010000] 4ef9 0003 4eac            jmp        $00034EAC
 [00010006] 0000 8000                 ori.b      #$00,d0
 
@@ -360,6 +236,8 @@ HALTX:
 [00010338] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [0001033c] 4e5e                      unlk       a6
 [0001033e] 4e75                      rts
+
+STACKCHECK:
 [00010340] 204f                      movea.l    a7,a0
 [00010342] 41e8 ff80                 lea.l      -128(a0),a0
 [00010346] 91c0                      suba.l     d0,a0
@@ -3820,15 +3698,15 @@ HALTX:
 [000134c0] 588f                      addq.l     #4,a7
 [000134c2] 4efa 0038                 jmp        $000134FC(pc)
 [000134c6] 4efa 0028                 jmp        $000134F0(pc)
-[000134ca] 000c 0010                 ori.b      #$10,a4 ; apollo only
-[000134ce] 0020 0110                 ori.b      #$10,-(a0)
-[000134d2] 0030 0040 0050            ori.b      #$40,80(a0,d0.w)
-[000134d8] 0060 0070                 ori.w      #$0070,-(a0)
-[000134dc] 0070 0080 0090            ori.w      #$0080,-112(a0,d0.w)
-[000134e2] 00a0 00b0 00c0            ori.l      #$00B000C0,-(a0)
-[000134e8] 00d0 00e0                 cmp2.b     (a0),d0 ; 68020+ only
-[000134ec] 00f0 0100 4879            cmp2.b     121(a0,d4.l),d0 ; 68020+ only
-[000134f2] 0001 4742                 ori.b      #$42,d1
+[000134ca] 000c 0010
+[000134ce] 0020 0110
+[000134d2] 0030 0040 0050
+[000134d8] 0060 0070     
+[000134dc] 0070 0080 0090
+[000134e2] 00a0 00b0 00c0
+[000134e8] 00d0 00e0     
+[000134ec] 00f0 0100
+[000134f0] 4879 0001 4742            pea.l      $00014742
 [000134f6] 6100 fd70                 bsr        $00013268
 [000134fa] 588f                      addq.l     #4,a7
 [000134fc] 2b5f fffc                 move.l     (a7)+,-4(a5)
@@ -4826,10 +4704,10 @@ HALTX:
 [00014296] 4e75                      rts
 [00014298] 4efa 0018                 jmp        $000142B2(pc)
 [0001429c] 4efa 0014                 jmp        $000142B2(pc)
-[000142a0] 000c 0040                 ori.b      #$40,a4 ; apollo only
-[000142a4] 0060 0080                 ori.w      #$0080,-(a0)
-[000142a8] 00a0 00d0 00f0            ori.l      #$00D000F0,-(a0)
-[000142ae] 0110                      btst       d0,(a0)
+[000142a0] 000c 0040     
+[000142a4] 0060 0080     
+[000142a8] 00a0 00d0 00f0
+[000142ae] 0110          
 [000142b0] 0130 5239                 btst       d0,57(a0,d5.w*2) ; 68020+ only
 [000142b4] 0003 6004                 ori.b      #$04,d3
 [000142b8] 6000 fe90                 bra        $0001414A
@@ -5249,15 +5127,17 @@ NewStreams.WriteWord:
 [0001477c] 5449                      addq.w     #2,a1
 [0001477e] 4d49                      lea.l      (b1),b6 ; apollo only
 [00014780] 5345                      subq.w     #1,d5
-[00014782] 0000 4e56                 ori.b      #$56,d0
-[00014786] 0000 3f3c                 ori.b      #$3C,d0
-[0001478a] 0011 4e4e                 ori.b      #$4E,(a1)
+[00014782] 0000
+[00014784] 4e56                      link       a6,#0
+[00014786] 3f3c 0011                 move.w     #$0011,-(a7) ; Random
+[0001478a] 4e4e                      trap       #14
 [0001478e] 2a00                      move.l     d0,d5
 [00014790] 2d45 0008                 move.l     d5,8(a6)
 [00014794] 4e5e                      unlk       a6
 [00014796] 4e75                      rts
+
 [00014798] 700e                      moveq.l    #14,d0
-[0001479a] 4eb9 0001 0340            jsr        $00010340
+[0001479a] 4eb9 0001 0340            jsr        STACKCHECK
 [000147a0] 4e56 fff2                 link       a6,#-14
 [000147a4] 486e fffe                 pea.l      -2(a6)
 [000147a8] 4eb9 0001 17e4            jsr        $000117E4
@@ -5858,9 +5738,9 @@ default:
 [00015048] 4eb9 0001 4798            jsr        $00014798
 [0001504e] 588f                      addq.l     #4,a7
 [00015050] 49f9 0003 d838            lea.l      $0003D838,a4
-[00015056] 33d4 0004 4e22            move.w     (a4),$00044E22
-[0001505c] 33ec 0002 0004 4e24       move.w     2(a4),$00044E24
-[00015064] 33ec 0004 0004 4e26       move.w     4(a4),$00044E26
+[00015056] 33d4 0004 4e22            move.w     (a4),M2Public.comptime
+[0001505c] 33ec 0002 0004 4e24       move.w     2(a4),M2Public.comptime+2
+[00015064] 33ec 0004 0004 4e26       move.w     4(a4),M2Public.comptime+4
 [0001506c] 3a39 0004 4e20            move.w     $00044E20,d5
 [00015072] 0805 0009                 btst       #9,d5
 [00015076] 6702                      beq.s      $0001507A
@@ -6125,9 +6005,9 @@ default:
 [0001544e] 1a2e 0012                 move.b     18(a6),d5
 [00015452] 2005                      move.l     d5,d0
 [00015454] 4eb9 0001 000a            jsr        CASEX
-[0001545a] 0000 0000                      dc.w       $0000
-[0001545e] 0000 0002                 ori.b      #$02,d0
-[00015462] 0000 0052                 ori.b      #$52,d0
+[0001545a] 0000 0000
+[0001545e] 0000 0002
+[00015462] 0000 0052
 [00015466] 7a08                      moveq.l    #8,d5
 [00015468] 2d45 ffea                 move.l     d5,-22(a6)
 [0001546c] 526e fff2                 addq.w     #1,-14(a6)
@@ -6307,23 +6187,23 @@ MCP1IO.OutputSystem.PutS:
 [000156be] 1a39 0003 d8d2            move.b     MCP1IO.sy,d5
 [000156c4] 2005                      move.l     d5,d0
 [000156c6] 4eb9 0001 000a            jsr        CASEX
-[000156cc] 0000 0047                 ori.b      #$47,d0
-[000156d0] 0000 000a                 ori.b      #$0A,d0
-[000156d4] 0000 005c                 ori.b      #$5C,d0
-case ident: 47
+[000156cc] 0000 0047
+[000156d0] 0000 000a
+[000156d4] 0000 005c
+case ident:
 [000156d8] 3f39 0003 d8da            move.w     MCP1IO.spix,-(a7)
 [000156de] 6100 ff76                 bsr        MCP1IO.OutputSystem.PutI
 [000156e2] 548f                      addq.l     #2,a7
 [000156e4] 4efa 0058                 jmp        $0001573E(pc)
-case 49
-case 4a
-case 4b
-case 4d:
+case intcon
+case cardcon
+case intcarcon
+case charcon:
 [000156e8] 2f39 0003 d8d4            move.l     MCP1IO.val,-(a7)
 [000156ee] 6100 ff3c                 bsr        MCP1IO.OutputSystem.PutL
 [000156f2] 588f                      addq.l     #4,a7
 [000156f4] 4efa 0048                 jmp        $0001573E(pc)
-case stringcon 4e:
+case stringcon:
 [000156f8] 2f39 0003 d8d4            move.l     MCP1IO.val,-(a7)
 [000156fe] 6100 ff2c                 bsr        MCP1IO.OutputSystem.PutL
 [00015702] 588f                      addq.l     #4,a7
@@ -6331,15 +6211,15 @@ case stringcon 4e:
 [0001570a] 6100 ff4a                 bsr        MCP1IO.OutputSystem.PutI
 [0001570e] 548f                      addq.l     #2,a7
 [00015710] 4efa 002c                 jmp        $0001573E(pc)
-case 51:
+case eol:
 [00015714] 3f39 0003 d8e0            move.w     MCP1IO.line,-(a7)
 [0001571a] 6100 ff3a                 bsr        MCP1IO.OutputSystem.PutI
 [0001571e] 548f                      addq.l     #2,a7
 [00015720] 4efa 001c                 jmp        $0001573E(pc)
-case 48:
-case 4c:
-case 4f:
-case 50:
+case inlinesy:
+case realcon:
+case option:
+case errorsy:
 default:
 [00015724] 4efa 0018                 jmp        $0001573E(pc)
 [00015728] 000c
@@ -6990,7 +6870,7 @@ case 8:
 [00016074] 588f                      addq.l     #4,a7
 [00016076] 4efa 020a                 jmp        $00016282(pc)
 case 9:
-[0001607a] 13fc 004c 0003 d8d2       move.b     #$4C,MCP1IO.sy
+[0001607a] 13fc 004c 0003 d8d2       move.b     #$4C,MCP1IO.sy realcon
 [00016082] 4879 0003 d8d4            pea.l      MCP1IO.val
 [00016088] 7a08                      moveq.l    #8,d5
 [0001608a] 2f05                      move.l     d5,-(a7)
@@ -7003,7 +6883,7 @@ case 9:
 [000160a4] 5c8f                      addq.l     #6,a7
 [000160a6] 4efa 01da                 jmp        $00016282(pc)
 case 10:
-[000160aa] 13fc 004e 0003 d8d2       move.b     #$4E,MCP1IO.sy
+[000160aa] 13fc 004e 0003 d8d2       move.b     #$4E,MCP1IO.sy stringcon
 [000160b2] 6100 fcda                 bsr        MCP1IO.StringSystem.InitString
 [000160b6] 486e fffe                 pea.l      -2(a6)
 [000160ba] 6100 fdc0                 bsr        MCP1IO.SymFileInput.ReadSym
@@ -7024,35 +6904,35 @@ case 10:
 [000160ee] 508f                      addq.l     #8,a7
 [000160f0] 4efa 0190                 jmp        $00016282(pc)
 case 11:
-[000160f4] 13fc 001d 0003 d8d2       move.b     #$1D,MCP1IO.sy
+[000160f4] 13fc 001d 0003 d8d2       move.b     #$1D,MCP1IO.sy typesy
 [000160fc] 4efa 0184                 jmp        $00016282(pc)
 case 12:
-[00016100] 13fc 001f 0003 d8d2       move.b     #$1F,MCP1IO.sy
+[00016100] 13fc 001f 0003 d8d2       move.b     #$1F,MCP1IO.sy arraysy
 [00016108] 4efa 0178                 jmp        $00016282(pc)
 case 13:
-[0001610c] 13fc 0020 0003 d8d2       move.b     #$20,MCP1IO.sy
+[0001610c] 13fc 0020 0003 d8d2       move.b     #$20,MCP1IO.sy recordy
 [00016114] 4efa 016c                 jmp        $00016282(pc)
 case 14:
-[00016118] 13fc 0022 0003 d8d2       move.b     #$22,MCP1IO.sy
+[00016118] 13fc 0022 0003 d8d2       move.b     #$22,MCP1IO.sy setsy
 [00016120] 4efa 0160                 jmp        $00016282(pc)
 caes 15:
-[00016124] 13fc 0023 0003 d8d2       move.b     #$23,MCP1IO.sy
+[00016124] 13fc 0023 0003 d8d2       move.b     #$23,MCP1IO.sy pointersy
 [0001612c] 4efa 0154                 jmp        $00016282(pc)
 case 16:
-[00016130] 13fc 0026 0003 d8d2       move.b     #$26,MCP1IO.sy
+[00016130] 13fc 0026 0003 d8d2       move.b     #$26,MCP1IO.sy hidden
 [00016138] 4efa 0148                 jmp        $00016282(pc)
 case 17:
-[0001613c] 13fc 001e 0003 d8d2       move.b     #$1E,MCP1IO.sy
+[0001613c] 13fc 001e 0003 d8d2       move.b     #$1E,MCP1IO.sy varsy
 [00016144] 4efa 013c                 jmp        $00016282(pc)
 case 33:
-[00016148] 13fc 003c 0003 d8d2       move.b     #$3C,MCP1IO.sy
+[00016148] 13fc 003c 0003 d8d2       move.b     #$3C,MCP1IO.sy codesy
 [00016150] 4efa 0130                 jmp        $00016282(pc)
 case 18:
 case 19:
-[00016154] 13fc 0044 0003 d8d2       move.b     #$44,MCP1IO.sy
+[00016154] 13fc 0044 0003 d8d2       move.b     #$44,MCP1IO.sy proceduresy
 [0001615c] 4efa 0124                 jmp        $00016282(pc)
 case 20:
-[00016160] 13fc 0047 0003 d8d2       move.b     #$47,MCP1IO.sy
+[00016160] 13fc 0047 0003 d8d2       move.b     #$47,MCP1IO.sy ident
 [00016168] 486e fffe                 pea.l      -2(a6)
 [0001616c] 6100 fd0e                 bsr        MCP1IO.SymFileInput.ReadSym
 [00016170] 588f                      addq.l     #4,a7
@@ -7068,43 +6948,43 @@ case 20:
 [00016192] 6100 f8de                 bsr        MCP1IO.IdentSystem.EnterId
 [00016196] 4efa 00ea                 jmp        $00016282(pc)
 case 21:
-[0001619a] 13fc 0019 0003 d8d2       move.b     #$19,MCP1IO.sy
+[0001619a] 13fc 0019 0003 d8d2       move.b     #$19,MCP1IO.sy period
 [000161a2] 4efa 00de                 jmp        $00016282(pc)
 case 35:
-[000161a6] 13fc 0017 0003 d8d2       move.b     #$17,MCP1IO.sy
+[000161a6] 13fc 0017 0003 d8d2       move.b     #$17,MCP1IO.sy comma
 [000161ae] 4efa 00d2                 jmp        $00016282(pc)
 case 22:
-[000161b2] 13fc 001a 0003 d8d2       move.b     #$1A,MCP1IO.sy
+[000161b2] 13fc 001a 0003 d8d2       move.b     #$1A,MCP1IO.sy colon
 [000161ba] 4efa 00c6                 jmp        $00016282(pc)
 case 23:
-[000161be] 13fc 001b 0003 d8d2       move.b     #$1B,MCP1IO.sy
+[000161be] 13fc 001b 0003 d8d2       move.b     #$1B,MCP1IO.sy range
 [000161c6] 4efa 00ba                 jmp        $00016282(pc)
 case 24:
-[000161ca] 13fc 0011 0003 d8d2       move.b     #$11,MCP1IO.sy
+[000161ca] 13fc 0011 0003 d8d2       move.b     #$11,MCP1IO.sy lparent
 [000161d2] 4efa 00ae                 jmp        $00016282(pc)
 case 25:
-[000161d6] 13fc 0012 0003 d8d2       move.b     #$12,MCP1IO.sy
+[000161d6] 13fc 0012 0003 d8d2       move.b     #$12,MCP1IO.sy rparent
 [000161de] 4efa 00a2                 jmp        $00016282(pc)
 case 26:
-[000161e2] 13fc 0013 0003 d8d2       move.b     #$13,MCP1IO.sy
+[000161e2] 13fc 0013 0003 d8d2       move.b     #$13,MCP1IO.sy lbrack
 [000161ea] 4efa 0096                 jmp        $00016282(pc)
 case 27:
-[000161ee] 13fc 0014 0003 d8d2       move.b     #$14,MCP1IO.sy
+[000161ee] 13fc 0014 0003 d8d2       move.b     #$14,MCP1IO.sy rbrack
 [000161f6] 4efa 008a                 jmp        $00016282(pc)
 case 28:
-[000161fa] 13fc 002c 0003 d8d2       move.b     #$2C,MCP1IO.sy
+[000161fa] 13fc 002c 0003 d8d2       move.b     #$2C,MCP1IO.sy casesy
 [00016202] 4efa 007e                 jmp        $00016282(pc)
 case 29:
-[00016206] 13fc 002d 0003 d8d2       move.b     #$2D,MCP1IO.sy
+[00016206] 13fc 002d 0003 d8d2       move.b     #$2D,MCP1IO.sy ofsy
 [0001620e] 4efa 0072                 jmp        $00016282(pc)
 case 30:
-[00016212] 13fc 0031 0003 d8d2       move.b     #$31,MCP1IO.sy
+[00016212] 13fc 0031 0003 d8d2       move.b     #$31,MCP1IO.sy elsesy
 [0001621a] 4efa 0066                 jmp        $00016282(pc)
 case 31:
-[0001621e] 13fc 003f 0003 d8d2       move.b     #$3F,MCP1IO.sy
+[0001621e] 13fc 003f 0003 d8d2       move.b     #$3F,MCP1IO.sy endsy
 [00016226] 4efa 005a                 jmp        $00016282(pc)
 case 34:
-[0001622a] 13fc 0048 0003 d8d2       move.b     #$48,MCP1IO.sy
+[0001622a] 13fc 0048 0003 d8d2       move.b     #$48,MCP1IO.sy inlinesy
 [00016232] 4efa 004e                 jmp        $00016282(pc)
 case 32:
 default:
@@ -9673,6 +9553,7 @@ MCPass1.SubrangeType:
 [0001886e] 4e5e                      unlk       a6
 [00018870] 4e75                      rts
 
+MCPass1.SimpleType:
 [00018872] 4e56 fff6                 link       a6,#-10
 [00018876] 0c39 0047 0003 d8d2       cmpi.b     #$47,MCP1IO.sy
 [0001887e] 661e                      bne.s      $0001889E
@@ -9719,13 +9600,14 @@ MCPass1.SubrangeType:
 [0001891e] 6100 fcac                 bsr        MCPass1.PutDmId
 [00018922] 286e 0008                 movea.l    8(a6),a4
 [00018926] 4854                      pea.l      (a4)
-[00018928] 4879 0003 d9c0            pea.l      $0003D9C0
+[00018928] 4879 0003 d9c0            pea.l      MCPass1.s0
 [0001892e] 3f3c 0031                 move.w     #$0031,-(a7)
 [00018932] 6100 fcf0                 bsr        MCPass1.Test
 [00018936] 4fef 000a                 lea.l      10(a7),a7
 [0001893a] 4e5e                      unlk       a6
 [0001893c] 4e75                      rts
 
+MCPass1.VariantFld:
 [0001893e] 4e56 fff6                 link       a6,#-10
 [00018942] 7a08                      moveq.l    #8,d5
 [00018944] 286e 0008                 movea.l    8(a6),a4
@@ -9748,6 +9630,8 @@ MCPass1.SubrangeType:
 [00018982] 588f                      addq.l     #4,a7
 [00018984] 4e5e                      unlk       a6
 [00018986] 4e75                      rts
+
+MCPass1.FieldlistSeq:
 [00018988] 4e56 fff4                 link       a6,#-12
 [0001898c] 0c39 0047 0003 d8d2       cmpi.b     #$47,MCP1IO.sy
 [00018994] 670a                      beq.s      $000189A0
@@ -9764,7 +9648,7 @@ MCPass1.SubrangeType:
 [000189c0] 588f                      addq.l     #4,a7
 [000189c2] 286e 0008                 movea.l    8(a6),a4
 [000189c6] 4854                      pea.l      (a4)
-[000189c8] 6100 02a6                 bsr        $00018C70
+[000189c8] 6100 02a6                 bsr        MCPass1.ActualType
 [000189cc] 588f                      addq.l     #4,a7
 [000189ce] 4efa 00c2                 jmp        $00018A92(pc)
 [000189d2] 6100 fbe4                 bsr        MCPass1.PutGetSy
@@ -9801,7 +9685,7 @@ MCPass1.SubrangeType:
 [00018a52] 4eb9 0001 55ac            jsr        MCP1IO.OutputSystem.PutSy
 [00018a58] 548f                      addq.l     #2,a7
 [00018a5a] 486e fff6                 pea.l      -10(a6)
-[00018a5e] 6100 fede                 bsr        $0001893E
+[00018a5e] 6100 fede                 bsr        MCPass1.VariantFld
 [00018a62] 588f                      addq.l     #4,a7
 [00018a64] 0c39 0021 0003 d8d2       cmpi.b     #$21,MCP1IO.sy
 [00018a6c] 6704                      beq.s      $00018A72
@@ -9812,7 +9696,7 @@ MCPass1.SubrangeType:
 [00018a7e] 6100 fb38                 bsr        MCPass1.PutGetSy
 [00018a82] 286e 0008                 movea.l    8(a6),a4
 [00018a86] 4854                      pea.l      (a4)
-[00018a88] 6100 fefe                 bsr        $00018988
+[00018a88] 6100 fefe                 bsr        MCPass1.FieldlistSeq
 [00018a8c] 588f                      addq.l     #4,a7
 [00018a8e] 6100 fd0a                 bsr        MCPass1.TestEndSy
 [00018a92] 0c39 0018 0003 d8d2       cmpi.b     #$18,MCP1IO.sy
@@ -9840,6 +9724,8 @@ MCPass1.SubrangeType:
 [00018af2] 6000 fe98                 bra        $0001898C
 [00018af6] 4e5e                      unlk       a6
 [00018af8] 4e75                      rts
+
+MCPass1.RecordType:
 [00018afa] 4e56 fff6                 link       a6,#-10
 [00018afe] 7a08                      moveq.l    #8,d5
 [00018b00] 286d fffc                 movea.l    -4(a5),a4
@@ -9852,11 +9738,13 @@ MCPass1.SubrangeType:
 [00018b1e] 5545                      subq.w     #2,d5
 [00018b20] 6ade                      bpl.s      $00018B00
 [00018b22] 486e fff6                 pea.l      -10(a6)
-[00018b26] 6100 fe60                 bsr        $00018988
+[00018b26] 6100 fe60                 bsr        MCPass1.FieldlistSeq
 [00018b2a] 588f                      addq.l     #4,a7
 [00018b2c] 6100 fc6c                 bsr        MCPass1.TestEndSy
 [00018b30] 4e5e                      unlk       a6
 [00018b32] 4e75                      rts
+
+MCPass1.ArrayType:
 [00018b34] 4e56 fff6                 link       a6,#-10
 [00018b38] 7a08                      moveq.l    #8,d5
 [00018b3a] 286d fffc                 movea.l    -4(a5),a4
@@ -9868,7 +9756,7 @@ MCPass1.SubrangeType:
 [00018b50] 08ee 0007 fff8            bset       #7,-8(a6)
 [00018b56] 08ee 0005 fffb            bset       #5,-5(a6)
 [00018b5c] 486e fff6                 pea.l      -10(a6)
-[00018b60] 6100 fd10                 bsr        $00018872
+[00018b60] 6100 fd10                 bsr        MCPass1.SimpleType
 [00018b64] 588f                      addq.l     #4,a7
 [00018b66] 0c39 0017 0003 d8d2       cmpi.b     #$17,MCP1IO.sy
 [00018b6e] 6704                      beq.s      $00018B74
@@ -9882,10 +9770,12 @@ MCPass1.SubrangeType:
 [00018b88] 286d fffc                 movea.l    -4(a5),a4
 [00018b8c] 286c 0008                 movea.l    8(a4),a4
 [00018b90] 4854                      pea.l      (a4)
-[00018b92] 6100 00dc                 bsr        $00018C70
+[00018b92] 6100 00dc                 bsr        MCPass1.ActualType
 [00018b96] 588f                      addq.l     #4,a7
 [00018b98] 4e5e                      unlk       a6
 [00018b9a] 4e75                      rts
+
+MCPass1.ProcedureType:
 [00018b9c] 4e56 fff6                 link       a6,#-10
 [00018ba0] 0c39 0011 0003 d8d2       cmpi.b     #$11,MCP1IO.sy
 [00018ba8] 670a                      beq.s      $00018BB4
@@ -9938,6 +9828,8 @@ MCPass1.SubrangeType:
 [00018c68] 6100 fb10                 bsr        MCPass1.QualIdent
 [00018c6c] 4e5e                      unlk       a6
 [00018c6e] 4e75                      rts
+
+MCPass1.ActualType:
 [00018c70] 4e56 fffe                 link       a6,#-2
 [00018c74] 2f2d fffc                 move.l     -4(a5),-(a7)
 [00018c78] 2b4e fffc                 move.l     a6,-4(a5)
@@ -9960,7 +9852,7 @@ MCPass1.SubrangeType:
 [00018cb4] 6710                      beq.s      $00018CC6
 [00018cb6] 286e 0008                 movea.l    8(a6),a4
 [00018cba] 4854                      pea.l      (a4)
-[00018cbc] 6100 fbb4                 bsr        $00018872
+[00018cbc] 6100 fbb4                 bsr        MCPass1.SimpleType
 [00018cc0] 588f                      addq.l     #4,a7
 [00018cc2] 4efa 00b6                 jmp        $00018D7A(pc)
 [00018cc6] 7a00                      moveq.l    #0,d5
@@ -9980,11 +9872,11 @@ MCPass1.SubrangeType:
 [00018cf6] 6100 f8c0                 bsr        MCPass1.PutGetSy
 [00018cfa] 0c2e 001f ffff            cmpi.b     #$1F,-1(a6)
 [00018d00] 6608                      bne.s      $00018D0A
-[00018d02] 6100 fe30                 bsr        $00018B34
+[00018d02] 6100 fe30                 bsr        MCPass1.ArrayType
 [00018d06] 4efa 006a                 jmp        $00018D72(pc)
 [00018d0a] 0c2e 0020 ffff            cmpi.b     #$20,-1(a6)
 [00018d10] 6608                      bne.s      $00018D1A
-[00018d12] 6100 fde6                 bsr        $00018AFA
+[00018d12] 6100 fde6                 bsr        MCPass1.RecordType
 [00018d16] 4efa 005a                 jmp        $00018D72(pc)
 [00018d1a] 0c2e 0023 ffff            cmpi.b     #$23,-1(a6)
 [00018d20] 661e                      bne.s      $00018D40
@@ -9994,7 +9886,7 @@ MCPass1.SubrangeType:
 [00018d2e] 588f                      addq.l     #4,a7
 [00018d30] 286e 0008                 movea.l    8(a6),a4
 [00018d34] 4854                      pea.l      (a4)
-[00018d36] 6100 ff38                 bsr        $00018C70
+[00018d36] 6100 ff38                 bsr        MCPass1.ActualType
 [00018d3a] 588f                      addq.l     #4,a7
 [00018d3c] 4efa 0034                 jmp        $00018D72(pc)
 [00018d40] 0c2e 0022 ffff            cmpi.b     #$22,-1(a6)
@@ -10005,17 +9897,19 @@ MCPass1.SubrangeType:
 [00018d54] 588f                      addq.l     #4,a7
 [00018d56] 286e 0008                 movea.l    8(a6),a4
 [00018d5a] 4854                      pea.l      (a4)
-[00018d5c] 6100 fb14                 bsr        $00018872
+[00018d5c] 6100 fb14                 bsr        MCPass1.SimpleType
 [00018d60] 588f                      addq.l     #4,a7
 [00018d62] 4efa 000e                 jmp        $00018D72(pc)
 [00018d66] 0c2e 0044 ffff            cmpi.b     #$44,-1(a6)
 [00018d6c] 6604                      bne.s      $00018D72
-[00018d6e] 6100 fe2c                 bsr        $00018B9C
+[00018d6e] 6100 fe2c                 bsr        MCPass1.ProcedureType
 [00018d72] 4efa 0006                 jmp        $00018D7A(pc)
 [00018d76] 6100 f854                 bsr        MCPass1.PutDmId
 [00018d7a] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [00018d7e] 4e5e                      unlk       a6
 [00018d80] 4e75                      rts
+
+MCPass1.ElemList:
 [00018d82] 4e56 ffe2                 link       a6,#-30
 [00018d86] 286e 000a                 movea.l    10(a6),a4
 [00018d8a] 47ee fff6                 lea.l      -10(a6),a3
@@ -10074,6 +9968,8 @@ MCPass1.SubrangeType:
 [00018e46] 60be                      bra.s      $00018E06
 [00018e48] 4e5e                      unlk       a6
 [00018e4a] 4e75                      rts
+
+MCPass1.SetConstructor:
 [00018e4c] 4e56 fff6                 link       a6,#-10
 [00018e50] 286e 0008                 movea.l    8(a6),a4
 [00018e54] 47ee fff6                 lea.l      -10(a6),a3
@@ -10084,7 +9980,7 @@ MCPass1.SubrangeType:
 [00018e62] 08ee 0006 fff8            bset       #6,-8(a6)
 [00018e68] 486e fff6                 pea.l      -10(a6)
 [00018e6c] 1f3c 0016                 move.b     #$16,-(a7)
-[00018e70] 6100 ff10                 bsr        $00018D82
+[00018e70] 6100 ff10                 bsr        MCPass1.ElemList
 [00018e74] 5c8f                      addq.l     #6,a7
 [00018e76] 1f3c 0016                 move.b     #$16,-(a7)
 [00018e7a] 3f3c 003a                 move.w     #$003A,-(a7)
@@ -10092,6 +9988,8 @@ MCPass1.SubrangeType:
 [00018e82] 588f                      addq.l     #4,a7
 [00018e84] 4e5e                      unlk       a6
 [00018e86] 4e75                      rts
+
+MCPass1.ConstDecl:
 [00018e88] 4e56 fff6                 link       a6,#-10
 [00018e8c] 0c39 0047 0003 d8d2       cmpi.b     #$47,MCP1IO.sy
 [00018e94] 6648                      bne.s      $00018EDE
@@ -10125,12 +10023,14 @@ MCPass1.SubrangeType:
 [00018efa] 5545                      subq.w     #2,d5
 [00018efc] 6ae2                      bpl.s      $00018EE0
 [00018efe] 486e fff6                 pea.l      -10(a6)
-[00018f02] 4879 0003 d9c0            pea.l      $0003D9C0
+[00018f02] 4879 0003 d9c0            pea.l      MCPass1.s0
 [00018f08] 3f3c 0019                 move.w     #$0019,-(a7)
 [00018f0c] 6100 f716                 bsr        MCPass1.Test
 [00018f10] 4fef 000a                 lea.l      10(a7),a7
 [00018f14] 4e5e                      unlk       a6
 [00018f16] 4e75                      rts
+
+MCPass1.Modul.InterfaceList:
 [00018f18] 4e56 fff6                 link       a6,#-10
 [00018f1c] 7a08                      moveq.l    #8,d5
 [00018f1e] 286e 0008                 movea.l    8(a6),a4
@@ -10169,7 +10069,7 @@ MCPass1.Modul.TypeDecl:
 [00018f98] 6614                      bne.s      $00018FAE
 [00018f9a] 4eb9 0001 6dac            jsr        MCP1IO.Scanner.GetSy
 [00018fa0] 486e fff6                 pea.l      -10(a6)
-[00018fa4] 6100 fcca                 bsr        $00018C70
+[00018fa4] 6100 fcca                 bsr        MCPass1.ActualType
 [00018fa8] 588f                      addq.l     #4,a7
 [00018faa] 4efa 0030                 jmp        $00018FDC(pc)
 [00018fae] 4a39 0003 d9be            tst.b      MCPass1.defmod
@@ -10182,7 +10082,7 @@ MCPass1.Modul.TypeDecl:
 [00018fca] 4eb9 0001 5796            jsr        MCP1IO.OutputSystem.Error
 [00018fd0] 548f                      addq.l     #2,a7
 [00018fd2] 486e fff6                 pea.l      -10(a6)
-[00018fd6] 6100 fc98                 bsr        $00018C70
+[00018fd6] 6100 fc98                 bsr        MCPass1.ActualType
 [00018fda] 588f                      addq.l     #4,a7
 [00018fdc] 6100 f71c                 bsr        MCPass1.TestEndSemi
 [00018fe0] 60a0                      bra.s      $00018F82
@@ -10196,13 +10096,14 @@ MCPass1.Modul.TypeDecl:
 [00018ffe] 5545                      subq.w     #2,d5
 [00019000] 6ae2                      bpl.s      $00018FE4
 [00019002] 486e fff6                 pea.l      -10(a6)
-[00019006] 4879 0003 d9c0            pea.l      $0003D9C0
+[00019006] 4879 0003 d9c0            pea.l      MCPass1.s0
 [0001900c] 3f3c 0019                 move.w     #$0019,-(a7)
 [00019010] 6100 f612                 bsr        MCPass1.Test
 [00019014] 4fef 000a                 lea.l      10(a7),a7
 [00019018] 4e5e                      unlk       a6
 [0001901a] 4e75                      rts
 
+MCPass1.Modul.Reference:
 [0001901c] 4e56 fff6                 link       a6,#-10
 [00019020] 6100 f596                 bsr        MCPass1.PutGetSy
 [00019024] 7a08                      moveq.l    #8,d5
@@ -10225,6 +10126,8 @@ MCPass1.Modul.TypeDecl:
 [00019064] 588f                      addq.l     #4,a7
 [00019066] 4e5e                      unlk       a6
 [00019068] 4e75                      rts
+
+MCPass1.Modul.VarDecl:
 [0001906a] 4e56 fff6                 link       a6,#-10
 [0001906e] 2f2d fffc                 move.l     -4(a5),-(a7)
 [00019072] 2b4e fffc                 move.l     a6,-4(a5)
@@ -10235,7 +10138,7 @@ MCPass1.Modul.TypeDecl:
 [00019086] 6100 f530                 bsr        MCPass1.PutGetSy
 [0001908a] 0c39 0013 0003 d8d2       cmpi.b     #$13,MCP1IO.sy
 [00019092] 6604                      bne.s      $00019098
-[00019094] 6100 ff86                 bsr.w      $0001901C
+[00019094] 6100 ff86                 bsr.w      MCPass1.Modul.Reference
 [00019098] 0c39 0017 0003 d8d2       cmpi.b     #$17,MCP1IO.sy
 [000190a0] 6634                      bne.s      $000190D6
 [000190a2] 4eb9 0001 6dac            jsr        MCP1IO.Scanner.GetSy
@@ -10244,7 +10147,7 @@ MCPass1.Modul.TypeDecl:
 [000190b2] 6100 f504                 bsr        MCPass1.PutGetSy
 [000190b6] 0c39 0013 0003 d8d2       cmpi.b     #$13,MCP1IO.sy
 [000190be] 6604                      bne.s      $000190C4
-[000190c0] 6100 ff5a                 bsr        $0001901C
+[000190c0] 6100 ff5a                 bsr        MCPass1.Modul.Reference
 [000190c4] 4efa 000e                 jmp        $000190D4(pc)
 [000190c8] 3f3c 0014                 move.w     #$0014,-(a7)
 [000190cc] 4eb9 0001 5796            jsr        MCP1IO.OutputSystem.Error
@@ -10264,7 +10167,7 @@ MCPass1.Modul.TypeDecl:
 [00019100] 5545                      subq.w     #2,d5
 [00019102] 6ae2                      bpl.s      $000190E6
 [00019104] 486e fff6                 pea.l      -10(a6)
-[00019108] 6100 fb66                 bsr        $00018C70
+[00019108] 6100 fb66                 bsr        MCPass1.ActualType
 [0001910c] 588f                      addq.l     #4,a7
 [0001910e] 6100 f5ea                 bsr        MCPass1.TestEndSemi
 [00019112] 6000 ff62                 bra        $00019076
@@ -10278,13 +10181,15 @@ MCPass1.Modul.TypeDecl:
 [00019132] 5545                      subq.w     #2,d5
 [00019134] 6ae2                      bpl.s      $00019118
 [00019136] 486e fff6                 pea.l      -10(a6)
-[0001913a] 4879 0003 d9c0            pea.l      $0003D9C0
+[0001913a] 4879 0003 d9c0            pea.l      MCPass1.s0
 [00019140] 3f3c 0019                 move.w     #$0019,-(a7)
 [00019144] 6100 f4de                 bsr        MCPass1.Test
 [00019148] 4fef 000a                 lea.l      10(a7),a7
 [0001914c] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [00019150] 4e5e                      unlk       a6
 [00019152] 4e75                      rts
+
+MCPass1.Modul.ModulDecl:
 [00019154] 4e56 0000                 link       a6,#0
 [00019158] 4a39 0003 d9be            tst.b      MCPass1.defmod
 [0001915e] 670c                      beq.s      $0001916C
@@ -10293,11 +10198,13 @@ MCPass1.Modul.TypeDecl:
 [0001916a] 548f                      addq.l     #2,a7
 [0001916c] 286e 0008                 movea.l    8(a6),a4
 [00019170] 4854                      pea.l      (a4)
-[00019172] 6100 105e                 bsr        $0001A1D2
+[00019172] 6100 105e                 bsr        MCPass1.Modul
 [00019176] 588f                      addq.l     #4,a7
 [00019178] 6100 f580                 bsr        MCPass1.TestEndSemi
 [0001917c] 4e5e                      unlk       a6
 [0001917e] 4e75                      rts
+
+MCPass1.Modul.ProcFunDecl:
 [00019180] 4e56 fff4                 link       a6,#-12
 [00019184] 7a08                      moveq.l    #8,d5
 [00019186] 286e 0008                 movea.l    8(a6),a4
@@ -10412,7 +10319,7 @@ MCPass1.Modul.TypeDecl:
 [00019348] 6648                      bne.s      $00019392
 [0001934a] 286e 0008                 movea.l    8(a6),a4
 [0001934e] 4854                      pea.l      (a4)
-[00019350] 6100 0b16                 bsr        $00019E68
+[00019350] 6100 0b16                 bsr        MCPass1.Modul.Block
 [00019354] 588f                      addq.l     #4,a7
 [00019356] 0c39 0047 0003 d8d2       cmpi.b     #$47,MCP1IO.sy
 [0001935e] 6622                      bne.s      $00019382
@@ -10430,6 +10337,8 @@ MCPass1.Modul.TypeDecl:
 [0001938e] 6100 f36a                 bsr        MCPass1.TestEndSemi
 [00019392] 4e5e                      unlk       a6
 [00019394] 4e75                      rts
+
+MCPass1.Modul.StatSeq:
 [00019396] 4e56 fff6                 link       a6,#-10
 [0001939a] 7a08                      moveq.l    #8,d5
 [0001939c] 286e 0008                 movea.l    8(a6),a4
@@ -10441,7 +10350,7 @@ MCPass1.Modul.TypeDecl:
 [000193b6] 5545                      subq.w     #2,d5
 [000193b8] 6ae2                      bpl.s      $0001939C
 [000193ba] 486e fff6                 pea.l      -10(a6)
-[000193be] 6100 0422                 bsr        $000197E2
+[000193be] 6100 0422                 bsr        MCPass1.Modul.Statement
 [000193c2] 588f                      addq.l     #4,a7
 [000193c4] 0c39 0018 0003 d8d2       cmpi.b     #$18,MCP1IO.sy
 [000193cc] 6704                      beq.s      $000193D2
@@ -10495,6 +10404,8 @@ MCPass1.Modul.TypeDecl:
 [00019472] 6000 ff26                 bra        $0001939A
 [00019476] 4e5e                      unlk       a6
 [00019478] 4e75                      rts
+
+MCPass1.Modul.Selector:
 [0001947a] 4e56 fffe                 link       a6,#-2
 [0001947e] 0c39 0013 0003 d8d2       cmpi.b     #$13,MCP1IO.sy
 [00019486] 6714                      beq.s      $0001949C
@@ -10535,6 +10446,8 @@ MCPass1.Modul.TypeDecl:
 [00019514] 6000 ff68                 bra        $0001947E
 [00019518] 4e5e                      unlk       a6
 [0001951a] 4e75                      rts
+
+MCPass1.Modul.Factor:
 [0001951c] 4e56 0000                 link       a6,#0
 [00019520] 4879 0001 a64c            pea.l      $0001A64C
 [00019526] 286e 0008                 movea.l    8(a6),a4
@@ -10551,12 +10464,12 @@ MCPass1.Modul.TypeDecl:
 [00019554] 6610                      bne.s      $00019566
 [00019556] 286e 0008                 movea.l    8(a6),a4
 [0001955a] 4854                      pea.l      (a4)
-[0001955c] 6100 f8ee                 bsr        $00018E4C
+[0001955c] 6100 f8ee                 bsr        MCPass1.SetConstructor
 [00019560] 588f                      addq.l     #4,a7
 [00019562] 4efa 0072                 jmp        $000195D6(pc)
 [00019566] 286e 0008                 movea.l    8(a6),a4
 [0001956a] 4854                      pea.l      (a4)
-[0001956c] 6100 ff0c                 bsr        $0001947A
+[0001956c] 6100 ff0c                 bsr        MCPass1.Modul.Selector
 [00019570] 588f                      addq.l     #4,a7
 [00019572] 0c39 0011 0003 d8d2       cmpi.b     #$11,MCP1IO.sy
 [0001957a] 665a                      bne.s      $000195D6
@@ -10591,7 +10504,7 @@ MCPass1.Modul.TypeDecl:
 [000195e2] 6610                      bne.s      $000195F4
 [000195e4] 286e 0008                 movea.l    8(a6),a4
 [000195e8] 4854                      pea.l      (a4)
-[000195ea] 6100 f860                 bsr        $00018E4C
+[000195ea] 6100 f860                 bsr        MCPass1.SetConstructor
 [000195ee] 588f                      addq.l     #4,a7
 [000195f0] 4efa 0082                 jmp        $00019674(pc)
 [000195f4] 0c39 0011 0003 d8d2       cmpi.b     #$11,MCP1IO.sy
@@ -10612,7 +10525,7 @@ MCPass1.Modul.TypeDecl:
 [00019630] 6100 ef86                 bsr        MCPass1.PutGetSy
 [00019634] 286e 0008                 movea.l    8(a6),a4
 [00019638] 4854                      pea.l      (a4)
-[0001963a] 6100 fee0                 bsr        $0001951C
+[0001963a] 6100 fee0                 bsr        MCPass1.Modul.Factor
 [0001963e] 588f                      addq.l     #4,a7
 [00019640] 4efa 0032                 jmp        $00019674(pc)
 [00019644] 0c39 0049 0003 d8d2       cmpi.b     #$49,MCP1IO.sy
@@ -10626,6 +10539,8 @@ MCPass1.Modul.TypeDecl:
 [0001966e] 4eb9 0001 56ac            jsr        MCP1IO.OutputSystem.PutS
 [00019674] 4e5e                      unlk       a6
 [00019676] 4e75                      rts
+
+MCPass1.Modul.Term:
 [00019678] 4e56 fff6                 link       a6,#-10
 [0001967c] 7a08                      moveq.l    #8,d5
 [0001967e] 286e 0008                 movea.l    8(a6),a4
@@ -10637,7 +10552,7 @@ MCPass1.Modul.TypeDecl:
 [00019698] 5545                      subq.w     #2,d5
 [0001969a] 6ae2                      bpl.s      $0001967E
 [0001969c] 486e fff6                 pea.l      -10(a6)
-[000196a0] 6100 fe7a                 bsr        $0001951C
+[000196a0] 6100 fe7a                 bsr        MCPass1.Modul.Factor
 [000196a4] 588f                      addq.l     #4,a7
 [000196a6] 7a00                      moveq.l    #0,d5
 [000196a8] 1a39 0003 d8d2            move.b     MCP1IO.sy,d5
@@ -10655,6 +10570,8 @@ MCPass1.Modul.TypeDecl:
 [000196d0] 60ca                      bra.s      $0001969C
 [000196d2] 4e5e                      unlk       a6
 [000196d4] 4e75                      rts
+
+MCPass1.Modul.SimpleExpr:
 [000196d6] 4e56 fff6                 link       a6,#-10
 [000196da] 7a00                      moveq.l    #0,d5
 [000196dc] 1a39 0003 d8d2            move.b     MCP1IO.sy,d5
@@ -10678,7 +10595,7 @@ MCPass1.Modul.TypeDecl:
 [0001971c] 5545                      subq.w     #2,d5
 [0001971e] 6ae2                      bpl.s      $00019702
 [00019720] 486e fff6                 pea.l      -10(a6)
-[00019724] 6100 ff52                 bsr        $00019678
+[00019724] 6100 ff52                 bsr        MCPass1.Modul.Term
 [00019728] 588f                      addq.l     #4,a7
 [0001972a] 7a00                      moveq.l    #0,d5
 [0001972c] 1a39 0003 d8d2            move.b     MCP1IO.sy,d5
@@ -10714,7 +10631,7 @@ MCPass1.Constant:
 [00019788] 5545                      subq.w     #2,d5
 [0001978a] 6ae2                      bpl.s      $0001976E
 [0001978c] 486e ffec                 pea.l      -20(a6)
-[00019790] 6100 ff44                 bsr        $000196D6
+[00019790] 6100 ff44                 bsr        MCPass1.Modul.SimpleExpr
 [00019794] 588f                      addq.l     #4,a7
 [00019796] 7a00                      moveq.l    #0,d5
 [00019798] 1a39 0003 d8d2            move.b     MCP1IO.sy,d5
@@ -10730,7 +10647,7 @@ MCPass1.Constant:
 [000197b8] 6100 edfe                 bsr        MCPass1.PutGetSy
 [000197bc] 286e 000c                 movea.l    12(a6),a4
 [000197c0] 4854                      pea.l      (a4)
-[000197c2] 6100 ff12                 bsr        $000196D6
+[000197c2] 6100 ff12                 bsr        MCPass1.Modul.SimpleExpr
 [000197c6] 588f                      addq.l     #4,a7
 [000197c8] 486e fff6                 pea.l      -10(a6)
 [000197cc] 286e 000c                 movea.l    12(a6),a4
@@ -10740,6 +10657,8 @@ MCPass1.Constant:
 [000197da] 4fef 000a                 lea.l      10(a7),a7
 [000197de] 4e5e                      unlk       a6
 [000197e0] 4e75                      rts
+
+MCPass1.Modul.Statement:
 [000197e2] 4e56 ffea                 link       a6,#-22
 [000197e6] 0c39 0047 0003 d8d2       cmpi.b     #$47,MCP1IO.sy
 [000197ee] 6602                      bne.s      $000197F2
@@ -10749,7 +10668,7 @@ MCPass1.Constant:
 [000197fc] 6100 edba                 bsr        MCPass1.PutGetSy
 [00019800] 286e 0008                 movea.l    8(a6),a4
 [00019804] 4854                      pea.l      (a4)
-[00019806] 6100 fc72                 bsr        $0001947A
+[00019806] 6100 fc72                 bsr        MCPass1.Modul.Selector
 [0001980a] 588f                      addq.l     #4,a7
 [0001980c] 4eb9 0001 580e            jsr        MCP1IO.OutputSystem.StopSave
 [00019812] 0c39 003e 0003 d8d2       cmpi.b     #$3E,MCP1IO.sy
@@ -10866,7 +10785,7 @@ MCPass1.Constant:
 [000199ae] 08ee 0000 fffc            bset       #0,-4(a6)
 [000199b4] 08ee 0001 fffc            bset       #1,-4(a6)
 [000199ba] 486e fff6                 pea.l      -10(a6)
-[000199be] 6100 f9d6                 bsr        $00019396
+[000199be] 6100 f9d6                 bsr        MCPass1.Modul.StatSeq
 [000199c2] 588f                      addq.l     #4,a7
 [000199c4] 0c39 0030 0003 d8d2       cmpi.b     #$30,MCP1IO.sy
 [000199cc] 6704                      beq.s      $000199D2
@@ -10878,7 +10797,7 @@ MCPass1.Constant:
 [000199e2] 6100 ebd4                 bsr        MCPass1.PutGetSy
 [000199e6] 286e 0008                 movea.l    8(a6),a4
 [000199ea] 4854                      pea.l      (a4)
-[000199ec] 6100 f9a8                 bsr        $00019396
+[000199ec] 6100 f9a8                 bsr        MCPass1.Modul.StatSeq
 [000199f0] 588f                      addq.l     #4,a7
 [000199f2] 6100 eda6                 bsr        MCPass1.TestEndSy
 [000199f6] 4efa 046c                 jmp        $00019E64(pc)
@@ -10896,7 +10815,7 @@ MCPass1.Constant:
 [00019a22] 4fef 000a                 lea.l      10(a7),a7
 [00019a26] 286e 0008                 movea.l    8(a6),a4
 [00019a2a] 4854                      pea.l      (a4)
-[00019a2c] 6100 f968                 bsr        $00019396
+[00019a2c] 6100 f968                 bsr        MCPass1.Modul.StatSeq
 [00019a30] 588f                      addq.l     #4,a7
 [00019a32] 6100 ed66                 bsr        MCPass1.TestEndSy
 [00019a36] 4efa 042c                 jmp        $00019E64(pc)
@@ -10914,7 +10833,7 @@ MCPass1.Constant:
 [00019a64] 6aee                      bpl.s      $00019A54
 [00019a66] 08ee 0005 fffc            bset       #5,-4(a6)
 [00019a6c] 486e fff6                 pea.l      -10(a6)
-[00019a70] 6100 f924                 bsr        $00019396
+[00019a70] 6100 f924                 bsr        MCPass1.Modul.StatSeq
 [00019a74] 588f                      addq.l     #4,a7
 [00019a76] 1f3c 0035                 move.b     #$35,-(a7)
 [00019a7a] 3f3c 0020                 move.w     #$0020,-(a7)
@@ -10951,7 +10870,7 @@ MCPass1.Constant:
 [00019aee] 588f                      addq.l     #4,a7
 [00019af0] 286e 0008                 movea.l    8(a6),a4
 [00019af4] 4854                      pea.l      (a4)
-[00019af6] 6100 f89e                 bsr        $00019396
+[00019af6] 6100 f89e                 bsr        MCPass1.Modul.StatSeq
 [00019afa] 588f                      addq.l     #4,a7
 [00019afc] 6100 ec9c                 bsr        MCPass1.TestEndSy
 [00019b00] 4efa 0362                 jmp        $00019E64(pc)
@@ -11016,14 +10935,14 @@ MCPass1.Constant:
 [00019be6] 548f                      addq.l     #2,a7
 [00019be8] 486e ffec                 pea.l      -20(a6)
 [00019bec] 1f3c 001a                 move.b     #$1A,-(a7)
-[00019bf0] 6100 f190                 bsr        $00018D82
+[00019bf0] 6100 f190                 bsr        MCPass1.ElemList
 [00019bf4] 5c8f                      addq.l     #6,a7
 [00019bf6] 1f3c 001a                 move.b     #$1A,-(a7)
 [00019bfa] 3f3c 0025                 move.w     #$0025,-(a7)
 [00019bfe] 6100 eab0                 bsr        MCPass1.TestPutGet
 [00019c02] 588f                      addq.l     #4,a7
 [00019c04] 486e fff6                 pea.l      -10(a6)
-[00019c08] 6100 f78c                 bsr        $00019396
+[00019c08] 6100 f78c                 bsr        MCPass1.Modul.StatSeq
 [00019c0c] 588f                      addq.l     #4,a7
 [00019c0e] 0c39 0021 0003 d8d2       cmpi.b     #$21,MCP1IO.sy
 [00019c16] 6704                      beq.s      $00019C1C
@@ -11042,7 +10961,7 @@ MCPass1.Constant:
 [00019c48] 5545                      subq.w     #2,d5
 [00019c4a] 6ae2                      bpl.s      $00019C2E
 [00019c4c] 486e fff6                 pea.l      -10(a6)
-[00019c50] 6100 f744                 bsr        $00019396
+[00019c50] 6100 f744                 bsr        MCPass1.Modul.StatSeq
 [00019c54] 588f                      addq.l     #4,a7
 [00019c56] 6100 eb42                 bsr        MCPass1.TestEndSy
 [00019c5a] 4efa 0208                 jmp        $00019E64(pc)
@@ -11065,7 +10984,7 @@ MCPass1.Constant:
 [00019c9e] 6100 eada                 bsr        MCPass1.QualIdent
 [00019ca2] 286e 0008                 movea.l    8(a6),a4
 [00019ca6] 4854                      pea.l      (a4)
-[00019ca8] 6100 f7d0                 bsr        $0001947A
+[00019ca8] 6100 f7d0                 bsr        MCPass1.Modul.Selector
 [00019cac] 588f                      addq.l     #4,a7
 [00019cae] 4efa 0006                 jmp        $00019CB6(pc)
 [00019cb2] 6100 e918                 bsr        MCPass1.PutDmId
@@ -11075,7 +10994,7 @@ MCPass1.Constant:
 [00019cc2] 588f                      addq.l     #4,a7
 [00019cc4] 286e 0008                 movea.l    8(a6),a4
 [00019cc8] 4854                      pea.l      (a4)
-[00019cca] 6100 f6ca                 bsr        $00019396
+[00019cca] 6100 f6ca                 bsr        MCPass1.Modul.StatSeq
 [00019cce] 588f                      addq.l     #4,a7
 [00019cd0] 6100 eac8                 bsr        MCPass1.TestEndSy
 [00019cd4] 4efa 018e                 jmp        $00019E64(pc)
@@ -11144,7 +11063,7 @@ MCPass1.Constant:
 [00019dd2] 588f                      addq.l     #4,a7
 [00019dd4] 286e 0008                 movea.l    8(a6),a4
 [00019dd8] 4854                      pea.l      (a4)
-[00019dda] 6100 f5ba                 bsr        $00019396
+[00019dda] 6100 f5ba                 bsr        MCPass1.Modul.StatSeq
 [00019dde] 588f                      addq.l     #4,a7
 [00019de0] 6100 e9b8                 bsr        MCPass1.TestEndSy
 [00019de4] 4efa 007e                 jmp        $00019E64(pc)
@@ -11188,6 +11107,8 @@ MCPass1.Constant:
 [00019e5c] 0504                      btst       d2,d4
 [00019e5e] 04b0 0504 04b0 4e5e       subi.l     #$050404B0,94(a0,d4.l*8) ; 68020+ only
 [00019e66] 4e75                      rts
+
+MCPass1.Modul.Block:
 [00019e68] 4e56 fff4                 link       a6,#-12
 [00019e6c] 4879 0001 a80e            pea.l      $0001A80E
 [00019e72] 286e 0008                 movea.l    8(a6),a4
@@ -11214,21 +11135,21 @@ MCPass1.Constant:
 [00019ebe] 6610                      bne.s      $00019ED0
 [00019ec0] 286e 0008                 movea.l    8(a6),a4
 [00019ec4] 4854                      pea.l      (a4)
-[00019ec6] 6100 f1a2                 bsr        $0001906A
+[00019ec6] 6100 f1a2                 bsr        MCPass1.Modul.VarDecl
 [00019eca] 588f                      addq.l     #4,a7
 [00019ecc] 4efa 0076                 jmp        $00019F44(pc)
 [00019ed0] 0c2e 0044 ffff            cmpi.b     #$44,-1(a6)
 [00019ed6] 6610                      bne.s      $00019EE8
 [00019ed8] 286e 0008                 movea.l    8(a6),a4
 [00019edc] 4854                      pea.l      (a4)
-[00019ede] 6100 f2a0                 bsr        $00019180
+[00019ede] 6100 f2a0                 bsr        MCPass1.Modul.ProcFunDecl
 [00019ee2] 588f                      addq.l     #4,a7
 [00019ee4] 4efa 005e                 jmp        $00019F44(pc)
 [00019ee8] 0c2e 0045 ffff            cmpi.b     #$45,-1(a6)
 [00019eee] 6610                      bne.s      $00019F00
 [00019ef0] 286e 0008                 movea.l    8(a6),a4
 [00019ef4] 4854                      pea.l      (a4)
-[00019ef6] 6100 f25c                 bsr        $00019154
+[00019ef6] 6100 f25c                 bsr        MCPass1.Modul.ModulDecl
 [00019efa] 588f                      addq.l     #4,a7
 [00019efc] 4efa 0046                 jmp        $00019F44(pc)
 [00019f00] 0c2e 001d ffff            cmpi.b     #$1D,-1(a6)
@@ -11242,14 +11163,14 @@ MCPass1.Constant:
 [00019f1e] 6610                      bne.s      $00019F30
 [00019f20] 286e 0008                 movea.l    8(a6),a4
 [00019f24] 4854                      pea.l      (a4)
-[00019f26] 6100 ef60                 bsr        $00018E88
+[00019f26] 6100 ef60                 bsr        MCPass1.ConstDecl
 [00019f2a] 588f                      addq.l     #4,a7
 [00019f2c] 4efa 0016                 jmp        $00019F44(pc)
 [00019f30] 0c2e 003c ffff            cmpi.b     #$3C,-1(a6)
 [00019f36] 660c                      bne.s      $00019F44
 [00019f38] 286e 0008                 movea.l    8(a6),a4
 [00019f3c] 4854                      pea.l      (a4)
-[00019f3e] 6100 efd8                 bsr        $00018F18
+[00019f3e] 6100 efd8                 bsr        MCPass1.Modul.InterfaceList
 [00019f42] 588f                      addq.l     #4,a7
 [00019f44] 6000 ff3e                 bra        $00019E84
 [00019f48] 7a00                      moveq.l    #0,d5
@@ -11292,7 +11213,7 @@ MCPass1.Constant:
 [00019fc6] 6100 e604                 bsr        MCPass1.PutDmId
 [00019fca] 286e 0008                 movea.l    8(a6),a4
 [00019fce] 4854                      pea.l      (a4)
-[00019fd0] 6100 fe96                 bsr        $00019E68
+[00019fd0] 6100 fe96                 bsr        MCPass1.Modul.Block
 [00019fd4] 588f                      addq.l     #4,a7
 [00019fd6] 7a00                      moveq.l    #0,d5
 [00019fd8] 1a39 0003 d8d2            move.b     MCP1IO.sy,d5
@@ -11326,7 +11247,7 @@ MCPass1.Constant:
 [0001a040] 548f                      addq.l     #2,a7
 [0001a042] 6100 e574                 bsr        MCPass1.PutGetSy
 [0001a046] 486e fff4                 pea.l      -12(a6)
-[0001a04a] 6100 f34a                 bsr        $00019396
+[0001a04a] 6100 f34a                 bsr        MCPass1.Modul.StatSeq
 [0001a04e] 588f                      addq.l     #4,a7
 [0001a050] 7a00                      moveq.l    #0,d5
 [0001a052] 1a39 0003 d8d2            move.b     MCP1IO.sy,d5
@@ -11346,7 +11267,7 @@ MCPass1.Constant:
 [0001a082] 4eb9 0001 55ac            jsr        MCP1IO.OutputSystem.PutSy
 [0001a088] 548f                      addq.l     #2,a7
 [0001a08a] 486e fff4                 pea.l      -12(a6)
-[0001a08e] 6100 f306                 bsr        $00019396
+[0001a08e] 6100 f306                 bsr        MCPass1.Modul.StatSeq
 [0001a092] 588f                      addq.l     #4,a7
 [0001a094] 0c39 003c 0003 d8d2       cmpi.b     #$3C,MCP1IO.sy
 [0001a09c] 6602                      bne.s      $0001A0A0
@@ -11386,7 +11307,7 @@ MCPass1.Constant:
 [0001a122] 6100 e58c                 bsr        MCPass1.TestPutGet
 [0001a126] 588f                      addq.l     #4,a7
 [0001a128] 486e fff4                 pea.l      -12(a6)
-[0001a12c] 6100 f268                 bsr        $00019396
+[0001a12c] 6100 f268                 bsr        MCPass1.Modul.StatSeq
 [0001a130] 588f                      addq.l     #4,a7
 [0001a132] 0c39 0021 0003 d8d2       cmpi.b     #$21,MCP1IO.sy
 [0001a13a] 6704                      beq.s      $0001A140
@@ -11405,7 +11326,7 @@ MCPass1.Constant:
 [0001a16c] 5545                      subq.w     #2,d5
 [0001a16e] 6ae2                      bpl.s      $0001A152
 [0001a170] 486e fff4                 pea.l      -12(a6)
-[0001a174] 6100 f220                 bsr        $00019396
+[0001a174] 6100 f220                 bsr        MCPass1.Modul.StatSeq
 [0001a178] 588f                      addq.l     #4,a7
 [0001a17a] 1f3c 003f                 move.b     #$3F,-(a7)
 [0001a17e] 3f3c 0028                 move.w     #$0028,-(a7)
@@ -11416,6 +11337,8 @@ MCPass1.Constant:
 [0001a192] 548f                      addq.l     #2,a7
 [0001a194] 4e5e                      unlk       a6
 [0001a196] 4e75                      rts
+
+MCPass1.Modul.InterfaceList2:
 [0001a198] 4e56 fff6                 link       a6,#-10
 [0001a19c] 286e 0008                 movea.l    8(a6),a4
 [0001a1a0] 47ee fff6                 lea.l      -10(a6),a3
@@ -11432,6 +11355,8 @@ MCPass1.Constant:
 [0001a1ca] 6100 e52e                 bsr        MCPass1.TestEndSemi
 [0001a1ce] 4e5e                      unlk       a6
 [0001a1d0] 4e75                      rts
+
+MCPass1.Modul:
 [0001a1d2] 4e56 ffea                 link       a6,#-22
 [0001a1d6] 286e 0008                 movea.l    8(a6),a4
 [0001a1da] 47ee fff6                 lea.l      -10(a6),a3
@@ -11511,7 +11436,7 @@ MCPass1.Constant:
 [0001a310] 5545                      subq.w     #2,d5
 [0001a312] 6ae2                      bpl.s      $0001A2F6
 [0001a314] 486e ffea                 pea.l      -22(a6)
-[0001a318] 6100 fe7e                 bsr        $0001A198
+[0001a318] 6100 fe7e                 bsr        MCPass1.Modul.InterfaceList2
 [0001a31c] 588f                      addq.l     #4,a7
 [0001a31e] 6000 ff70                 bra        $0001A290
 [0001a322] 4a39 0003 d9bd            tst.b      MCPass1.globalmod
@@ -11568,7 +11493,7 @@ MCPass1.Constant:
 [0001a3ee] 588f                      addq.l     #4,a7
 [0001a3f0] 4239 0003 d9bd            clr.b      MCPass1.globalmod
 [0001a3f6] 486e fff6                 pea.l      -10(a6)
-[0001a3fa] 6100 fa6c                 bsr        $00019E68
+[0001a3fa] 6100 fa6c                 bsr        MCPass1.Modul.Block
 [0001a3fe] 588f                      addq.l     #4,a7
 [0001a400] 0c39 0047 0003 d8d2       cmpi.b     #$47,MCP1IO.sy
 [0001a408] 6622                      bne.s      $0001A42C
@@ -11590,7 +11515,7 @@ MCPass1:
 [0001a43c] 4e56 0000                 link       a6,#0
 [0001a440] 4eb9 0001 739e            jsr        $0001739E
 [0001a446] 7a08                      moveq.l    #8,d5
-[0001a448] 49f9 0003 d9c0            lea.l      $0003D9C0,a4
+[0001a448] 49f9 0003 d9c0            lea.l      MCPass1.s0,a4
 [0001a44e] 4274 5000                 clr.w      0(a4,d5.w)
 [0001a452] 5545                      subq.w     #2,d5
 [0001a454] 6af2                      bpl.s      $0001A448
@@ -11628,7 +11553,7 @@ MCPass1:
 [0001a4e4] 6100 e1ca                 bsr        MCPass1.TestPutGet
 [0001a4e8] 588f                      addq.l     #4,a7
 [0001a4ea] 4879 0001 a8b8            pea.l      $0001A8B8
-[0001a4f0] 6100 fce0                 bsr        $0001A1D2
+[0001a4f0] 6100 fce0                 bsr        MCPass1.Modul
 [0001a4f4] 588f                      addq.l     #4,a7
 [0001a4f6] 0c39 0019 0003 d8d2       cmpi.b     #$19,MCP1IO.sy
 [0001a4fe] 670c                      beq.s      $0001A50C
@@ -11638,336 +11563,101 @@ MCPass1:
 [0001a50c] 4eb9 0001 7384            jsr        $00017384
 [0001a512] 4e5e                      unlk       a6
 [0001a514] 4e75                      rts
-[0001a516] 0000 0080                 ori.b      #$80,d0
-[0001a51a] 0000                      dc.w       $0000
-[0001a51c] 0000 8000                 ori.b      #$00,d0
-[0001a520] 0000 0008                 ori.b      #$08,d0
-[0001a524] 0000                      dc.w       $0000
-[0001a526] 0000                      dc.w       $0000
-[0001a528] 0000                      dc.w       $0000
-[0001a52a] 0000 1000                 ori.b      #$00,d0
-[0001a52e] 0000                      dc.w       $0000
-[0001a530] 0000                      dc.w       $0000
-[0001a532] 0000                      dc.w       $0000
-[0001a534] 0000                      dc.w       $0000
-[0001a536] 0000                      dc.w       $0000
-[0001a538] 0000                      dc.w       $0000
-[0001a53a] 0000 8000                 ori.b      #$00,d0
-[0001a53e] 0000                      dc.w       $0000
-[0001a540] 0000                      dc.w       $0000
-[0001a542] 0000 0080                 ori.b      #$80,d0
-[0001a546] 0000                      dc.w       $0000
-[0001a548] 0000 0a80                 ori.b      #$80,d0
-[0001a54c] 0d00                      btst       d6,d0
-[0001a54e] 0000 9000                 ori.b      #$00,d0
-[0001a552] 0000 0a00                 ori.b      #$00,d0
-[0001a556] 0000                      dc.w       $0000
-[0001a558] 0000 8000                 ori.b      #$00,d0
-[0001a55c] 0000 0a80                 ori.b      #$80,d0
-[0001a560] 0d00                      btst       d6,d0
-[0001a562] 0000 9000                 ori.b      #$00,d0
-[0001a566] 0000 8008                 ori.b      #$08,d0
-[0001a56a] 0000                      dc.w       $0000
-[0001a56c] 0000                      dc.w       $0000
-[0001a56e] 0000 c001                 ori.b      #$01,d0
-[0001a572] 2200                      move.l     d0,d1
-[0001a574] 0000                      dc.w       $0000
-[0001a576] 0000 806e                 ori.b      #$6E,d0
-[0001a57a] 0000 0001                 ori.b      #$01,d0
-[0001a57e] 0000                      dc.w       $0000
-[0001a580] 0000                      dc.w       $0000
-[0001a582] 0000                      dc.w       $0000
-[0001a584] 0000 0001                 ori.b      #$01,d0
-[0001a588] 0000 0080                 ori.b      #$80,d0
-[0001a58c] 0000                      dc.w       $0000
-[0001a58e] 0000                      dc.w       $0000
-[0001a590] 0000                      dc.w       $0000
-[0001a592] 0000 0080                 ori.b      #$80,d0
-[0001a596] 0000                      dc.w       $0000
-[0001a598] 0000 0001                 ori.b      #$01,d0
-[0001a59c] 0000                      dc.w       $0000
-[0001a59e] 0000                      dc.w       $0000
-[0001a5a0] 0000                      dc.w       $0000
-[0001a5a2] 0000                      dc.w       $0000
-[0001a5a4] 0000                      dc.w       $0000
-[0001a5a6] 0000                      dc.w       $0000
-[0001a5a8] 0000 8000                 ori.b      #$00,d0
-[0001a5ac] 0000 0001                 ori.b      #$01,d0
-[0001a5b0] 0000                      dc.w       $0000
-[0001a5b2] 0000                      dc.w       $0000
-[0001a5b4] 0000                      dc.w       $0000
-[0001a5b6] 0000                      dc.w       $0000
-[0001a5b8] 0000                      dc.w       $0000
-[0001a5ba] 0000 0080                 ori.b      #$80,d0
-[0001a5be] 0000                      dc.w       $0000
-[0001a5c0] 0000 9004                 ori.b      #$04,d0
-[0001a5c4] 0000                      dc.w       $0000
-[0001a5c6] 0000                      dc.w       $0000
-[0001a5c8] 0000                      dc.w       $0000
-[0001a5ca] 0000 1000                 ori.b      #$00,d0
-[0001a5ce] 0000                      dc.w       $0000
-[0001a5d0] 0000                      dc.w       $0000
-[0001a5d2] 0000                      dc.w       $0000
-[0001a5d4] 0000 0001                 ori.b      #$01,d0
-[0001a5d8] 0000                      dc.w       $0000
-[0001a5da] 0000                      dc.w       $0000
-[0001a5dc] 0000                      dc.w       $0000
-[0001a5de] 0000                      dc.w       $0000
-[0001a5e0] 0000                      dc.w       $0000
-[0001a5e2] 0000 0080                 ori.b      #$80,d0
-[0001a5e6] 0000                      dc.w       $0000
-[0001a5e8] 0000 0a00                 ori.b      #$00,d0
-[0001a5ec] 0000 0080                 ori.b      #$80,d0
-[0001a5f0] 0000                      dc.w       $0000
-[0001a5f2] 0000                      dc.w       $0000
-[0001a5f4] 0000                      dc.w       $0000
-[0001a5f6] 0000                      dc.w       $0000
-[0001a5f8] 0000 8000                 ori.b      #$00,d0
-[0001a5fc] 0000 8001                 ori.b      #$01,d0
-[0001a600] 0000 0080                 ori.b      #$80,d0
-[0001a604] 0000                      dc.w       $0000
-[0001a606] 0000 8001                 ori.b      #$01,d0
-[0001a60a] 0000 0080                 ori.b      #$80,d0
-[0001a60e] 0000                      dc.w       $0000
-[0001a610] 0000 8001                 ori.b      #$01,d0
-[0001a614] 0000 0080                 ori.b      #$80,d0
-[0001a618] 0000                      dc.w       $0000
-[0001a61a] 0000 0001                 ori.b      #$01,d0
-[0001a61e] 0000                      dc.w       $0000
-[0001a620] 0000                      dc.w       $0000
-[0001a622] 0000                      dc.w       $0000
-[0001a624] 0000                      dc.w       $0000
-[0001a626] 0000 0200                 ori.b      #$00,d0
-[0001a62a] 2390 0000                 move.l     (a0),0(a1,d0.w)
-[0001a62e] 0000 0001                 ori.b      #$01,d0
-[0001a632] 0200 2390                 andi.b     #$90,d0
-[0001a636] 0000                      dc.w       $0000
-[0001a638] 0000                      dc.w       $0000
-[0001a63a] 0000 0050                 ori.b      #$50,d0
-[0001a63e] 5c2b 8000                 addq.b     #6,-32768(a3)
-[0001a642] 0000 9000                 ori.b      #$00,d0
-[0001a646] 0000                      dc.w       $0000
-[0001a648] 0000                      dc.w       $0000
-[0001a64a] 0000 4000                 ori.b      #$00,d0
-[0001a64e] 2200                      move.l     d0,d1
-[0001a650] 0000                      dc.w       $0000
-[0001a652] 0000 806e                 ori.b      #$6E,d0
-[0001a656] c001                      and.b      d1,d0
-[0001a658] 2200                      move.l     d0,d1
-[0001a65a] 0000                      dc.w       $0000
-[0001a65c] 0000 806e                 ori.b      #$6E,d0
-[0001a660] 0000 8400                 ori.b      #$00,d0
-[0001a664] 0000                      dc.w       $0000
-[0001a666] 0000                      dc.w       $0000
-[0001a668] 0000                      dc.w       $0000
-[0001a66a] 0000 0400                 ori.b      #$00,d0
-[0001a66e] 0000                      dc.w       $0000
-[0001a670] 0000                      dc.w       $0000
-[0001a672] 0000 3e00                 ori.b      #$00,d0
-[0001a676] 0000                      dc.w       $0000
-[0001a678] 0000                      dc.w       $0000
-[0001a67a] 0000                      dc.w       $0000
-[0001a67c] 0000 3e00                 ori.b      #$00,d0
-[0001a680] 0000                      dc.w       $0000
-[0001a682] 0000                      dc.w       $0000
-[0001a684] 0000                      dc.w       $0000
-[0001a686] 0000 8001                 ori.b      #$01,d0
-[0001a68a] 0000                      dc.w       $0000
-[0001a68c] 0000                      dc.w       $0000
-[0001a68e] 0000                      dc.w       $0000
-[0001a690] 0000 8003                 ori.b      #$03,d0
-[0001a694] 0000                      dc.w       $0000
-[0001a696] 0000                      dc.w       $0000
-[0001a698] 0000                      dc.w       $0000
-[0001a69a] 0000 8003                 ori.b      #$03,d0
-[0001a69e] 0000                      dc.w       $0000
-[0001a6a0] 0000                      dc.w       $0000
-[0001a6a2] 0000                      dc.w       $0000
-[0001a6a4] 0000 00fc                 ori.b      #$FC,d0
-[0001a6a8] 0100                      btst       d0,d0
-[0001a6aa] 0000                      dc.w       $0000
-[0001a6ac] 0000                      dc.w       $0000
-[0001a6ae] 0000 00fc                 ori.b      #$FC,d0
-[0001a6b2] 0100                      btst       d0,d0
-[0001a6b4] 0000                      dc.w       $0000
-[0001a6b6] 0000                      dc.w       $0000
-[0001a6b8] 0000                      dc.w       $0000
-[0001a6ba] 0000 0001                 ori.b      #$01,d0
-[0001a6be] 0200 2390                 andi.b     #$90,d0
-[0001a6c2] 0000                      dc.w       $0000
-[0001a6c4] 0000 0001                 ori.b      #$01,d0
-[0001a6c8] 0000                      dc.w       $0000
-[0001a6ca] 0000                      dc.w       $0000
-[0001a6cc] 0000 c001                 ori.b      #$01,d0
-[0001a6d0] 2200                      move.l     d0,d1
-[0001a6d2] 0000                      dc.w       $0000
-[0001a6d4] 0000 806e                 ori.b      #$6E,d0
-[0001a6d8] 0000 8400                 ori.b      #$00,d0
-[0001a6dc] 0000                      dc.w       $0000
-[0001a6de] 0000                      dc.w       $0000
-[0001a6e0] 0000                      dc.w       $0000
-[0001a6e2] 0000                      dc.w       $0000
-[0001a6e4] 0000 0050                 ori.b      #$50,d0
-[0001a6e8] 5c2b 0000                 addq.b     #6,0(a3)
-[0001a6ec] c001                      and.b      d1,d0
-[0001a6ee] 2200                      move.l     d0,d1
-[0001a6f0] 0000                      dc.w       $0000
-[0001a6f2] 0000 806e                 ori.b      #$6E,d0
-[0001a6f6] 0000                      dc.w       $0000
-[0001a6f8] 0000                      dc.w       $0000
-[0001a6fa] 0000 0380                 ori.b      #$80,d0
-[0001a6fe] 0000                      dc.w       $0000
-[0001a700] 0000                      dc.w       $0000
-[0001a702] 0000 0080                 ori.b      #$80,d0
-[0001a706] 0000                      dc.w       $0000
-[0001a708] 0000                      dc.w       $0000
-[0001a70a] 0000 0001                 ori.b      #$01,d0
-[0001a70e] 0050 5cab                 ori.w      #$5CAB,(a0)
-[0001a712] 8000                      or.b       d0,d0
-[0001a714] 0000 0001                 ori.b      #$01,d0
-[0001a718] 0050 7c2b                 ori.w      #$7C2B,(a0)
-[0001a71c] 8000                      or.b       d0,d0
-[0001a71e] 0000 0001                 ori.b      #$01,d0
-[0001a722] 0200 2390                 andi.b     #$90,d0
-[0001a726] 0000                      dc.w       $0000
-[0001a728] 0000                      dc.w       $0000
-[0001a72a] 0000                      dc.w       $0000
-[0001a72c] 0000 8000                 ori.b      #$00,d0
-[0001a730] 0000 c001                 ori.b      #$01,d0
-[0001a734] 2200                      move.l     d0,d1
-[0001a736] 0000                      dc.w       $0000
-[0001a738] 0000 806e                 ori.b      #$6E,d0
-[0001a73c] 0000                      dc.w       $0000
-[0001a73e] 0000                      dc.w       $0000
-[0001a740] 0000 8000                 ori.b      #$00,d0
-[0001a744] 0000                      dc.w       $0000
-[0001a746] 0000                      dc.w       $0000
-[0001a748] 0000 0020                 ori.b      #$20,d0
-[0001a74c] 0000                      dc.w       $0000
-[0001a74e] 0000 c001                 ori.b      #$01,d0
-[0001a752] 2200                      move.l     d0,d1
-[0001a754] 0000                      dc.w       $0000
-[0001a756] 0000 806e                 ori.b      #$6E,d0
-[0001a75a] c001                      and.b      d1,d0
-[0001a75c] 2200                      move.l     d0,d1
-[0001a75e] 0000                      dc.w       $0000
-[0001a760] 0000 806e                 ori.b      #$6E,d0
-[0001a764] 0000                      dc.w       $0000
-[0001a766] 0000 0020                 ori.b      #$20,d0
-[0001a76a] 0000                      dc.w       $0000
-[0001a76c] 0000                      dc.w       $0000
-[0001a76e] 0000                      dc.w       $0000
-[0001a770] 0000 0200                 ori.b      #$00,d0
-[0001a774] 0280 0000 0000            andi.l     #$00000000,d0
-[0001a77a] 0000                      dc.w       $0000
-[0001a77c] 0000 0080                 ori.b      #$80,d0
-[0001a780] 0000                      dc.w       $0000
-[0001a782] 0000                      dc.w       $0000
-[0001a784] 0000                      dc.w       $0000
-[0001a786] 0000 8000                 ori.b      #$00,d0
-[0001a78a] 0000                      dc.w       $0000
-[0001a78c] 0000                      dc.w       $0000
-[0001a78e] 0000                      dc.w       $0000
-[0001a790] 0000                      dc.w       $0000
-[0001a792] 0000 8000                 ori.b      #$00,d0
-[0001a796] 0000                      dc.w       $0000
-[0001a798] 0000 1000                 ori.b      #$00,d0
-[0001a79c] 0000                      dc.w       $0000
-[0001a79e] 0000                      dc.w       $0000
-[0001a7a0] 0000                      dc.w       $0000
-[0001a7a2] 0000                      dc.w       $0000
-[0001a7a4] 0000 8004                 ori.b      #$04,d0
-[0001a7a8] 0000                      dc.w       $0000
-[0001a7aa] 0000                      dc.w       $0000
-[0001a7ac] 0000                      dc.w       $0000
-[0001a7ae] 0000 0080                 ori.b      #$80,d0
-[0001a7b2] 0000 c001                 ori.b      #$01,d0
-[0001a7b6] 2200                      move.l     d0,d1
-[0001a7b8] 0000                      dc.w       $0000
-[0001a7ba] 0000 806e                 ori.b      #$6E,d0
-[0001a7be] 0000                      dc.w       $0000
-[0001a7c0] 0000 1000                 ori.b      #$00,d0
-[0001a7c4] 0000                      dc.w       $0000
-[0001a7c6] 0000 c001                 ori.b      #$01,d0
-[0001a7ca] 2200                      move.l     d0,d1
-[0001a7cc] 0000                      dc.w       $0000
-[0001a7ce] 0000 806e                 ori.b      #$6E,d0
-[0001a7d2] 0000                      dc.w       $0000
-[0001a7d4] 0000                      dc.w       $0000
-[0001a7d6] 0000 8004                 ori.b      #$04,d0
-[0001a7da] 0000                      dc.w       $0000
-[0001a7dc] 0000                      dc.w       $0000
-[0001a7de] 0000                      dc.w       $0000
-[0001a7e0] 0000 8000                 ori.b      #$00,d0
-[0001a7e4] 0000                      dc.w       $0000
-[0001a7e6] 0000                      dc.w       $0000
-[0001a7e8] 0000                      dc.w       $0000
-[0001a7ea] 0000 0080                 ori.b      #$80,d0
-[0001a7ee] 0000                      dc.w       $0000
-[0001a7f0] 0000                      dc.w       $0000
-[0001a7f2] 0000                      dc.w       $0000
-[0001a7f4] 0000 8000                 ori.b      #$00,d0
-[0001a7f8] 0000 c001                 ori.b      #$01,d0
-[0001a7fc] 2200                      move.l     d0,d1
-[0001a7fe] 0000                      dc.w       $0000
-[0001a800] 0000 806e                 ori.b      #$6E,d0
-[0001a804] 0000 0001                 ori.b      #$01,d0
-[0001a808] 0200 2390                 andi.b     #$90,d0
-[0001a80c] 0000                      dc.w       $0000
-[0001a80e] 0000 0070                 ori.b      #$70,d0
-[0001a812] 0008 0090                 ori.b      #$90,a0 ; apollo only
-[0001a816] 3000                      move.w     d0,d0
-[0001a818] 0000 0070                 ori.b      #$70,d0
-[0001a81c] 0000 0010                 ori.b      #$10,d0
-[0001a820] 3000                      move.w     d0,d0
-[0001a822] 0000                      dc.w       $0000
-[0001a824] 0000 0008                 ori.b      #$08,d0
-[0001a828] 0080 0000 0000            ori.l      #$00000000,d0
-[0001a82e] 0000 0008                 ori.b      #$08,d0
-[0001a832] 0080 0000 0000            ori.l      #$00000000,d0
-[0001a838] 0000 0008                 ori.b      #$08,d0
-[0001a83c] 0080 0000 0000            ori.l      #$00000000,d0
-[0001a842] 0000 0058                 ori.b      #$58,d0
-[0001a846] 5cab 0000                 addq.l     #6,0(a3)
-[0001a84a] 0000                      dc.w       $0000
-[0001a84c] 0000                      dc.w       $0000
-[0001a84e] 0000 0080                 ori.b      #$80,d0
-[0001a852] 0000                      dc.w       $0000
-[0001a854] 0000                      dc.w       $0000
-[0001a856] 0000 0050                 ori.b      #$50,d0
-[0001a85a] 5c2b 0000                 addq.b     #6,0(a3)
-[0001a85e] 0000                      dc.w       $0000
-[0001a860] 0000 0200                 ori.b      #$00,d0
-[0001a864] 0280 0000 0000            andi.l     #$00000000,d0
-[0001a86a] 0000                      dc.w       $0000
-[0001a86c] 0000 0080                 ori.b      #$80,d0
-[0001a870] 0000                      dc.w       $0000
-[0001a872] 0000                      dc.w       $0000
-[0001a874] 0000                      dc.w       $0000
-[0001a876] 0000                      dc.w       $0000
-[0001a878] 0000 8000                 ori.b      #$00,d0
-[0001a87c] 0000 0801                 ori.b      #$01,d0
-[0001a880] 8003                      or.b       d3,d0
-[0001a882] 0080 0000 0000            ori.l      #$00000000,d0
-[0001a888] 0000                      dc.w       $0000
-[0001a88a] 0000                      dc.w       $0000
-[0001a88c] 0000 8000                 ori.b      #$00,d0
-[0001a890] 0000 1001                 ori.b      #$01,d0
-[0001a894] 8003                      or.b       d3,d0
-[0001a896] 0080 0000 0000            ori.l      #$00000000,d0
-[0001a89c] 1000                      move.b     d0,d0
-[0001a89e] 0000                      dc.w       $0000
-[0001a8a0] 0000                      dc.w       $0000
-[0001a8a2] 0000                      dc.w       $0000
-[0001a8a4] 0000                      dc.w       $0000
-[0001a8a6] 0000                      dc.w       $0000
-[0001a8a8] 0000 0080                 ori.b      #$80,d0
-[0001a8ac] 0000                      dc.w       $0000
-[0001a8ae] 0000                      dc.w       $0000
-[0001a8b0] 0000 8002                 ori.b      #$02,d0
-[0001a8b4] 0080 0000 0100            ori.l      #$00000100,d0
-[0001a8ba] 0070 0058 5c3b            ori.w      #$0058,59(a0,d5.l*4) ; 68020+ only
-[0001a8c0] 3000                      move.w     d0,d0
+[0001a516] 0000 0080 0000 0000 8000
+[0001a520] 0000 0008 0000 0000 0000
+[0001a52a] 0000 1000 0000 0000 0000
+[0001a534] 0000 0000 0000 0000 8000
+[0001a53e] 0000 0000 0000 0080 0000
+[0001a548] 0000 0a80 0d00 0000 9000
+[0001a552] 0000 0a00 0000 0000 8000
+[0001a55c] 0000 0a80 0d00 0000 9000
+[0001a566] 0000 8008 0000 0000 0000
+[0001a570] c001 2200 0000 0000 806e
+[0001a57a] 0000 0001 0000 0000 0000
+[0001a584] 0000 0001 0000 0080 0000
+[0001a58e] 0000 0000 0000 0080 0000
+[0001a598] 0000 0001 0000 0000 0000
+[0001a5a2] 0000 0000 0000 0000 8000
+[0001a5ac] 0000 0001 0000 0000 0000
+[0001a5b6] 0000 0000 0000 0080 0000
+[0001a5c0] 0000 9004 0000 0000 0000
+[0001a5ca] 0000 1000 0000 0000 0000
+[0001a5d4] 0000 0001 0000 0000 0000
+[0001a5de] 0000 0000 0000 0080 0000
+[0001a5e8] 0000 0a00 0000 0080 0000
+[0001a5f2] 0000 0000 0000 0000 8000
+[0001a5fc] 0000 8001 0000 0080 0000
+[0001a606] 0000 8001 0000 0080 0000
+[0001a610] 0000 8001 0000 0080 0000
+[0001a61a] 0000 0001 0000 0000 0000
+[0001a624] 0000 0000 0200 2390 0000
+[0001a62e] 0000 0001 0200 2390 0000
+[0001a638] 0000 0000 0050 5c2b 8000
+[0001a642] 0000 9000 0000 0000 0000
+[0001a64c] 4000 2200 0000 0000 806e
+[0001a656] c001 2200 0000 0000 806e
+[0001a660] 0000 8400 0000 0000 0000
+[0001a66a] 0000 0400 0000 0000 0000
+[0001a674] 3e00 0000 0000 0000 0000
+[0001a67e] 3e00 0000 0000 0000 0000
+[0001a688] 8001 0000 0000 0000 0000
+[0001a692] 8003 0000 0000 0000 0000
+[0001a69c] 8003 0000 0000 0000 0000
+[0001a6a6] 00fc 0100 0000 0000 0000
+[0001a6b0] 00fc 0100 0000 0000 0000
+[0001a6ba] 0000 0001 0200 2390 0000
+[0001a6c4] 0000 0001 0000 0000 0000
+[0001a6ce] c001 2200 0000 0000 806e
+[0001a6d8] 0000 8400 0000 0000 0000
+[0001a6e2] 0000 0000 0050 5c2b 0000
+[0001a6ec] c001 2200 0000 0000 806e
+[0001a6f6] 0000 0000 0000 0380 0000
+[0001a700] 0000 0000 0080 0000 0000
+[0001a70a] 0000 0001 0050 5cab 8000
+[0001a714] 0000 0001 0050 7c2b 8000
+[0001a71e] 0000 0001 0200 2390 0000
+[0001a728] 0000 0000 0000 8000 0000
+[0001a732] c001 2200 0000 0000 806e
+[0001a73c] 0000 0000 0000 8000 0000
+[0001a746] 0000 0000 0020 0000 0000
+[0001a750] c001 2200 0000 0000 806e
+[0001a75a] c001 2200 0000 0000 806e
+[0001a764] 0000 0000 0020 0000 0000
+[0001a76e] 0000 0000 0200 0280 0000
+[0001a778] 0000 0000 0000 0080 0000
+[0001a782] 0000 0000 0000 8000 0000
+[0001a78c] 0000 0000 0000 0000 8000
+[0001a796] 0000 0000 1000 0000 0000
+[0001a7a0] 0000 0000 0000 8004 0000
+[0001a7aa] 0000 0000 0000 0080 0000
+[0001a7b4] c001 2200 0000 0000 806e
+[0001a7be] 0000 0000 1000 0000 0000
+[0001a7c8] c001 2200 0000 0000 806e
+[0001a7d2] 0000 0000 0000 8004 0000
+[0001a7dc] 0000 0000 0000 8000 0000
+[0001a7e6] 0000 0000 0000 0080 0000
+[0001a7f0] 0000 0000 0000 8000 0000
+[0001a7fa] c001 2200 0000 0000 806e
+[0001a804] 0000 0001 0200 2390 0000
+[0001a80e] 0000 0070 0008 0090 3000
+[0001a818] 0000 0070 0000 0010 3000
+[0001a822] 0000 0000 0008 0080 0000
+[0001a82c] 0000 0000 0008 0080 0000
+[0001a836] 0000 0000 0008 0080 0000
+[0001a840] 0000 0000 0058 5cab 0000
+[0001a84a] 0000 0000 0000 0080 0000
+[0001a854] 0000 0000 0050 5c2b 0000
+[0001a85e] 0000 0000 0200 0280 0000
+[0001a868] 0000 0000 0000 0080 0000
+[0001a872] 0000 0000 0000 0000 8000
+[0001a87c] 0000 0801 8003 0080 0000
+[0001a886] 0000 0000 0000 0000 8000
+[0001a890] 0000 1001 8003 0080 0000
+[0001a89a] 0000 1000 0000 0000 0000
+[0001a8a4] 0000 0000 0000 0080 0000
+[0001a8ae] 0000 0000 8002 0080 0000
+[0001a8ba] 0100 0070 0058 5c3b 3000
+
 [0001a8c2] 4e56 0000                 link       a6,#0
 [0001a8c6] 7aff                      moveq.l    #-1,d5
 [0001a8c8] baae 000c                 cmp.l      12(a6),d5
@@ -12218,6 +11908,7 @@ MCPass1:
 [0001abf8] 28ae fff8                 move.l     -8(a6),(a4)
 [0001abfc] 4e5e                      unlk       a6
 [0001abfe] 4e75                      rts
+
 [0001ac00] 4e56 0000                 link       a6,#0
 [0001ac04] 2879 0003 d9ee            movea.l    $0003D9EE,a4
 [0001ac0a] 396e 0008 0004            move.w     8(a6),4(a4)
@@ -12237,20 +11928,23 @@ MCPass1:
 [0001ac2e] 23d4 0003 d9ee            move.l     (a4),$0003D9EE
 [0001ac34] 4e5e                      unlk       a6
 [0001ac36] 4e75                      rts
+
+MCP2IO.PutSy:
 [0001ac38] 7000                      moveq.l    #0,d0
-[0001ac3a] 4eb9 0001 0340            jsr        $00010340
+[0001ac3a] 4eb9 0001 0340            jsr        STACKCHECK
 [0001ac40] 4e56 0000                 link       a6,#0
 [0001ac44] 7a00                      moveq.l    #0,d5
 [0001ac46] 1a2e 0008                 move.b     8(a6),d5
 [0001ac4a] e145                      asl.w      #8,d5
-[0001ac4c] da79 0003 d9da            add.w      $0003D9DA,d5
+[0001ac4c] da79 0003 d9da            add.w      MCP2IO.pos,d5
 [0001ac52] 3f05                      move.w     d5,-(a7)
-[0001ac54] 6100 007a                 bsr.w      $0001ACD0
+[0001ac54] 6100 007a                 bsr.w      MCP2IO.PutWord
 [0001ac58] 548f                      addq.l     #2,a7
 [0001ac5a] 4e5e                      unlk       a6
 [0001ac5c] 4e75                      rts
+
 [0001ac5e] 4e56 0000                 link       a6,#0
-[0001ac62] 4879 0003 d9e6            pea.l      $0003D9E6
+[0001ac62] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001ac68] 3f2e 0008                 move.w     8(a6),-(a7)
 [0001ac6c] 4eb9 0001 44de            jsr        $000144DE
 [0001ac72] 5c8f                      addq.l     #6,a7
@@ -12261,6 +11955,8 @@ MCPass1:
 [0001ac84] 548f                      addq.l     #2,a7
 [0001ac86] 4e5e                      unlk       a6
 [0001ac88] 4e75                      rts
+
+MCP2IO.PutSyVal:
 [0001ac8a] 4e56 fffe                 link       a6,#-2
 [0001ac8e] 4a39 0003 d9fc            tst.b      $0003D9FC
 [0001ac94] 6704                      beq.s      $0001AC9A
@@ -12268,7 +11964,7 @@ MCPass1:
 [0001ac9a] 7a00                      moveq.l    #0,d5
 [0001ac9c] 1a2e 000c                 move.b     12(a6),d5
 [0001aca0] e145                      asl.w      #8,d5
-[0001aca2] da79 0003 d9da            add.w      $0003D9DA,d5
+[0001aca2] da79 0003 d9da            add.w      MCP2IO.pos,d5
 [0001aca8] 3f05                      move.w     d5,-(a7)
 [0001acaa] 6100 ffb2                 bsr.w      $0001AC5E
 [0001acae] 548f                      addq.l     #2,a7
@@ -12282,34 +11978,39 @@ MCPass1:
 [0001acca] 548f                      addq.l     #2,a7
 [0001accc] 4e5e                      unlk       a6
 [0001acce] 4e75                      rts
+
+MCP2IO.PutWord:
 [0001acd0] 4e56 0000                 link       a6,#0
-[0001acd4] 4a39 0003 d9fd            tst.b      $0003D9FD
+[0001acd4] 4a39 0003 d9fd            tst.b      MCP2IO.output
 [0001acda] 6712                      beq.s      $0001ACEE
-[0001acdc] 4879 0003 d9e6            pea.l      $0003D9E6
+[0001acdc] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001ace2] 3f2e 0008                 move.w     8(a6),-(a7)
 [0001ace6] 4eb9 0001 44de            jsr        $000144DE
 [0001acec] 5c8f                      addq.l     #6,a7
 [0001acee] 4e5e                      unlk       a6
 [0001acf0] 4e75                      rts
+
+MCP2IO.WriteLong:
 [0001acf2] 4e56 0000                 link       a6,#0
 [0001acf6] 2a2e 0008                 move.l     8(a6),d5
 [0001acfa] 7810                      moveq.l    #16,d4
 [0001acfc] e8ad                      lsr.l      d4,d5
 [0001acfe] 3f05                      move.w     d5,-(a7)
-[0001ad00] 6100 ffce                 bsr.w      $0001ACD0
+[0001ad00] 6100 ffce                 bsr.w      MCP2IO.PutWord
 [0001ad04] 548f                      addq.l     #2,a7
 [0001ad06] 2a2e 0008                 move.l     8(a6),d5
 [0001ad0a] 0285 0000 ffff            andi.l     #$0000FFFF,d5
 [0001ad10] 3f05                      move.w     d5,-(a7)
-[0001ad12] 6100 ffbc                 bsr.w      $0001ACD0
+[0001ad12] 6100 ffbc                 bsr.w      MCP2IO.PutWord
 [0001ad16] 548f                      addq.l     #2,a7
 [0001ad18] 4e5e                      unlk       a6
 [0001ad1a] 4e75                      rts
+
 [0001ad1c] 4e56 fffc                 link       a6,#-4
 [0001ad20] 2879 0003 d9f6            movea.l    $0003D9F6,a4
 [0001ad26] 2979 0003 d9ee 0004       move.l     $0003D9EE,4(a4)
 [0001ad2e] 2f0c                      move.l     a4,-(a7)
-[0001ad30] 4879 0003 d9e6            pea.l      $0003D9E6
+[0001ad30] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001ad36] 486e fffc                 pea.l      -4(a6)
 [0001ad3a] 4eb9 0001 43a0            jsr        $000143A0
 [0001ad40] 508f                      addq.l     #8,a7
@@ -12331,8 +12032,9 @@ MCPass1:
 [0001ad68] 23d4 0003 d9f6            move.l     (a4),$0003D9F6
 [0001ad6e] 4e5e                      unlk       a6
 [0001ad70] 4e75                      rts
+
 [0001ad72] 4e56 0000                 link       a6,#0
-[0001ad76] 4879 0003 d9e6            pea.l      $0003D9E6
+[0001ad76] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001ad7c] 3f2e 0008                 move.w     8(a6),-(a7)
 [0001ad80] 4eb9 0001 44de            jsr        $000144DE
 [0001ad86] 5c8f                      addq.l     #6,a7
@@ -12341,6 +12043,7 @@ MCPass1:
 [0001ad90] 548f                      addq.l     #2,a7
 [0001ad92] 4e5e                      unlk       a6
 [0001ad94] 4e75                      rts
+
 [0001ad96] 4e56 fff2                 link       a6,#-14
 [0001ad9a] 2d79 0003 d9f2 fff8       move.l     $0003D9F2,-8(a6)
 [0001ada2] 2a2e fff8                 move.l     -8(a6),d5
@@ -12359,7 +12062,7 @@ MCPass1:
 [0001add2] 286e fff8                 movea.l    -8(a6),a4
 [0001add6] 2d6c 0004 fffc            move.l     4(a4),-4(a6)
 [0001addc] 2f0c                      move.l     a4,-(a7)
-[0001adde] 4879 0003 d9e6            pea.l      $0003D9E6
+[0001adde] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001ade4] 486e fff2                 pea.l      -14(a6)
 [0001ade8] 4eb9 0001 43a0            jsr        $000143A0
 [0001adee] 508f                      addq.l     #8,a7
@@ -12390,6 +12093,7 @@ MCPass1:
 [0001ae42] 6082                      bra.s      $0001ADC6
 [0001ae44] 4e5e                      unlk       a6
 [0001ae46] 4e75                      rts
+
 [0001ae48] 4e56 fffc                 link       a6,#-4
 [0001ae4c] 4a39 0003 d9fc            tst.b      $0003D9FC
 [0001ae52] 670a                      beq.s      $0001AE5E
@@ -12399,7 +12103,7 @@ MCPass1:
 [0001ae66] 23f9 0003 d9ea 0003 d9ee  move.l     $0003D9EA,$0003D9EE
 [0001ae70] 23f9 0003 d9f2 0003 d9f6  move.l     $0003D9F2,$0003D9F6
 [0001ae7a] 4279 0003 d9fa            clr.w      $0003D9FA
-[0001ae80] 4879 0003 d9e6            pea.l      $0003D9E6
+[0001ae80] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001ae86] 486e fffc                 pea.l      -4(a6)
 [0001ae8a] 4eb9 0001 43a0            jsr        $000143A0
 [0001ae90] 508f                      addq.l     #8,a7
@@ -12407,9 +12111,10 @@ MCPass1:
 [0001ae96] 28ae fffc                 move.l     -4(a6),(a4)
 [0001ae9a] 4e5e                      unlk       a6
 [0001ae9c] 4e75                      rts
+
 [0001ae9e] 4e56 fffc                 link       a6,#-4
 [0001aea2] 2d6e 0008 fffc            move.l     8(a6),-4(a6)
-[0001aea8] 4879 0003 d9e6            pea.l      $0003D9E6
+[0001aea8] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001aeae] 2f2e fffc                 move.l     -4(a6),-(a7)
 [0001aeb2] 4eb9 0001 43b6            jsr        $000143B6
 [0001aeb8] 508f                      addq.l     #8,a7
@@ -12418,6 +12123,7 @@ MCPass1:
 [0001aec2] 588f                      addq.l     #4,a7
 [0001aec4] 4e5e                      unlk       a6
 [0001aec6] 4e75                      rts
+
 [0001aec8] 4e56 0000                 link       a6,#0
 [0001aecc] 4a79 0003 d9fa            tst.w      $0003D9FA
 [0001aed2] 660a                      bne.s      $0001AEDE
@@ -12426,14 +12132,18 @@ MCPass1:
 [0001aede] 5379 0003 d9fa            subq.w     #1,$0003D9FA
 [0001aee4] 4e5e                      unlk       a6
 [0001aee6] 4e75                      rts
+
+MCP2IO.StopOutput:
 [0001aee8] 4e56 0000                 link       a6,#0
-[0001aeec] 4239 0003 d9fd            clr.b      $0003D9FD
+[0001aeec] 4239 0003 d9fd            clr.b      MCP2IO.output
 [0001aef2] 4e5e                      unlk       a6
 [0001aef4] 4e75                      rts
+
 [0001aef6] 4e56 0000                 link       a6,#0
-[0001aefa] 13fc 0001 0003 d9fd       move.b     #$01,$0003D9FD
+[0001aefa] 13fc 0001 0003 d9fd       move.b     #$01,MCP2IO.output
 [0001af02] 4e5e                      unlk       a6
 [0001af04] 4e75                      rts
+
 [0001af06] 4e56 0000                 link       a6,#0
 [0001af0a] 7aff                      moveq.l    #-1,d5
 [0001af0c] bab9 0003 d9ea            cmp.l      $0003D9EA,d5
@@ -12460,9 +12170,9 @@ MCPass1:
 [0001af6e] 508f                      addq.l     #8,a7
 [0001af70] 60cc                      bra.s      $0001AF3E
 [0001af72] 4227                      clr.b      -(a7)
-[0001af74] 6100 fcc2                 bsr        $0001AC38
+[0001af74] 6100 fcc2                 bsr        MCP2IO.PutSy
 [0001af78] 548f                      addq.l     #2,a7
-[0001af7a] 4879 0003 d9e6            pea.l      $0003D9E6
+[0001af7a] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001af80] 4eb9 0001 4412            jsr        NewStreams.EndWrite
 [0001af86] 588f                      addq.l     #4,a7
 [0001af88] 4e5e                      unlk       a6
@@ -12488,63 +12198,71 @@ MCPass1:
 [0001afc8] 4239 0003 d9fc            clr.b      $0003D9FC
 [0001afce] 4e5e                      unlk       a6
 [0001afd0] 4e75                      rts
+
+MCP2IO.Error:
 [0001afd2] 4e56 0000                 link       a6,#0
-[0001afd6] 5279 0003 d9fe            addq.w     #1,$0003D9FE
+[0001afd6] 5279 0003 d9fe            addq.w     #1,MCP2IO.errcount
 [0001afdc] 08f9 0001 0004 4e21       bset       #1,M2Public.compstat
-[0001afe4] 0c79 012c 0003 d9fe       cmpi.w     #$012C,$0003D9FE
+[0001afe4] 0c79 012c 0003 d9fe       cmpi.w     #$012C,MCP2IO.errcount
 [0001afec] 6414                      bcc.s      $0001B002
 [0001afee] 1f3c 0050                 move.b     #$50,-(a7)
 [0001aff2] 3f2e 0008                 move.w     8(a6),-(a7)
 [0001aff6] 4267                      clr.w      -(a7)
-[0001aff8] 6100 fc90                 bsr        $0001AC8A
+[0001aff8] 6100 fc90                 bsr        MCP2IO.PutSyVal
 [0001affc] 5c8f                      addq.l     #6,a7
 [0001affe] 4efa 001c                 jmp        $0001B01C(pc)
-[0001b002] 0c79 012c 0003 d9fe       cmpi.w     #$012C,$0003D9FE
+[0001b002] 0c79 012c 0003 d9fe       cmpi.w     #$012C,MCP2IO.errcount
 [0001b00a] 6610                      bne.s      $0001B01C
 [0001b00c] 1f3c 0050                 move.b     #$50,-(a7)
 [0001b010] 3f3c 0005                 move.w     #$0005,-(a7)
 [0001b014] 4267                      clr.w      -(a7)
-[0001b016] 6100 fc72                 bsr        $0001AC8A
+[0001b016] 6100 fc72                 bsr        MCP2IO.PutSyVal
 [0001b01a] 5c8f                      addq.l     #6,a7
 [0001b01c] 4e5e                      unlk       a6
 [0001b01e] 4e75                      rts
+
+MCP2IO.ErrorLS:
 [0001b020] 4e56 fffe                 link       a6,#-2
-[0001b024] 3d79 0003 d9da fffe       move.w     $0003D9DA,-2(a6)
-[0001b02c] 33f9 0003 d9dc 0003 d9da  move.w     $0003D9DC,$0003D9DA
-[0001b036] 3a39 0003 d9de            move.w     $0003D9DE,d5
-[0001b03c] ba79 0003 d9d8            cmp.w      $0003D9D8,d5
+[0001b024] 3d79 0003 d9da fffe       move.w     MCP2IO.pos,-2(a6)
+[0001b02c] 33f9 0003 d9dc 0003 d9da  move.w     MCP2IO.lpos,MCP2IO.pos
+[0001b036] 3a39 0003 d9de            move.w     MCP2IO.lline,d5
+[0001b03c] ba79 0003 d9d8            cmp.w      MCP2IO.line,d5
 [0001b042] 6732                      beq.s      $0001B076
 [0001b044] 1f3c 0051                 move.b     #$51,-(a7)
-[0001b048] 3f39 0003 d9de            move.w     $0003D9DE,-(a7)
+[0001b048] 3f39 0003 d9de            move.w     MCP2IO.lline,-(a7)
 [0001b04e] 4267                      clr.w      -(a7)
-[0001b050] 6100 fc38                 bsr        $0001AC8A
+[0001b050] 6100 fc38                 bsr        MCP2IO.PutSyVal
 [0001b054] 5c8f                      addq.l     #6,a7
 [0001b056] 3f2e 0008                 move.w     8(a6),-(a7)
-[0001b05a] 6100 ff76                 bsr        $0001AFD2
+[0001b05a] 6100 ff76                 bsr        MCP2IO.Error
 [0001b05e] 548f                      addq.l     #2,a7
 [0001b060] 1f3c 0051                 move.b     #$51,-(a7)
-[0001b064] 3f39 0003 d9d8            move.w     $0003D9D8,-(a7)
+[0001b064] 3f39 0003 d9d8            move.w     MCP2IO.line,-(a7)
 [0001b06a] 4267                      clr.w      -(a7)
-[0001b06c] 6100 fc1c                 bsr        $0001AC8A
+[0001b06c] 6100 fc1c                 bsr        MCP2IO.PutSyVal
 [0001b070] 5c8f                      addq.l     #6,a7
 [0001b072] 4efa 000c                 jmp        $0001B080(pc)
 [0001b076] 3f2e 0008                 move.w     8(a6),-(a7)
-[0001b07a] 6100 ff56                 bsr        $0001AFD2
+[0001b07a] 6100 ff56                 bsr        MCP2IO.Error
 [0001b07e] 548f                      addq.l     #2,a7
-[0001b080] 33ee fffe 0003 d9da       move.w     -2(a6),$0003D9DA
+[0001b080] 33ee fffe 0003 d9da       move.w     -2(a6),MCP2IO.pos
 [0001b088] 4e5e                      unlk       a6
 [0001b08a] 4e75                      rts
+
+MCP2IO.ErrorSystem:
 [0001b08c] 4e56 0000                 link       a6,#0
-[0001b090] 4279 0003 d9fe            clr.w      $0003D9FE
+[0001b090] 4279 0003 d9fe            clr.w      MCP2IO.errcount
 [0001b096] 08b9 0001 0004 4e21       bclr       #1,M2Public.compstat
 [0001b09e] 4e5e                      unlk       a6
 [0001b0a0] 4e75                      rts
+
+MCP2IO.scanner.GetLong:
 [0001b0a2] 4e56 fffc                 link       a6,#-4
-[0001b0a6] 4879 0003 d9e2            pea.l      $0003D9E2
+[0001b0a6] 4879 0003 d9e2            pea.l      MCP2IO.il1
 [0001b0ac] 486e fffe                 pea.l      -2(a6)
 [0001b0b0] 4eb9 0001 44c4            jsr        NewStreams.ReadWord
 [0001b0b6] 508f                      addq.l     #8,a7
-[0001b0b8] 4879 0003 d9e2            pea.l      $0003D9E2
+[0001b0b8] 4879 0003 d9e2            pea.l      MCP2IO.il1
 [0001b0be] 486e fffc                 pea.l      -4(a6)
 [0001b0c2] 4eb9 0001 44c4            jsr        NewStreams.ReadWord
 [0001b0c8] 508f                      addq.l     #8,a7
@@ -12559,229 +12277,287 @@ MCPass1:
 [0001b0e0] 2885                      move.l     d5,(a4)
 [0001b0e2] 4e5e                      unlk       a6
 [0001b0e4] 4e75                      rts
+
+MCP2IO.scanner.GetSy:
 [0001b0e6] 4e56 fffe                 link       a6,#-2
-[0001b0ea] 33f9 0003 d9da 0003 d9dc  move.w     $0003D9DA,$0003D9DC
-[0001b0f4] 33f9 0003 d9d8 0003 d9de  move.w     $0003D9D8,$0003D9DE
-[0001b0fe] 13fc 0001 0003 da02       move.b     #$01,$0003DA02
-[0001b106] 4879 0003 d9e2            pea.l      $0003D9E2
-[0001b10c] 4879 0003 da00            pea.l      $0003DA00
+[0001b0ea] 33f9 0003 d9da 0003 d9dc  move.w     MCP2IO.pos,MCP2IO.lpos
+[0001b0f4] 33f9 0003 d9d8 0003 d9de  move.w     MCP2IO.line,MCP2IO.lline
+[0001b0fe] 13fc 0001 0003 da02       move.b     #$01,MCP2IO.Scanner.issy
+[0001b106] 4879 0003 d9e2            pea.l      MCP2IO.il1
+[0001b10c] 4879 0003 da00            pea.l      MCP2IO.Scanner.card
 [0001b112] 4eb9 0001 44c4            jsr        NewStreams.ReadWord
 [0001b118] 508f                      addq.l     #8,a7
-[0001b11a] 3a39 0003 da00            move.w     $0003DA00,d5
+[0001b11a] 3a39 0003 da00            move.w     MCP2IO.Scanner.card,d5
 [0001b120] 0245 00ff                 andi.w     #$00FF,d5
-[0001b124] 33c5 0003 d9da            move.w     d5,$0003D9DA
-[0001b12a] 3a39 0003 da00            move.w     $0003DA00,d5
+[0001b124] 33c5 0003 d9da            move.w     d5,MCP2IO.pos
+[0001b12a] 3a39 0003 da00            move.w     MCP2IO.Scanner.card,d5
 [0001b130] e04d                      lsr.w      #8,d5
-[0001b132] 13c5 0003 d9ca            move.b     d5,$0003D9CA
+[0001b132] 13c5 0003 d9ca            move.b     d5,MCP2IO.sy
 [0001b138] 7a00                      moveq.l    #0,d5
-[0001b13a] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001b13a] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001b140] 2005                      move.l     d5,d0
 [0001b142] 4eb9 0001 000a            jsr        CASEX
-[0001b148] 0000 0042                 ori.b      #$42,d0
-[0001b14c] 0000 0010                 ori.b      #$10,d0
-[0001b150] 0000 010c                 ori.b      #$0C,d0
-[0001b154] 4879 0003 d9e2            pea.l      $0003D9E2
-[0001b15a] 4879 0003 d9d2            pea.l      $0003D9D2
+[0001b148] 0000 0042
+[0001b14c] 0000 0010
+[0001b150] 0000 010c
+case ident:
+[0001b154] 4879 0003 d9e2            pea.l      MCP2IO.il1
+[0001b15a] 4879 0003 d9d2            pea.l      MCP2IO.spix
 [0001b160] 4eb9 0001 44c4            jsr        NewStreams.ReadWord
 [0001b166] 508f                      addq.l     #8,a7
 [0001b168] 4efa 010c                 jmp        $0001B276(pc)
+case definitionsy:
+case proceduresy:
+case modulesy:
+case symbolsy:
+case namesy:
 [0001b16c] 0c79 0003 0003 d9e0       cmpi.w     #$0003,$0003D9E0
 [0001b174] 660c                      bne.s      $0001B182
 [0001b176] 4879 0003 d9d4            pea.l      $0003D9D4
-[0001b17c] 6100 ff24                 bsr        $0001B0A2
+[0001b17c] 6100 ff24                 bsr        MCP2IO.scanner.GetLong
 [0001b180] 588f                      addq.l     #4,a7
-[0001b182] 0c39 0044 0003 d9ca       cmpi.b     #$44,$0003D9CA
+[0001b182] 0c39 0044 0003 d9ca       cmpi.b     #$44,MCP2IO.sy
 [0001b18a] 6606                      bne.s      $0001B192
 [0001b18c] 4eb9 0003 4afe            jsr        $00034AFE
 [0001b192] 4efa 00e2                 jmp        $0001B276(pc)
-[0001b196] 4879 0003 d9cc            pea.l      $0003D9CC
-[0001b19c] 6100 ff04                 bsr        $0001B0A2
+case intcon:
+case cardcon:
+case intcarcon:
+case charcon:
+[0001b196] 4879 0003 d9cc            pea.l      MCP2IO.Scanner.val
+[0001b19c] 6100 ff04                 bsr        MCP2IO.scanner.GetLong
 [0001b1a0] 588f                      addq.l     #4,a7
 [0001b1a2] 4efa 00d2                 jmp        $0001B276(pc)
-[0001b1a6] 4879 0003 d9cc            pea.l      $0003D9CC
-[0001b1ac] 6100 fef4                 bsr        $0001B0A2
+case stringcon:
+[0001b1a6] 4879 0003 d9cc            pea.l      MCP2IO.Scanner.val
+[0001b1ac] 6100 fef4                 bsr        MCP2IO.scanner.GetLong
 [0001b1b0] 588f                      addq.l     #4,a7
-[0001b1b2] 4879 0003 d9e2            pea.l      $0003D9E2
-[0001b1b8] 4879 0003 d9d0            pea.l      $0003D9D0
+[0001b1b2] 4879 0003 d9e2            pea.l      MCP2IO.il1
+[0001b1b8] 4879 0003 d9d0            pea.l      MCP2IO.length
 [0001b1be] 4eb9 0001 44c4            jsr        NewStreams.ReadWord
 [0001b1c4] 508f                      addq.l     #8,a7
 [0001b1c6] 4efa 00ae                 jmp        $0001B276(pc)
-[0001b1ca] 4879 0003 d9e2            pea.l      $0003D9E2
+case option:
+[0001b1ca] 4879 0003 d9e2            pea.l      MCP2IO.il1
 [0001b1d0] 486e fffe                 pea.l      -2(a6)
 [0001b1d4] 4eb9 0001 44c4            jsr        NewStreams.ReadWord
 [0001b1da] 508f                      addq.l     #8,a7
-[0001b1dc] 4879 0003 d9e2            pea.l      $0003D9E2
-[0001b1e2] 4879 0003 da00            pea.l      $0003DA00
+[0001b1dc] 4879 0003 d9e2            pea.l      MCP2IO.il1
+[0001b1e2] 4879 0003 da00            pea.l      MCP2IO.Scanner.card
 [0001b1e8] 4eb9 0001 44c4            jsr        NewStreams.ReadWord
 [0001b1ee] 508f                      addq.l     #8,a7
-[0001b1f0] 1f39 0003 d9ca            move.b     $0003D9CA,-(a7)
+[0001b1f0] 1f39 0003 d9ca            move.b     MCP2IO.sy,-(a7)
 [0001b1f6] 3f2e fffe                 move.w     -2(a6),-(a7)
-[0001b1fa] 3f39 0003 da00            move.w     $0003DA00,-(a7)
-[0001b200] 6100 fa88                 bsr        $0001AC8A
+[0001b1fa] 3f39 0003 da00            move.w     MCP2IO.Scanner.card,-(a7)
+[0001b200] 6100 fa88                 bsr        MCP2IO.PutSyVal
 [0001b204] 5c8f                      addq.l     #6,a7
-[0001b206] 4239 0003 da02            clr.b      $0003DA02
+[0001b206] 4239 0003 da02            clr.b      MCP2IO.Scanner.issy
 [0001b20c] 4efa 0068                 jmp        $0001B276(pc)
-[0001b210] 4879 0003 d9e2            pea.l      $0003D9E2
+case errorsy:
+case eol:
+[0001b210] 4879 0003 d9e2            pea.l      MCP2IO.il1
 [0001b216] 486e fffe                 pea.l      -2(a6)
 [0001b21a] 4eb9 0001 44c4            jsr        NewStreams.ReadWord
 [0001b220] 508f                      addq.l     #8,a7
-[0001b222] 0c39 0051 0003 d9ca       cmpi.b     #$51,$0003D9CA
+[0001b222] 0c39 0051 0003 d9ca       cmpi.b     #$51,MCP2IO.sy
 [0001b22a] 6608                      bne.s      $0001B234
-[0001b22c] 33ee fffe 0003 d9d8       move.w     -2(a6),$0003D9D8
-[0001b234] 1f39 0003 d9ca            move.b     $0003D9CA,-(a7)
+[0001b22c] 33ee fffe 0003 d9d8       move.w     -2(a6),MCP2IO.line
+[0001b234] 1f39 0003 d9ca            move.b     MCP2IO.sy,-(a7)
 [0001b23a] 3f2e fffe                 move.w     -2(a6),-(a7)
 [0001b23e] 4267                      clr.w      -(a7)
-[0001b240] 6100 fa48                 bsr        $0001AC8A
+[0001b240] 6100 fa48                 bsr        MCP2IO.PutSyVal
 [0001b244] 5c8f                      addq.l     #6,a7
-[0001b246] 4239 0003 da02            clr.b      $0003DA02
+[0001b246] 4239 0003 da02            clr.b      MCP2IO.Scanner.issy
 [0001b24c] 4efa 0028                 jmp        $0001B276(pc)
+default:
 [0001b250] 4efa 0024                 jmp        $0001B276(pc)
-[0001b254] 0024 0108                 ori.b      #$08,-(a4)
-[0001b258] 0024 0024                 ori.b      #$24,-(a4)
-[0001b25c] 0024 000c                 ori.b      #$0C,-(a4)
-[0001b260] 0108 004e                 movep.w    78(a0),d0
-[0001b264] 004e 004e                 ori.w      #$004E,a6 ; apollo only
-[0001b268] 0108 004e                 movep.w    78(a0),d0
-[0001b26c] 005e 0082                 ori.w      #$0082,(a6)+
-[0001b270] 00c8                      dc.w       $00C8 ; illegal
-[0001b272] 00c8                      dc.w       $00C8 ; illegal
-[0001b274] 0024 4a39                 ori.b      #$39,-(a4)
-[0001b278] 0003 da02                 ori.b      #$02,d3
+[0001b254] 0024 
+           0108
+[0001b258] 0024
+           0024
+[0001b25c] 0024 46
+           000c
+[0001b260] 0108
+           004e
+[0001b264] 004e
+           004e
+[0001b268] 0108
+           004e
+[0001b26c] 005e
+           0082 4f
+[0001b270] 00c8     
+[0001b272] 00c8     
+[0001b274] 0024
+[0001b276] 4a39 0003 da02            tst.b      MCP2IO.scanner.issy
 [0001b27c] 6604                      bne.s      $0001B282
 [0001b27e] 6000 fe7e                 bra        $0001B0FE
 [0001b282] 4e5e                      unlk       a6
 [0001b284] 4e75                      rts
+
+MCP2IO.scanner.PutGetSy:
 [0001b286] 4e56 0000                 link       a6,#0
-[0001b28a] 1f39 0003 d9ca            move.b     $0003D9CA,-(a7)
-[0001b290] 6100 f9a6                 bsr        $0001AC38
+[0001b28a] 1f39 0003 d9ca            move.b     MCP2IO.sy,-(a7)
+[0001b290] 6100 f9a6                 bsr        MCP2IO.PutSy
 [0001b294] 548f                      addq.l     #2,a7
 [0001b296] 7a00                      moveq.l    #0,d5
-[0001b298] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001b298] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001b29e] 2005                      move.l     d5,d0
 [0001b2a0] 4eb9 0001 000a            jsr        CASEX
-[0001b2a6] 0000 0044                 ori.b      #$44,d0
-[0001b2aa] 0000 0010                 ori.b      #$10,d0
-[0001b2ae] 0000 0074                 ori.b      #$74,d0
-[0001b2b2] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
-[0001b2b8] 6100 fa16                 bsr        $0001ACD0
+[0001b2a6] 0000 0044
+[0001b2aa] 0000 0010
+[0001b2ae] 0000 0074
+case ident:
+[0001b2b2] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
+[0001b2b8] 6100 fa16                 bsr        MCP2IO.PutWord
 [0001b2bc] 548f                      addq.l     #2,a7
 [0001b2be] 4efa 007c                 jmp        $0001B33C(pc)
+case proceduresy:
+case modulesy:
+case namesy:
 [0001b2c2] 0c79 0003 0003 d9e0       cmpi.w     #$0003,$0003D9E0
 [0001b2ca] 660c                      bne.s      $0001B2D8
 [0001b2cc] 2f39 0003 d9d4            move.l     $0003D9D4,-(a7)
-[0001b2d2] 6100 fa1e                 bsr        $0001ACF2
+[0001b2d2] 6100 fa1e                 bsr        MCP2IO.WriteLong
 [0001b2d6] 588f                      addq.l     #4,a7
 [0001b2d8] 4efa 0062                 jmp        $0001B33C(pc)
-[0001b2dc] 2f39 0003 d9cc            move.l     $0003D9CC,-(a7)
-[0001b2e2] 6100 fa0e                 bsr        $0001ACF2
+case intcon:
+case cardcon:
+case intcarcon:
+case charcon:
+[0001b2dc] 2f39 0003 d9cc            move.l     MCP2IO.Scanner.val,-(a7)
+[0001b2e2] 6100 fa0e                 bsr        MCP2IO.WriteLong
 [0001b2e6] 588f                      addq.l     #4,a7
 [0001b2e8] 4efa 0052                 jmp        $0001B33C(pc)
+case stringcon:
 [0001b2ec] 0c79 0002 0003 d9e0       cmpi.w     #$0002,$0003D9E0
 [0001b2f4] 6618                      bne.s      $0001B30E
-[0001b2f6] 2f39 0003 d9cc            move.l     $0003D9CC,-(a7)
-[0001b2fc] 6100 f9f4                 bsr        $0001ACF2
+[0001b2f6] 2f39 0003 d9cc            move.l     MCP2IO.Scanner.val,-(a7)
+[0001b2fc] 6100 f9f4                 bsr        MCP2IO.WriteLong
 [0001b300] 588f                      addq.l     #4,a7
-[0001b302] 3f39 0003 d9d0            move.w     $0003D9D0,-(a7)
-[0001b308] 6100 f9c6                 bsr        $0001ACD0
+[0001b302] 3f39 0003 d9d0            move.w     MCP2IO.length,-(a7)
+[0001b308] 6100 f9c6                 bsr        MCP2IO.PutWord
 [0001b30c] 548f                      addq.l     #2,a7
 [0001b30e] 4efa 002c                 jmp        $0001B33C(pc)
+case anycon:
 [0001b312] 4efa 0028                 jmp        $0001B33C(pc)
+default:
 [0001b316] 4efa 0024                 jmp        $0001B33C(pc)
-[0001b31a] 001c 001c                 ori.b      #$1C,(a4)+
-[0001b31e] 0070 000c 0070            ori.w      #$000C,112(a0,d0.w)
-[0001b324] 0036 0036 0036            ori.b      #$36,54(a6,d0.w)
-[0001b32a] 0070 0036 0046            ori.w      #$0036,70(a0,d0.w)
-[0001b330] 0070 0070 0070            ori.w      #$0070,112(a0,d0.w)
-[0001b336] 001c 0070                 ori.b      #$70,(a4)+
-[0001b33a] 006c 6100 fda8            ori.w      #$6100,-600(a4)
+[0001b31a] 001c
+           001c     
+[0001b31e] 0070
+           000c
+           0070
+[0001b324] 0036 49
+           0036
+           0036
+[0001b32a] 0070
+           0036 4d
+           0046
+[0001b330] 0070
+           0070
+           0070
+[0001b336] 001c 52
+           0070
+[0001b33a] 006c
+[0001b33c] 6100 fda8                 bsr        MCP2IO.scanner.GetSy
 [0001b340] 4e5e                      unlk       a6
 [0001b342] 4e75                      rts
+
+MCP2IO.scanner:
 [0001b344] 4e56 0000                 link       a6,#0
-[0001b348] 33fc 0001 0003 d9d8       move.w     #$0001,$0003D9D8
-[0001b350] 33fc 0001 0003 d9da       move.w     #$0001,$0003D9DA
+[0001b348] 33fc 0001 0003 d9d8       move.w     #$0001,MCP2IO.line
+[0001b350] 33fc 0001 0003 d9da       move.w     #$0001,MCP2IO.pos
 [0001b358] 4e5e                      unlk       a6
 [0001b35a] 4e75                      rts
+
+MCP2IO.TermInput:
 [0001b35c] 4e56 0000                 link       a6,#0
-[0001b360] 4879 0003 d9e2            pea.l      $0003D9E2
+[0001b360] 4879 0003 d9e2            pea.l      MCP2IO.il1
 [0001b366] 4eb9 0001 4412            jsr        NewStreams.EndWrite
 [0001b36c] 588f                      addq.l     #4,a7
 [0001b36e] 4e5e                      unlk       a6
 [0001b370] 4e75                      rts
+
 [0001b372] 4e56 0000                 link       a6,#0
-[0001b376] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001b376] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001b37c] ba2e 0008                 cmp.b      8(a6),d5
 [0001b380] 6706                      beq.s      $0001B388
-[0001b382] 6100 fd62                 bsr        $0001B0E6
+[0001b382] 6100 fd62                 bsr        MCP2IO.scanner.GetSy
 [0001b386] 60ee                      bra.s      $0001B376
-[0001b388] 6100 fd5c                 bsr        $0001B0E6
+[0001b388] 6100 fd5c                 bsr        MCP2IO.scanner.GetSy
 [0001b38c] 4e5e                      unlk       a6
 [0001b38e] 4e75                      rts
+
 [0001b390] 4e56 0000                 link       a6,#0
-[0001b394] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[0001b394] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [0001b39c] 6618                      bne.s      $0001B3B6
-[0001b39e] 6100 fd46                 bsr        $0001B0E6
-[0001b3a2] 0c39 0019 0003 d9ca       cmpi.b     #$19,$0003D9CA
+[0001b39e] 6100 fd46                 bsr        MCP2IO.scanner.GetSy
+[0001b3a2] 0c39 0019 0003 d9ca       cmpi.b     #$19,MCP2IO.sy
 [0001b3aa] 660a                      bne.s      $0001B3B6
-[0001b3ac] 6100 fd38                 bsr        $0001B0E6
-[0001b3b0] 6100 fd34                 bsr        $0001B0E6
+[0001b3ac] 6100 fd38                 bsr        MCP2IO.Scanner.GetSy
+[0001b3b0] 6100 fd34                 bsr        MCP2IO.Scanner.GetSy
 [0001b3b4] 60ec                      bra.s      $0001B3A2
 [0001b3b6] 4e5e                      unlk       a6
 [0001b3b8] 4e75                      rts
+
 [0001b3ba] 4e56 0000                 link       a6,#0
-[0001b3be] 0c39 0049 0003 d9ca       cmpi.b     #$49,$0003D9CA
+[0001b3be] 0c39 0049 0003 d9ca       cmpi.b     #$49,MCP2IO.sy
 [0001b3c6] 6714                      beq.s      $0001B3DC
-[0001b3c8] 0c39 004a 0003 d9ca       cmpi.b     #$4A,$0003D9CA
+[0001b3c8] 0c39 004a 0003 d9ca       cmpi.b     #$4A,MCP2IO.sy
 [0001b3d0] 670a                      beq.s      $0001B3DC
-[0001b3d2] 0c39 004d 0003 d9ca       cmpi.b     #$4D,$0003D9CA
+[0001b3d2] 0c39 004d 0003 d9ca       cmpi.b     #$4D,MCP2IO.sy
 [0001b3da] 660c                      bne.s      $0001B3E8
-[0001b3dc] 6100 fd08                 bsr        $0001B0E6
+[0001b3dc] 6100 fd08                 bsr        MCP2IO.Scanner.GetSy
 [0001b3e0] 6100 ffae                 bsr.w      $0001B390
 [0001b3e4] 4efa 001a                 jmp        $0001B400(pc)
-[0001b3e8] 0c39 004e 0003 d9ca       cmpi.b     #$4E,$0003D9CA
+[0001b3e8] 0c39 004e 0003 d9ca       cmpi.b     #$4E,MCP2IO.sy
 [0001b3f0] 670a                      beq.s      $0001B3FC
-[0001b3f2] 0c39 004b 0003 d9ca       cmpi.b     #$4B,$0003D9CA
+[0001b3f2] 0c39 004b 0003 d9ca       cmpi.b     #$4B,MCP2IO.sy
 [0001b3fa] 6604                      bne.s      $0001B400
-[0001b3fc] 6100 fce8                 bsr        $0001B0E6
+[0001b3fc] 6100 fce8                 bsr        MCP2IO.Scanner.GetSy
 [0001b400] 4e5e                      unlk       a6
 [0001b402] 4e75                      rts
 [0001b404] 4e56 0000                 link       a6,#0
-[0001b408] 0c39 002c 0003 d9ca       cmpi.b     #$2C,$0003D9CA
+[0001b408] 0c39 002c 0003 d9ca       cmpi.b     #$2C,MCP2IO.sy
 [0001b410] 6646                      bne.s      $0001B458
 [0001b412] 1f3c 001a                 move.b     #$1A,-(a7)
 [0001b416] 6100 ff5a                 bsr        $0001B372
 [0001b41a] 548f                      addq.l     #2,a7
 [0001b41c] 6100 ff72                 bsr        $0001B390
-[0001b420] 0c39 002d 0003 d9ca       cmpi.b     #$2D,$0003D9CA
+[0001b420] 0c39 002d 0003 d9ca       cmpi.b     #$2D,MCP2IO.sy
 [0001b428] 6614                      bne.s      $0001B43E
 [0001b42a] 1f3c 001a                 move.b     #$1A,-(a7)
 [0001b42e] 6100 ff42                 bsr        $0001B372
 [0001b432] 548f                      addq.l     #2,a7
 [0001b434] 6100 ffce                 bsr.w      $0001B404
-[0001b438] 6100 fcac                 bsr        $0001B0E6
+[0001b438] 6100 fcac                 bsr        MCP2IO.Scanner.GetSy
 [0001b43c] 60e2                      bra.s      $0001B420
-[0001b43e] 0c39 0031 0003 d9ca       cmpi.b     #$31,$0003D9CA
+[0001b43e] 0c39 0031 0003 d9ca       cmpi.b     #$31,MCP2IO.sy
 [0001b446] 660c                      bne.s      $0001B454
-[0001b448] 6100 fc9c                 bsr        $0001B0E6
+[0001b448] 6100 fc9c                 bsr        MCP2IO.Scanner.GetSy
 [0001b44c] 6100 ffb6                 bsr.w      $0001B404
-[0001b450] 6100 fc94                 bsr        $0001B0E6
-[0001b454] 6100 fc90                 bsr        $0001B0E6
+[0001b450] 6100 fc94                 bsr        MCP2IO.Scanner.GetSy
+[0001b454] 6100 fc90                 bsr        MCP2IO.Scanner.GetSy
 [0001b458] 4e5e                      unlk       a6
 [0001b45a] 4e75                      rts
+
 [0001b45c] 4e56 0000                 link       a6,#0
 [0001b460] 7a00                      moveq.l    #0,d5
-[0001b462] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001b462] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001b468] 2005                      move.l     d5,d0
 [0001b46a] 4eb9 0001 000a            jsr        CASEX
-[0001b470] 0000 0011                 ori.b      #$11,d0
-[0001b474] 0000 0036                 ori.b      #$36,d0
-[0001b478] 0000 00a8                 ori.b      #$A8,d0
+[0001b470] 0000 0011
+[0001b474] 0000 0036
+[0001b478] 0000 00a8
+case arraysy:
 [0001b47c] 1f3c 002d                 move.b     #$2D,-(a7)
 [0001b480] 6100 fef0                 bsr        $0001B372
 [0001b484] 548f                      addq.l     #2,a7
 [0001b486] 6100 ffd4                 bsr.w      $0001B45C
 [0001b48a] 4efa 00fa                 jmp        $0001B586(pc)
-[0001b48e] 6100 fc56                 bsr        $0001B0E6
-[0001b492] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+case recordsy:
+[0001b48e] 6100 fc56                 bsr        MCP2IO.Scanner.GetSy
+[0001b492] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [0001b49a] 6610                      bne.s      $0001B4AC
 [0001b49c] 1f3c 001a                 move.b     #$1A,-(a7)
 [0001b4a0] 6100 fed0                 bsr        $0001B372
@@ -12789,59 +12565,104 @@ MCPass1:
 [0001b4a6] 6100 ffb4                 bsr.w      $0001B45C
 [0001b4aa] 60e6                      bra.s      $0001B492
 [0001b4ac] 6100 ff56                 bsr        $0001B404
-[0001b4b0] 6100 fc34                 bsr        $0001B0E6
-[0001b4b4] 6100 fc30                 bsr        $0001B0E6
+[0001b4b0] 6100 fc34                 bsr        MCP2IO.Scanner.GetSy
+[0001b4b4] 6100 fc30                 bsr        MCP2IO.Scanner.GetSy
 [0001b4b8] 4efa 00cc                 jmp        $0001B586(pc)
-[0001b4bc] 6100 fc28                 bsr        $0001B0E6
+case setsy:
+case pointersy:
+[0001b4bc] 6100 fc28                 bsr        MCP2IO.Scanner.GetSy
 [0001b4c0] 6100 ff9a                 bsr.w      $0001B45C
 [0001b4c4] 4efa 00c0                 jmp        $0001B586(pc)
+case proceduresy:
 [0001b4c8] 1f3c 0012                 move.b     #$12,-(a7)
 [0001b4cc] 6100 fea4                 bsr        $0001B372
 [0001b4d0] 548f                      addq.l     #2,a7
-[0001b4d2] 0c39 001a 0003 d9ca       cmpi.b     #$1A,$0003D9CA
+[0001b4d2] 0c39 001a 0003 d9ca       cmpi.b     #$1A,MCP2IO.sy
 [0001b4da] 6608                      bne.s      $0001B4E4
-[0001b4dc] 6100 fc08                 bsr        $0001B0E6
+[0001b4dc] 6100 fc08                 bsr        MCP2IO.Scanner.GetSy
 [0001b4e0] 6100 ff7a                 bsr        $0001B45C
 [0001b4e4] 4efa 00a0                 jmp        $0001B586(pc)
-[0001b4e8] 6100 fbfc                 bsr        $0001B0E6
+case hidden:
+[0001b4e8] 6100 fbfc                 bsr        MCP2IO.Scanner.GetSy
 [0001b4ec] 4efa 0098                 jmp        $0001B586(pc)
+case lparent:
 [0001b4f0] 1f3c 0012                 move.b     #$12,-(a7)
 [0001b4f4] 6100 fe7c                 bsr        $0001B372
 [0001b4f8] 548f                      addq.l     #2,a7
 [0001b4fa] 4efa 008a                 jmp        $0001B586(pc)
+case ident:
 [0001b4fe] 6100 fe90                 bsr        $0001B390
 [0001b502] 4efa 0082                 jmp        $0001B586(pc)
+case lbrack:
 [0001b506] 1f3c 0014                 move.b     #$14,-(a7)
 [0001b50a] 6100 fe66                 bsr        $0001B372
 [0001b50e] 548f                      addq.l     #2,a7
 [0001b510] 4efa 0074                 jmp        $0001B586(pc)
+default:
 [0001b514] 4efa 0070                 jmp        $0001B586(pc)
-[0001b518] 0080 00a4 0096            ori.l      #$00A40096,d0
-[0001b51e] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b524] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b52a] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b530] 00a4 00a4 000c            ori.l      #$00A4000C,-(a4)
-[0001b536] 001e 00a4                 ori.b      #$A4,(a6)+
-[0001b53a] 004c 004c                 ori.w      #$004C,a4 ; apollo only
-[0001b53e] 00a4 00a4 0078            ori.l      #$00A40078,-(a4)
-[0001b544] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b54a] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b550] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b556] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b55c] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b562] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b568] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b56e] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b574] 00a4 00a4 00a4            ori.l      #$00A400A4,-(a4)
-[0001b57a] 00a4 00a4 0058            ori.l      #$00A40058,-(a4)
-[0001b580] 00a4 00a4 008e            ori.l      #$00A4008E,-(a4)
+[0001b518] 0080
+           00a4
+           0096
+[0001b51e] 00a4
+           00a4
+           00a4
+[0001b524] 00a4
+           00a4
+           00a4
+[0001b52a] 00a4
+           00a4
+           00a4
+[0001b530] 00a4
+           00a4
+           000c 1f
+[0001b536] 001e 20
+           00a4
+[0001b53a] 004c 22
+           004c 23
+[0001b53e] 00a4
+           00a4
+           0078 26
+[0001b544] 00a4
+           00a4
+           00a4
+[0001b54a] 00a4
+           00a4
+           00a4
+[0001b550] 00a4
+           00a4
+           00a4
+[0001b556] 00a4
+           00a4
+           00a4
+[0001b55c] 00a4
+           00a4
+           00a4
+[0001b562] 00a4 36
+           00a4
+           00a4
+[0001b568] 00a4
+           00a4
+           00a4
+[0001b56e] 00a4
+           00a4
+           00a4
+[0001b574] 00a4
+           00a4 40
+           00a4
+[0001b57a] 00a4
+           00a4
+           0058 44
+[0001b580] 00a4
+           00a4
+           008e 47
 [0001b586] 4e5e                      unlk       a6
 [0001b588] 4e75                      rts
+
 [0001b58a] 4e56 fffe                 link       a6,#-2
 [0001b58e] 426e fffe                 clr.w      -2(a6)
 [0001b592] 3a2e fffe                 move.w     -2(a6),d5
 [0001b596] da45                      add.w      d5,d5
-[0001b598] 49f9 0004 4e22            lea.l      $00044E22,a4
+[0001b598] 49f9 0004 4e22            lea.l      M2Public.comptime,a4
 [0001b59e] 382e fffe                 move.w     -2(a6),d4
 [0001b5a2] 266e 0008                 movea.l    8(a6),a3
 [0001b5a6] d844                      add.w      d4,d4
@@ -12851,31 +12672,37 @@ MCPass1:
 [0001b5b8] 66d8                      bne.s      $0001B592
 [0001b5ba] 4e5e                      unlk       a6
 [0001b5bc] 4e75                      rts
+
+MCP2IO.DefModStatus:
 [0001b5be] 4e56 0000                 link       a6,#0
 [0001b5c2] 08f9 0003 0004 4e21       bset       #3,M2Public.compstat
 [0001b5ca] 4e5e                      unlk       a6
 [0001b5cc] 4e75                      rts
+
+MCP2IO.TermInOut:
 [0001b5ce] 4e56 0000                 link       a6,#0
 [0001b5d2] 4eb9 0003 4aea            jsr        $00034AEA
-[0001b5d8] 6100 fd82                 bsr        $0001B35C
+[0001b5d8] 6100 fd82                 bsr        MCP2IO.scanner.TermInput
 [0001b5dc] 6100 f928                 bsr        $0001AF06
 [0001b5e0] 4e5e                      unlk       a6
 [0001b5e2] 4e75                      rts
+
 [0001b5e4] 4e56 0000                 link       a6,#0
 [0001b5e8] 33ee 0008 0003 d9e0       move.w     8(a6),$0003D9E0
 [0001b5f0] 0c6e 0002 0008            cmpi.w     #$0002,8(a6)
 [0001b5f6] 6618                      bne.s      $0001B610
-[0001b5f8] 23f9 0004 4cba 0003 d9e2  move.l     $00044CBA,$0003D9E2
-[0001b602] 23f9 0004 4cbe 0003 d9e6  move.l     $00044CBE,$0003D9E6
+[0001b5f8] 23f9 0004 4cba 0003 d9e2  move.l     $00044CBA,MCP2IO.il1
+[0001b602] 23f9 0004 4cbe 0003 d9e6  move.l     $00044CBE,MCP2IO.il2
 [0001b60c] 4efa 0016                 jmp        $0001B624(pc)
-[0001b610] 23f9 0004 4cbe 0003 d9e2  move.l     $00044CBE,$0003D9E2
-[0001b61a] 23f9 0004 4cba 0003 d9e6  move.l     $00044CBA,$0003D9E6
+[0001b610] 23f9 0004 4cbe 0003 d9e2  move.l     $00044CBE,MCP2IO.il1
+[0001b61a] 23f9 0004 4cba 0003 d9e6  move.l     $00044CBA,MCP2IO.il2
 [0001b624] 6100 f966                 bsr        $0001AF8C
 [0001b628] 6100 fa62                 bsr        $0001B08C
-[0001b62c] 6100 fd16                 bsr        $0001B344
+[0001b62c] 6100 fd16                 bsr        MCP2IO.scanner
 [0001b630] 6100 f8c4                 bsr        $0001AEF6
 [0001b634] 4e5e                      unlk       a6
 [0001b636] 4e75                      rts
+
 [0001b638] 4e56 0000                 link       a6,#0
 [0001b63c] 7aff                      moveq.l    #-1,d5
 [0001b63e] 286e 0008                 movea.l    8(a6),a4
@@ -12908,7 +12735,7 @@ MCPass1:
 [0001b69a] 4e75                      rts
 [0001b69c] 4e56 0000                 link       a6,#0
 [0001b6a0] 2f2e 000c                 move.l     12(a6),-(a7)
-[0001b6a4] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001b6a4] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001b6aa] 286e 0008                 movea.l    8(a6),a4
 [0001b6ae] 4854                      pea.l      (a4)
 [0001b6b0] 6100 ff86                 bsr.w      $0001B638
@@ -13068,7 +12895,7 @@ MCPass1:
 [0001b8a6] 4a2e fffb                 tst.b      -5(a6)
 [0001b8aa] 670c                      beq.s      $0001B8B8
 [0001b8ac] 3f3c 0046                 move.w     #$0046,-(a7)
-[0001b8b0] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001b8b0] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001b8b6] 548f                      addq.l     #2,a7
 [0001b8b8] 486e fffc                 pea.l      -4(a6)
 [0001b8bc] 7a08                      moveq.l    #8,d5
@@ -13104,7 +12931,7 @@ MCPass1:
 [0001b924] 286e fffc                 movea.l    -4(a6),a4
 [0001b928] 2854                      movea.l    (a4),a4
 [0001b92a] 3a14                      move.w     (a4),d5
-[0001b92c] ba79 0003 d9d2            cmp.w      $0003D9D2,d5
+[0001b92c] ba79 0003 d9d2            cmp.w      MCP2IO.spix,d5
 [0001b932] 660c                      bne.s      $0001B940
 [0001b934] 266e fffc                 movea.l    -4(a6),a3
 [0001b938] 2d53 fff8                 move.l     (a3),-8(a6)
@@ -13115,7 +12942,7 @@ MCPass1:
 [0001b94c] 661e                      bne.s      $0001B96C
 [0001b94e] 2f0c                      move.l     a4,-(a7)
 [0001b950] 2f2c 0038                 move.l     56(a4),-(a7)
-[0001b954] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001b954] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001b95a] 486e fff8                 pea.l      -8(a6)
 [0001b95e] 6100 fcd8                 bsr        $0001B638
 [0001b962] 4fef 000a                 lea.l      10(a7),a7
@@ -13143,7 +12970,7 @@ MCPass1:
 [0001b9ac] 2f0c                      move.l     a4,-(a7)
 [0001b9ae] 266e fff4                 movea.l    -12(a6),a3
 [0001b9b2] 2f2b 000a                 move.l     10(a3),-(a7)
-[0001b9b6] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001b9b6] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001b9bc] 486e fff8                 pea.l      -8(a6)
 [0001b9c0] 6100 fc76                 bsr        $0001B638
 [0001b9c4] 4fef 000a                 lea.l      10(a7),a7
@@ -13158,7 +12985,7 @@ MCPass1:
 [0001b9e8] 661c                      bne.s      $0001BA06
 [0001b9ea] 2879 0003 60c8            movea.l    MCP1Ident.root,a4
 [0001b9f0] 2f2c 0038                 move.l     56(a4),-(a7)
-[0001b9f4] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001b9f4] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001b9fa] 486e fff8                 pea.l      -8(a6)
 [0001b9fe] 6100 fc38                 bsr        $0001B638
 [0001ba02] 4fef 000a                 lea.l      10(a7),a7
@@ -13222,7 +13049,7 @@ MCPass1:
 [0001bac8] ba6e fff6                 cmp.w      -10(a6),d5
 [0001bacc] 660c                      bne.s      $0001BADA
 [0001bace] 3f3c 0048                 move.w     #$0048,-(a7)
-[0001bad2] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001bad2] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001bad8] 548f                      addq.l     #2,a7
 [0001bada] 2d6e fffc fff8            move.l     -4(a6),-8(a6)
 [0001bae0] 286e fff8                 movea.l    -8(a6),a4
@@ -13252,7 +13079,7 @@ MCPass1:
 [0001bb40] 49f4 5000                 lea.l      0(a4,d5.w),a4
 [0001bb44] 2f0c                      move.l     a4,-(a7)
 [0001bb46] 2f14                      move.l     (a4),-(a7)
-[0001bb48] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001bb48] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001bb4e] 266e 0008                 movea.l    8(a6),a3
 [0001bb52] 4853                      pea.l      (a3)
 [0001bb54] 6100 fae2                 bsr        $0001B638
@@ -13273,7 +13100,7 @@ MCPass1:
 [0001bb80] 266e fffc                 movea.l    -4(a6),a3
 [0001bb84] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001bb88] 2f13                      move.l     (a3),-(a7)
-[0001bb8a] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001bb8a] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001bb90] 246e 0008                 movea.l    8(a6),a2
 [0001bb94] 4852                      pea.l      (a2)
 [0001bb96] 6100 faa0                 bsr        $0001B638
@@ -13301,7 +13128,7 @@ MCPass1:
 [0001bbd8] 661c                      bne.s      $0001BBF6
 [0001bbda] 2f0c                      move.l     a4,-(a7)
 [0001bbdc] 2f2c 0008                 move.l     8(a4),-(a7)
-[0001bbe0] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001bbe0] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001bbe6] 266e 0008                 movea.l    8(a6),a3
 [0001bbea] 4853                      pea.l      (a3)
 [0001bbec] 6100 fa4a                 bsr        $0001B638
@@ -13368,7 +13195,7 @@ MCPass1:
 [0001bcd6] 508f                      addq.l     #8,a7
 [0001bcd8] 4efa 002c                 jmp        $0001BD06(pc)
 [0001bcdc] 3f3c 0048                 move.w     #$0048,-(a7)
-[0001bce0] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001bce0] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001bce6] 548f                      addq.l     #2,a7
 [0001bce8] 3a39 0003 db4a            move.w     $0003DB4A,d5
 [0001bcee] cafc 0014                 mulu.w     #$0014,d5
@@ -13392,7 +13219,7 @@ MCPass1:
 [0001bd32] cafc 0014                 mulu.w     #$0014,d5
 [0001bd36] 47f9 0003 da0a            lea.l      $0003DA0A,a3
 [0001bd3c] 28b3 5010                 move.l     16(a3,d5.w),(a4)
-[0001bd40] 3979 0003 d9d2 0004       move.w     $0003D9D2,4(a4)
+[0001bd40] 3979 0003 d9d2 0004       move.w     MCP2IO.spix,4(a4)
 [0001bd48] 296e 0008 0006            move.l     8(a6),6(a4)
 [0001bd4e] 3a39 0003 db4a            move.w     $0003DB4A,d5
 [0001bd54] cafc 0014                 mulu.w     #$0014,d5
@@ -13406,7 +13233,7 @@ MCPass1:
 [0001bd76] 6004                      bra.s      $0001BD7C
 [0001bd78] 4efa 00a8                 jmp        $0001BE22(pc)
 [0001bd7c] 422e ffff                 clr.b      -1(a6)
-[0001bd80] 3d79 0003 d9d2 fff4       move.w     $0003D9D2,-12(a6)
+[0001bd80] 3d79 0003 d9d2 fff4       move.w     MCP2IO.spix,-12(a6)
 [0001bd88] 3a39 0003 db4a            move.w     $0003DB4A,d5
 [0001bd8e] cafc 0014                 mulu.w     #$0014,d5
 [0001bd92] 49f9 0003 da0a            lea.l      $0003DA0A,a4
@@ -13415,7 +13242,7 @@ MCPass1:
 [0001bda0] baae fffa                 cmp.l      -6(a6),d5
 [0001bda4] 6762                      beq.s      $0001BE08
 [0001bda6] 286e fffa                 movea.l    -6(a6),a4
-[0001bdaa] 33ec 0004 0003 d9d2       move.w     4(a4),$0003D9D2
+[0001bdaa] 33ec 0004 0003 d9d2       move.w     4(a4),MCP2IO.spix
 [0001bdb2] 2f0c                      move.l     a4,-(a7)
 [0001bdb4] 486e fff0                 pea.l      -16(a6)
 [0001bdb8] 6100 006c                 bsr.w      $0001BE26
@@ -13440,11 +13267,11 @@ MCPass1:
 [0001bdfe] 4eb9 0001 4a06            jsr        DEALLOCATE
 [0001be04] 508f                      addq.l     #8,a7
 [0001be06] 6096                      bra.s      $0001BD9E
-[0001be08] 33ee fff4 0003 d9d2       move.w     -12(a6),$0003D9D2
+[0001be08] 33ee fff4 0003 d9d2       move.w     -12(a6),MCP2IO.spix
 [0001be10] 4a2e ffff                 tst.b      -1(a6)
 [0001be14] 670c                      beq.s      $0001BE22
 [0001be16] 3f3c 005a                 move.w     #$005A,-(a7)
-[0001be1a] 4eb9 0001 b020            jsr        $0001B020
+[0001be1a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001be20] 548f                      addq.l     #2,a7
 [0001be22] 4e5e                      unlk       a6
 [0001be24] 4e75                      rts
@@ -13463,7 +13290,7 @@ MCPass1:
 [0001be58] 49f4 5000                 lea.l      0(a4,d5.w),a4
 [0001be5c] 2f0c                      move.l     a4,-(a7)
 [0001be5e] 2f14                      move.l     (a4),-(a7)
-[0001be60] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001be60] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001be66] 266e 0008                 movea.l    8(a6),a3
 [0001be6a] 4853                      pea.l      (a3)
 [0001be6c] 6100 f7ca                 bsr        $0001B638
@@ -13484,7 +13311,7 @@ MCPass1:
 [0001be98] 2f0c                      move.l     a4,-(a7)
 [0001be9a] 266e fffc                 movea.l    -4(a6),a3
 [0001be9e] 2f13                      move.l     (a3),-(a7)
-[0001bea0] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001bea0] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001bea6] 266e 0008                 movea.l    8(a6),a3
 [0001beaa] 4853                      pea.l      (a3)
 [0001beac] 6100 f78a                 bsr        $0001B638
@@ -13518,7 +13345,7 @@ MCPass1:
 [0001bf0e] cafc 0014                 mulu.w     #$0014,d5
 [0001bf12] 49f9 0003 da0a            lea.l      $0003DA0A,a4
 [0001bf18] 2f34 5008                 move.l     8(a4,d5.w),-(a7)
-[0001bf1c] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001bf1c] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001bf22] 286e 0008                 movea.l    8(a6),a4
 [0001bf26] 4854                      pea.l      (a4)
 [0001bf28] 6100 f70e                 bsr        $0001B638
@@ -13540,7 +13367,7 @@ MCPass1:
 [0001bf62] 4e75                      rts
 [0001bf64] 4e56 fff4                 link       a6,#-12
 [0001bf68] 2f2e 000c                 move.l     12(a6),-(a7)
-[0001bf6c] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001bf6c] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001bf72] 486e fffc                 pea.l      -4(a6)
 [0001bf76] 6100 f6c0                 bsr        $0001B638
 [0001bf7a] 4fef 000a                 lea.l      10(a7),a7
@@ -13597,7 +13424,7 @@ MCPass1:
 [0001c026] 2f0c                      move.l     a4,-(a7)
 [0001c028] 266e fff4                 movea.l    -12(a6),a3
 [0001c02c] 2f2b 000a                 move.l     10(a3),-(a7)
-[0001c030] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001c030] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001c036] 486e fffc                 pea.l      -4(a6)
 [0001c03a] 6100 f5fc                 bsr        $0001B638
 [0001c03e] 4fef 000a                 lea.l      10(a7),a7
@@ -13621,7 +13448,7 @@ MCPass1:
 [0001c080] cafc 0014                 mulu.w     #$0014,d5
 [0001c084] 49f9 0003 da0a            lea.l      $0003DA0A,a4
 [0001c08a] 2f34 5008                 move.l     8(a4,d5.w),-(a7)
-[0001c08e] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001c08e] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001c094] 286e 0008                 movea.l    8(a6),a4
 [0001c098] 4854                      pea.l      (a4)
 [0001c09a] 6100 f59c                 bsr        $0001B638
@@ -13634,7 +13461,7 @@ MCPass1:
 [0001c0b2] cafc 0014                 mulu.w     #$0014,d5
 [0001c0b6] 49f9 0003 da0a            lea.l      $0003DA0A,a4
 [0001c0bc] 2f34 5000                 move.l     0(a4,d5.w),-(a7)
-[0001c0c0] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[0001c0c0] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0001c0c6] 286e 0008                 movea.l    8(a6),a4
 [0001c0ca] 4854                      pea.l      (a4)
 [0001c0cc] 6100 f56a                 bsr        $0001B638
@@ -13736,7 +13563,7 @@ MCPass1:
 [0001c22c] 2945 0010                 move.l     d5,16(a4)
 [0001c230] 4efa 000e                 jmp        $0001C240(pc)
 [0001c234] 3f3c 004f                 move.w     #$004F,-(a7)
-[0001c238] 4eb9 0001 b020            jsr        $0001B020
+[0001c238] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001c23e] 548f                      addq.l     #2,a7
 [0001c240] 4e5e                      unlk       a6
 [0001c242] 4e75                      rts
@@ -13807,12 +13634,12 @@ MCPass1:
 [0001c320] 28ae 0008                 move.l     8(a6),(a4)
 [0001c324] 7aff                      moveq.l    #-1,d5
 [0001c326] 2945 0004                 move.l     d5,4(a4)
-[0001c32a] 3d79 0003 d9d2 fff6       move.w     $0003D9D2,-10(a6)
+[0001c32a] 3d79 0003 d9d2 fff6       move.w     MCP2IO.spix,-10(a6)
 [0001c332] 7aff                      moveq.l    #-1,d5
 [0001c334] baae 0008                 cmp.l      8(a6),d5
 [0001c338] 676e                      beq.s      $0001C3A8
 [0001c33a] 286e 0008                 movea.l    8(a6),a4
-[0001c33e] 33d4 0003 d9d2            move.w     (a4),$0003D9D2
+[0001c33e] 33d4 0003 d9d2            move.w     (a4),MCP2IO.spix
 [0001c344] 486e fff8                 pea.l      -8(a6)
 [0001c348] 6100 f7d2                 bsr        $0001BB1C
 [0001c34c] 588f                      addq.l     #4,a7
@@ -13833,13 +13660,13 @@ MCPass1:
 [0001c388] 4efa 0012                 jmp        $0001C39C(pc)
 [0001c38c] 2f0c                      move.l     a4,-(a7)
 [0001c38e] 3f3c 0055                 move.w     #$0055,-(a7)
-[0001c392] 4eb9 0001 b020            jsr        $0001B020
+[0001c392] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001c398] 548f                      addq.l     #2,a7
 [0001c39a] 285f                      movea.l    (a7)+,a4
 [0001c39c] 286e 0008                 movea.l    8(a6),a4
 [0001c3a0] 2d6c 0002 0008            move.l     2(a4),8(a6)
 [0001c3a6] 608a                      bra.s      $0001C332
-[0001c3a8] 33ee fff6 0003 d9d2       move.w     -10(a6),$0003D9D2
+[0001c3a8] 33ee fff6 0003 d9d2       move.w     -10(a6),MCP2IO.spix
 [0001c3b0] 3a39 0003 db4a            move.w     $0003DB4A,d5
 [0001c3b6] cafc 0014                 mulu.w     #$0014,d5
 [0001c3ba] 49f9 0003 da0a            lea.l      $0003DA0A,a4
@@ -14016,6 +13843,7 @@ MCPass1:
 [0001c624] 6100 ff9a                 bsr.w      $0001C5C0
 [0001c628] 4e5e                      unlk       a6
 [0001c62a] 4e75                      rts
+
 [0001c62c] 4e56 fffe                 link       a6,#-2
 [0001c630] 286e 0008                 movea.l    8(a6),a4
 [0001c634] 4214                      clr.b      (a4)
@@ -14030,9 +13858,9 @@ MCPass1:
 [0001c658] 1a2e 000c                 move.b     12(a6),d5
 [0001c65c] 2005                      move.l     d5,d0
 [0001c65e] 4eb9 0001 000a            jsr        CASEX
-[0001c664] 0000 0006                 ori.b      #$06,d0
-[0001c668] 0000 0002                 ori.b      #$02,d0
-[0001c66c] 0000 00c0                 ori.b      #$C0,d0
+[0001c664] 0000 0006
+[0001c668] 0000 0002
+[0001c66c] 0000 00c0
 [0001c670] 0c2e 0001 ffff            cmpi.b     #$01,-1(a6)
 [0001c676] 6618                      bne.s      $0001C690
 [0001c678] 286e 000e                 movea.l    14(a6),a4
@@ -14078,11 +13906,14 @@ MCPass1:
 [0001c718] 18bc 0001                 move.b     #$01,(a4)
 [0001c71c] 4efa 0014                 jmp        $0001C732(pc)
 [0001c720] 4efa 0008                 jmp        $0001C72A(pc)
-[0001c724] 000c 00bc                 ori.b      #$BC,a4 ; apollo only
-[0001c728] 0038 286e 0008            ori.b      #$6E,($00000008).w
+[0001c724] 000c
+           00bc
+[0001c728] 0038
+[0001c72a] 286e 0008                 movea.l    8(a6),a4
 [0001c72e] 18bc 0001                 move.b     #$01,(a4)
 [0001c732] 4e5e                      unlk       a6
 [0001c734] 4e75                      rts
+
 [0001c736] 4e56 ffc6                 link       a6,#-58
 [0001c73a] 286e 000e                 movea.l    14(a6),a4
 [0001c73e] 47ee fff6                 lea.l      -10(a6),a3
@@ -14168,9 +13999,9 @@ MCPass1:
 [0001c87c] 1a2e 000c                 move.b     12(a6),d5
 [0001c880] 2005                      move.l     d5,d0
 [0001c882] 4eb9 0001 000a            jsr        CASEX
-[0001c888] 0000 0001                 ori.b      #$01,d0
-[0001c88c] 0000 000e                 ori.b      #$0E,d0
-[0001c890] 0000 09ca                 ori.b      #$CA,d0
+[0001c888] 0000 0001
+[0001c88c] 0000 000e
+[0001c890] 0000 09ca
 [0001c894] 1a2e fff3                 move.b     -13(a6),d5
 [0001c898] ba2e fff2                 cmp.b      -14(a6),d5
 [0001c89c] 6770                      beq.s      $0001C90E
@@ -15039,9 +14870,9 @@ MCPass1:
 [0001d4dc] 1a2e 000c                 move.b     12(a6),d5
 [0001d4e0] 2005                      move.l     d5,d0
 [0001d4e2] 4eb9 0001 000a            jsr        CASEX
-[0001d4e8] 0000 0003                 ori.b      #$03,d0
-[0001d4ec] 0000 0005                 ori.b      #$05,d0
-[0001d4f0] 0000 0056                 ori.b      #$56,d0
+[0001d4e8] 0000 0003
+[0001d4ec] 0000 0005
+[0001d4f0] 0000 0056
 [0001d4f4] 1a2e ffe4                 move.b     -28(a6),d5
 [0001d4f8] 8a2e ffe3                 or.b       -29(a6),d5
 [0001d4fc] 1d45 ffe4                 move.b     d5,-28(a6)
@@ -15062,10 +14893,13 @@ MCPass1:
 [0001d532] 1d44 ffe4                 move.b     d4,-28(a6)
 [0001d536] 4efa 0012                 jmp        $0001D54A(pc)
 [0001d53a] 4efa 000e                 jmp        $0001D54A(pc)
-[0001d53e] 0030 0040 0052            ori.b      #$40,82(a0,d0.w)
-[0001d544] 0052 000c                 ori.w      #$000C,(a2)
-[0001d548] 001c 286e                 ori.b      #$6E,(a4)+
-[0001d54c] fff4                      dc.w       $FFF4 ; illegal
+[0001d53e] 0030
+           0040
+           0052
+[0001d544] 0052
+           000c
+[0001d548] 001c
+[0001d54a] 286e fff4                 movea.l    -12(a6),a4
 [0001d54e] 3a2e ffe6                 move.w     -26(a6),d5
 [0001d552] 19ae ffe4 5000            move.b     -28(a6),0(a4,d5.w)
 [0001d558] 302e ffe6                 move.w     -26(a6),d0
@@ -15108,9 +14942,9 @@ MCPass1:
 [0001d5ce] 1a2e 0010                 move.b     16(a6),d5
 [0001d5d2] 2005                      move.l     d5,d0
 [0001d5d4] 4eb9 0001 000a            jsr        CASEX
-[0001d5da] 0000 000a                 ori.b      #$0A,d0
-[0001d5de] 0000 0005                 ori.b      #$05,d0
-[0001d5e2] 0000 00ae                 ori.b      #$AE,d0
+[0001d5da] 0000 000a
+[0001d5de] 0000 0005
+[0001d5e2] 0000 00ae
 [0001d5e6] 286e fff4                 movea.l    -12(a6),a4
 [0001d5ea] 3a2e ffee                 move.w     -18(a6),d5
 [0001d5ee] 266e fff0                 movea.l    -16(a6),a3
@@ -15179,13 +15013,13 @@ MCPass1:
 [0001d6be] 4854                      pea.l      (a4)
 [0001d6c0] 4eb9 0001 be26            jsr        $0001BE26
 [0001d6c6] 588f                      addq.l     #4,a7
-[0001d6c8] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0001d6c8] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0001d6ce] 7aff                      moveq.l    #-1,d5
 [0001d6d0] 286e 0008                 movea.l    8(a6),a4
 [0001d6d4] ba94                      cmp.l      (a4),d5
 [0001d6d6] 6610                      bne.s      $0001D6E8
 [0001d6d8] 3f2e 000c                 move.w     12(a6),-(a7)
-[0001d6dc] 4eb9 0001 b020            jsr        $0001B020
+[0001d6dc] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001d6e2] 548f                      addq.l     #2,a7
 [0001d6e4] 4efa 00a2                 jmp        $0001D788(pc)
 [0001d6e8] 266e 0008                 movea.l    8(a6),a3
@@ -15199,23 +15033,23 @@ MCPass1:
 [0001d704] 0905                      btst       d4,d5
 [0001d706] 6614                      bne.s      $0001D71C
 [0001d708] 3f3c 0067                 move.w     #$0067,-(a7)
-[0001d70c] 4eb9 0001 b020            jsr        $0001B020
+[0001d70c] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001d712] 548f                      addq.l     #2,a7
 [0001d714] 7aff                      moveq.l    #-1,d5
 [0001d716] 286e 0008                 movea.l    8(a6),a4
 [0001d71a] 2885                      move.l     d5,(a4)
 [0001d71c] 4efa 006a                 jmp        $0001D788(pc)
 [0001d720] 4efa 0024                 jmp        $0001D746(pc)
-[0001d724] 0c39 0019 0003 d9ca       cmpi.b     #$19,$0003D9CA
+[0001d724] 0c39 0019 0003 d9ca       cmpi.b     #$19,MCP2IO.sy
 [0001d72c] 6718                      beq.s      $0001D746
 [0001d72e] 3f3c 0035                 move.w     #$0035,-(a7)
-[0001d732] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001d732] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001d738] 548f                      addq.l     #2,a7
 [0001d73a] 7aff                      moveq.l    #-1,d5
 [0001d73c] 286e 0008                 movea.l    8(a6),a4
 [0001d740] 2885                      move.l     d5,(a4)
 [0001d742] 4efa 0044                 jmp        $0001D788(pc)
-[0001d746] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0001d746] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0001d74c] 266e 0008                 movea.l    8(a6),a3
 [0001d750] 2853                      movea.l    (a3),a4
 [0001d752] 2f2c 0038                 move.l     56(a4),-(a7)
@@ -15223,13 +15057,13 @@ MCPass1:
 [0001d75a] 4854                      pea.l      (a4)
 [0001d75c] 4eb9 0001 bf64            jsr        $0001BF64
 [0001d762] 508f                      addq.l     #8,a7
-[0001d764] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0001d764] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0001d76a] 7aff                      moveq.l    #-1,d5
 [0001d76c] 286e 0008                 movea.l    8(a6),a4
 [0001d770] ba94                      cmp.l      (a4),d5
 [0001d772] 6610                      bne.s      $0001D784
 [0001d774] 3f3c 009e                 move.w     #$009E,-(a7)
-[0001d778] 4eb9 0001 b020            jsr        $0001B020
+[0001d778] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001d77e] 548f                      addq.l     #2,a7
 [0001d780] 4efa 0006                 jmp        $0001D788(pc)
 [0001d784] 6000 ff62                 bra        $0001D6E8
@@ -15237,10 +15071,10 @@ MCPass1:
 [0001d78a] 286e 0008                 movea.l    8(a6),a4
 [0001d78e] ba94                      cmp.l      (a4),d5
 [0001d790] 6618                      bne.s      $0001D7AA
-[0001d792] 0c39 0019 0003 d9ca       cmpi.b     #$19,$0003D9CA
+[0001d792] 0c39 0019 0003 d9ca       cmpi.b     #$19,MCP2IO.sy
 [0001d79a] 660e                      bne.s      $0001D7AA
-[0001d79c] 4eb9 0001 b0e6            jsr        $0001B0E6
-[0001d7a2] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0001d79c] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[0001d7a2] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0001d7a8] 60e8                      bra.s      $0001D792
 [0001d7aa] 4e5e                      unlk       a6
 [0001d7ac] 4e75                      rts
@@ -15669,7 +15503,7 @@ MCPass1:
 [0001dd2a] 4a2e ffeb                 tst.b      -21(a6)
 [0001dd2e] 660c                      bne.s      $0001DD3C
 [0001dd30] 3f2e 0008                 move.w     8(a6),-(a7)
-[0001dd34] 4eb9 0001 b020            jsr        $0001B020
+[0001dd34] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001dd3a] 548f                      addq.l     #2,a7
 [0001dd3c] 4e5e                      unlk       a6
 [0001dd3e] 4e75                      rts
@@ -16002,10 +15836,10 @@ MCPass1:
 [0001e194] 286e 0008                 movea.l    8(a6),a4
 [0001e198] 2d54 fffc                 move.l     (a4),-4(a6)
 [0001e19c] 1f3c 0054                 move.b     #$54,-(a7)
-[0001e1a0] 4eb9 0001 ac38            jsr        $0001AC38
+[0001e1a0] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0001e1a6] 548f                      addq.l     #2,a7
 [0001e1a8] 2f2e 000c                 move.l     12(a6),-(a7)
-[0001e1ac] 4eb9 0001 acf2            jsr        $0001ACF2
+[0001e1ac] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0001e1b2] 588f                      addq.l     #4,a7
 [0001e1b4] 558f                      subq.l     #2,a7
 [0001e1b6] 2f2e 000c                 move.l     12(a6),-(a7)
@@ -16014,7 +15848,7 @@ MCPass1:
 [0001e1c2] 4a1f                      tst.b      (a7)+
 [0001e1c4] 6710                      beq.s      $0001E1D6
 [0001e1c6] 2f2e fffc                 move.l     -4(a6),-(a7)
-[0001e1ca] 4eb9 0001 acf2            jsr        $0001ACF2
+[0001e1ca] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0001e1d0] 588f                      addq.l     #4,a7
 [0001e1d2] 4efa 0030                 jmp        $0001E204(pc)
 [0001e1d6] 558f                      subq.l     #2,a7
@@ -16024,11 +15858,11 @@ MCPass1:
 [0001e1e4] 4a1f                      tst.b      (a7)+
 [0001e1e6] 6710                      beq.s      $0001E1F8
 [0001e1e8] 2f2e fffc                 move.l     -4(a6),-(a7)
-[0001e1ec] 4eb9 0001 acf2            jsr        $0001ACF2
+[0001e1ec] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0001e1f2] 588f                      addq.l     #4,a7
 [0001e1f4] 4efa 000e                 jmp        $0001E204(pc)
 [0001e1f8] 2f2e fffc                 move.l     -4(a6),-(a7)
-[0001e1fc] 4eb9 0001 acf2            jsr        $0001ACF2
+[0001e1fc] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0001e202] 588f                      addq.l     #4,a7
 [0001e204] 4e5e                      unlk       a6
 [0001e206] 4e75                      rts
@@ -16046,7 +15880,7 @@ MCPass1:
 [0001e22e] 4a1f                      tst.b      (a7)+
 [0001e230] 660c                      bne.s      $0001E23E
 [0001e232] 3f3c 0079                 move.w     #$0079,-(a7)
-[0001e236] 4eb9 0001 b020            jsr        $0001B020
+[0001e236] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001e23c] 548f                      addq.l     #2,a7
 [0001e23e] 4e5e                      unlk       a6
 [0001e240] 4e75                      rts
@@ -16067,11 +15901,11 @@ MCPass1:
 [0001e272] 4a1f                      tst.b      (a7)+
 [0001e274] 660c                      bne.s      $0001E282
 [0001e276] 3f3c 0079                 move.w     #$0079,-(a7)
-[0001e27a] 4eb9 0001 b020            jsr        $0001B020
+[0001e27a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001e280] 548f                      addq.l     #2,a7
 [0001e282] 4efa 000e                 jmp        $0001E292(pc)
 [0001e286] 3f3c 007a                 move.w     #$007A,-(a7)
-[0001e28a] 4eb9 0001 b020            jsr        $0001B020
+[0001e28a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001e290] 548f                      addq.l     #2,a7
 [0001e292] 4e5e                      unlk       a6
 [0001e294] 4e75                      rts
@@ -16082,12 +15916,12 @@ MCPass1:
 [0001e2a6] 6702                      beq.s      $0001E2AA
 [0001e2a8] 6004                      bra.s      $0001E2AE
 [0001e2aa] 4efa 0104                 jmp        $0001E3B0(pc)
-[0001e2ae] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001e2ae] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001e2b6] 660a                      bne.s      $0001E2C2
 [0001e2b8] 7aff                      moveq.l    #-1,d5
 [0001e2ba] 2d45 fff6                 move.l     d5,-10(a6)
 [0001e2be] 4efa 00ec                 jmp        $0001E3AC(pc)
-[0001e2c2] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0001e2c2] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0001e2c8] 486e fff2                 pea.l      -14(a6)
 [0001e2cc] 486e ffee                 pea.l      -18(a6)
 [0001e2d0] 6100 2820                 bsr        $00020AF2
@@ -16130,17 +15964,17 @@ MCPass1:
 [0001e356] 7aff                      moveq.l    #-1,d5
 [0001e358] baae fff6                 cmp.l      -10(a6),d5
 [0001e35c] 661a                      bne.s      $0001E378
-[0001e35e] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001e35e] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001e366] 6710                      beq.s      $0001E378
 [0001e368] 2f0c                      move.l     a4,-(a7)
 [0001e36a] 3f3c 0084                 move.w     #$0084,-(a7)
-[0001e36e] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001e36e] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001e374] 548f                      addq.l     #2,a7
 [0001e376] 285f                      movea.l    (a7)+,a4
 [0001e378] 4efa 0018                 jmp        $0001E392(pc)
 [0001e37c] 2f0c                      move.l     a4,-(a7)
 [0001e37e] 3f3c 0094                 move.w     #$0094,-(a7)
-[0001e382] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001e382] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001e388] 548f                      addq.l     #2,a7
 [0001e38a] 285f                      movea.l    (a7)+,a4
 [0001e38c] 7aff                      moveq.l    #-1,d5
@@ -16148,15 +15982,15 @@ MCPass1:
 [0001e392] 4efa 0018                 jmp        $0001E3AC(pc)
 [0001e396] 2f0c                      move.l     a4,-(a7)
 [0001e398] 3f3c 005c                 move.w     #$005C,-(a7)
-[0001e39c] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001e39c] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001e3a2] 548f                      addq.l     #2,a7
 [0001e3a4] 285f                      movea.l    (a7)+,a4
 [0001e3a6] 7aff                      moveq.l    #-1,d5
 [0001e3a8] 2d45 fff6                 move.l     d5,-10(a6)
 [0001e3ac] 6000 fef2                 bra        $0001E2A0
-[0001e3b0] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001e3b0] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001e3b8] 6716                      beq.s      $0001E3D0
-[0001e3ba] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0001e3ba] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0001e3c0] 486e fff2                 pea.l      -14(a6)
 [0001e3c4] 486e ffee                 pea.l      -18(a6)
 [0001e3c8] 6100 2728                 bsr        $00020AF2
@@ -16166,11 +16000,11 @@ MCPass1:
 [0001e3d2] 4e75                      rts
 [0001e3d4] 4e56 ffea                 link       a6,#-22
 [0001e3d8] 2d7c 0006 3fff fffc       move.l     #$00063FFF,-4(a6)
-[0001e3e0] 4eb9 0001 b286            jsr        $0001B286
-[0001e3e6] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001e3e0] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
+[0001e3e6] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001e3ee] 6610                      bne.s      $0001E400
 [0001e3f0] 3f3c 0089                 move.w     #$0089,-(a7)
-[0001e3f4] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001e3f4] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001e3fa] 548f                      addq.l     #2,a7
 [0001e3fc] 4efa 00dc                 jmp        $0001E4DA(pc)
 [0001e400] 486e fff2                 pea.l      -14(a6)
@@ -16230,21 +16064,21 @@ MCPass1:
 [0001e4b0] 4a1f                      tst.b      (a7)+
 [0001e4b2] 670c                      beq.s      $0001E4C0
 [0001e4b4] 3f3c 0078                 move.w     #$0078,-(a7)
-[0001e4b8] 4eb9 0001 b020            jsr        $0001B020
+[0001e4b8] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001e4be] 548f                      addq.l     #2,a7
 [0001e4c0] 4efa 0018                 jmp        $0001E4DA(pc)
 [0001e4c4] 286e 0008                 movea.l    8(a6),a4
 [0001e4c8] 7aff                      moveq.l    #-1,d5
 [0001e4ca] 2945 0002                 move.l     d5,2(a4)
 [0001e4ce] 3f3c 0078                 move.w     #$0078,-(a7)
-[0001e4d2] 4eb9 0001 b020            jsr        $0001B020
+[0001e4d2] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001e4d8] 548f                      addq.l     #2,a7
-[0001e4da] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001e4da] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001e4e2] 660a                      bne.s      $0001E4EE
-[0001e4e4] 4eb9 0001 b286            jsr        $0001B286
+[0001e4e4] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001e4ea] 4efa 0012                 jmp        $0001E4FE(pc)
 [0001e4ee] 3f3c 007f                 move.w     #$007F,-(a7)
-[0001e4f2] 4eb9 0001 b020            jsr        $0001B020
+[0001e4f2] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001e4f8] 548f                      addq.l     #2,a7
 [0001e4fa] 6100 075c                 bsr        $0001EC58
 [0001e4fe] 4e5e                      unlk       a6
@@ -16288,7 +16122,7 @@ MCPass1:
 [0001e58a] 664c                      bne.s      $0001E5D8
 [0001e58c] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e590] 1f3c 0053                 move.b     #$53,-(a7)
-[0001e594] 4eb9 0001 ac38            jsr        $0001AC38
+[0001e594] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0001e59a] 548f                      addq.l     #2,a7
 [0001e59c] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e5a0] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -16298,32 +16132,32 @@ MCPass1:
 [0001e5b0] 3a1f                      move.w     (a7)+,d5
 [0001e5b2] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e5b6] 3f05                      move.w     d5,-(a7)
-[0001e5b8] 4eb9 0001 acd0            jsr        $0001ACD0
+[0001e5b8] 4eb9 0001 acd0            jsr        MCP2IO.PutWord
 [0001e5be] 548f                      addq.l     #2,a7
 [0001e5c0] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e5c4] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e5c8] 1f3c 0019                 move.b     #$19,-(a7)
-[0001e5cc] 4eb9 0001 ac38            jsr        $0001AC38
+[0001e5cc] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0001e5d2] 548f                      addq.l     #2,a7
 [0001e5d4] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e5d8] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e5dc] 1f3c 0052                 move.b     #$52,-(a7)
-[0001e5e0] 4eb9 0001 ac38            jsr        $0001AC38
+[0001e5e0] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0001e5e6] 548f                      addq.l     #2,a7
 [0001e5e8] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e5ec] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e5f0] 2f2e 000c                 move.l     12(a6),-(a7)
-[0001e5f4] 4eb9 0001 acf2            jsr        $0001ACF2
+[0001e5f4] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0001e5fa] 588f                      addq.l     #4,a7
 [0001e5fc] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e600] 4e5e                      unlk       a6
 [0001e602] 4e75                      rts
 [0001e604] 4e56 ffe8                 link       a6,#-24
-[0001e608] 0c39 0013 0003 d9ca       cmpi.b     #$13,$0003D9CA
+[0001e608] 0c39 0013 0003 d9ca       cmpi.b     #$13,MCP2IO.sy
 [0001e610] 6602                      bne.s      $0001E614
 [0001e612] 6004                      bra.s      $0001E618
 [0001e614] 4efa 00ba                 jmp        $0001E6D0(pc)
-[0001e618] 4eb9 0001 b286            jsr        $0001B286
+[0001e618] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001e61e] 486e fff6                 pea.l      -10(a6)
 [0001e622] 6100 1fc8                 bsr        $000205EC
 [0001e626] 588f                      addq.l     #4,a7
@@ -16360,23 +16194,23 @@ MCPass1:
 [0001e692] 6614                      bne.s      $0001E6A8
 [0001e694] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e698] 3f3c 0080                 move.w     #$0080,-(a7)
-[0001e69c] 4eb9 0001 b020            jsr        $0001B020
+[0001e69c] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001e6a2] 548f                      addq.l     #2,a7
 [0001e6a4] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e6a8] 296b 000a 0002            move.l     10(a3),2(a4)
 [0001e6ae] 4efa 0016                 jmp        $0001E6C6(pc)
 [0001e6b2] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e6b6] 3f3c 0082                 move.w     #$0082,-(a7)
-[0001e6ba] 4eb9 0001 b020            jsr        $0001B020
+[0001e6ba] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001e6c0] 548f                      addq.l     #2,a7
 [0001e6c2] 4cdf 1800                 movem.l    (a7)+,a3-a4
-[0001e6c6] 4eb9 0001 b286            jsr        $0001B286
+[0001e6c6] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001e6cc] 4efa 0148                 jmp        $0001E816(pc)
-[0001e6d0] 0c39 0019 0003 d9ca       cmpi.b     #$19,$0003D9CA
+[0001e6d0] 0c39 0019 0003 d9ca       cmpi.b     #$19,MCP2IO.sy
 [0001e6d8] 6602                      bne.s      $0001E6DC
 [0001e6da] 6004                      bra.s      $0001E6E0
 [0001e6dc] 4efa 00c8                 jmp        $0001E7A6(pc)
-[0001e6e0] 4eb9 0001 b286            jsr        $0001B286
+[0001e6e0] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001e6e6] 286e 0008                 movea.l    8(a6),a4
 [0001e6ea] 7aff                      moveq.l    #-1,d5
 [0001e6ec] baac 0002                 cmp.l      2(a4),d5
@@ -16388,7 +16222,7 @@ MCPass1:
 [0001e702] 6718                      beq.s      $0001E71C
 [0001e704] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e708] 3f3c 0083                 move.w     #$0083,-(a7)
-[0001e70c] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001e70c] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001e712] 548f                      addq.l     #2,a7
 [0001e714] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e718] 4efa 0082                 jmp        $0001E79C(pc)
@@ -16403,12 +16237,12 @@ MCPass1:
 [0001e73a] 674c                      beq.s      $0001E788
 [0001e73c] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e740] 1f3c 0052                 move.b     #$52,-(a7)
-[0001e744] 4eb9 0001 ac38            jsr        $0001AC38
+[0001e744] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0001e74a] 548f                      addq.l     #2,a7
 [0001e74c] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e750] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e754] 2f2e ffe8                 move.l     -24(a6),-(a7)
-[0001e758] 4eb9 0001 acf2            jsr        $0001ACF2
+[0001e758] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0001e75e] 588f                      addq.l     #4,a7
 [0001e760] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e764] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -16422,12 +16256,12 @@ MCPass1:
 [0001e784] 4efa 0016                 jmp        $0001E79C(pc)
 [0001e788] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e78c] 3f3c 0049                 move.w     #$0049,-(a7)
-[0001e790] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001e790] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001e796] 548f                      addq.l     #2,a7
 [0001e798] 4cdf 1800                 movem.l    (a7)+,a3-a4
-[0001e79c] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0001e79c] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0001e7a2] 4efa 0072                 jmp        $0001E816(pc)
-[0001e7a6] 0c39 0025 0003 d9ca       cmpi.b     #$25,$0003D9CA
+[0001e7a6] 0c39 0025 0003 d9ca       cmpi.b     #$25,MCP2IO.sy
 [0001e7ae] 6666                      bne.s      $0001E816
 [0001e7b0] 286e 0008                 movea.l    8(a6),a4
 [0001e7b4] 2a2c 0002                 move.l     2(a4),d5
@@ -16443,7 +16277,7 @@ MCPass1:
 [0001e7de] 6718                      beq.s      $0001E7F8
 [0001e7e0] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001e7e4] 3f3c 0092                 move.w     #$0092,-(a7)
-[0001e7e8] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001e7e8] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001e7ee] 548f                      addq.l     #2,a7
 [0001e7f0] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e7f4] 4efa 001a                 jmp        $0001E810(pc)
@@ -16453,12 +16287,12 @@ MCPass1:
 [0001e804] 588f                      addq.l     #4,a7
 [0001e806] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001e80a] 296b 000a 0002            move.l     10(a3),2(a4)
-[0001e810] 4eb9 0001 b286            jsr        $0001B286
-[0001e816] 0c39 0013 0003 d9ca       cmpi.b     #$13,$0003D9CA
+[0001e810] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
+[0001e816] 0c39 0013 0003 d9ca       cmpi.b     #$13,MCP2IO.sy
 [0001e81e] 6714                      beq.s      $0001E834
-[0001e820] 0c39 0019 0003 d9ca       cmpi.b     #$19,$0003D9CA
+[0001e820] 0c39 0019 0003 d9ca       cmpi.b     #$19,MCP2IO.sy
 [0001e828] 670a                      beq.s      $0001E834
-[0001e82a] 0c39 0025 0003 d9ca       cmpi.b     #$25,$0003D9CA
+[0001e82a] 0c39 0025 0003 d9ca       cmpi.b     #$25,MCP2IO.sy
 [0001e832] 6604                      bne.s      $0001E838
 [0001e834] 6000 fdd2                 bra        $0001E608
 [0001e838] 4e5e                      unlk       a6
@@ -16486,17 +16320,17 @@ MCPass1:
 [0001e884] baae 0010                 cmp.l      16(a6),d5
 [0001e888] 670c                      beq.s      $0001E896
 [0001e88a] 3f3c 0087                 move.w     #$0087,-(a7)
-[0001e88e] 4eb9 0001 b020            jsr        $0001B020
+[0001e88e] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001e894] 548f                      addq.l     #2,a7
 [0001e896] 4efa 000e                 jmp        $0001E8A6(pc)
 [0001e89a] 3f3c 0080                 move.w     #$0080,-(a7)
-[0001e89e] 4eb9 0001 b020            jsr        $0001B020
+[0001e89e] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001e8a4] 548f                      addq.l     #2,a7
 [0001e8a6] 4e5e                      unlk       a6
 [0001e8a8] 4e75                      rts
 [0001e8aa] 4e56 ffd6                 link       a6,#-42
 [0001e8ae] 2d6e 0008 ffe8            move.l     8(a6),-24(a6)
-[0001e8b4] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001e8b4] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001e8bc] 6702                      beq.s      $0001E8C0
 [0001e8be] 6004                      bra.s      $0001E8C4
 [0001e8c0] 4efa 0378                 jmp        $0001EC3A(pc)
@@ -16510,7 +16344,7 @@ MCPass1:
 [0001e8dc] baae ffe8                 cmp.l      -24(a6),d5
 [0001e8e0] 6610                      bne.s      $0001E8F2
 [0001e8e2] 3f3c 0084                 move.w     #$0084,-(a7)
-[0001e8e6] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001e8e6] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001e8ec] 548f                      addq.l     #2,a7
 [0001e8ee] 4efa 032a                 jmp        $0001EC1A(pc)
 [0001e8f2] 49ee fff6                 lea.l      -10(a6),a4
@@ -16623,7 +16457,7 @@ MCPass1:
 [0001ea54] 4efa 0016                 jmp        $0001EA6C(pc)
 [0001ea58] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001ea5c] 3f3c 0086                 move.w     #$0086,-(a7)
-[0001ea60] 4eb9 0001 b020            jsr        $0001B020
+[0001ea60] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001ea66] 548f                      addq.l     #2,a7
 [0001ea68] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001ea6c] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -16641,7 +16475,7 @@ MCPass1:
 [0001ea94] 6714                      beq.s      $0001EAAA
 [0001ea96] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001ea9a] 3f3c 03b6                 move.w     #$03B6,-(a7)
-[0001ea9e] 4eb9 0001 b020            jsr        $0001B020
+[0001ea9e] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001eaa4] 548f                      addq.l     #2,a7
 [0001eaa6] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001eaaa] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -16685,7 +16519,7 @@ MCPass1:
 [0001eb28] 6614                      bne.s      $0001EB3E
 [0001eb2a] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001eb2e] 3f3c 0096                 move.w     #$0096,-(a7)
-[0001eb32] 4eb9 0001 b020            jsr        $0001B020
+[0001eb32] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001eb38] 548f                      addq.l     #2,a7
 [0001eb3a] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001eb3e] 4efa 00d0                 jmp        $0001EC10(pc)
@@ -16748,7 +16582,7 @@ MCPass1:
 [0001ebfa] 6614                      bne.s      $0001EC10
 [0001ebfc] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001ec00] 3f3c 0080                 move.w     #$0080,-(a7)
-[0001ec04] 4eb9 0001 b020            jsr        $0001B020
+[0001ec04] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001ec0a] 548f                      addq.l     #2,a7
 [0001ec0c] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001ec10] 266e ffe8                 movea.l    -24(a6),a3
@@ -16756,30 +16590,30 @@ MCPass1:
 [0001ec1a] 2f2e ffd6                 move.l     -42(a6),-(a7)
 [0001ec1e] 4eb9 0001 aec8            jsr        $0001AEC8
 [0001ec24] 588f                      addq.l     #4,a7
-[0001ec26] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[0001ec26] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [0001ec2e] 6606                      bne.s      $0001EC36
-[0001ec30] 4eb9 0001 b286            jsr        $0001B286
+[0001ec30] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001ec36] 6000 fc7c                 bra        $0001E8B4
-[0001ec3a] 4eb9 0001 b286            jsr        $0001B286
+[0001ec3a] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001ec40] 7aff                      moveq.l    #-1,d5
 [0001ec42] baae ffe8                 cmp.l      -24(a6),d5
 [0001ec46] 670c                      beq.s      $0001EC54
 [0001ec48] 3f3c 0089                 move.w     #$0089,-(a7)
-[0001ec4c] 4eb9 0001 b020            jsr        $0001B020
+[0001ec4c] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001ec52] 548f                      addq.l     #2,a7
 [0001ec54] 4e5e                      unlk       a6
 [0001ec56] 4e75                      rts
 [0001ec58] 4e56 fff6                 link       a6,#-10
-[0001ec5c] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001ec5c] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001ec64] 671c                      beq.s      $0001EC82
-[0001ec66] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[0001ec66] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [0001ec6e] 6606                      bne.s      $0001EC76
-[0001ec70] 4eb9 0001 b286            jsr        $0001B286
+[0001ec70] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001ec76] 486e fff6                 pea.l      -10(a6)
 [0001ec7a] 6100 1970                 bsr        $000205EC
 [0001ec7e] 588f                      addq.l     #4,a7
 [0001ec80] 60da                      bra.s      $0001EC5C
-[0001ec82] 4eb9 0001 b286            jsr        $0001B286
+[0001ec82] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001ec88] 4e5e                      unlk       a6
 [0001ec8a] 4e75                      rts
 [0001ec8c] 4e56 0000                 link       a6,#0
@@ -16905,7 +16739,7 @@ MCPass1:
 [0001ee0e] 2d6c 000a fffc            move.l     10(a4),-4(a6)
 [0001ee14] 4efa 0014                 jmp        $0001EE2A(pc)
 [0001ee18] 3f3c 0063                 move.w     #$0063,-(a7)
-[0001ee1c] 4eb9 0001 b020            jsr        $0001B020
+[0001ee1c] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001ee22] 548f                      addq.l     #2,a7
 [0001ee24] 7aff                      moveq.l    #-1,d5
 [0001ee26] 2d45 fffc                 move.l     d5,-4(a6)
@@ -16922,8 +16756,8 @@ MCPass1:
 [0001ee48] 486e ffcc                 pea.l      -52(a6)
 [0001ee4c] 4eb9 0001 ab08            jsr        $0001AB08
 [0001ee52] 4fef 000c                 lea.l      12(a7),a7
-[0001ee56] 4eb9 0001 b0e6            jsr        $0001B0E6
-[0001ee5c] 0c39 0016 0003 d9ca       cmpi.b     #$16,$0003D9CA
+[0001ee56] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[0001ee5c] 0c39 0016 0003 d9ca       cmpi.b     #$16,MCP2IO.sy
 [0001ee64] 6702                      beq.s      $0001EE68
 [0001ee66] 6004                      bra.s      $0001EE6C
 [0001ee68] 4efa 00f4                 jmp        $0001EF5E(pc)
@@ -16971,7 +16805,7 @@ MCPass1:
 [0001eefa] baae ffcc                 cmp.l      -52(a6),d5
 [0001eefe] 6310                      bls.s      $0001EF10
 [0001ef00] 3f3c 0062                 move.w     #$0062,-(a7)
-[0001ef04] 4eb9 0001 b020            jsr        $0001B020
+[0001ef04] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001ef0a] 548f                      addq.l     #2,a7
 [0001ef0c] 4efa 002c                 jmp        $0001EF3A(pc)
 [0001ef10] 422e dfbf                 clr.b      -8257(a6)
@@ -16988,13 +16822,13 @@ MCPass1:
 [0001ef38] 60da                      bra.s      $0001EF14
 [0001ef3a] 4efa 000e                 jmp        $0001EF4A(pc)
 [0001ef3e] 3f3c 0061                 move.w     #$0061,-(a7)
-[0001ef42] 4eb9 0001 b020            jsr        $0001B020
+[0001ef42] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001ef48] 548f                      addq.l     #2,a7
-[0001ef4a] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[0001ef4a] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [0001ef52] 6606                      bne.s      $0001EF5A
-[0001ef54] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0001ef54] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0001ef5a] 6000 ff00                 bra        $0001EE5C
-[0001ef5e] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0001ef5e] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0001ef64] 0c6e 0004 dfc4            cmpi.w     #$0004,-8252(a6)
 [0001ef6a] 6302                      bls.s      $0001EF6E
 [0001ef6c] 6004                      bra.s      $0001EF72
@@ -17070,7 +16904,7 @@ MCPass1:
 [0001f04a] 486e fff6                 pea.l      -10(a6)
 [0001f04e] 6100 f056                 bsr        $0001E0A6
 [0001f052] 588f                      addq.l     #4,a7
-[0001f054] 0c39 0015 0003 d9ca       cmpi.b     #$15,$0003D9CA
+[0001f054] 0c39 0015 0003 d9ca       cmpi.b     #$15,MCP2IO.sy
 [0001f05c] 660e                      bne.s      $0001F06C
 [0001f05e] 486e fff6                 pea.l      -10(a6)
 [0001f062] 6100 fcee                 bsr        $0001ED52
@@ -17079,9 +16913,9 @@ MCPass1:
 [0001f06c] 486e fff6                 pea.l      -10(a6)
 [0001f070] 6100 f592                 bsr        $0001E604
 [0001f074] 588f                      addq.l     #4,a7
-[0001f076] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[0001f076] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [0001f07e] 660a                      bne.s      $0001F08A
-[0001f080] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0001f080] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0001f086] 6100 fbd0                 bsr        $0001EC58
 [0001f08a] 4e5e                      unlk       a6
 [0001f08c] 4e75                      rts
@@ -17093,10 +16927,10 @@ MCPass1:
 [0001f0a6] 4e5e                      unlk       a6
 [0001f0a8] 4e75                      rts
 [0001f0aa] 4e56 0000                 link       a6,#0
-[0001f0ae] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001f0ae] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001f0b6] 6610                      bne.s      $0001F0C8
 [0001f0b8] 3f3c 007f                 move.w     #$007F,-(a7)
-[0001f0bc] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001f0bc] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001f0c2] 548f                      addq.l     #2,a7
 [0001f0c4] 4efa 0012                 jmp        $0001F0D8(pc)
 [0001f0c8] 286e 000c                 movea.l    12(a6),a4
@@ -17116,12 +16950,12 @@ MCPass1:
 [0001f0f4] 286e 000c                 movea.l    12(a6),a4
 [0001f0f8] 1d6c 0012 ffed            move.b     18(a4),-19(a6)
 [0001f0fe] 1f3c 0052                 move.b     #$52,-(a7)
-[0001f102] 4eb9 0001 ac38            jsr        $0001AC38
+[0001f102] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0001f108] 548f                      addq.l     #2,a7
 [0001f10a] 2f2e 000c                 move.l     12(a6),-(a7)
-[0001f10e] 4eb9 0001 acf2            jsr        $0001ACF2
+[0001f10e] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0001f114] 588f                      addq.l     #4,a7
-[0001f116] 4eb9 0001 b286            jsr        $0001B286
+[0001f116] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001f11c] 7a00                      moveq.l    #0,d5
 [0001f11e] 1a2e ffed                 move.b     -19(a6),d5
 [0001f122] 2005                      move.l     d5,d0
@@ -17131,10 +16965,10 @@ MCPass1:
 [0001f132] 0000 0820
 [0001f136] 286e 0008                 movea.l    8(a6),a4
 [0001f13a] 2979 0003 602c 0002       move.l     MCP1Ident.cardptr,2(a4)
-[0001f142] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001f142] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001f14a] 6610                      bne.s      $0001F15C
 [0001f14c] 3f3c 007f                 move.w     #$007F,-(a7)
-[0001f150] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001f150] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001f156] 548f                      addq.l     #2,a7
 [0001f158] 4efa 0050                 jmp        $0001F1AA(pc)
 [0001f15c] 486e fff6                 pea.l      -10(a6)
@@ -17163,10 +16997,10 @@ MCPass1:
 [0001f1aa] 4efa 07c6                 jmp        $0001F972(pc)
 [0001f1ae] 286e 0008                 movea.l    8(a6),a4
 [0001f1b2] 2979 0003 6030 0002       move.l     MCP1Ident.intcarptr,2(a4)
-[0001f1ba] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001f1ba] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001f1c2] 6610                      bne.s      $0001F1D4
 [0001f1c4] 3f3c 007f                 move.w     #$007F,-(a7)
-[0001f1c8] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001f1c8] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001f1ce] 548f                      addq.l     #2,a7
 [0001f1d0] 4efa 004c                 jmp        $0001F21E(pc)
 [0001f1d4] 486e fff6                 pea.l      -10(a6)
@@ -17197,7 +17031,7 @@ MCPass1:
 [0001f21e] 4efa 0752                 jmp        $0001F972(pc)
 [0001f222] 286e 0008                 movea.l    8(a6),a4
 [0001f226] 2979 0003 6030 0002       move.l     MCP1Ident.intcarptr,2(a4)
-[0001f22e] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[0001f22e] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [0001f236] 666a                      bne.s      $0001F2A2
 [0001f238] 3f3c 0002                 move.w     #$0002,-(a7)
 [0001f23c] 3f3c 0081                 move.w     #$0081,-(a7)
@@ -17231,17 +17065,17 @@ MCPass1:
 [0001f29c] 508f                      addq.l     #8,a7
 [0001f29e] 4efa 000e                 jmp        $0001F2AE(pc)
 [0001f2a2] 3f3c 0087                 move.w     #$0087,-(a7)
-[0001f2a6] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001f2a6] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001f2ac] 548f                      addq.l     #2,a7
 [0001f2ae] 7a00                      moveq.l    #0,d5
-[0001f2b0] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001f2b0] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001f2b6] 2005                      move.l     d5,d0
 [0001f2b8] 4eb9 0001 000a            jsr        CASEX
-[0001f2be] 0000 0011                 ori.b      #$11,d0
-[0001f2c2] 0000 0014                 ori.b      #$14,d0
-[0001f2c6] 0000 0024                 ori.b      #$24,d0
+[0001f2be] 0000 0011
+[0001f2c2] 0000 0014
+[0001f2c6] 0000 0024
 [0001f2ca] 3f3c 0087                 move.w     #$0087,-(a7)
-[0001f2ce] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001f2ce] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001f2d4] 548f                      addq.l     #2,a7
 [0001f2d6] 6100 fd6e                 bsr        $0001F046
 [0001f2da] 4efa 0030                 jmp        $0001F30C(pc)
@@ -17265,7 +17099,7 @@ MCPass1:
 [0001f322] d9ca                      adda.l     a2,a4
 [0001f324] 6610                      bne.s      $0001F336
 [0001f326] 3f3c 007f                 move.w     #$007F,-(a7)
-[0001f32a] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001f32a] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001f330] 548f                      addq.l     #2,a7
 [0001f332] 4efa 0012                 jmp        $0001F346(pc)
 [0001f336] 486e fff6                 pea.l      -10(a6)
@@ -17310,9 +17144,9 @@ MCPass1:
 [0001f3d0] 508f                      addq.l     #8,a7
 [0001f3d2] 286e 0008                 movea.l    8(a6),a4
 [0001f3d6] 296e fff8 0002            move.l     -8(a6),2(a4)
-[0001f3dc] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[0001f3dc] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [0001f3e4] 6606                      bne.s      $0001F3EC
-[0001f3e6] 4eb9 0001 b286            jsr        $0001B286
+[0001f3e6] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001f3ec] 486e fff6                 pea.l      -10(a6)
 [0001f3f0] 7a78                      moveq.l    #120,d5
 [0001f3f2] 2f05                      move.l     d5,-(a7)
@@ -17402,7 +17236,7 @@ MCPass1:
 [0001f52c] 4a1f                      tst.b      (a7)+
 [0001f52e] 670c                      beq.s      $0001F53C
 [0001f530] 3f3c 0099                 move.w     #$0099,-(a7)
-[0001f534] 4eb9 0001 b020            jsr        $0001B020
+[0001f534] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001f53a] 548f                      addq.l     #2,a7
 [0001f53c] 2a2e fff8                 move.l     -8(a6),d5
 [0001f540] bab9 0003 6044            cmp.l      MCP1Ident.longrealptr,d5
@@ -17493,7 +17327,7 @@ MCPass1:
 [0001f678] 4aac 0006                 tst.l      6(a4)
 [0001f67c] 6c0c                      bge.s      $0001F68A
 [0001f67e] 3f3c 0080                 move.w     #$0080,-(a7)
-[0001f682] 4eb9 0001 b020            jsr        $0001B020
+[0001f682] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001f688] 548f                      addq.l     #2,a7
 [0001f68a] 286e 0008                 movea.l    8(a6),a4
 [0001f68e] 2979 0003 6030 0002       move.l     MCP1Ident.intcarptr,2(a4)
@@ -17517,7 +17351,7 @@ MCPass1:
 [0001f6d0] 0cac 0000 00ff 0006       cmpi.l     #$000000FF,6(a4)
 [0001f6d8] 6f0c                      ble.s      $0001F6E6
 [0001f6da] 3f3c 0080                 move.w     #$0080,-(a7)
-[0001f6de] 4eb9 0001 b020            jsr        $0001B020
+[0001f6de] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001f6e4] 548f                      addq.l     #2,a7
 [0001f6e6] 286e 0008                 movea.l    8(a6),a4
 [0001f6ea] 2979 0003 6024 0002       move.l     MCP1Ident.charptr,2(a4)
@@ -17525,7 +17359,7 @@ MCPass1:
 [0001f6f6] 286e 0008                 movea.l    8(a6),a4
 [0001f6fa] 7aff                      moveq.l    #-1,d5
 [0001f6fc] 2945 0002                 move.l     d5,2(a4)
-[0001f700] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[0001f700] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [0001f708] 6602                      bne.s      $0001F70C
 [0001f70a] 6004                      bra.s      $0001F710
 [0001f70c] 4efa 00bc                 jmp        $0001F7CA(pc)
@@ -17550,7 +17384,7 @@ MCPass1:
 [0001f74e] 276c 0006 0002            move.l     6(a4),2(a3)
 [0001f754] 4efa 000e                 jmp        $0001F764(pc)
 [0001f758] 3f3c 0079                 move.w     #$0079,-(a7)
-[0001f75c] 4eb9 0001 b020            jsr        $0001B020
+[0001f75c] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001f762] 548f                      addq.l     #2,a7
 [0001f764] 286e 0008                 movea.l    8(a6),a4
 [0001f768] 4214                      clr.b      (a4)
@@ -17583,17 +17417,17 @@ MCPass1:
 [0001f7c4] 285f                      movea.l    (a7)+,a4
 [0001f7c6] 4efa 000e                 jmp        $0001F7D6(pc)
 [0001f7ca] 3f3c 0087                 move.w     #$0087,-(a7)
-[0001f7ce] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001f7ce] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001f7d4] 548f                      addq.l     #2,a7
 [0001f7d6] 7a00                      moveq.l    #0,d5
-[0001f7d8] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001f7d8] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001f7de] 2005                      move.l     d5,d0
 [0001f7e0] 4eb9 0001 000a            jsr        CASEX
-[0001f7e6] 0000 0011                 ori.b      #$11,d0
-[0001f7ea] 0000 0014                 ori.b      #$14,d0
-[0001f7ee] 0000 0024                 ori.b      #$24,d0
+[0001f7e6] 0000 0011
+[0001f7ea] 0000 0014
+[0001f7ee] 0000 0024
 [0001f7f2] 3f3c 0087                 move.w     #$0087,-(a7)
-[0001f7f6] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001f7f6] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001f7fc] 548f                      addq.l     #2,a7
 [0001f7fe] 6100 f846                 bsr        $0001F046
 [0001f802] 4efa 0030                 jmp        $0001F834(pc)
@@ -17612,7 +17446,7 @@ MCPass1:
 [0001f836] 013c 286e                 btst       d0,#$6E
 [0001f83a] 0008 7aff                 ori.b      #$FF,a0 ; apollo only
 [0001f83e] 2945 0002                 move.l     d5,2(a4)
-[0001f842] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[0001f842] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [0001f84a] 666e                      bne.s      $0001F8BA
 [0001f84c] 3f3c 0002                 move.w     #$0002,-(a7)
 [0001f850] 3f3c 0081                 move.w     #$0081,-(a7)
@@ -17635,27 +17469,27 @@ MCPass1:
 [0001f888] 276c 0006 0002            move.l     6(a4),2(a3)
 [0001f88e] 4efa 000e                 jmp        $0001F89E(pc)
 [0001f892] 3f3c 0079                 move.w     #$0079,-(a7)
-[0001f896] 4eb9 0001 b020            jsr        $0001B020
+[0001f896] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001f89c] 548f                      addq.l     #2,a7
 [0001f89e] 1f3c 0052                 move.b     #$52,-(a7)
-[0001f8a2] 4eb9 0001 ac38            jsr        $0001AC38
+[0001f8a2] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0001f8a8] 548f                      addq.l     #2,a7
 [0001f8aa] 2f2e 000c                 move.l     12(a6),-(a7)
-[0001f8ae] 4eb9 0001 acf2            jsr        $0001ACF2
+[0001f8ae] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0001f8b4] 588f                      addq.l     #4,a7
 [0001f8b6] 4efa 000e                 jmp        $0001F8C6(pc)
 [0001f8ba] 3f3c 0087                 move.w     #$0087,-(a7)
-[0001f8be] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001f8be] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001f8c4] 548f                      addq.l     #2,a7
 [0001f8c6] 7a00                      moveq.l    #0,d5
-[0001f8c8] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001f8c8] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001f8ce] 2005                      move.l     d5,d0
 [0001f8d0] 4eb9 0001 000a            jsr        CASEX
-[0001f8d6] 0000 0011                 ori.b      #$11,d0
-[0001f8da] 0000 0014                 ori.b      #$14,d0
-[0001f8de] 0000 0024                 ori.b      #$24,d0
+[0001f8d6] 0000 0011
+[0001f8da] 0000 0014
+[0001f8de] 0000 0024
 [0001f8e2] 3f3c 0087                 move.w     #$0087,-(a7)
-[0001f8e6] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001f8e6] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001f8ec] 548f                      addq.l     #2,a7
 [0001f8ee] 6100 f756                 bsr        $0001F046
 [0001f8f2] 4efa 0030                 jmp        $0001F924(pc)
@@ -17674,7 +17508,7 @@ MCPass1:
 [0001f926] 0017 0003                 ori.b      #$03,(a7)
 [0001f92a] d9ca                      adda.l     a2,a4
 [0001f92c] 6606                      bne.s      $0001F934
-[0001f92e] 4eb9 0001 b286            jsr        $0001B286
+[0001f92e] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001f934] 486e fff6                 pea.l      -10(a6)
 [0001f938] 7a78                      moveq.l    #120,d5
 [0001f93a] 2f05                      move.l     d5,-(a7)
@@ -17692,12 +17526,12 @@ MCPass1:
 [0001f964] 070e 05cc                 movep.w    1484(a6),d3
 [0001f968] 05cc 03c6                 movep.l    d2,966(a4)
 [0001f96c] 0488 039c 0374            subi.l     #$039C0374,a0 ; apollo only
-[0001f972] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0001f972] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0001f97a] 660a                      bne.s      $0001F986
-[0001f97c] 4eb9 0001 b286            jsr        $0001B286
+[0001f97c] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001f982] 4efa 0012                 jmp        $0001F996(pc)
 [0001f986] 3f3c 007f                 move.w     #$007F,-(a7)
-[0001f98a] 4eb9 0001 b020            jsr        $0001B020
+[0001f98a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001f990] 548f                      addq.l     #2,a7
 [0001f992] 6100 f2c4                 bsr        $0001EC58
 [0001f996] 4e5e                      unlk       a6
@@ -17710,7 +17544,7 @@ MCPass1:
 [0001f9ae] 4854                      pea.l      (a4)
 [0001f9b0] 6100 e6f4                 bsr        $0001E0A6
 [0001f9b4] 588f                      addq.l     #4,a7
-[0001f9b6] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[0001f9b6] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [0001f9be] 6602                      bne.s      $0001F9C2
 [0001f9c0] 6004                      bra.s      $0001F9C6
 [0001f9c2] 4efa 0532                 jmp        $0001FEF6(pc)
@@ -17734,7 +17568,7 @@ MCPass1:
 [0001f9fc] 6702                      beq.s      $0001FA00
 [0001f9fe] 6004                      bra.s      $0001FA04
 [0001fa00] 4efa 00b0                 jmp        $0001FAB2(pc)
-[0001fa04] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[0001fa04] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [0001fa0c] 663a                      bne.s      $0001FA48
 [0001fa0e] 286e fffc                 movea.l    -4(a6),a4
 [0001fa12] 0c2c 0005 0010            cmpi.b     #$05,16(a4)
@@ -17746,20 +17580,20 @@ MCPass1:
 [0001fa28] 508f                      addq.l     #8,a7
 [0001fa2a] 4efa 0018                 jmp        $0001FA44(pc)
 [0001fa2e] 3f3c 0091                 move.w     #$0091,-(a7)
-[0001fa32] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001fa32] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001fa38] 548f                      addq.l     #2,a7
-[0001fa3a] 4eb9 0001 b286            jsr        $0001B286
+[0001fa3a] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001fa40] 6100 f216                 bsr        $0001EC58
 [0001fa44] 4efa 0068                 jmp        $0001FAAE(pc)
 [0001fa48] 7a00                      moveq.l    #0,d5
-[0001fa4a] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001fa4a] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001fa50] 2005                      move.l     d5,d0
 [0001fa52] 4eb9 0001 000a            jsr        CASEX
 [0001fa58] 0000 0013                 ori.b      #$13,d0
 [0001fa5c] 0000 0012                 ori.b      #$12,d0
 [0001fa60] 0000 0024                 ori.b      #$24,d0
 [0001fa64] 3f3c 0090                 move.w     #$0090,-(a7)
-[0001fa68] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001fa68] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001fa6e] 548f                      addq.l     #2,a7
 [0001fa70] 6100 f5d4                 bsr        $0001F046
 [0001fa74] 4efa 0038                 jmp        $0001FAAE(pc)
@@ -17788,9 +17622,9 @@ MCPass1:
 [0001fac8] 1a2c 0010                 move.b     16(a4),d5
 [0001facc] 2005                      move.l     d5,d0
 [0001face] 4eb9 0001 000a            jsr        CASEX
-[0001fad4] 0000 0000                      dc.w       $0000
-[0001fad8] 0000 0007                 ori.b      #$07,d0
-[0001fadc] 0000 0406                 ori.b      #$06,d0
+[0001fad4] 0000 0000
+[0001fad8] 0000 0007
+[0001fadc] 0000 0406
 [0001fae0] 0c79 0002 0003 db6a       cmpi.w     #$0002,$0003DB6A
 [0001fae8] 6618                      bne.s      $0001FB02
 [0001faea] 7aff                      moveq.l    #-1,d5
@@ -17798,19 +17632,19 @@ MCPass1:
 [0001faf0] 6610                      bne.s      $0001FB02
 [0001faf2] 2f0c                      move.l     a4,-(a7)
 [0001faf4] 3f3c 0049                 move.w     #$0049,-(a7)
-[0001faf8] 4eb9 0001 b020            jsr        $0001B020
+[0001faf8] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001fafe] 548f                      addq.l     #2,a7
 [0001fb00] 285f                      movea.l    (a7)+,a4
 [0001fb02] 7a00                      moveq.l    #0,d5
-[0001fb04] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001fb04] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001fb0a] 2005                      move.l     d5,d0
 [0001fb0c] 4eb9 0001 000a            jsr        CASEX
-[0001fb12] 0000 0011                 ori.b      #$11,d0
-[0001fb16] 0000 0014                 ori.b      #$14,d0
-[0001fb1a] 0000 003c                 ori.b      #$3C,d0
+[0001fb12] 0000 0011
+[0001fb16] 0000 0014
+[0001fb1a] 0000 003c
 [0001fb1e] 2f0c                      move.l     a4,-(a7)
 [0001fb20] 3f3c 007b                 move.w     #$007B,-(a7)
-[0001fb24] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001fb24] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001fb2a] 548f                      addq.l     #2,a7
 [0001fb2c] 285f                      movea.l    (a7)+,a4
 [0001fb2e] 2f0c                      move.l     a4,-(a7)
@@ -17906,12 +17740,12 @@ MCPass1:
 [0001fc64] 276c 0012 0006            move.l     18(a4),6(a3)
 [0001fc6a] 4efa 027e                 jmp        $0001FEEA(pc)
 [0001fc6e] 7a00                      moveq.l    #0,d5
-[0001fc70] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001fc70] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001fc76] 2005                      move.l     d5,d0
 [0001fc78] 4eb9 0001 000a            jsr        CASEX
-[0001fc7e] 0000 0011                 ori.b      #$11,d0
-[0001fc82] 0000 0014                 ori.b      #$14,d0
-[0001fc86] 0000 0084                 ori.b      #$84,d0
+[0001fc7e] 0000 0011
+[0001fc82] 0000 0014
+[0001fc86] 0000 0084
 [0001fc8a] 2f0c                      move.l     a4,-(a7)
 [0001fc8c] 266e 0008                 movea.l    8(a6),a3
 [0001fc90] 4853                      pea.l      (a3)
@@ -17921,12 +17755,12 @@ MCPass1:
 [0001fc9a] 4efa 00b0                 jmp        $0001FD4C(pc)
 [0001fc9e] 2f0c                      move.l     a4,-(a7)
 [0001fca0] 1f3c 0052                 move.b     #$52,-(a7)
-[0001fca4] 4eb9 0001 ac38            jsr        $0001AC38
+[0001fca4] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0001fcaa] 548f                      addq.l     #2,a7
 [0001fcac] 285f                      movea.l    (a7)+,a4
 [0001fcae] 2f0c                      move.l     a4,-(a7)
 [0001fcb0] 2f2e fffc                 move.l     -4(a6),-(a7)
-[0001fcb4] 4eb9 0001 acf2            jsr        $0001ACF2
+[0001fcb4] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0001fcba] 588f                      addq.l     #4,a7
 [0001fcbc] 285f                      movea.l    (a7)+,a4
 [0001fcbe] 2f0c                      move.l     a4,-(a7)
@@ -17938,7 +17772,7 @@ MCPass1:
 [0001fcce] 4efa 007c                 jmp        $0001FD4C(pc)
 [0001fcd2] 2f0c                      move.l     a4,-(a7)
 [0001fcd4] 3f3c 0090                 move.w     #$0090,-(a7)
-[0001fcd8] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001fcd8] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001fcde] 548f                      addq.l     #2,a7
 [0001fce0] 285f                      movea.l    (a7)+,a4
 [0001fce2] 2f0c                      move.l     a4,-(a7)
@@ -17962,7 +17796,7 @@ MCPass1:
 [0001fd26] 0080 0080 0054            ori.l      #$00800054,d0
 [0001fd2c] 2f0c                      move.l     a4,-(a7)
 [0001fd2e] 3f3c 0089                 move.w     #$0089,-(a7)
-[0001fd32] 4eb9 0001 b020            jsr        $0001B020
+[0001fd32] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001fd38] 548f                      addq.l     #2,a7
 [0001fd3a] 285f                      movea.l    (a7)+,a4
 [0001fd3c] 2f0c                      move.l     a4,-(a7)
@@ -17984,12 +17818,12 @@ MCPass1:
 [0001fd6e] 588f                      addq.l     #4,a7
 [0001fd70] 285f                      movea.l    (a7)+,a4
 [0001fd72] 7a00                      moveq.l    #0,d5
-[0001fd74] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001fd74] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001fd7a] 2005                      move.l     d5,d0
 [0001fd7c] 4eb9 0001 000a            jsr        CASEX
-[0001fd82] 0000 0011                 ori.b      #$11,d0
-[0001fd86] 0000 0014                 ori.b      #$14,d0
-[0001fd8a] 0000 00e2                 ori.b      #$E2,d0
+[0001fd82] 0000 0011
+[0001fd86] 0000 0014
+[0001fd8a] 0000 00e2
 [0001fd8e] 266e 0008                 movea.l    8(a6),a3
 [0001fd92] 16bc 0002                 move.b     #$02,(a3)
 [0001fd96] 0c2c 0005 0010            cmpi.b     #$05,16(a4)
@@ -17998,7 +17832,7 @@ MCPass1:
 [0001fda4] 6706                      beq.s      $0001FDAC
 [0001fda6] 197c 0001 0028            move.b     #$01,40(a4)
 [0001fdac] 2f0c                      move.l     a4,-(a7)
-[0001fdae] 4eb9 0001 b286            jsr        $0001B286
+[0001fdae] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001fdb4] 285f                      movea.l    (a7)+,a4
 [0001fdb6] 266e 0008                 movea.l    8(a6),a3
 [0001fdba] 7aff                      moveq.l    #-1,d5
@@ -18020,7 +17854,7 @@ MCPass1:
 [0001fdf6] 4efa 002c                 jmp        $0001FE24(pc)
 [0001fdfa] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0001fdfe] 3f3c 0091                 move.w     #$0091,-(a7)
-[0001fe02] 4eb9 0001 b020            jsr        $0001B020
+[0001fe02] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001fe08] 548f                      addq.l     #2,a7
 [0001fe0a] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0001fe0e] 246e 0008                 movea.l    8(a6),a2
@@ -18036,7 +17870,7 @@ MCPass1:
 [0001fe30] 4efa 00a0                 jmp        $0001FED2(pc)
 [0001fe34] 2f0c                      move.l     a4,-(a7)
 [0001fe36] 3f3c 0090                 move.w     #$0090,-(a7)
-[0001fe3a] 4eb9 0001 afd2            jsr        $0001AFD2
+[0001fe3a] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0001fe40] 548f                      addq.l     #2,a7
 [0001fe42] 285f                      movea.l    (a7)+,a4
 [0001fe44] 2f0c                      move.l     a4,-(a7)
@@ -18072,14 +17906,14 @@ MCPass1:
 [0001feaa] 6710                      beq.s      $0001FEBC
 [0001feac] 2f0c                      move.l     a4,-(a7)
 [0001feae] 3f3c 008d                 move.w     #$008D,-(a7)
-[0001feb2] 4eb9 0001 b020            jsr        $0001B020
+[0001feb2] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001feb8] 548f                      addq.l     #2,a7
 [0001feba] 285f                      movea.l    (a7)+,a4
 [0001febc] 4a6c 002a                 tst.w      42(a4)
 [0001fec0] 6710                      beq.s      $0001FED2
 [0001fec2] 2f0c                      move.l     a4,-(a7)
 [0001fec4] 3f3c 03b9                 move.w     #$03B9,-(a7)
-[0001fec8] 4eb9 0001 b020            jsr        $0001B020
+[0001fec8] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001fece] 548f                      addq.l     #2,a7
 [0001fed0] 285f                      movea.l    (a7)+,a4
 [0001fed2] 4efa 0016                 jmp        $0001FEEA(pc)
@@ -18091,7 +17925,7 @@ MCPass1:
 [0001feea] 4efa 0006                 jmp        $0001FEF2(pc)
 [0001feee] 6100 f156                 bsr        $0001F046
 [0001fef2] 4efa 01b6                 jmp        $000200AA(pc)
-[0001fef6] 0c39 0015 0003 d9ca       cmpi.b     #$15,$0003D9CA
+[0001fef6] 0c39 0015 0003 d9ca       cmpi.b     #$15,MCP2IO.sy
 [0001fefe] 661c                      bne.s      $0001FF1C
 [0001ff00] 286e 0008                 movea.l    8(a6),a4
 [0001ff04] 2979 0003 604c 0002       move.l     MCP1Ident.bitsetptr,2(a4)
@@ -18100,9 +17934,9 @@ MCPass1:
 [0001ff12] 6100 ee3e                 bsr        $0001ED52
 [0001ff16] 588f                      addq.l     #4,a7
 [0001ff18] 4efa 0190                 jmp        $000200AA(pc)
-[0001ff1c] 0c39 0006 0003 d9ca       cmpi.b     #$06,$0003D9CA
+[0001ff1c] 0c39 0006 0003 d9ca       cmpi.b     #$06,MCP2IO.sy
 [0001ff24] 666e                      bne.s      $0001FF94
-[0001ff26] 4eb9 0001 b286            jsr        $0001B286
+[0001ff26] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001ff2c] 286e 0008                 movea.l    8(a6),a4
 [0001ff30] 4854                      pea.l      (a4)
 [0001ff32] 6100 fa66                 bsr        $0001F99A
@@ -18130,12 +17964,12 @@ MCPass1:
 [0001ff7c] 286e 0008                 movea.l    8(a6),a4
 [0001ff80] 18bc 0002                 move.b     #$02,(a4)
 [0001ff84] 3f3c 008a                 move.w     #$008A,-(a7)
-[0001ff88] 4eb9 0001 b020            jsr        $0001B020
+[0001ff88] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0001ff8e] 548f                      addq.l     #2,a7
 [0001ff90] 4efa 0118                 jmp        $000200AA(pc)
-[0001ff94] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[0001ff94] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [0001ff9c] 662e                      bne.s      $0001FFCC
-[0001ff9e] 4eb9 0001 b286            jsr        $0001B286
+[0001ff9e] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001ffa4] 286e 0008                 movea.l    8(a6),a4
 [0001ffa8] 4854                      pea.l      (a4)
 [0001ffaa] 6100 0640                 bsr        $000205EC
@@ -18145,18 +17979,18 @@ MCPass1:
 [0001ffb8] 6608                      bne.s      $0001FFC2
 [0001ffba] 286e 0008                 movea.l    8(a6),a4
 [0001ffbe] 18bc 0002                 move.b     #$02,(a4)
-[0001ffc2] 4eb9 0001 b286            jsr        $0001B286
+[0001ffc2] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0001ffc8] 4efa 00e0                 jmp        $000200AA(pc)
 [0001ffcc] 286e 0008                 movea.l    8(a6),a4
 [0001ffd0] 4214                      clr.b      (a4)
-[0001ffd2] 2979 0003 d9cc 0006       move.l     $0003D9CC,6(a4)
+[0001ffd2] 2979 0003 d9cc 0006       move.l     MCP2IO.Scanner.val,6(a4)
 [0001ffda] 7a00                      moveq.l    #0,d5
-[0001ffdc] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0001ffdc] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0001ffe2] 2005                      move.l     d5,d0
 [0001ffe4] 4eb9 0001 000a            jsr        CASEX
-[0001ffea] 0000 0049                 ori.b      #$49,d0
-[0001ffee] 0000 0005                 ori.b      #$05,d0
-[0001fff2] 0000 0060                 ori.b      #$60,d0
+[0001ffea] 0000 0049
+[0001ffee] 0000 0005
+[0001fff2] 0000 0060
 [0001fff6] 2979 0003 6034 0002       move.l     MCP1Ident.sgnintsptr,2(a4)
 [0001fffe] 4efa 0056                 jmp        $00020056(pc)
 [00020002] 2979 0003 6030 0002       move.l     MCP1Ident.intcarptr,2(a4)
@@ -18168,7 +18002,7 @@ MCPass1:
 [00020026] 2f0c                      move.l     a4,-(a7)
 [00020028] 598f                      subq.l     #4,a7
 [0002002a] 7a00                      moveq.l    #0,d5
-[0002002c] 3a39 0003 d9d0            move.w     $0003D9D0,d5
+[0002002c] 3a39 0003 d9d0            move.w     MCP2IO.length,d5
 [00020032] 2f05                      move.l     d5,-(a7)
 [00020034] 6100 e08a                 bsr        $0001E0C0
 [00020038] 588f                      addq.l     #4,a7
@@ -18177,17 +18011,20 @@ MCPass1:
 [0002003e] 2945 0002                 move.l     d5,2(a4)
 [00020042] 4efa 0012                 jmp        $00020056(pc)
 [00020046] 4efa 000e                 jmp        $00020056(pc)
-[0002004a] 000c 0018                 ori.b      #$18,a4 ; apollo only
-[0002004e] 0030 005c 0024            ori.b      #$5C,36(a0,d0.w)
-[00020054] 003c 4a39                 ori.b      #$39,ccr
-[00020058] 0003 db68                 ori.b      #$68,d3
+[0002004a] 000c
+           0018                 
+[0002004e] 0030
+           005c
+           0024            
+[00020054] 003c
+[00020056] 4a39 0003 db68            tst.b      $0003db68
 [0002005c] 6742                      beq.s      $000200A0
-[0002005e] 0c39 004a 0003 d9ca       cmpi.b     #$4A,$0003D9CA
+[0002005e] 0c39 004a 0003 d9ca       cmpi.b     #$4A,MCP2IO.sy
 [00020066] 670a                      beq.s      $00020072
-[00020068] 0c39 0049 0003 d9ca       cmpi.b     #$49,$0003D9CA
+[00020068] 0c39 0049 0003 d9ca       cmpi.b     #$49,MCP2IO.sy
 [00020070] 662e                      bne.s      $000200A0
 [00020072] 2f0c                      move.l     a4,-(a7)
-[00020074] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00020074] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002007a] 285f                      movea.l    (a7)+,a4
 [0002007c] 2f0c                      move.l     a4,-(a7)
 [0002007e] 3f3c 0002                 move.w     #$0002,-(a7)
@@ -18200,7 +18037,7 @@ MCPass1:
 [00020096] 296b 0006 0002            move.l     6(a3),2(a4)
 [0002009c] 4efa 000c                 jmp        $000200AA(pc)
 [000200a0] 2f0c                      move.l     a4,-(a7)
-[000200a2] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000200a2] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000200a8] 285f                      movea.l    (a7)+,a4
 [000200aa] 286e 0008                 movea.l    8(a6),a4
 [000200ae] 4a14                      tst.b      (a4)
@@ -18227,14 +18064,14 @@ MCPass1:
 [000200f8] 4854                      pea.l      (a4)
 [000200fa] 6100 f89e                 bsr        $0001F99A
 [000200fe] 588f                      addq.l     #4,a7
-[00020100] 0c39 0001 0003 d9ca       cmpi.b     #$01,$0003D9CA
+[00020100] 0c39 0001 0003 d9ca       cmpi.b     #$01,MCP2IO.sy
 [00020108] 650c                      bcs.s      $00020116
-[0002010a] 0c39 0005 0003 d9ca       cmpi.b     #$05,$0003D9CA
+[0002010a] 0c39 0005 0003 d9ca       cmpi.b     #$05,MCP2IO.sy
 [00020112] 6202                      bhi.s      $00020116
 [00020114] 6004                      bra.s      $0002011A
 [00020116] 4efa 01e2                 jmp        $000202FA(pc)
-[0002011a] 1d79 0003 d9ca fff5       move.b     $0003D9CA,-11(a6)
-[00020122] 4eb9 0001 b286            jsr        $0001B286
+[0002011a] 1d79 0003 d9ca fff5       move.b     MCP2IO.sy,-11(a6)
+[00020122] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00020128] 486e fff6                 pea.l      -10(a6)
 [0002012c] 6100 f86c                 bsr        $0001F99A
 [00020130] 588f                      addq.l     #4,a7
@@ -18264,9 +18101,9 @@ MCPass1:
 [0002017a] 1a2e fff5                 move.b     -11(a6),d5
 [0002017e] 2005                      move.l     d5,d0
 [00020180] 4eb9 0001 000a            jsr        CASEX
-[00020186] 0000 0001                 ori.b      #$01,d0
-[0002018a] 0000 0004                 ori.b      #$04,d0
-[0002018e] 0000 003e                 ori.b      #$3E,d0
+[00020186] 0000 0001
+[0002018a] 0000 0004
+[0002018e] 0000 003e
 [00020192] 7a02                      moveq.l    #2,d5
 [00020194] 2d45 ffec                 move.l     d5,-20(a6)
 [00020198] 4efa 0034                 jmp        $000201CE(pc)
@@ -18310,7 +18147,7 @@ MCPass1:
 [0002022a] 286e 0008                 movea.l    8(a6),a4
 [0002022e] 18bc 0002                 move.b     #$02,(a4)
 [00020232] 3f3c 005e                 move.w     #$005E,-(a7)
-[00020236] 4eb9 0001 b020            jsr        $0001B020
+[00020236] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002023c] 548f                      addq.l     #2,a7
 [0002023e] 4efa 0024                 jmp        $00020264(pc)
 [00020242] 2f2e fff0                 move.l     -16(a6),-(a7)
@@ -18338,7 +18175,7 @@ MCPass1:
 [00020298] 4aae fffc                 tst.l      -4(a6)
 [0002029c] 660c                      bne.s      $000202AA
 [0002029e] 3f3c 012d                 move.w     #$012D,-(a7)
-[000202a2] 4eb9 0001 b020            jsr        $0001B020
+[000202a2] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000202a8] 548f                      addq.l     #2,a7
 [000202aa] 4efa 000a                 jmp        $000202B6(pc)
 [000202ae] 286e 0008                 movea.l    8(a6),a4
@@ -18347,13 +18184,13 @@ MCPass1:
 [000202ba] 286e 0008                 movea.l    8(a6),a4
 [000202be] 18bc 0002                 move.b     #$02,(a4)
 [000202c2] 3f3c 008c                 move.w     #$008C,-(a7)
-[000202c6] 4eb9 0001 b020            jsr        $0001B020
+[000202c6] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000202cc] 548f                      addq.l     #2,a7
 [000202ce] 4efa 0016                 jmp        $000202E6(pc)
 [000202d2] 286e 0008                 movea.l    8(a6),a4
 [000202d6] 18bc 0002                 move.b     #$02,(a4)
 [000202da] 3f3c 008f                 move.w     #$008F,-(a7)
-[000202de] 4eb9 0001 b020            jsr        $0001B020
+[000202de] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000202e4] 548f                      addq.l     #2,a7
 [000202e6] 286e 0008                 movea.l    8(a6),a4
 [000202ea] 4854                      pea.l      (a4)
@@ -18370,9 +18207,9 @@ MCPass1:
 [0002030e] 486e fff0                 pea.l      -16(a6)
 [00020312] 4eb9 0001 ae48            jsr        $0001AE48
 [00020318] 588f                      addq.l     #4,a7
-[0002031a] 0c39 0008 0003 d9ca       cmpi.b     #$08,$0003D9CA
+[0002031a] 0c39 0008 0003 d9ca       cmpi.b     #$08,MCP2IO.sy
 [00020322] 670a                      beq.s      $0002032E
-[00020324] 0c39 0007 0003 d9ca       cmpi.b     #$07,$0003D9CA
+[00020324] 0c39 0007 0003 d9ca       cmpi.b     #$07,MCP2IO.sy
 [0002032c] 6604                      bne.s      $00020332
 [0002032e] 7a01                      moveq.l    #1,d5
 [00020330] 6002                      bra.s      $00020334
@@ -18380,12 +18217,12 @@ MCPass1:
 [00020334] 1d45 fff4                 move.b     d5,-12(a6)
 [00020338] 4a2e fff4                 tst.b      -12(a6)
 [0002033c] 6720                      beq.s      $0002035E
-[0002033e] 1d79 0003 d9ca fff5       move.b     $0003D9CA,-11(a6)
+[0002033e] 1d79 0003 d9ca fff5       move.b     MCP2IO.sy,-11(a6)
 [00020346] 0c2e 0008 fff5            cmpi.b     #$08,-11(a6)
 [0002034c] 660a                      bne.s      $00020358
-[0002034e] 4eb9 0001 b286            jsr        $0001B286
+[0002034e] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00020354] 4efa 0008                 jmp        $0002035E(pc)
-[00020358] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00020358] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002035e] 286e 0008                 movea.l    8(a6),a4
 [00020362] 4854                      pea.l      (a4)
 [00020364] 6100 fd7e                 bsr        $000200E4
@@ -18429,7 +18266,7 @@ MCPass1:
 [000203dc] 18bc 0002                 move.b     #$02,(a4)
 [000203e0] 2f0c                      move.l     a4,-(a7)
 [000203e2] 3f3c 005e                 move.w     #$005E,-(a7)
-[000203e6] 4eb9 0001 b020            jsr        $0001B020
+[000203e6] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000203ec] 548f                      addq.l     #2,a7
 [000203ee] 285f                      movea.l    (a7)+,a4
 [000203f0] 4efa 0024                 jmp        $00020416(pc)
@@ -18460,24 +18297,24 @@ MCPass1:
 [0002043e] 18bc 0002                 move.b     #$02,(a4)
 [00020442] 2f0c                      move.l     a4,-(a7)
 [00020444] 3f3c 0079                 move.w     #$0079,-(a7)
-[00020448] 4eb9 0001 b020            jsr        $0001B020
+[00020448] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002044e] 548f                      addq.l     #2,a7
 [00020450] 285f                      movea.l    (a7)+,a4
 [00020452] 4efa 0016                 jmp        $0002046A(pc)
 [00020456] 18bc 0002                 move.b     #$02,(a4)
 [0002045a] 2f0c                      move.l     a4,-(a7)
 [0002045c] 3f3c 0079                 move.w     #$0079,-(a7)
-[00020460] 4eb9 0001 b020            jsr        $0001B020
+[00020460] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020466] 548f                      addq.l     #2,a7
 [00020468] 285f                      movea.l    (a7)+,a4
-[0002046a] 0c39 0007 0003 d9ca       cmpi.b     #$07,$0003D9CA
+[0002046a] 0c39 0007 0003 d9ca       cmpi.b     #$07,MCP2IO.sy
 [00020472] 650c                      bcs.s      $00020480
-[00020474] 0c39 0009 0003 d9ca       cmpi.b     #$09,$0003D9CA
+[00020474] 0c39 0009 0003 d9ca       cmpi.b     #$09,MCP2IO.sy
 [0002047c] 6202                      bhi.s      $00020480
 [0002047e] 6004                      bra.s      $00020484
 [00020480] 4efa 015a                 jmp        $000205DC(pc)
-[00020484] 1d79 0003 d9ca fff5       move.b     $0003D9CA,-11(a6)
-[0002048c] 4eb9 0001 b286            jsr        $0001B286
+[00020484] 1d79 0003 d9ca fff5       move.b     MCP2IO.sy,-11(a6)
+[0002048c] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00020492] 486e fff6                 pea.l      -10(a6)
 [00020496] 6100 fc4c                 bsr        $000200E4
 [0002049a] 588f                      addq.l     #4,a7
@@ -18538,7 +18375,7 @@ MCPass1:
 [00020552] 286e 0008                 movea.l    8(a6),a4
 [00020556] 18bc 0002                 move.b     #$02,(a4)
 [0002055a] 3f3c 005e                 move.w     #$005E,-(a7)
-[0002055e] 4eb9 0001 b020            jsr        $0001B020
+[0002055e] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020564] 548f                      addq.l     #2,a7
 [00020566] 4efa 0024                 jmp        $0002058C(pc)
 [0002056a] 2f2e fff0                 move.l     -16(a6),-(a7)
@@ -18557,13 +18394,13 @@ MCPass1:
 [0002059c] 286e 0008                 movea.l    8(a6),a4
 [000205a0] 18bc 0002                 move.b     #$02,(a4)
 [000205a4] 3f3c 008c                 move.w     #$008C,-(a7)
-[000205a8] 4eb9 0001 b020            jsr        $0001B020
+[000205a8] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000205ae] 548f                      addq.l     #2,a7
 [000205b0] 4efa 0016                 jmp        $000205C8(pc)
 [000205b4] 286e 0008                 movea.l    8(a6),a4
 [000205b8] 18bc 0002                 move.b     #$02,(a4)
 [000205bc] 3f3c 008f                 move.w     #$008F,-(a7)
-[000205c0] 4eb9 0001 b020            jsr        $0001B020
+[000205c0] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000205c6] 548f                      addq.l     #2,a7
 [000205c8] 286e 0008                 movea.l    8(a6),a4
 [000205cc] 4854                      pea.l      (a4)
@@ -18586,14 +18423,14 @@ MCPass1:
 [00020608] 4854                      pea.l      (a4)
 [0002060a] 6100 fcfe                 bsr        $0002030A
 [0002060e] 588f                      addq.l     #4,a7
-[00020610] 0c39 000a 0003 d9ca       cmpi.b     #$0A,$0003D9CA
+[00020610] 0c39 000a 0003 d9ca       cmpi.b     #$0A,MCP2IO.sy
 [00020618] 650c                      bcs.s      $00020626
-[0002061a] 0c39 0010 0003 d9ca       cmpi.b     #$10,$0003D9CA
+[0002061a] 0c39 0010 0003 d9ca       cmpi.b     #$10,MCP2IO.sy
 [00020622] 6202                      bhi.s      $00020626
 [00020624] 6004                      bra.s      $0002062A
 [00020626] 4efa 027e                 jmp        $000208A6(pc)
-[0002062a] 1d79 0003 d9ca fff5       move.b     $0003D9CA,-11(a6)
-[00020632] 4eb9 0001 b286            jsr        $0001B286
+[0002062a] 1d79 0003 d9ca fff5       move.b     MCP2IO.sy,-11(a6)
+[00020632] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00020638] 486e fff6                 pea.l      -10(a6)
 [0002063c] 6100 fccc                 bsr        $0002030A
 [00020640] 588f                      addq.l     #4,a7
@@ -18638,7 +18475,7 @@ MCPass1:
 [000206bc] 286e 0008                 movea.l    8(a6),a4
 [000206c0] 18bc 0002                 move.b     #$02,(a4)
 [000206c4] 3f3c 005e                 move.w     #$005E,-(a7)
-[000206c8] 4eb9 0001 b020            jsr        $0001B020
+[000206c8] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000206ce] 548f                      addq.l     #2,a7
 [000206d0] 4efa 0022                 jmp        $000206F4(pc)
 [000206d4] 2f2e ffea                 move.l     -22(a6),-(a7)
@@ -18656,13 +18493,13 @@ MCPass1:
 [00020704] 286e 0008                 movea.l    8(a6),a4
 [00020708] 18bc 0002                 move.b     #$02,(a4)
 [0002070c] 3f3c 008e                 move.w     #$008E,-(a7)
-[00020710] 4eb9 0001 b020            jsr        $0001B020
+[00020710] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020716] 548f                      addq.l     #2,a7
 [00020718] 4efa 0016                 jmp        $00020730(pc)
 [0002071c] 286e 0008                 movea.l    8(a6),a4
 [00020720] 18bc 0002                 move.b     #$02,(a4)
 [00020724] 3f3c 0095                 move.w     #$0095,-(a7)
-[00020728] 4eb9 0001 b020            jsr        $0001B020
+[00020728] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002072e] 548f                      addq.l     #2,a7
 [00020730] 4efa 0158                 jmp        $0002088A(pc)
 [00020734] 558f                      subq.l     #2,a7
@@ -18693,9 +18530,9 @@ MCPass1:
 [00020780] 1a2e fff5                 move.b     -11(a6),d5
 [00020784] 2005                      move.l     d5,d0
 [00020786] 4eb9 0001 000a            jsr        CASEX
-[0002078c] 0000 000a                 ori.b      #$0A,d0
-[00020790] 0000 0005                 ori.b      #$05,d0
-[00020794] 0000 0034                 ori.b      #$34,d0
+[0002078c] 0000 000a
+[00020790] 0000 0005
+[00020794] 0000 0034
 [00020798] 2a2e fff0                 move.l     -16(a6),d5
 [0002079c] 0085 0006 0000            ori.l      #$00060000,d5
 [000207a2] 2d45 fff0                 move.l     d5,-16(a6)
@@ -18733,7 +18570,7 @@ MCPass1:
 [00020816] 286e 0008                 movea.l    8(a6),a4
 [0002081a] 18bc 0002                 move.b     #$02,(a4)
 [0002081e] 3f3c 005e                 move.w     #$005E,-(a7)
-[00020822] 4eb9 0001 b020            jsr        $0001B020
+[00020822] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020828] 548f                      addq.l     #2,a7
 [0002082a] 4efa 0022                 jmp        $0002084E(pc)
 [0002082e] 2f2e ffea                 move.l     -22(a6),-(a7)
@@ -18751,13 +18588,13 @@ MCPass1:
 [0002085e] 286e 0008                 movea.l    8(a6),a4
 [00020862] 18bc 0002                 move.b     #$02,(a4)
 [00020866] 3f3c 008c                 move.w     #$008C,-(a7)
-[0002086a] 4eb9 0001 b020            jsr        $0001B020
+[0002086a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020870] 548f                      addq.l     #2,a7
 [00020872] 4efa 0016                 jmp        $0002088A(pc)
 [00020876] 286e 0008                 movea.l    8(a6),a4
 [0002087a] 18bc 0002                 move.b     #$02,(a4)
 [0002087e] 3f3c 008f                 move.w     #$008F,-(a7)
-[00020882] 4eb9 0001 b020            jsr        $0001B020
+[00020882] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020888] 548f                      addq.l     #2,a7
 [0002088a] 286e 0008                 movea.l    8(a6),a4
 [0002088e] 2979 0003 6020 0002       move.l     MCP1Ident.boolptr,2(a4)
@@ -18785,7 +18622,7 @@ MCPass1:
 [000208dc] 6710                      beq.s      $000208EE
 [000208de] 2f0c                      move.l     a4,-(a7)
 [000208e0] 3f3c 0088                 move.w     #$0088,-(a7)
-[000208e4] 4eb9 0001 b020            jsr        $0001B020
+[000208e4] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000208ea] 548f                      addq.l     #2,a7
 [000208ec] 285f                      movea.l    (a7)+,a4
 [000208ee] 0c79 0002 0003 db6a       cmpi.w     #$0002,$0003DB6A
@@ -18819,7 +18656,7 @@ MCPass1:
 [0002094a] 28ae fff0                 move.l     -16(a6),(a4)
 [0002094e] 2d6e fff4 fffc            move.l     -12(a6),-4(a6)
 [00020954] 2d6e fffc fff8            move.l     -4(a6),-8(a6)
-[0002095a] 0c39 001b 0003 d9ca       cmpi.b     #$1B,$0003D9CA
+[0002095a] 0c39 001b 0003 d9ca       cmpi.b     #$1B,MCP2IO.sy
 [00020962] 6602                      bne.s      $00020966
 [00020964] 6004                      bra.s      $0002096A
 [00020966] 4efa 0176                 jmp        $00020ADE(pc)
@@ -18833,7 +18670,7 @@ MCPass1:
 [00020980] 6702                      beq.s      $00020984
 [00020982] 6004                      bra.s      $00020988
 [00020984] 4efa 013c                 jmp        $00020AC2(pc)
-[00020988] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00020988] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002098e] 486e ffe4                 pea.l      -28(a6)
 [00020992] 6100 ff26                 bsr        $000208BA
 [00020996] 588f                      addq.l     #4,a7
@@ -18865,14 +18702,14 @@ MCPass1:
 [000209e6] 0cae 7fff ffff ffea       cmpi.l     #$7FFFFFFF,-22(a6)
 [000209ee] 630c                      bls.s      $000209FC
 [000209f0] 3f3c 005f                 move.w     #$005F,-(a7)
-[000209f4] 4eb9 0001 b020            jsr        $0001B020
+[000209f4] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000209fa] 548f                      addq.l     #2,a7
 [000209fc] 4efa 001e                 jmp        $00020A1C(pc)
 [00020a00] 2a2e fff8                 move.l     -8(a6),d5
 [00020a04] baae fffc                 cmp.l      -4(a6),d5
 [00020a08] 6c12                      bge.s      $00020A1C
 [00020a0a] 3f3c 005f                 move.w     #$005F,-(a7)
-[00020a0e] 4eb9 0001 b020            jsr        $0001B020
+[00020a0e] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020a14] 548f                      addq.l     #2,a7
 [00020a16] 2d6e fffc fff8            move.l     -4(a6),-8(a6)
 [00020a1c] 286e 0010                 movea.l    16(a6),a4
@@ -18894,14 +18731,14 @@ MCPass1:
 [00020a54] 4a1f                      tst.b      (a7)+
 [00020a56] 6710                      beq.s      $00020A68
 [00020a58] 3f3c 005f                 move.w     #$005F,-(a7)
-[00020a5c] 4eb9 0001 b020            jsr        $0001B020
+[00020a5c] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020a62] 548f                      addq.l     #2,a7
 [00020a64] 4efa 001e                 jmp        $00020A84(pc)
 [00020a68] 2a2e fff8                 move.l     -8(a6),d5
 [00020a6c] baae fffc                 cmp.l      -4(a6),d5
 [00020a70] 6412                      bcc.s      $00020A84
 [00020a72] 3f3c 005f                 move.w     #$005F,-(a7)
-[00020a76] 4eb9 0001 b020            jsr        $0001B020
+[00020a76] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020a7c] 548f                      addq.l     #2,a7
 [00020a7e] 2d6e fffc fff8            move.l     -4(a6),-8(a6)
 [00020a84] 286e 0010                 movea.l    16(a6),a4
@@ -18911,18 +18748,18 @@ MCPass1:
 [00020a96] baae fffc                 cmp.l      -4(a6),d5
 [00020a9a] 6412                      bcc.s      $00020AAE
 [00020a9c] 3f3c 005f                 move.w     #$005F,-(a7)
-[00020aa0] 4eb9 0001 b020            jsr        $0001B020
+[00020aa0] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020aa6] 548f                      addq.l     #2,a7
 [00020aa8] 2d6e fffc fff8            move.l     -4(a6),-8(a6)
 [00020aae] 4efa 000e                 jmp        $00020ABE(pc)
 [00020ab2] 3f3c 005f                 move.w     #$005F,-(a7)
-[00020ab6] 4eb9 0001 b020            jsr        $0001B020
+[00020ab6] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00020abc] 548f                      addq.l     #2,a7
 [00020abe] 4efa 001e                 jmp        $00020ADE(pc)
 [00020ac2] 3f3c 0060                 move.w     #$0060,-(a7)
-[00020ac6] 4eb9 0001 afd2            jsr        $0001AFD2
+[00020ac6] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00020acc] 548f                      addq.l     #2,a7
-[00020ace] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00020ace] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00020ad4] 486e ffe4                 pea.l      -28(a6)
 [00020ad8] 6100 fde0                 bsr        $000208BA
 [00020adc] 588f                      addq.l     #4,a7
@@ -18944,7 +18781,7 @@ MCPass1:
 [00020b12] 4e75                      rts
 [00020b14] 4e56 0000                 link       a6,#0
 [00020b18] 33ee 0008 0003 db6a       move.w     8(a6),$0003DB6A
-[00020b20] 4239 0003 db68            clr.b      $0003DB68
+[00020b20] 4239 0003 db68            clr.b      MCPass2.symmod
 [00020b26] 4e5e                      unlk       a6
 [00020b28] 4e75                      rts
 [00020b2a] 00fc 0000 0000            cmp2.b     #$00,d0 ; 68020+ only
@@ -18954,8 +18791,8 @@ MCPass1:
 [00020b38] 0000 3a2e                 ori.b      #$2E,d0
 [00020b3c] 0008 0245                 ori.b      #$45,a0 ; apollo only
 [00020b40] 00ff 3d45                 chk2.b     ???,d3 ; 68020+ only
-[00020b44] 0008 4a39                 ori.b      #$39,a0 ; apollo only
-[00020b48] 0003 db70                 ori.b      #$70,d3
+[00020b44] 0008
+[00020b46] 4a39 0003 db70            tst.b      $0003DB70
 [00020b4c] 6710                      beq.s      $00020B5E
 [00020b4e] 3a2e 0008                 move.w     8(a6),d5
 [00020b52] e145                      asl.w      #8,d5
@@ -19047,9 +18884,9 @@ MCPass1:
 [00020c72] 1a2c 0009                 move.b     9(a4),d5
 [00020c76] 2005                      move.l     d5,d0
 [00020c78] 4eb9 0001 000a            jsr        CASEX
-[00020c7e] 0000 0001                 ori.b      #$01,d0
-[00020c82] 0000 0012                 ori.b      #$12,d0
-[00020c86] 0000 0088                 ori.b      #$88,d0
+[00020c7e] 0000 0001
+[00020c82] 0000 0012
+[00020c86] 0000 0088
 [00020c8a] 1d7c 0008 ffff            move.b     #$08,-1(a6)
 [00020c90] 4efa 0100                 jmp        $00020D92(pc)
 [00020c94] 1d7c 0009 ffff            move.b     #$09,-1(a6)
@@ -19164,9 +19001,9 @@ MCPass1:
 [00020e48] 1a2c 0009                 move.b     9(a4),d5
 [00020e4c] 2005                      move.l     d5,d0
 [00020e4e] 4eb9 0001 000a            jsr        CASEX
-[00020e54] 0000 0000                      dc.w       $0000
-[00020e58] 0000 0017                 ori.b      #$17,d0
-[00020e5c] 0000 0124                 ori.b      #$24,d0
+[00020e54] 0000 0000
+[00020e58] 0000 0017
+[00020e5c] 0000 0124
 [00020e60] 1d7c 0016 fffa            move.b     #$16,-6(a6)
 [00020e66] 2f0c                      move.l     a4,-(a7)
 [00020e68] 486c 000a                 pea.l      10(a4)
@@ -19313,9 +19150,9 @@ MCPass1:
 [0002101c] 1a2e fffa                 move.b     -6(a6),d5
 [00021020] 2005                      move.l     d5,d0
 [00021022] 4eb9 0001 000a            jsr        CASEX
-[00021028] 0000 0016                 ori.b      #$16,d0
-[0002102c] 0000 0008                 ori.b      #$08,d0
-[00021030] 0000 017c                 ori.b      #$7C,d0
+[00021028] 0000 0016
+[0002102c] 0000 0008
+[00021030] 0000 017c
 [00021034] 2f0c                      move.l     a4,-(a7)
 [00021036] 2f2c 000e                 move.l     14(a4),-(a7)
 [0002103a] 6100 fbec                 bsr        $00020C28
@@ -19466,7 +19303,7 @@ MCPass1:
 [0002121a] 548f                      addq.l     #2,a7
 [0002121c] 285f                      movea.l    (a7)+,a4
 [0002121e] 2f0c                      move.l     a4,-(a7)
-[00021220] 3f39 0003 d9d8            move.w     $0003D9D8,-(a7)
+[00021220] 3f39 0003 d9d8            move.w     MCP2IO.line,-(a7)
 [00021226] 6100 f9da                 bsr        $00020C02
 [0002122a] 548f                      addq.l     #2,a7
 [0002122c] 285f                      movea.l    (a7)+,a4
@@ -19514,7 +19351,7 @@ MCPass1:
 [000212a2] 548f                      addq.l     #2,a7
 [000212a4] 285f                      movea.l    (a7)+,a4
 [000212a6] 2f0c                      move.l     a4,-(a7)
-[000212a8] 3f39 0003 d9d8            move.w     $0003D9D8,-(a7)
+[000212a8] 3f39 0003 d9d8            move.w     MCP2IO.line,-(a7)
 [000212ae] 6100 f952                 bsr        $00020C02
 [000212b2] 548f                      addq.l     #2,a7
 [000212b4] 285f                      movea.l    (a7)+,a4
@@ -19709,7 +19546,7 @@ MCPass1:
 [0002155a] 0c79 0015 0003 dd22       cmpi.w     #$0015,$0003DD22
 [00021562] 6610                      bne.s      $00021574
 [00021564] 3f3c 0384                 move.w     #$0384,-(a7)
-[00021568] 4eb9 0001 b020            jsr        $0001B020
+[00021568] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002156e] 548f                      addq.l     #2,a7
 [00021570] 4efa 0022                 jmp        $00021594(pc)
 [00021574] 0c79 0014 0003 dd22       cmpi.w     #$0014,$0003DD22
@@ -19735,7 +19572,7 @@ MCPass1:
 [000215d0] 0c79 0015 0003 dd24       cmpi.w     #$0015,$0003DD24
 [000215d8] 6610                      bne.s      $000215EA
 [000215da] 3f3c 0385                 move.w     #$0385,-(a7)
-[000215de] 4eb9 0001 b020            jsr        $0001B020
+[000215de] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000215e4] 548f                      addq.l     #2,a7
 [000215e6] 4efa 0028                 jmp        $00021610(pc)
 [000215ea] 0c79 0014 0003 dd24       cmpi.w     #$0014,$0003DD24
@@ -19760,16 +19597,18 @@ MCPass1:
 [0002163c] 18bc 0001                 move.b     #$01,(a4)
 [00021640] 2f0c                      move.l     a4,-(a7)
 [00021642] 1f3c 0044                 move.b     #$44,-(a7)
-[00021646] 4eb9 0001 ac38            jsr        $0001AC38
+[00021646] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0002164c] 548f                      addq.l     #2,a7
 [0002164e] 285f                      movea.l    (a7)+,a4
 [00021650] 2f0c                      move.l     a4,-(a7)
 [00021652] 2f2c 0002                 move.l     2(a4),-(a7)
-[00021656] 4eb9 0001 acf2            jsr        $0001ACF2
+[00021656] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0002165c] 588f                      addq.l     #4,a7
 [0002165e] 285f                      movea.l    (a7)+,a4
 [00021660] 4e5e                      unlk       a6
 [00021662] 4e75                      rts
+
+MCPass2.InitModules:
 [00021664] 4e56 fffe                 link       a6,#-2
 [00021668] 3a39 0003 dd22            move.w     $0003DD22,d5
 [0002166e] da45                      add.w      d5,d5
@@ -19792,27 +19631,27 @@ MCPass1:
 [000216ae] 6750                      beq.s      $00021700
 [000216b0] 2f0c                      move.l     a4,-(a7)
 [000216b2] 1f3c 0040                 move.b     #$40,-(a7)
-[000216b6] 4eb9 0001 ac38            jsr        $0001AC38
+[000216b6] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [000216bc] 548f                      addq.l     #2,a7
 [000216be] 285f                      movea.l    (a7)+,a4
 [000216c0] 2f0c                      move.l     a4,-(a7)
 [000216c2] 1f3c 0052                 move.b     #$52,-(a7)
-[000216c6] 4eb9 0001 ac38            jsr        $0001AC38
+[000216c6] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [000216cc] 548f                      addq.l     #2,a7
 [000216ce] 285f                      movea.l    (a7)+,a4
 [000216d0] 2f0c                      move.l     a4,-(a7)
 [000216d2] 2f2c 0002                 move.l     2(a4),-(a7)
-[000216d6] 4eb9 0001 acf2            jsr        $0001ACF2
+[000216d6] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [000216dc] 588f                      addq.l     #4,a7
 [000216de] 285f                      movea.l    (a7)+,a4
 [000216e0] 2f0c                      move.l     a4,-(a7)
 [000216e2] 1f3c 0011                 move.b     #$11,-(a7)
-[000216e6] 4eb9 0001 ac38            jsr        $0001AC38
+[000216e6] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [000216ec] 548f                      addq.l     #2,a7
 [000216ee] 285f                      movea.l    (a7)+,a4
 [000216f0] 2f0c                      move.l     a4,-(a7)
 [000216f2] 1f3c 0012                 move.b     #$12,-(a7)
-[000216f6] 4eb9 0001 ac38            jsr        $0001AC38
+[000216f6] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [000216fc] 548f                      addq.l     #2,a7
 [000216fe] 285f                      movea.l    (a7)+,a4
 [00021700] 526e fffe                 addq.w     #1,-2(a6)
@@ -19859,8 +19698,8 @@ MCPass1:
 [00021796] 4854                      pea.l      (a4)
 [00021798] 4eb9 0001 be26            jsr        $0001BE26
 [0002179e] 588f                      addq.l     #4,a7
-[000217a0] 4eb9 0001 b0e6            jsr        $0001B0E6
-[000217a6] 0c39 0019 0003 d9ca       cmpi.b     #$19,$0003D9CA
+[000217a0] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[000217a6] 0c39 0019 0003 d9ca       cmpi.b     #$19,MCP2IO.sy
 [000217ae] 6704                      beq.s      $000217B4
 [000217b0] 4efa 0050                 jmp        $00021802(pc)
 [000217b4] 7aff                      moveq.l    #-1,d5
@@ -19871,7 +19710,7 @@ MCPass1:
 [000217c2] 2853                      movea.l    (a3),a4
 [000217c4] 0c2c 0006 0010            cmpi.b     #$06,16(a4)
 [000217ca] 6622                      bne.s      $000217EE
-[000217cc] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000217cc] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000217d2] 266e 0008                 movea.l    8(a6),a3
 [000217d6] 2853                      movea.l    (a3),a4
 [000217d8] 2f2c 0038                 move.l     56(a4),-(a7)
@@ -19881,16 +19720,16 @@ MCPass1:
 [000217e8] 508f                      addq.l     #8,a7
 [000217ea] 4efa 0014                 jmp        $00021800(pc)
 [000217ee] 3f3c 0069                 move.w     #$0069,-(a7)
-[000217f2] 4eb9 0001 b020            jsr        $0001B020
+[000217f2] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000217f8] 548f                      addq.l     #2,a7
-[000217fa] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000217fa] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00021800] 609e                      bra.s      $000217A0
 [00021802] 7aff                      moveq.l    #-1,d5
 [00021804] 286e 0008                 movea.l    8(a6),a4
 [00021808] ba94                      cmp.l      (a4),d5
 [0002180a] 6610                      bne.s      $0002181C
 [0002180c] 3f2e 000c                 move.w     12(a6),-(a7)
-[00021810] 4eb9 0001 b020            jsr        $0001B020
+[00021810] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00021816] 548f                      addq.l     #2,a7
 [00021818] 4efa 0028                 jmp        $00021842(pc)
 [0002181c] 266e 0008                 movea.l    8(a6),a3
@@ -19900,7 +19739,7 @@ MCPass1:
 [0002182a] 0905                      btst       d4,d5
 [0002182c] 6614                      bne.s      $00021842
 [0002182e] 3f3c 0067                 move.w     #$0067,-(a7)
-[00021832] 4eb9 0001 b020            jsr        $0001B020
+[00021832] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00021838] 548f                      addq.l     #2,a7
 [0002183a] 7aff                      moveq.l    #-1,d5
 [0002183c] 286e 0008                 movea.l    8(a6),a4
@@ -19909,9 +19748,9 @@ MCPass1:
 [00021844] 4e75                      rts
 [00021846] 4e56 0000                 link       a6,#0
 [0002184a] 286e 000a                 movea.l    10(a6),a4
-[0002184e] 38b9 0003 d9d2            move.w     $0003D9D2,(a4)
+[0002184e] 38b9 0003 d9d2            move.w     MCP2IO.spix,(a4)
 [00021854] 2979 0003 60cc 000a       move.l     MCP1Ident.mainmodp,10(a4)
-[0002185c] 3979 0003 d9d8 000e       move.w     $0003D9D8,14(a4)
+[0002185c] 3979 0003 d9d8 000e       move.w     MCP2IO.line,14(a4)
 [00021864] 7aff                      moveq.l    #-1,d5
 [00021866] 2945 0006                 move.l     d5,6(a4)
 [0002186a] 196e 0008 0010            move.b     8(a6),16(a4)
@@ -19995,7 +19834,7 @@ MCPass1:
 [00021962] 4a2e ffff                 tst.b      -1(a6)
 [00021966] 670c                      beq.s      $00021974
 [00021968] 3f3c 0064                 move.w     #$0064,-(a7)
-[0002196c] 4eb9 0001 b020            jsr        $0001B020
+[0002196c] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00021972] 548f                      addq.l     #2,a7
 [00021974] 4e5e                      unlk       a6
 [00021976] 4e75                      rts
@@ -20026,7 +19865,7 @@ MCPass1:
 [000219c6] 4fef 000c                 lea.l      12(a7),a7
 [000219ca] 4efa 000e                 jmp        $000219DA(pc)
 [000219ce] 3f3c 006d                 move.w     #$006D,-(a7)
-[000219d2] 4eb9 0001 b020            jsr        $0001B020
+[000219d2] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000219d8] 548f                      addq.l     #2,a7
 [000219da] 4e5e                      unlk       a6
 [000219dc] 4e75                      rts
@@ -20063,7 +19902,7 @@ MCPass1:
 [00021a38] 6710                      beq.s      $00021A4A
 [00021a3a] 2f0c                      move.l     a4,-(a7)
 [00021a3c] 3f3c 00ce                 move.w     #$00CE,-(a7)
-[00021a40] 4eb9 0001 afd2            jsr        $0001AFD2
+[00021a40] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00021a46] 548f                      addq.l     #2,a7
 [00021a48] 285f                      movea.l    (a7)+,a4
 [00021a4a] 7aff                      moveq.l    #-1,d5
@@ -20080,7 +19919,7 @@ MCPass1:
 [00021a78] 6410                      bcc.s      $00021A8A
 [00021a7a] 2f0c                      move.l     a4,-(a7)
 [00021a7c] 3f3c 00cc                 move.w     #$00CC,-(a7)
-[00021a80] 4eb9 0001 afd2            jsr        $0001AFD2
+[00021a80] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00021a86] 548f                      addq.l     #2,a7
 [00021a88] 285f                      movea.l    (a7)+,a4
 [00021a8a] 2d6e fffc 0014            move.l     -4(a6),20(a6)
@@ -20151,7 +19990,7 @@ MCPass1:
 [00021b5a] 6214                      bhi.s      $00021B70
 [00021b5c] 2f0c                      move.l     a4,-(a7)
 [00021b5e] 3f3c 00c8                 move.w     #$00C8,-(a7)
-[00021b62] 4eb9 0001 b020            jsr        $0001B020
+[00021b62] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00021b68] 548f                      addq.l     #2,a7
 [00021b6a] 285f                      movea.l    (a7)+,a4
 [00021b6c] 4efa 0050                 jmp        $00021BBE(pc)
@@ -20175,7 +20014,7 @@ MCPass1:
 [00021baa] 4efa 0012                 jmp        $00021BBE(pc)
 [00021bae] 2f0c                      move.l     a4,-(a7)
 [00021bb0] 3f3c 0064                 move.w     #$0064,-(a7)
-[00021bb4] 4eb9 0001 b020            jsr        $0001B020
+[00021bb4] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00021bba] 548f                      addq.l     #2,a7
 [00021bbc] 285f                      movea.l    (a7)+,a4
 [00021bbe] 7aff                      moveq.l    #-1,d5
@@ -20255,30 +20094,30 @@ MCPass1:
 [00021ccc] 42ae ffe4                 clr.l      -28(a6)
 [00021cd0] 42ae ffdc                 clr.l      -36(a6)
 [00021cd4] 1d7c 0004 ffeb            move.b     #$04,-21(a6)
-[00021cda] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[00021cda] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [00021ce2] 6602                      bne.s      $00021CE6
 [00021ce4] 6004                      bra.s      $00021CEA
 [00021ce6] 4efa 0322                 jmp        $0002200A(pc)
-[00021cea] 4eb9 0001 b0e6            jsr        $0001B0E6
-[00021cf0] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[00021cea] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[00021cf0] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00021cf8] 6702                      beq.s      $00021CFC
 [00021cfa] 6004                      bra.s      $00021D00
 [00021cfc] 4efa 0218                 jmp        $00021F16(pc)
-[00021d00] 0c39 001e 0003 d9ca       cmpi.b     #$1E,$0003D9CA
+[00021d00] 0c39 001e 0003 d9ca       cmpi.b     #$1E,MCP2IO.sy
 [00021d08] 6610                      bne.s      $00021D1A
-[00021d0a] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00021d0a] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00021d10] 1d7c 0002 ffea            move.b     #$02,-22(a6)
 [00021d16] 4efa 0008                 jmp        $00021D20(pc)
 [00021d1a] 1d7c 0001 ffea            move.b     #$01,-22(a6)
 [00021d20] 2d6e fff8 fff4            move.l     -8(a6),-12(a6)
 [00021d26] 4a2e 0010                 tst.b      16(a6)
 [00021d2a] 6720                      beq.s      $00021D4C
-[00021d2c] 0c39 001a 0003 d9ca       cmpi.b     #$1A,$0003D9CA
+[00021d2c] 0c39 001a 0003 d9ca       cmpi.b     #$1A,MCP2IO.sy
 [00021d34] 670c                      beq.s      $00021D42
 [00021d36] 6100 feec                 bsr        $00021C24
-[00021d3a] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00021d3a] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00021d40] 60ea                      bra.s      $00021D2C
-[00021d42] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00021d42] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00021d48] 4efa 0006                 jmp        $00021D50(pc)
 [00021d4c] 6100 fed6                 bsr        $00021C24
 [00021d50] 486e fff0                 pea.l      -16(a6)
@@ -20401,7 +20240,7 @@ MCPass1:
 [00021f06] 2979 0003 dd30 0012       move.l     $0003DD30,18(a4)
 [00021f0e] 6000 ff24                 bra        $00021E34
 [00021f12] 6000 fddc                 bra        $00021CF0
-[00021f16] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00021f16] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00021f1c] 4a2e 0010                 tst.b      16(a6)
 [00021f20] 670a                      beq.s      $00021F2C
 [00021f22] 7aff                      moveq.l    #-1,d5
@@ -20439,9 +20278,9 @@ MCPass1:
 [00021f96] 285f                      movea.l    (a7)+,a4
 [00021f98] 2d6c 001a fff4            move.l     26(a4),-12(a6)
 [00021f9e] 60a0                      bra.s      $00021F40
-[00021fa0] 0c39 001a 0003 d9ca       cmpi.b     #$1A,$0003D9CA
+[00021fa0] 0c39 001a 0003 d9ca       cmpi.b     #$1A,MCP2IO.sy
 [00021fa8] 6660                      bne.s      $0002200A
-[00021faa] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00021faa] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00021fb0] 1d7c 0005 ffeb            move.b     #$05,-21(a6)
 [00021fb6] 486e fff0                 pea.l      -16(a6)
 [00021fba] 6100 00f8                 bsr        $000220B4
@@ -20454,7 +20293,7 @@ MCPass1:
 [00021fd4] 4a1f                      tst.b      (a7)+
 [00021fd6] 6610                      bne.s      $00021FE8
 [00021fd8] 3f3c 0058                 move.w     #$0058,-(a7)
-[00021fdc] 4eb9 0001 b020            jsr        $0001B020
+[00021fdc] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00021fe2] 548f                      addq.l     #2,a7
 [00021fe4] 4efa 0024                 jmp        $0002200A(pc)
 [00021fe8] 286e fff0                 movea.l    -16(a6),a4
@@ -20465,7 +20304,7 @@ MCPass1:
 [00021ffa] ba94                      cmp.l      (a4),d5
 [00021ffc] 640c                      bcc.s      $0002200A
 [00021ffe] 3f3c 0058                 move.w     #$0058,-(a7)
-[00022002] 4eb9 0001 b020            jsr        $0001B020
+[00022002] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00022008] 548f                      addq.l     #2,a7
 [0002200a] 0c2e 0004 ffeb            cmpi.b     #$04,-21(a6)
 [00022010] 6614                      bne.s      $00022026
@@ -20500,7 +20339,7 @@ MCPass1:
 [00022076] 6410                      bcc.s      $00022088
 [00022078] 2f0c                      move.l     a4,-(a7)
 [0002207a] 3f3c 00d2                 move.w     #$00D2,-(a7)
-[0002207e] 4eb9 0001 afd2            jsr        $0001AFD2
+[0002207e] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00022084] 548f                      addq.l     #2,a7
 [00022086] 285f                      movea.l    (a7)+,a4
 [00022088] 196e ffeb 0012            move.b     -21(a6),18(a4)
@@ -20515,11 +20354,11 @@ MCPass1:
 [000220b0] 4e5e                      unlk       a6
 [000220b2] 4e75                      rts
 [000220b4] 4e56 ffdc                 link       a6,#-36
-[000220b8] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[000220b8] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [000220c0] 6602                      bne.s      $000220C4
 [000220c2] 6004                      bra.s      $000220C8
 [000220c4] 4efa 0124                 jmp        $000221EA(pc)
-[000220c8] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000220c8] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000220ce] 42ae ffec                 clr.l      -20(a6)
 [000220d2] 2d7c 0000 0100 ffe4       move.l     #$00000100,-28(a6)
 [000220da] 486e fffc                 pea.l      -4(a6)
@@ -20534,7 +20373,7 @@ MCPass1:
 [000220f8] 422c 0008                 clr.b      8(a4)
 [000220fc] 7aff                      moveq.l    #-1,d5
 [000220fe] 2d45 fff4                 move.l     d5,-12(a6)
-[00022102] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[00022102] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [0002210a] 6702                      beq.s      $0002210E
 [0002210c] 6004                      bra.s      $00022112
 [0002210e] 4efa 0096                 jmp        $000221A6(pc)
@@ -20549,12 +20388,12 @@ MCPass1:
 [0002212c] 5c8f                      addq.l     #6,a7
 [0002212e] 286e fff8                 movea.l    -8(a6),a4
 [00022132] 296e fffc 0006            move.l     -4(a6),6(a4)
-[00022138] 4a39 0003 db68            tst.b      $0003DB68
+[00022138] 4a39 0003 db68            tst.b      MCPass2.symmod
 [0002213e] 6716                      beq.s      $00022156
 [00022140] 2f0c                      move.l     a4,-(a7)
-[00022142] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022142] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022148] 285f                      movea.l    (a7)+,a4
-[0002214a] 2979 0003 d9cc 0012       move.l     $0003D9CC,18(a4)
+[0002214a] 2979 0003 d9cc 0012       move.l     MCP2IO.Scanner.val,18(a4)
 [00022152] 4efa 0008                 jmp        $0002215C(pc)
 [00022156] 296e ffec 0012            move.l     -20(a6),18(a4)
 [0002215c] 486e fff4                 pea.l      -12(a6)
@@ -20571,9 +20410,9 @@ MCPass1:
 [00022184] 0c2c 0008 0010            cmpi.b     #$08,16(a4)
 [0002218a] 670c                      beq.s      $00022198
 [0002218c] 3f3c 0048                 move.w     #$0048,-(a7)
-[00022190] 4eb9 0001 afd2            jsr        $0001AFD2
+[00022190] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00022196] 548f                      addq.l     #2,a7
-[00022198] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022198] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002219e] 52ae ffec                 addq.l     #1,-20(a6)
 [000221a2] 6000 ff5e                 bra        $00022102
 [000221a6] 286e fffc                 movea.l    -4(a6),a4
@@ -20590,9 +20429,9 @@ MCPass1:
 [000221d4] 2f2e fff4                 move.l     -12(a6),-(a7)
 [000221d8] 4eb9 0001 c3d8            jsr        $0001C3D8
 [000221de] 588f                      addq.l     #4,a7
-[000221e0] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000221e0] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000221e6] 4efa 0182                 jmp        $0002236A(pc)
-[000221ea] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[000221ea] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [000221f2] 6602                      bne.s      $000221F6
 [000221f4] 6004                      bra.s      $000221FA
 [000221f6] 4efa 00c2                 jmp        $000222BA(pc)
@@ -20613,11 +20452,11 @@ MCPass1:
 [0002222a] baae fffc                 cmp.l      -4(a6),d5
 [0002222e] 660c                      bne.s      $0002223C
 [00022230] 3f3c 004a                 move.w     #$004A,-(a7)
-[00022234] 4eb9 0001 b020            jsr        $0001B020
+[00022234] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002223a] 548f                      addq.l     #2,a7
-[0002223c] 0c39 0013 0003 d9ca       cmpi.b     #$13,$0003D9CA
+[0002223c] 0c39 0013 0003 d9ca       cmpi.b     #$13,MCP2IO.sy
 [00022244] 6670                      bne.s      $000222B6
-[00022246] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022246] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002224c] 558f                      subq.l     #2,a7
 [0002224e] 2f2e fffc                 move.l     -4(a6),-(a7)
 [00022252] 4878 01e7                 pea.l      ($000001E7).w
@@ -20626,7 +20465,7 @@ MCPass1:
 [0002225e] 4a1f                      tst.b      (a7)+
 [00022260] 6612                      bne.s      $00022274
 [00022262] 3f3c 0079                 move.w     #$0079,-(a7)
-[00022266] 4eb9 0001 b020            jsr        $0001B020
+[00022266] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002226c] 548f                      addq.l     #2,a7
 [0002226e] 7aff                      moveq.l    #-1,d5
 [00022270] 2d45 fffc                 move.l     d5,-4(a6)
@@ -20644,13 +20483,13 @@ MCPass1:
 [000222a4] 6100 f738                 bsr        $000219DE
 [000222a8] 4fef 000c                 lea.l      12(a7),a7
 [000222ac] 2d5f fffc                 move.l     (a7)+,-4(a6)
-[000222b0] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000222b0] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000222b6] 4efa 00b2                 jmp        $0002236A(pc)
-[000222ba] 0c39 0013 0003 d9ca       cmpi.b     #$13,$0003D9CA
+[000222ba] 0c39 0013 0003 d9ca       cmpi.b     #$13,MCP2IO.sy
 [000222c2] 6602                      bne.s      $000222C6
 [000222c4] 6004                      bra.s      $000222CA
 [000222c6] 4efa 00a2                 jmp        $0002236A(pc)
-[000222ca] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000222ca] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000222d0] 486e fff0                 pea.l      -16(a6)
 [000222d4] 486e ffe0                 pea.l      -32(a6)
 [000222d8] 486e ffdc                 pea.l      -36(a6)
@@ -20682,7 +20521,7 @@ MCPass1:
 [00022358] 6100 f684                 bsr        $000219DE
 [0002235c] 4fef 000c                 lea.l      12(a7),a7
 [00022360] 2d5f fffc                 move.l     (a7)+,-4(a6)
-[00022364] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022364] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002236a] 286e 0008                 movea.l    8(a6),a4
 [0002236e] 28ae fffc                 move.l     -4(a6),(a4)
 [00022372] 4e5e                      unlk       a6
@@ -20703,7 +20542,7 @@ MCPass1:
 [000223a6] 197c 0011 0009            move.b     #$11,9(a4)
 [000223ac] 7aff                      moveq.l    #-1,d5
 [000223ae] 2945 000a                 move.l     d5,10(a4)
-[000223b2] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[000223b2] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [000223ba] 6602                      bne.s      $000223BE
 [000223bc] 6004                      bra.s      $000223C2
 [000223be] 4efa 0110                 jmp        $000224D0(pc)
@@ -20732,7 +20571,7 @@ MCPass1:
 [00022410] baac 0006                 cmp.l      6(a4),d5
 [00022414] 660c                      bne.s      $00022422
 [00022416] 3f3c 004a                 move.w     #$004A,-(a7)
-[0002241a] 4eb9 0001 b020            jsr        $0001B020
+[0002241a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00022420] 548f                      addq.l     #2,a7
 [00022422] 4efa 00a8                 jmp        $000224CC(pc)
 [00022426] 486e fffc                 pea.l      -4(a6)
@@ -20759,22 +20598,22 @@ MCPass1:
 [00022476] baac 0006                 cmp.l      6(a4),d5
 [0002247a] 660c                      bne.s      $00022488
 [0002247c] 3f3c 004a                 move.w     #$004A,-(a7)
-[00022480] 4eb9 0001 afd2            jsr        $0001AFD2
+[00022480] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00022486] 548f                      addq.l     #2,a7
 [00022488] 4efa 000e                 jmp        $00022498(pc)
 [0002248c] 3f3c 0049                 move.w     #$0049,-(a7)
-[00022490] 4eb9 0001 afd2            jsr        $0001AFD2
+[00022490] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00022496] 548f                      addq.l     #2,a7
-[00022498] 4eb9 0001 b0e6            jsr        $0001B0E6
-[0002249e] 0c39 0019 0003 d9ca       cmpi.b     #$19,$0003D9CA
+[00022498] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[0002249e] 0c39 0019 0003 d9ca       cmpi.b     #$19,MCP2IO.sy
 [000224a6] 6624                      bne.s      $000224CC
 [000224a8] 3f3c 0069                 move.w     #$0069,-(a7)
-[000224ac] 4eb9 0001 b020            jsr        $0001B020
+[000224ac] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000224b2] 548f                      addq.l     #2,a7
-[000224b4] 0c39 0019 0003 d9ca       cmpi.b     #$19,$0003D9CA
+[000224b4] 0c39 0019 0003 d9ca       cmpi.b     #$19,MCP2IO.sy
 [000224bc] 660e                      bne.s      $000224CC
-[000224be] 4eb9 0001 b0e6            jsr        $0001B0E6
-[000224c4] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000224be] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[000224c4] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000224ca] 60e8                      bra.s      $000224B4
 [000224cc] 4efa 0016                 jmp        $000224E4(pc)
 [000224d0] 486e fff4                 pea.l      -12(a6)
@@ -20831,7 +20670,7 @@ MCPass1:
 [0002258e] 6618                      bne.s      $000225A8
 [00022590] 2f0c                      move.l     a4,-(a7)
 [00022592] 3f3c 005d                 move.w     #$005D,-(a7)
-[00022596] 4eb9 0001 b020            jsr        $0001B020
+[00022596] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002259c] 548f                      addq.l     #2,a7
 [0002259e] 285f                      movea.l    (a7)+,a4
 [000225a0] 422e fffb                 clr.b      -5(a6)
@@ -20882,7 +20721,7 @@ MCPass1:
 [0002263c] 6410                      bcc.s      $0002264E
 [0002263e] 2f0c                      move.l     a4,-(a7)
 [00022640] 3f3c 00d3                 move.w     #$00D3,-(a7)
-[00022644] 4eb9 0001 b020            jsr        $0001B020
+[00022644] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002264a] 548f                      addq.l     #2,a7
 [0002264c] 285f                      movea.l    (a7)+,a4
 [0002264e] 60aa                      bra.s      $000225FA
@@ -20996,7 +20835,7 @@ MCPass1:
 [000227c6] 4fef 000c                 lea.l      12(a7),a7
 [000227ca] 4efa 0018                 jmp        $000227E4(pc)
 [000227ce] 3f3c 006d                 move.w     #$006D,-(a7)
-[000227d2] 4eb9 0001 b020            jsr        $0001B020
+[000227d2] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000227d8] 548f                      addq.l     #2,a7
 [000227da] 286d fff8                 movea.l    -8(a5),a4
 [000227de] 7aff                      moveq.l    #-1,d5
@@ -21014,14 +20853,14 @@ MCPass1:
 [00022806] 2f14                      move.l     (a4),-(a7)
 [00022808] 6100 fe4a                 bsr        $00022654
 [0002280c] 588f                      addq.l     #4,a7
-[0002280e] 0c39 002c 0003 d9ca       cmpi.b     #$2C,$0003D9CA
+[0002280e] 0c39 002c 0003 d9ca       cmpi.b     #$2C,MCP2IO.sy
 [00022816] 6602                      bne.s      $0002281A
 [00022818] 6004                      bra.s      $0002281E
 [0002281a] 4efa 03ae                 jmp        $00022BCA(pc)
-[0002281e] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0002281e] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022824] 7aff                      moveq.l    #-1,d5
 [00022826] 2d45 ffdc                 move.l     d5,-36(a6)
-[0002282a] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[0002282a] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [00022832] 6638                      bne.s      $0002286C
 [00022834] 486e ffdc                 pea.l      -36(a6)
 [00022838] 7a16                      moveq.l    #22,d5
@@ -21037,8 +20876,8 @@ MCPass1:
 [0002285a] 2f2e ffdc                 move.l     -36(a6),-(a7)
 [0002285e] 4eb9 0001 ba9a            jsr        $0001BA9A
 [00022864] 508f                      addq.l     #8,a7
-[00022866] 4eb9 0001 b0e6            jsr        $0001B0E6
-[0002286c] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022866] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[0002286c] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022872] 3f3c 0002                 move.w     #$0002,-(a7)
 [00022876] 3f3c 005b                 move.w     #$005B,-(a7)
 [0002287a] 486e ffe0                 pea.l      -32(a6)
@@ -21056,7 +20895,7 @@ MCPass1:
 [000228a2] baae fff0                 cmp.l      -16(a6),d5
 [000228a6] 660c                      bne.s      $000228B4
 [000228a8] 3f3c 004a                 move.w     #$004A,-(a7)
-[000228ac] 4eb9 0001 b020            jsr        $0001B020
+[000228ac] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000228b2] 548f                      addq.l     #2,a7
 [000228b4] 7aff                      moveq.l    #-1,d5
 [000228b6] baae ffdc                 cmp.l      -36(a6),d5
@@ -21086,17 +20925,17 @@ MCPass1:
 [0002290c] 2d6e fffc fff4            move.l     -4(a6),-12(a6)
 [00022912] 7aff                      moveq.l    #-1,d5
 [00022914] 2d45 ffe4                 move.l     d5,-28(a6)
-[00022918] 0c39 002d 0003 d9ca       cmpi.b     #$2D,$0003D9CA
+[00022918] 0c39 002d 0003 d9ca       cmpi.b     #$2D,MCP2IO.sy
 [00022920] 6602                      bne.s      $00022924
 [00022922] 6004                      bra.s      $00022928
 [00022924] 4efa 0200                 jmp        $00022B26(pc)
-[00022928] 4eb9 0001 b0e6            jsr        $0001B0E6
-[0002292e] 4a39 0003 db68            tst.b      $0003DB68
+[00022928] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[0002292e] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00022934] 6716                      beq.s      $0002294C
-[00022936] 2f39 0003 d9cc            move.l     $0003D9CC,-(a7)
+[00022936] 2f39 0003 d9cc            move.l     MCP2IO.Scanner.val,-(a7)
 [0002293c] 6100 fc04                 bsr        $00022542
 [00022940] 588f                      addq.l     #4,a7
-[00022942] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022942] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022948] 4efa 0140                 jmp        $00022A8A(pc)
 [0002294c] 486e ffd4                 pea.l      -44(a6)
 [00022950] 486e ffc8                 pea.l      -56(a6)
@@ -21140,7 +20979,7 @@ MCPass1:
 [000229da] baae ffb8                 cmp.l      -72(a6),d5
 [000229de] 6f0c                      ble.s      $000229EC
 [000229e0] 3f3c 006e                 move.w     #$006E,-(a7)
-[000229e4] 4eb9 0001 b020            jsr        $0001B020
+[000229e4] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000229ea] 548f                      addq.l     #2,a7
 [000229ec] 2f2e ffd0                 move.l     -48(a6),-(a7)
 [000229f0] 6100 fb50                 bsr        $00022542
@@ -21170,7 +21009,7 @@ MCPass1:
 [00022a44] baae ffb8                 cmp.l      -72(a6),d5
 [00022a48] 630c                      bls.s      $00022A56
 [00022a4a] 3f3c 006e                 move.w     #$006E,-(a7)
-[00022a4e] 4eb9 0001 b020            jsr        $0001B020
+[00022a4e] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00022a54] 548f                      addq.l     #2,a7
 [00022a56] 2f2e ffd0                 move.l     -48(a6),-(a7)
 [00022a5a] 6100 fae6                 bsr        $00022542
@@ -21185,31 +21024,31 @@ MCPass1:
 [00022a78] 60e6                      bra.s      $00022A60
 [00022a7a] 4efa 000e                 jmp        $00022A8A(pc)
 [00022a7e] 3f3c 005c                 move.w     #$005C,-(a7)
-[00022a82] 4eb9 0001 b020            jsr        $0001B020
+[00022a82] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00022a88] 548f                      addq.l     #2,a7
-[00022a8a] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[00022a8a] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [00022a92] 6606                      bne.s      $00022A9A
-[00022a94] 4eb9 0001 b0e6            jsr        $0001B0E6
-[00022a9a] 0c39 001a 0003 d9ca       cmpi.b     #$1A,$0003D9CA
+[00022a94] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[00022a9a] 0c39 001a 0003 d9ca       cmpi.b     #$1A,MCP2IO.sy
 [00022aa2] 6704                      beq.s      $00022AA8
 [00022aa4] 6000 fe88                 bra        $0002292E
-[00022aa8] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022aa8] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022aae] 2d6e fffc fff8            move.l     -4(a6),-8(a6)
 [00022ab4] 7aff                      moveq.l    #-1,d5
 [00022ab6] 2d45 ffe8                 move.l     d5,-24(a6)
-[00022aba] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[00022aba] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [00022ac2] 670a                      beq.s      $00022ACE
-[00022ac4] 0c39 002c 0003 d9ca       cmpi.b     #$2C,$0003D9CA
+[00022ac4] 0c39 002c 0003 d9ca       cmpi.b     #$2C,MCP2IO.sy
 [00022acc] 6610                      bne.s      $00022ADE
 [00022ace] 486e fff8                 pea.l      -8(a6)
 [00022ad2] 486e ffe8                 pea.l      -24(a6)
 [00022ad6] 6100 fd10                 bsr        $000227E8
 [00022ada] 508f                      addq.l     #8,a7
 [00022adc] 60dc                      bra.s      $00022ABA
-[00022ade] 4a39 0003 db68            tst.b      $0003DB68
+[00022ade] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00022ae4] 670e                      beq.s      $00022AF4
-[00022ae6] 2d79 0003 d9cc fff8       move.l     $0003D9CC,-8(a6)
-[00022aee] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022ae6] 2d79 0003 d9cc fff8       move.l     MCP2IO.Scanner.val,-8(a6)
+[00022aee] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022af4] 7aff                      moveq.l    #-1,d5
 [00022af6] baae ffe4                 cmp.l      -28(a6),d5
 [00022afa] 6716                      beq.s      $00022B12
@@ -21223,11 +21062,11 @@ MCPass1:
 [00022b1a] 6306                      bls.s      $00022B22
 [00022b1c] 2d6e fff8 fff4            move.l     -8(a6),-12(a6)
 [00022b22] 6000 fdf4                 bra        $00022918
-[00022b26] 0c39 0031 0003 d9ca       cmpi.b     #$31,$0003D9CA
+[00022b26] 0c39 0031 0003 d9ca       cmpi.b     #$31,MCP2IO.sy
 [00022b2e] 6602                      bne.s      $00022B32
 [00022b30] 6004                      bra.s      $00022B36
 [00022b32] 4efa 007c                 jmp        $00022BB0(pc)
-[00022b36] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022b36] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022b3c] 2d6e fffc fff8            move.l     -4(a6),-8(a6)
 [00022b42] 7aff                      moveq.l    #-1,d5
 [00022b44] 2d45 ffe8                 move.l     d5,-24(a6)
@@ -21236,19 +21075,19 @@ MCPass1:
 [00022b50] 42a7                      clr.l      -(a7)
 [00022b52] 6100 f994                 bsr        $000224E8
 [00022b56] 508f                      addq.l     #8,a7
-[00022b58] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[00022b58] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [00022b60] 670a                      beq.s      $00022B6C
-[00022b62] 0c39 002c 0003 d9ca       cmpi.b     #$2C,$0003D9CA
+[00022b62] 0c39 002c 0003 d9ca       cmpi.b     #$2C,MCP2IO.sy
 [00022b6a] 6610                      bne.s      $00022B7C
 [00022b6c] 486e fff8                 pea.l      -8(a6)
 [00022b70] 486e ffe8                 pea.l      -24(a6)
 [00022b74] 6100 fc72                 bsr        $000227E8
 [00022b78] 508f                      addq.l     #8,a7
 [00022b7a] 60dc                      bra.s      $00022B58
-[00022b7c] 4a39 0003 db68            tst.b      $0003DB68
+[00022b7c] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00022b82] 670e                      beq.s      $00022B92
-[00022b84] 2d79 0003 d9cc fff8       move.l     $0003D9CC,-8(a6)
-[00022b8c] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022b84] 2d79 0003 d9cc fff8       move.l     MCP2IO.Scanner.val,-8(a6)
+[00022b8c] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022b92] 286e ffe4                 movea.l    -28(a6),a4
 [00022b96] 28ae fff8                 move.l     -8(a6),(a4)
 [00022b9a] 296e ffe8 0010            move.l     -24(a6),16(a4)
@@ -21260,11 +21099,11 @@ MCPass1:
 [00022bb4] 28ae fff4                 move.l     -12(a6),(a4)
 [00022bb8] 286e 000c                 movea.l    12(a6),a4
 [00022bbc] 28ae fff4                 move.l     -12(a6),(a4)
-[00022bc0] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022bc0] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022bc6] 4efa 00cc                 jmp        $00022C94(pc)
 [00022bca] 7aff                      moveq.l    #-1,d5
 [00022bcc] 2d45 ffdc                 move.l     d5,-36(a6)
-[00022bd0] 0c39 001a 0003 d9ca       cmpi.b     #$1A,$0003D9CA
+[00022bd0] 0c39 001a 0003 d9ca       cmpi.b     #$1A,MCP2IO.sy
 [00022bd8] 6702                      beq.s      $00022BDC
 [00022bda] 6004                      bra.s      $00022BE0
 [00022bdc] 4efa 007e                 jmp        $00022C5C(pc)
@@ -21277,11 +21116,11 @@ MCPass1:
 [00022bf4] 1f3c 0003                 move.b     #$03,-(a7)
 [00022bf8] 6100 ec4c                 bsr        $00021846
 [00022bfc] 5c8f                      addq.l     #6,a7
-[00022bfe] 4a39 0003 db68            tst.b      $0003DB68
+[00022bfe] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00022c04] 6716                      beq.s      $00022C1C
-[00022c06] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022c06] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022c0c] 286e ffe0                 movea.l    -32(a6),a4
-[00022c10] 2979 0003 d9cc 0012       move.l     $0003D9CC,18(a4)
+[00022c10] 2979 0003 d9cc 0012       move.l     MCP2IO.Scanner.val,18(a4)
 [00022c18] 4efa 0024                 jmp        $00022C3E(pc)
 [00022c1c] 7aff                      moveq.l    #-1,d5
 [00022c1e] baae ffdc                 cmp.l      -36(a6),d5
@@ -21296,13 +21135,13 @@ MCPass1:
 [00022c46] 2f2e ffe0                 move.l     -32(a6),-(a7)
 [00022c4a] 4eb9 0001 ba9a            jsr        $0001BA9A
 [00022c50] 508f                      addq.l     #8,a7
-[00022c52] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022c52] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022c58] 6000 ff76                 bra        $00022BD0
-[00022c5c] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022c5c] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022c62] 486e fff0                 pea.l      -16(a6)
 [00022c66] 6100 028c                 bsr        $00022EF4
 [00022c6a] 588f                      addq.l     #4,a7
-[00022c6c] 4a39 0003 db68            tst.b      $0003DB68
+[00022c6c] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00022c72] 670e                      beq.s      $00022C82
 [00022c74] 286e ffe0                 movea.l    -32(a6),a4
 [00022c78] 296e fff0 0006            move.l     -16(a6),6(a4)
@@ -21325,18 +21164,18 @@ MCPass1:
 [00022cb6] 2d45 fff8                 move.l     d5,-8(a6)
 [00022cba] 7aff                      moveq.l    #-1,d5
 [00022cbc] 2d45 fffc                 move.l     d5,-4(a6)
-[00022cc0] 0c39 003f 0003 d9ca       cmpi.b     #$3F,$0003D9CA
+[00022cc0] 0c39 003f 0003 d9ca       cmpi.b     #$3F,MCP2IO.sy
 [00022cc8] 6710                      beq.s      $00022CDA
 [00022cca] 486e fff4                 pea.l      -12(a6)
 [00022cce] 486e fffc                 pea.l      -4(a6)
 [00022cd2] 6100 fb14                 bsr        $000227E8
 [00022cd6] 508f                      addq.l     #8,a7
 [00022cd8] 60e6                      bra.s      $00022CC0
-[00022cda] 4eb9 0001 b0e6            jsr        $0001B0E6
-[00022ce0] 4a39 0003 db68            tst.b      $0003DB68
+[00022cda] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[00022ce0] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00022ce6] 6712                      beq.s      $00022CFA
-[00022ce8] 2d79 0003 d9cc fff4       move.l     $0003D9CC,-12(a6)
-[00022cf0] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022ce8] 2d79 0003 d9cc fff4       move.l     MCP2IO.Scanner.val,-12(a6)
+[00022cf0] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022cf6] 4efa 001a                 jmp        $00022D12(pc)
 [00022cfa] 2a2e fff4                 move.l     -12(a6),d5
 [00022cfe] 0205 0001                 andi.b     #$01,d5
@@ -21365,7 +21204,7 @@ MCPass1:
 [00022d4e] 6412                      bcc.s      $00022D62
 [00022d50] 2f0c                      move.l     a4,-(a7)
 [00022d52] 3f3c 00c8                 move.w     #$00C8,-(a7)
-[00022d56] 4eb9 0001 b020            jsr        $0001B020
+[00022d56] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00022d5c] 548f                      addq.l     #2,a7
 [00022d5e] 285f                      movea.l    (a7)+,a4
 [00022d60] 4294                      clr.l      (a4)
@@ -21393,16 +21232,16 @@ MCPass1:
 [00022dac] ba9f                      cmp.l      (a7)+,d5
 [00022dae] 640c                      bcc.s      $00022DBC
 [00022db0] 3f3c 00cb                 move.w     #$00CB,-(a7)
-[00022db4] 4eb9 0001 b020            jsr        $0001B020
+[00022db4] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00022dba] 548f                      addq.l     #2,a7
-[00022dbc] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[00022dbc] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [00022dc4] 6614                      bne.s      $00022DDA
-[00022dc6] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022dc6] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022dcc] 486e fff8                 pea.l      -8(a6)
 [00022dd0] 6100 ffa0                 bsr.w      $00022D72
 [00022dd4] 588f                      addq.l     #4,a7
 [00022dd6] 4efa 0012                 jmp        $00022DEA(pc)
-[00022dda] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022dda] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022de0] 486e fff8                 pea.l      -8(a6)
 [00022de4] 6100 010e                 bsr        $00022EF4
 [00022de8] 588f                      addq.l     #4,a7
@@ -21434,7 +21273,7 @@ MCPass1:
 [00022e44] 6314                      bls.s      $00022E5A
 [00022e46] 2d7c 0000 ffff fff0       move.l     #$0000FFFF,-16(a6)
 [00022e4e] 3f3c 006b                 move.w     #$006B,-(a7)
-[00022e52] 4eb9 0001 b020            jsr        $0001B020
+[00022e52] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00022e58] 548f                      addq.l     #2,a7
 [00022e5a] 486e fffc                 pea.l      -4(a6)
 [00022e5e] 7a0e                      moveq.l    #14,d5
@@ -21485,49 +21324,49 @@ MCPass1:
 [00022ef0] 4e5e                      unlk       a6
 [00022ef2] 4e75                      rts
 [00022ef4] 4e56 0000                 link       a6,#0
-[00022ef8] 0c39 001f 0003 d9ca       cmpi.b     #$1F,$0003D9CA
+[00022ef8] 0c39 001f 0003 d9ca       cmpi.b     #$1F,MCP2IO.sy
 [00022f00] 6616                      bne.s      $00022F18
-[00022f02] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022f02] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022f08] 286e 0008                 movea.l    8(a6),a4
 [00022f0c] 4854                      pea.l      (a4)
 [00022f0e] 6100 fe62                 bsr        $00022D72
 [00022f12] 588f                      addq.l     #4,a7
 [00022f14] 4efa 00ae                 jmp        $00022FC4(pc)
-[00022f18] 0c39 0020 0003 d9ca       cmpi.b     #$20,$0003D9CA
+[00022f18] 0c39 0020 0003 d9ca       cmpi.b     #$20,MCP2IO.sy
 [00022f20] 6616                      bne.s      $00022F38
-[00022f22] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022f22] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022f28] 286e 0008                 movea.l    8(a6),a4
 [00022f2c] 4854                      pea.l      (a4)
 [00022f2e] 6100 fd74                 bsr        $00022CA4
 [00022f32] 588f                      addq.l     #4,a7
 [00022f34] 4efa 008e                 jmp        $00022FC4(pc)
-[00022f38] 0c39 0022 0003 d9ca       cmpi.b     #$22,$0003D9CA
+[00022f38] 0c39 0022 0003 d9ca       cmpi.b     #$22,MCP2IO.sy
 [00022f40] 6616                      bne.s      $00022F58
-[00022f42] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022f42] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022f48] 286e 0008                 movea.l    8(a6),a4
 [00022f4c] 4854                      pea.l      (a4)
 [00022f4e] 6100 feca                 bsr        $00022E1A
 [00022f52] 588f                      addq.l     #4,a7
 [00022f54] 4efa 006e                 jmp        $00022FC4(pc)
-[00022f58] 0c39 0023 0003 d9ca       cmpi.b     #$23,$0003D9CA
+[00022f58] 0c39 0023 0003 d9ca       cmpi.b     #$23,MCP2IO.sy
 [00022f60] 6616                      bne.s      $00022F78
-[00022f62] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022f62] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022f68] 286e 0008                 movea.l    8(a6),a4
 [00022f6c] 4854                      pea.l      (a4)
 [00022f6e] 6100 f406                 bsr        $00022376
 [00022f72] 588f                      addq.l     #4,a7
 [00022f74] 4efa 004e                 jmp        $00022FC4(pc)
-[00022f78] 0c39 0044 0003 d9ca       cmpi.b     #$44,$0003D9CA
+[00022f78] 0c39 0044 0003 d9ca       cmpi.b     #$44,MCP2IO.sy
 [00022f80] 6616                      bne.s      $00022F98
-[00022f82] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022f82] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022f88] 286e 0008                 movea.l    8(a6),a4
 [00022f8c] 4854                      pea.l      (a4)
 [00022f8e] 6100 ff12                 bsr        $00022EA2
 [00022f92] 588f                      addq.l     #4,a7
 [00022f94] 4efa 002e                 jmp        $00022FC4(pc)
-[00022f98] 0c39 0026 0003 d9ca       cmpi.b     #$26,$0003D9CA
+[00022f98] 0c39 0026 0003 d9ca       cmpi.b     #$26,MCP2IO.sy
 [00022fa0] 6616                      bne.s      $00022FB8
-[00022fa2] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022fa2] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022fa8] 286e 0008                 movea.l    8(a6),a4
 [00022fac] 4854                      pea.l      (a4)
 [00022fae] 6100 ff0e                 bsr        $00022EBE
@@ -21540,9 +21379,9 @@ MCPass1:
 [00022fc4] 4e5e                      unlk       a6
 [00022fc6] 4e75                      rts
 [00022fc8] 4e56 fff8                 link       a6,#-8
-[00022fcc] 0c39 001f 0003 d9ca       cmpi.b     #$1F,$0003D9CA
+[00022fcc] 0c39 001f 0003 d9ca       cmpi.b     #$1F,MCP2IO.sy
 [00022fd4] 6660                      bne.s      $00023036
-[00022fd6] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00022fd6] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00022fdc] 486e fff8                 pea.l      -8(a6)
 [00022fe0] 6100 f0d2                 bsr        $000220B4
 [00022fe4] 588f                      addq.l     #4,a7
@@ -21618,7 +21457,7 @@ MCPass1:
 [000230d0] 4e5e                      unlk       a6
 [000230d2] 4e75                      rts
 [000230d4] 4e56 fff6                 link       a6,#-10
-[000230d8] 0c39 002a 0003 d9ca       cmpi.b     #$2A,$0003D9CA
+[000230d8] 0c39 002a 0003 d9ca       cmpi.b     #$2A,MCP2IO.sy
 [000230e0] 57c5                      seq        d5
 [000230e2] 4405                      neg.b      d5
 [000230e4] 1d45 fff7                 move.b     d5,-9(a6)
@@ -21627,16 +21466,16 @@ MCPass1:
 [000230f0] 2d6c 0038 fffc            move.l     56(a4),-4(a6)
 [000230f6] 4a2e fff7                 tst.b      -9(a6)
 [000230fa] 660a                      bne.s      $00023106
-[000230fc] 0c39 0028 0003 d9ca       cmpi.b     #$28,$0003D9CA
+[000230fc] 0c39 0028 0003 d9ca       cmpi.b     #$28,MCP2IO.sy
 [00023104] 6602                      bne.s      $00023108
 [00023106] 6004                      bra.s      $0002310C
 [00023108] 4efa 00ac                 jmp        $000231B6(pc)
-[0002310c] 4eb9 0001 b0e6            jsr        $0001B0E6
-[00023112] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[0002310c] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[00023112] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [0002311a] 6602                      bne.s      $0002311E
 [0002311c] 6004                      bra.s      $00023122
 [0002311e] 4efa 0096                 jmp        $000231B6(pc)
-[00023122] 4a39 0003 db68            tst.b      $0003DB68
+[00023122] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00023128] 6714                      beq.s      $0002313E
 [0002312a] 2f2e fffc                 move.l     -4(a6),-(a7)
 [0002312e] 486e fff8                 pea.l      -8(a6)
@@ -21673,9 +21512,9 @@ MCPass1:
 [00023198] 0c2c 0008 0010            cmpi.b     #$08,16(a4)
 [0002319e] 670c                      beq.s      $000231AC
 [000231a0] 3f3c 004b                 move.w     #$004B,-(a7)
-[000231a4] 4eb9 0001 afd2            jsr        $0001AFD2
+[000231a4] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [000231aa] 548f                      addq.l     #2,a7
-[000231ac] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000231ac] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000231b2] 6000 ff5e                 bra        $00023112
 [000231b6] 286d fffc                 movea.l    -4(a5),a4
 [000231ba] 286c 000e                 movea.l    14(a4),a4
@@ -21719,7 +21558,7 @@ MCPass1:
 [00023246] 0c2c 0008 0010            cmpi.b     #$08,16(a4)
 [0002324c] 660c                      bne.s      $0002325A
 [0002324e] 3f3c 0065                 move.w     #$0065,-(a7)
-[00023252] 4eb9 0001 b020            jsr        $0001B020
+[00023252] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00023258] 548f                      addq.l     #2,a7
 [0002325a] 286e fffc                 movea.l    -4(a6),a4
 [0002325e] 2d6c 0002 fffc            move.l     2(a4),-4(a6)
@@ -21779,19 +21618,19 @@ MCPass1:
 [00023320] 2f2c 0034                 move.l     52(a4),-(a7)
 [00023324] 4eb9 0001 ba12            jsr        $0001BA12
 [0002332a] 588f                      addq.l     #4,a7
-[0002332c] 0c39 0027 0003 d9ca       cmpi.b     #$27,$0003D9CA
+[0002332c] 0c39 0027 0003 d9ca       cmpi.b     #$27,MCP2IO.sy
 [00023334] 670a                      beq.s      $00023340
-[00023336] 0c39 0029 0003 d9ca       cmpi.b     #$29,$0003D9CA
+[00023336] 0c39 0029 0003 d9ca       cmpi.b     #$29,MCP2IO.sy
 [0002333e] 6602                      bne.s      $00023342
 [00023340] 6004                      bra.s      $00023346
 [00023342] 4efa 00f0                 jmp        $00023434(pc)
-[00023346] 0c39 0029 0003 d9ca       cmpi.b     #$29,$0003D9CA
+[00023346] 0c39 0029 0003 d9ca       cmpi.b     #$29,MCP2IO.sy
 [0002334e] 57c5                      seq        d5
 [00023350] 4405                      neg.b      d5
 [00023352] 1d45 fff7                 move.b     d5,-9(a6)
 [00023356] 4a2e fff7                 tst.b      -9(a6)
 [0002335a] 675c                      beq.s      $000233B8
-[0002335c] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0002335c] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023362] 486e fffc                 pea.l      -4(a6)
 [00023366] 4eb9 0001 be26            jsr        $0001BE26
 [0002336c] 588f                      addq.l     #4,a7
@@ -21802,19 +21641,19 @@ MCPass1:
 [0002337a] 0c2c 0006 0010            cmpi.b     #$06,16(a4)
 [00023380] 6722                      beq.s      $000233A4
 [00023382] 1f3c 0029                 move.b     #$29,-(a7)
-[00023386] 4eb9 0001 ac38            jsr        $0001AC38
+[00023386] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0002338c] 548f                      addq.l     #2,a7
-[0002338e] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[0002338e] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [00023396] 6608                      bne.s      $000233A0
-[00023398] 4eb9 0001 b286            jsr        $0001B286
+[00023398] 4eb9 0001 b286            jsr        MCP2IO.Scanner.GetSy
 [0002339e] 60ee                      bra.s      $0002338E
 [000233a0] 4efa 0012                 jmp        $000233B4(pc)
 [000233a4] 286e fffc                 movea.l    -4(a6),a4
 [000233a8] 2d6c 0038 fff8            move.l     56(a4),-8(a6)
-[000233ae] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000233ae] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000233b4] 4efa 0008                 jmp        $000233BE(pc)
-[000233b8] 4eb9 0001 b286            jsr        $0001B286
-[000233be] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[000233b8] 4eb9 0001 b286            jsr        MCP2IO.Scanner.GetSy
+[000233be] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [000233c6] 6668                      bne.s      $00023430
 [000233c8] 4a2e fff7                 tst.b      -9(a6)
 [000233cc] 6714                      beq.s      $000233E2
@@ -21832,16 +21671,16 @@ MCPass1:
 [000233f6] 4a2e fff7                 tst.b      -9(a6)
 [000233fa] 6716                      beq.s      $00023412
 [000233fc] 3f3c 0047                 move.w     #$0047,-(a7)
-[00023400] 4eb9 0001 afd2            jsr        $0001AFD2
+[00023400] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00023406] 548f                      addq.l     #2,a7
-[00023408] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023408] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002340e] 4efa 0008                 jmp        $00023418(pc)
-[00023412] 4eb9 0001 b286            jsr        $0001B286
+[00023412] 4eb9 0001 b286            jsr        MCP2IO.Scanner.GetSy
 [00023418] 4efa 0014                 jmp        $0002342E(pc)
 [0002341c] 2f2e fffc                 move.l     -4(a6),-(a7)
 [00023420] 4eb9 0001 b83a            jsr        $0001B83A
 [00023426] 588f                      addq.l     #4,a7
-[00023428] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023428] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002342e] 608e                      bra.s      $000233BE
 [00023430] 6000 fefa                 bra        $0002332C
 [00023434] 286d fffc                 movea.l    -4(a5),a4
@@ -21940,11 +21779,11 @@ MCPass1:
 [0002357a] 00aa 0022 0022 4e5e       ori.l      #$00220022,20062(a2)
 [00023582] 4e75                      rts
 [00023584] 4e56 fffc                 link       a6,#-4
-[00023588] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[00023588] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [00023590] 6602                      bne.s      $00023594
 [00023592] 6004                      bra.s      $00023598
 [00023594] 4efa 0082                 jmp        $00023618(pc)
-[00023598] 4a39 0003 db68            tst.b      $0003DB68
+[00023598] 4a39 0003 db68            tst.b      MCPass2.symmod
 [0002359e] 6710                      beq.s      $000235B0
 [000235a0] 486e fffc                 pea.l      -4(a6)
 [000235a4] 4eb9 0001 c05e            jsr        $0001C05E
@@ -21967,7 +21806,7 @@ MCPass1:
 [000235da] 2f2e fffc                 move.l     -4(a6),-(a7)
 [000235de] 4eb9 0001 bc06            jsr        $0001BC06
 [000235e4] 588f                      addq.l     #4,a7
-[000235e6] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000235e6] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000235ec] 286e fffc                 movea.l    -4(a6),a4
 [000235f0] 2f0c                      move.l     a4,-(a7)
 [000235f2] 486c 0006                 pea.l      6(a4)
@@ -21976,17 +21815,17 @@ MCPass1:
 [00023600] 508f                      addq.l     #8,a7
 [00023602] 285f                      movea.l    (a7)+,a4
 [00023604] 4efa 000e                 jmp        $00023614(pc)
-[00023608] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023608] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002360e] 4eb9 0001 b3ba            jsr        $0001B3BA
 [00023614] 6000 ff72                 bra        $00023588
 [00023618] 4e5e                      unlk       a6
 [0002361a] 4e75                      rts
 [0002361c] 4e56 fff4                 link       a6,#-12
-[00023620] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[00023620] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [00023628] 6602                      bne.s      $0002362C
 [0002362a] 6004                      bra.s      $00023630
 [0002362c] 4efa 0142                 jmp        $00023770(pc)
-[00023630] 4a39 0003 db68            tst.b      $0003DB68
+[00023630] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00023636] 6710                      beq.s      $00023648
 [00023638] 486e fffc                 pea.l      -4(a6)
 [0002363c] 4eb9 0001 c05e            jsr        $0001C05E
@@ -22006,7 +21845,7 @@ MCPass1:
 [0002366a] 4a79 0003 dd26            tst.w      $0003DD26
 [00023670] 6626                      bne.s      $00023698
 [00023672] 558f                      subq.l     #2,a7
-[00023674] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[00023674] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [0002367a] 4eb9 0001 c0f2            jsr        $0001C0F2
 [00023680] 548f                      addq.l     #2,a7
 [00023682] 4a1f                      tst.b      (a7)+
@@ -22027,7 +21866,7 @@ MCPass1:
 [000236b6] 2f2e fffc                 move.l     -4(a6),-(a7)
 [000236ba] 4eb9 0001 bc06            jsr        $0001BC06
 [000236c0] 588f                      addq.l     #4,a7
-[000236c2] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000236c2] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000236c8] 486e fff8                 pea.l      -8(a6)
 [000236cc] 6100 f826                 bsr        $00022EF4
 [000236d0] 588f                      addq.l     #4,a7
@@ -22060,7 +21899,7 @@ MCPass1:
 [00023736] 4a1f                      tst.b      (a7)+
 [00023738] 660c                      bne.s      $00023746
 [0002373a] 3f3c 0052                 move.w     #$0052,-(a7)
-[0002373e] 4eb9 0001 b020            jsr        $0001B020
+[0002373e] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00023744] 548f                      addq.l     #2,a7
 [00023746] 486e fff4                 pea.l      -12(a6)
 [0002374a] 6100 fd00                 bsr        $0002344C
@@ -22069,23 +21908,23 @@ MCPass1:
 [00023754] 4eb9 0002 11be            jsr        $000211BE
 [0002375a] 588f                      addq.l     #4,a7
 [0002375c] 4efa 000e                 jmp        $0002376C(pc)
-[00023760] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023760] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023766] 4eb9 0001 b45c            jsr        $0001B45C
 [0002376c] 6000 feb2                 bra        $00023620
 [00023770] 4e5e                      unlk       a6
 [00023772] 4e75                      rts
 [00023774] 4e56 ffe6                 link       a6,#-26
-[00023778] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[00023778] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [00023780] 6602                      bne.s      $00023784
 [00023782] 6004                      bra.s      $00023788
 [00023784] 4efa 0266                 jmp        $000239EC(pc)
 [00023788] 7aff                      moveq.l    #-1,d5
 [0002378a] 2d45 fff8                 move.l     d5,-8(a6)
-[0002378e] 0c39 001a 0003 d9ca       cmpi.b     #$1A,$0003D9CA
+[0002378e] 0c39 001a 0003 d9ca       cmpi.b     #$1A,MCP2IO.sy
 [00023796] 6702                      beq.s      $0002379A
 [00023798] 6004                      bra.s      $0002379E
 [0002379a] 4efa 019a                 jmp        $00023936(pc)
-[0002379e] 4a39 0003 db68            tst.b      $0003DB68
+[0002379e] 4a39 0003 db68            tst.b      MCPass2.symmod
 [000237a4] 6710                      beq.s      $000237B6
 [000237a6] 486e fffc                 pea.l      -4(a6)
 [000237aa] 4eb9 0001 c05e            jsr        $0001C05E
@@ -22131,32 +21970,32 @@ MCPass1:
 [00023844] 588f                      addq.l     #4,a7
 [00023846] 4efa 0006                 jmp        $0002384E(pc)
 [0002384a] 422e ffeb                 clr.b      -21(a6)
-[0002384e] 4eb9 0001 b0e6            jsr        $0001B0E6
-[00023854] 4a39 0003 db68            tst.b      $0003DB68
+[0002384e] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[00023854] 4a39 0003 db68            tst.b      MCPass2.symmod
 [0002385a] 6762                      beq.s      $000238BE
-[0002385c] 0c39 0013 0003 d9ca       cmpi.b     #$13,$0003D9CA
+[0002385c] 0c39 0013 0003 d9ca       cmpi.b     #$13,MCP2IO.sy
 [00023864] 6632                      bne.s      $00023898
-[00023866] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023866] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002386c] 4a2e ffeb                 tst.b      -21(a6)
 [00023870] 6716                      beq.s      $00023888
 [00023872] 286e fffc                 movea.l    -4(a6),a4
-[00023876] 2979 0003 d9cc 0012       move.l     $0003D9CC,18(a4)
+[00023876] 2979 0003 d9cc 0012       move.l     MCP2IO.Scanner.val,18(a4)
 [0002387e] 197c 0002 0018            move.b     #$02,24(a4)
 [00023884] 426c 0016                 clr.w      22(a4)
-[00023888] 4eb9 0001 b0e6            jsr        $0001B0E6
-[0002388e] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023888] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[0002388e] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023894] 4efa 0024                 jmp        $000238BA(pc)
 [00023898] 4a2e ffeb                 tst.b      -21(a6)
 [0002389c] 6716                      beq.s      $000238B4
 [0002389e] 286e fffc                 movea.l    -4(a6),a4
-[000238a2] 2979 0003 d9cc 0012       move.l     $0003D9CC,18(a4)
+[000238a2] 2979 0003 d9cc 0012       move.l     MCP2IO.Scanner.val,18(a4)
 [000238aa] 197c 0003 0018            move.b     #$03,24(a4)
 [000238b0] 426c 0016                 clr.w      22(a4)
-[000238b4] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000238b4] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000238ba] 4efa 0076                 jmp        $00023932(pc)
-[000238be] 0c39 0013 0003 d9ca       cmpi.b     #$13,$0003D9CA
+[000238be] 0c39 0013 0003 d9ca       cmpi.b     #$13,MCP2IO.sy
 [000238c6] 666a                      bne.s      $00023932
-[000238c8] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000238c8] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000238ce] 486e fff0                 pea.l      -16(a6)
 [000238d2] 486e ffe6                 pea.l      -26(a6)
 [000238d6] 4eb9 0002 0af2            jsr        $00020AF2
@@ -22178,15 +22017,15 @@ MCPass1:
 [0002390a] 4efa 0016                 jmp        $00023922(pc)
 [0002390e] 2f0c                      move.l     a4,-(a7)
 [00023910] 3f3c 004e                 move.w     #$004E,-(a7)
-[00023914] 4eb9 0001 b020            jsr        $0001B020
+[00023914] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002391a] 548f                      addq.l     #2,a7
 [0002391c] 285f                      movea.l    (a7)+,a4
 [0002391e] 42ac 0012                 clr.l      18(a4)
 [00023922] 197c 0002 0018            move.b     #$02,24(a4)
 [00023928] 426c 0016                 clr.w      22(a4)
-[0002392c] 4eb9 0001 b0e6            jsr        $0001B0E6
+[0002392c] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023932] 6000 fe5a                 bra        $0002378E
-[00023936] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023936] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002393c] 4a2e ffeb                 tst.b      -21(a6)
 [00023940] 6702                      beq.s      $00023944
 [00023942] 6004                      bra.s      $00023948
@@ -22345,12 +22184,12 @@ MCPass1:
 [00023b56] 4a2e ffef                 tst.b      -17(a6)
 [00023b5a] 660c                      bne.s      $00023B68
 [00023b5c] 3f3c 0053                 move.w     #$0053,-(a7)
-[00023b60] 4eb9 0001 b020            jsr        $0001B020
+[00023b60] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00023b66] 548f                      addq.l     #2,a7
 [00023b68] 4e5e                      unlk       a6
 [00023b6a] 4e75                      rts
 [00023b6c] 4e56 ffec                 link       a6,#-20
-[00023b70] 4a39 0003 db68            tst.b      $0003DB68
+[00023b70] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00023b76] 6710                      beq.s      $00023B88
 [00023b78] 486e fff8                 pea.l      -8(a6)
 [00023b7c] 4eb9 0001 c05e            jsr        $0001C05E
@@ -22370,7 +22209,7 @@ MCPass1:
 [00023baa] 4a79 0003 dd26            tst.w      $0003DD26
 [00023bb0] 6626                      bne.s      $00023BD8
 [00023bb2] 558f                      subq.l     #2,a7
-[00023bb4] 3f39 0003 d9d2            move.w     $0003D9D2,-(a7)
+[00023bb4] 3f39 0003 d9d2            move.w     MCP2IO.spix,-(a7)
 [00023bba] 4eb9 0001 c0f2            jsr        $0001C0F2
 [00023bc0] 548f                      addq.l     #2,a7
 [00023bc2] 4a1f                      tst.b      (a7)+
@@ -22392,7 +22231,7 @@ MCPass1:
 [00023bfa] 2f2e fff8                 move.l     -8(a6),-(a7)
 [00023bfe] 4eb9 0001 bc06            jsr        $0001BC06
 [00023c04] 588f                      addq.l     #4,a7
-[00023c06] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023c06] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023c0c] 5279 0003 dd26            addq.w     #1,$0003DD26
 [00023c12] 286e fff8                 movea.l    -8(a6),a4
 [00023c16] 7aff                      moveq.l    #-1,d5
@@ -22405,15 +22244,15 @@ MCPass1:
 [00023c2c] 3979 0003 dd26 0020       move.w     $0003DD26,32(a4)
 [00023c34] 422c 0011                 clr.b      17(a4)
 [00023c38] 422c 0034                 clr.b      52(a4)
-[00023c3c] 4a39 0003 db68            tst.b      $0003DB68
+[00023c3c] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00023c42] 6722                      beq.s      $00023C66
-[00023c44] 2a39 0003 d9cc            move.l     $0003D9CC,d5
+[00023c44] 2a39 0003 d9cc            move.l     MCP2IO.Scanner.val,d5
 [00023c4a] 3945 0012                 move.w     d5,18(a4)
 [00023c4e] 2f0c                      move.l     a4,-(a7)
-[00023c50] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023c50] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023c56] 285f                      movea.l    (a7)+,a4
 [00023c58] 2f0c                      move.l     a4,-(a7)
-[00023c5a] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023c5a] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023c60] 285f                      movea.l    (a7)+,a4
 [00023c62] 4efa 0026                 jmp        $00023C8A(pc)
 [00023c66] 7aff                      moveq.l    #-1,d5
@@ -22442,7 +22281,7 @@ MCPass1:
 [00023cbc] 2f2e fff8                 move.l     -8(a6),-(a7)
 [00023cc0] 4eb9 0001 c27e            jsr        $0001C27E
 [00023cc6] 588f                      addq.l     #4,a7
-[00023cc8] 4a39 0003 db68            tst.b      $0003DB68
+[00023cc8] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00023cce] 57c5                      seq        d5
 [00023cd0] 4405                      neg.b      d5
 [00023cd2] 1f05                      move.b     d5,-(a7)
@@ -22473,17 +22312,17 @@ MCPass1:
 [00023d2c] 486e fff4                 pea.l      -12(a6)
 [00023d30] 6100 f71a                 bsr        $0002344C
 [00023d34] 588f                      addq.l     #4,a7
-[00023d36] 0c39 0048 0003 d9ca       cmpi.b     #$48,$0003D9CA
+[00023d36] 0c39 0048 0003 d9ca       cmpi.b     #$48,MCP2IO.sy
 [00023d3e] 6602                      bne.s      $00023D42
 [00023d40] 6004                      bra.s      $00023D46
 [00023d42] 4efa 013e                 jmp        $00023E82(pc)
 [00023d46] 1f3c 0044                 move.b     #$44,-(a7)
-[00023d4a] 4eb9 0001 ac38            jsr        $0001AC38
+[00023d4a] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [00023d50] 548f                      addq.l     #2,a7
 [00023d52] 2f2e fff8                 move.l     -8(a6),-(a7)
-[00023d56] 4eb9 0001 acf2            jsr        $0001ACF2
+[00023d56] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [00023d5c] 588f                      addq.l     #4,a7
-[00023d5e] 4eb9 0001 b286            jsr        $0001B286
+[00023d5e] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00023d64] 486e ffec                 pea.l      -20(a6)
 [00023d68] 486e fff0                 pea.l      -16(a6)
 [00023d6c] 4eb9 0002 0af2            jsr        $00020AF2
@@ -22494,23 +22333,23 @@ MCPass1:
 [00023d80] 0cae 0000 ffff fff0       cmpi.l     #$0000FFFF,-16(a6)
 [00023d88] 630c                      bls.s      $00023D96
 [00023d8a] 3f3c 0080                 move.w     #$0080,-(a7)
-[00023d8e] 4eb9 0001 b020            jsr        $0001B020
+[00023d8e] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00023d94] 548f                      addq.l     #2,a7
 [00023d96] 4efa 001a                 jmp        $00023DB2(pc)
 [00023d9a] 2a2e ffec                 move.l     -20(a6),d5
 [00023d9e] bab9 0003 602c            cmp.l      MCP1Ident.cardptr,d5
 [00023da4] 670c                      beq.s      $00023DB2
 [00023da6] 3f3c 0080                 move.w     #$0080,-(a7)
-[00023daa] 4eb9 0001 b020            jsr        $0001B020
+[00023daa] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00023db0] 548f                      addq.l     #2,a7
 [00023db2] 286e fff8                 movea.l    -8(a6),a4
 [00023db6] 396e fff2 002c            move.w     -14(a6),44(a4)
 [00023dbc] 526c 002a                 addq.w     #1,42(a4)
-[00023dc0] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[00023dc0] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [00023dc8] 6602                      bne.s      $00023DCC
 [00023dca] 6004                      bra.s      $00023DD0
 [00023dcc] 4efa 00aa                 jmp        $00023E78(pc)
-[00023dd0] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023dd0] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023dd6] 486e ffec                 pea.l      -20(a6)
 [00023dda] 486e fff0                 pea.l      -16(a6)
 [00023dde] 4eb9 0002 0af2            jsr        $00020AF2
@@ -22521,20 +22360,20 @@ MCPass1:
 [00023df2] 0cae 0000 ffff fff0       cmpi.l     #$0000FFFF,-16(a6)
 [00023dfa] 630c                      bls.s      $00023E08
 [00023dfc] 3f3c 0080                 move.w     #$0080,-(a7)
-[00023e00] 4eb9 0001 b020            jsr        $0001B020
+[00023e00] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00023e06] 548f                      addq.l     #2,a7
 [00023e08] 4efa 001a                 jmp        $00023E24(pc)
 [00023e0c] 2a2e ffec                 move.l     -20(a6),d5
 [00023e10] bab9 0003 602c            cmp.l      MCP1Ident.cardptr,d5
 [00023e16] 670c                      beq.s      $00023E24
 [00023e18] 3f3c 0080                 move.w     #$0080,-(a7)
-[00023e1c] 4eb9 0001 b020            jsr        $0001B020
+[00023e1c] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00023e22] 548f                      addq.l     #2,a7
 [00023e24] 2a2e ffec                 move.l     -20(a6),d5
 [00023e28] bab9 0003 602c            cmp.l      MCP1Ident.cardptr,d5
 [00023e2e] 6710                      beq.s      $00023E40
 [00023e30] 3f3c 0080                 move.w     #$0080,-(a7)
-[00023e34] 4eb9 0001 b020            jsr        $0001B020
+[00023e34] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00023e3a] 548f                      addq.l     #2,a7
 [00023e3c] 4efa 0036                 jmp        $00023E74(pc)
 [00023e40] 286e fff8                 movea.l    -8(a6),a4
@@ -22548,21 +22387,21 @@ MCPass1:
 [00023e60] 4efa 0012                 jmp        $00023E74(pc)
 [00023e64] 2f0c                      move.l     a4,-(a7)
 [00023e66] 3f3c 03b8                 move.w     #$03B8,-(a7)
-[00023e6a] 4eb9 0001 b020            jsr        $0001B020
+[00023e6a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00023e70] 548f                      addq.l     #2,a7
 [00023e72] 285f                      movea.l    (a7)+,a4
 [00023e74] 6000 ff4a                 bra        $00023DC0
-[00023e78] 4eb9 0001 b286            jsr        $0001B286
+[00023e78] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00023e7e] 4efa 0036                 jmp        $00023EB6(pc)
-[00023e82] 4a39 0003 db68            tst.b      $0003DB68
+[00023e82] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00023e88] 662c                      bne.s      $00023EB6
-[00023e8a] 4a39 0003 dd28            tst.b      $0003DD28
+[00023e8a] 4a39 0003 dd28            tst.b      MCPass2.defmod
 [00023e90] 6624                      bne.s      $00023EB6
 [00023e92] 1f3c 0044                 move.b     #$44,-(a7)
-[00023e96] 4eb9 0001 ac38            jsr        $0001AC38
+[00023e96] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [00023e9c] 548f                      addq.l     #2,a7
 [00023e9e] 2f2e fff8                 move.l     -8(a6),-(a7)
-[00023ea2] 4eb9 0001 acf2            jsr        $0001ACF2
+[00023ea2] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [00023ea8] 588f                      addq.l     #4,a7
 [00023eaa] 486e fffc                 pea.l      -4(a6)
 [00023eae] 4227                      clr.b      -(a7)
@@ -22590,7 +22429,7 @@ MCPass1:
 [00023ef6] 6410                      bcc.s      $00023F08
 [00023ef8] 2f0c                      move.l     a4,-(a7)
 [00023efa] 3f3c 00d1                 move.w     #$00D1,-(a7)
-[00023efe] 4eb9 0001 b020            jsr        $0001B020
+[00023efe] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00023f04] 548f                      addq.l     #2,a7
 [00023f06] 285f                      movea.l    (a7)+,a4
 [00023f08] 2f2e fff8                 move.l     -8(a6),-(a7)
@@ -22598,8 +22437,8 @@ MCPass1:
 [00023f12] 588f                      addq.l     #4,a7
 [00023f14] 5379 0003 dd26            subq.w     #1,$0003DD26
 [00023f1a] 4efa 0014                 jmp        $00023F30(pc)
-[00023f1e] 4eb9 0001 b0e6            jsr        $0001B0E6
-[00023f24] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023f1e] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[00023f24] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023f2a] 4eb9 0001 b45c            jsr        $0001B45C
 [00023f30] 4e5e                      unlk       a6
 [00023f32] 4e75                      rts
@@ -22607,19 +22446,19 @@ MCPass1:
 [00023f38] 2f2d fff8                 move.l     -8(a5),-(a7)
 [00023f3c] 2b4e fff8                 move.l     a6,-8(a5)
 [00023f40] 6100 d60e                 bsr        $00021550
-[00023f44] 0c39 001e 0003 d9ca       cmpi.b     #$1E,$0003D9CA
+[00023f44] 0c39 001e 0003 d9ca       cmpi.b     #$1E,MCP2IO.sy
 [00023f4c] 660e                      bne.s      $00023F5C
-[00023f4e] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023f4e] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023f54] 6100 f81e                 bsr        $00023774
 [00023f58] 4efa 006e                 jmp        $00023FC8(pc)
-[00023f5c] 0c39 0044 0003 d9ca       cmpi.b     #$44,$0003D9CA
+[00023f5c] 0c39 0044 0003 d9ca       cmpi.b     #$44,MCP2IO.sy
 [00023f64] 660e                      bne.s      $00023F74
-[00023f66] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023f66] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023f6c] 6100 fbfe                 bsr        $00023B6C
 [00023f70] 4efa 0056                 jmp        $00023FC8(pc)
-[00023f74] 0c39 0045 0003 d9ca       cmpi.b     #$45,$0003D9CA
+[00023f74] 0c39 0045 0003 d9ca       cmpi.b     #$45,MCP2IO.sy
 [00023f7c] 661e                      bne.s      $00023F9C
-[00023f7e] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023f7e] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023f84] 286d fffc                 movea.l    -4(a5),a4
 [00023f88] 3f2c 000c                 move.w     12(a4),-(a7)
 [00023f8c] 286e 000a                 movea.l    10(a6),a4
@@ -22627,21 +22466,21 @@ MCPass1:
 [00023f92] 6100 022a                 bsr        $000241BE
 [00023f96] 5c8f                      addq.l     #6,a7
 [00023f98] 4efa 002e                 jmp        $00023FC8(pc)
-[00023f9c] 0c39 001d 0003 d9ca       cmpi.b     #$1D,$0003D9CA
+[00023f9c] 0c39 001d 0003 d9ca       cmpi.b     #$1D,MCP2IO.sy
 [00023fa4] 660e                      bne.s      $00023FB4
-[00023fa6] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023fa6] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023fac] 6100 f66e                 bsr        $0002361C
 [00023fb0] 4efa 0016                 jmp        $00023FC8(pc)
-[00023fb4] 0c39 001c 0003 d9ca       cmpi.b     #$1C,$0003D9CA
+[00023fb4] 0c39 001c 0003 d9ca       cmpi.b     #$1C,MCP2IO.sy
 [00023fbc] 660a                      bne.s      $00023FC8
-[00023fbe] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00023fbe] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00023fc4] 6100 f5be                 bsr        $00023584
-[00023fc8] 0c39 002b 0003 d9ca       cmpi.b     #$2B,$0003D9CA
+[00023fc8] 0c39 002b 0003 d9ca       cmpi.b     #$2B,MCP2IO.sy
 [00023fd0] 670e                      beq.s      $00023FE0
-[00023fd2] 0c39 0041 0003 d9ca       cmpi.b     #$41,$0003D9CA
+[00023fd2] 0c39 0041 0003 d9ca       cmpi.b     #$41,MCP2IO.sy
 [00023fda] 6704                      beq.s      $00023FE0
 [00023fdc] 6000 ff66                 bra        $00023F44
-[00023fe0] 0c39 002b 0003 d9ca       cmpi.b     #$2B,$0003D9CA
+[00023fe0] 0c39 002b 0003 d9ca       cmpi.b     #$2B,MCP2IO.sy
 [00023fe8] 670a                      beq.s      $00023FF4
 [00023fea] 558f                      subq.l     #2,a7
 [00023fec] 6100 d71e                 bsr        $0002170C
@@ -22653,24 +22492,24 @@ MCPass1:
 [00023ffe] 3f2c fffe                 move.w     -2(a4),-(a7)
 [00024002] 6100 d61a                 bsr        $0002161E
 [00024006] 548f                      addq.l     #2,a7
-[00024008] 0c39 002b 0003 d9ca       cmpi.b     #$2B,$0003D9CA
+[00024008] 0c39 002b 0003 d9ca       cmpi.b     #$2B,MCP2IO.sy
 [00024010] 660a                      bne.s      $0002401C
-[00024012] 4eb9 0001 b286            jsr        $0001B286
+[00024012] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00024018] 4efa 000e                 jmp        $00024028(pc)
 [0002401c] 1f3c 002b                 move.b     #$2B,-(a7)
-[00024020] 4eb9 0001 ac38            jsr        $0001AC38
+[00024020] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [00024026] 548f                      addq.l     #2,a7
-[00024028] 6100 d63a                 bsr        $00021664
-[0002402c] 0c39 0041 0003 d9ca       cmpi.b     #$41,$0003D9CA
+[00024028] 6100 d63a                 bsr        MCPass2.InitModules
+[0002402c] 0c39 0041 0003 d9ca       cmpi.b     #$41,MCP2IO.sy
 [00024034] 6708                      beq.s      $0002403E
-[00024036] 4eb9 0001 b286            jsr        $0001B286
+[00024036] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0002403c] 60ee                      bra.s      $0002402C
 [0002403e] 4a2e 0008                 tst.b      8(a6)
 [00024042] 670c                      beq.s      $00024050
 [00024044] 1f3c 0041                 move.b     #$41,-(a7)
-[00024048] 4eb9 0001 ac38            jsr        $0001AC38
+[00024048] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0002404e] 548f                      addq.l     #2,a7
-[00024050] 4eb9 0001 b286            jsr        $0001B286
+[00024050] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00024056] 6100 d540                 bsr        $00021598
 [0002405a] 2b5f fff8                 move.l     (a7)+,-8(a5)
 [0002405e] 4e5e                      unlk       a6
@@ -22679,14 +22518,14 @@ MCPass1:
 [00024066] 2f2d fffc                 move.l     -4(a5),-(a7)
 [0002406a] 2b4e fffc                 move.l     a6,-4(a5)
 [0002406e] 1f3c 0045                 move.b     #$45,-(a7)
-[00024072] 4eb9 0001 ac38            jsr        $0001AC38
+[00024072] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [00024078] 548f                      addq.l     #2,a7
 [0002407a] 2f2e 000e                 move.l     14(a6),-(a7)
-[0002407e] 4eb9 0001 acf2            jsr        $0001ACF2
+[0002407e] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [00024084] 588f                      addq.l     #4,a7
-[00024086] 0c39 0013 0003 d9ca       cmpi.b     #$13,$0003D9CA
+[00024086] 0c39 0013 0003 d9ca       cmpi.b     #$13,MCP2IO.sy
 [0002408e] 6658                      bne.s      $000240E8
-[00024090] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00024090] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00024096] 486e fffa                 pea.l      -6(a6)
 [0002409a] 486e fff6                 pea.l      -10(a6)
 [0002409e] 4eb9 0002 0af2            jsr        $00020AF2
@@ -22704,9 +22543,9 @@ MCPass1:
 [000240cc] 3d6e fff8 000c            move.w     -8(a6),12(a6)
 [000240d2] 4efa 000e                 jmp        $000240E2(pc)
 [000240d6] 3f3c 0050                 move.w     #$0050,-(a7)
-[000240da] 4eb9 0001 b020            jsr        $0001B020
+[000240da] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000240e0] 548f                      addq.l     #2,a7
-[000240e2] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000240e2] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000240e8] 2f2e 000e                 move.l     14(a6),-(a7)
 [000240ec] 486e fffe                 pea.l      -2(a6)
 [000240f0] 6100 d4d4                 bsr        $000215C6
@@ -22775,7 +22614,7 @@ MCPass1:
 [000241d2] 486e fffc                 pea.l      -4(a6)
 [000241d6] 6100 ff6e                 bsr        $00024146
 [000241da] 588f                      addq.l     #4,a7
-[000241dc] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000241dc] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000241e2] 2f2e fffc                 move.l     -4(a6),-(a7)
 [000241e6] 4eb9 0002 11be            jsr        $000211BE
 [000241ec] 588f                      addq.l     #4,a7
@@ -22937,12 +22776,12 @@ MCPass1:
 [00024432] 2879 0003 60c8            movea.l    MCP1Ident.root,a4
 [00024438] 2979 0003 60d0 0014       move.l     MCP1Ident.sysmodp,20(a4)
 [00024440] 2879 0003 60d0            movea.l    MCP1Ident.sysmodp,a4
-[00024446] 33d4 0003 d9d2            move.w     (a4),$0003D9D2
+[00024446] 33d4 0003 d9d2            move.w     (a4),MCP2IO.spix
 [0002444c] 2f39 0003 60d0            move.l     MCP1Ident.sysmodp,-(a7)
 [00024452] 4eb9 0001 bc06            jsr        $0001BC06
 [00024458] 588f                      addq.l     #4,a7
-[0002445a] 4eb9 0001 b0e6            jsr        $0001B0E6
-[00024460] 4a39 0003 d9ca            tst.b      $0003D9CA
+[0002445a] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[00024460] 4a39 0003 d9ca            tst.b      MCP2IO.sy
 [00024466] 6702                      beq.s      $0002446A
 [00024468] 6004                      bra.s      $0002446E
 [0002446a] 4efa 027e                 jmp        $000246EA(pc)
@@ -22951,24 +22790,24 @@ MCPass1:
 [00024474] 4239 0003 dd29            clr.b      $0003DD29
 [0002447a] 42ae fffc                 clr.l      -4(a6)
 [0002447e] 4279 0003 dd2e            clr.w      $0003DD2E
-[00024484] 0c39 0046 0003 d9ca       cmpi.b     #$46,$0003D9CA
+[00024484] 0c39 0046 0003 d9ca       cmpi.b     #$46,MCP2IO.sy
 [0002448c] 57c5                      seq        d5
 [0002448e] 4405                      neg.b      d5
-[00024490] 13c5 0003 db68            move.b     d5,$0003DB68
-[00024496] 0c39 0042 0003 d9ca       cmpi.b     #$42,$0003D9CA
+[00024490] 13c5 0003 db68            move.b     d5,MCPass2.symmod
+[00024496] 0c39 0042 0003 d9ca       cmpi.b     #$42,MCP2IO.sy
 [0002449e] 57c5                      seq        d5
 [000244a0] 4405                      neg.b      d5
-[000244a2] 13c5 0003 dd28            move.b     d5,$0003DD28
-[000244a8] 0c39 0043 0003 d9ca       cmpi.b     #$43,$0003D9CA
+[000244a2] 13c5 0003 dd28            move.b     d5,MCPass2.defmod
+[000244a8] 0c39 0043 0003 d9ca       cmpi.b     #$43,MCP2IO.sy
 [000244b0] 57c5                      seq        d5
 [000244b2] 4405                      neg.b      d5
 [000244b4] 13c5 0003 dd29            move.b     d5,$0003DD29
-[000244ba] 4a39 0003 dd28            tst.b      $0003DD28
+[000244ba] 4a39 0003 dd28            tst.b      MCPass2.defmod
 [000244c0] 660e                      bne.s      $000244D0
-[000244c2] 4a39 0003 db68            tst.b      $0003DB68
+[000244c2] 4a39 0003 db68            tst.b      MCPass2.symmod
 [000244c8] 6606                      bne.s      $000244D0
 [000244ca] 4eb9 0002 13e2            jsr        $000213E2
-[000244d0] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000244d0] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000244d6] 4a39 0003 dd29            tst.b      $0003DD29
 [000244dc] 6702                      beq.s      $000244E0
 [000244de] 6004                      bra.s      $000244E4
@@ -22982,7 +22821,7 @@ MCPass1:
 [000244fa] baae fff8                 cmp.l      -8(a6),d5
 [000244fe] 662e                      bne.s      $0002452E
 [00024500] 3f3c 0051                 move.w     #$0051,-(a7)
-[00024504] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024504] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [0002450a] 548f                      addq.l     #2,a7
 [0002450c] 426e ffee                 clr.w      -18(a6)
 [00024510] 3a2e ffee                 move.w     -18(a6),d5
@@ -23014,17 +22853,17 @@ MCPass1:
 [00024576] 4405                      neg.b      d5
 [00024578] 13c5 0003 dd29            move.b     d5,$0003DD29
 [0002457e] 4efa 00b2                 jmp        $00024632(pc)
-[00024582] 4a39 0003 db68            tst.b      $0003DB68
+[00024582] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00024588] 6702                      beq.s      $0002458C
 [0002458a] 6004                      bra.s      $00024590
 [0002458c] 4efa 008a                 jmp        $00024618(pc)
 [00024590] 426e ffee                 clr.w      -18(a6)
-[00024594] 2a39 0003 d9cc            move.l     $0003D9CC,d5
+[00024594] 2a39 0003 d9cc            move.l     MCP2IO.Scanner.val,d5
 [0002459a] 382e ffee                 move.w     -18(a6),d4
 [0002459e] d844                      add.w      d4,d4
 [000245a0] 49ee fff0                 lea.l      -16(a6),a4
 [000245a4] 3985 4000                 move.w     d5,0(a4,d4.w)
-[000245a8] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000245a8] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000245ae] 526e ffee                 addq.w     #1,-18(a6)
 [000245b2] 0c6e 0003 ffee            cmpi.w     #$0003,-18(a6)
 [000245b8] 66da                      bne.s      $00024594
@@ -23047,7 +22886,7 @@ MCPass1:
 [000245f6] b673 4000                 cmp.w      0(a3,d4.w),d3
 [000245fa] 670c                      beq.s      $00024608
 [000245fc] 3f3c 0056                 move.w     #$0056,-(a7)
-[00024600] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024600] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024606] 548f                      addq.l     #2,a7
 [00024608] 526e ffee                 addq.w     #1,-18(a6)
 [0002460c] 0c6e 0003 ffee            cmpi.w     #$0003,-18(a6)
@@ -23056,9 +22895,9 @@ MCPass1:
 [00024618] 486e fff0                 pea.l      -16(a6)
 [0002461c] 4eb9 0001 b58a            jsr        $0001B58A
 [00024622] 588f                      addq.l     #4,a7
-[00024624] 4a39 0003 dd28            tst.b      $0003DD28
+[00024624] 4a39 0003 dd28            tst.b      MCPass2.defmod
 [0002462a] 6706                      beq.s      $00024632
-[0002462c] 4eb9 0001 b5be            jsr        $0001B5BE
+[0002462c] 4eb9 0001 b5be            jsr        MCP2IO.DefModStatus
 [00024632] 7aff                      moveq.l    #-1,d5
 [00024634] baae fff8                 cmp.l      -8(a6),d5
 [00024638] 6638                      bne.s      $00024672
@@ -23077,28 +22916,28 @@ MCPass1:
 [00024666] 2f2e fff8                 move.l     -8(a6),-(a7)
 [0002466a] 4eb9 0002 11be            jsr        $000211BE
 [00024670] 588f                      addq.l     #4,a7
-[00024672] 4eb9 0001 b0e6            jsr        $0001B0E6
-[00024678] 4a39 0003 dd28            tst.b      $0003DD28
+[00024672] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[00024678] 4a39 0003 dd28            tst.b      MCPass2.defmod
 [0002467e] 6608                      bne.s      $00024688
-[00024680] 4a39 0003 db68            tst.b      $0003DB68
+[00024680] 4a39 0003 db68            tst.b      MCPass2.symmod
 [00024686] 6706                      beq.s      $0002468E
-[00024688] 4eb9 0001 aee8            jsr        $0001AEE8
+[00024688] 4eb9 0001 aee8            jsr        MCP2IO.StopOutput
 [0002468e] 6100 d0ea                 bsr        $0002177A
 [00024692] 2f2e fff8                 move.l     -8(a6),-(a7)
 [00024696] 3f3c 0008                 move.w     #$0008,-(a7)
 [0002469a] 486e fffc                 pea.l      -4(a6)
 [0002469e] 6100 f9c2                 bsr        $00024062
 [000246a2] 4fef 000a                 lea.l      10(a7),a7
-[000246a6] 4a39 0003 dd28            tst.b      $0003DD28
+[000246a6] 4a39 0003 dd28            tst.b      MCPass2.defmod
 [000246ac] 6608                      bne.s      $000246B6
-[000246ae] 4a39 0003 db68            tst.b      $0003DB68
+[000246ae] 4a39 0003 db68            tst.b      MCPass2.symmod
 [000246b4] 670a                      beq.s      $000246C0
 [000246b6] 4eb9 0001 aef6            jsr        $0001AEF6
 [000246bc] 4efa 0028                 jmp        $000246E6(pc)
 [000246c0] 4a39 0003 dd29            tst.b      $0003DD29
 [000246c6] 670c                      beq.s      $000246D4
 [000246c8] 3f3c 0054                 move.w     #$0054,-(a7)
-[000246cc] 4eb9 0001 b020            jsr        $0001B020
+[000246cc] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000246d2] 548f                      addq.l     #2,a7
 [000246d4] 2f2e fff8                 move.l     -8(a6),-(a7)
 [000246d8] 4eb9 0002 133a            jsr        $0002133A
@@ -23115,7 +22954,7 @@ MCPass1:
 [00024704] bab9 0003 60dc            cmp.l      $000360DC,d5
 [0002470a] 640c                      bcc.s      $00024718
 [0002470c] 3f3c 00d0                 move.w     #$00D0,-(a7)
-[00024710] 4eb9 0001 b020            jsr        $0001B020
+[00024710] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00024716] 548f                      addq.l     #2,a7
 [00024718] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [0002471c] 4e5e                      unlk       a6
@@ -23133,7 +22972,7 @@ MCPass1:
 [0002474c] 548f                      addq.l     #2,a7
 [0002474e] 6100 cdea                 bsr        $0002153A
 [00024752] 6100 fcc8                 bsr        $0002441C
-[00024756] 4eb9 0001 b5ce            jsr        $0001B5CE
+[00024756] 4eb9 0001 b5ce            jsr        MCP2IO.TermInOut
 [0002475c] 4e5e                      unlk       a6
 [0002475e] 4e75                      rts
 [00024760] 4e56 ffda                 link       a6,#-38
@@ -23156,7 +22995,7 @@ MCPass1:
 [000247a0] 6004                      bra.s      $000247A6
 [000247a2] 4efa 0080                 jmp        $00024824(pc)
 [000247a6] 286e ffda                 movea.l    -38(a6),a4
-[000247aa] 33d4 0003 d9d2            move.w     (a4),$0003D9D2
+[000247aa] 33d4 0003 d9d2            move.w     (a4),MCP2IO.spix
 [000247b0] 486e 0008                 pea.l      8(a6)
 [000247b4] 4eb9 0001 be26            jsr        $0001BE26
 [000247ba] 588f                      addq.l     #4,a7
@@ -23182,19 +23021,19 @@ MCPass1:
 [00024804] 4a1f                      tst.b      (a7)+
 [00024806] 660c                      bne.s      $00024814
 [00024808] 3f3c 007d                 move.w     #$007D,-(a7)
-[0002480c] 4eb9 0001 b020            jsr        $0001B020
+[0002480c] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00024812] 548f                      addq.l     #2,a7
 [00024814] 4efa 000e                 jmp        $00024824(pc)
 [00024818] 3f3c 007c                 move.w     #$007C,-(a7)
-[0002481c] 4eb9 0001 b020            jsr        $0001B020
+[0002481c] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00024822] 548f                      addq.l     #2,a7
 [00024824] 1f3c 0052                 move.b     #$52,-(a7)
-[00024828] 4eb9 0001 ac38            jsr        $0001AC38
+[00024828] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0002482e] 548f                      addq.l     #2,a7
 [00024830] 2f2e 0008                 move.l     8(a6),-(a7)
-[00024834] 4eb9 0001 acf2            jsr        $0001ACF2
+[00024834] 4eb9 0001 acf2            jsr        MCP2IO.WriteLong
 [0002483a] 588f                      addq.l     #4,a7
-[0002483c] 4eb9 0001 b286            jsr        $0001B286
+[0002483c] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00024842] 426e fffc                 clr.w      -4(a6)
 [00024846] 7a00                      moveq.l    #0,d5
 [00024848] 1a2e ffdf                 move.b     -33(a6),d5
@@ -23203,28 +23042,28 @@ MCPass1:
 [00024854] 0000 0000                      dc.w       $0000
 [00024858] 0000 000e                 ori.b      #$0E,d0
 [0002485c] 0000 0580                 ori.b      #$80,d0
-[00024860] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[00024860] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00024868] 6610                      bne.s      $0002487A
 [0002486a] 3f3c 007f                 move.w     #$007F,-(a7)
-[0002486e] 4eb9 0001 afd2            jsr        $0001AFD2
+[0002486e] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024874] 548f                      addq.l     #2,a7
 [00024876] 4efa 0034                 jmp        $000248AC(pc)
 [0002487a] 486e fff2                 pea.l      -14(a6)
 [0002487e] 2f3c 0002 31ff            move.l     #$000231FF,-(a7)
 [00024884] 4eb9 0001 e242            jsr        $0001E242
 [0002488a] 508f                      addq.l     #8,a7
-[0002488c] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0002488c] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00024894] 6716                      beq.s      $000248AC
-[00024896] 4eb9 0001 b286            jsr        $0001B286
+[00024896] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0002489c] 486e ffe8                 pea.l      -24(a6)
 [000248a0] 4878 01f8                 pea.l      ($000001F8).w
 [000248a4] 4eb9 0001 e208            jsr        $0001E208
 [000248aa] 508f                      addq.l     #8,a7
 [000248ac] 4efa 0544                 jmp        $00024DF2(pc)
-[000248b0] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[000248b0] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [000248b8] 6616                      bne.s      $000248D0
 [000248ba] 3f3c 007f                 move.w     #$007F,-(a7)
-[000248be] 4eb9 0001 afd2            jsr        $0001AFD2
+[000248be] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [000248c4] 548f                      addq.l     #2,a7
 [000248c6] 7aff                      moveq.l    #-1,d5
 [000248c8] 2d45 ffe4                 move.l     d5,-28(a6)
@@ -23259,30 +23098,30 @@ MCPass1:
 [0002493a] 508f                      addq.l     #8,a7
 [0002493c] 285f                      movea.l    (a7)+,a4
 [0002493e] 1f3c 0017                 move.b     #$17,-(a7)
-[00024942] 4eb9 0001 ac38            jsr        $0001AC38
+[00024942] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [00024948] 548f                      addq.l     #2,a7
 [0002494a] 2f39 0003 602c            move.l     MCP1Ident.cardptr,-(a7)
 [00024950] 486e ffe0                 pea.l      -32(a6)
 [00024954] 4eb9 0001 e190            jsr        $0001E190
 [0002495a] 508f                      addq.l     #8,a7
 [0002495c] 4efa 0494                 jmp        $00024DF2(pc)
-[00024960] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[00024960] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00024968] 6610                      bne.s      $0002497A
 [0002496a] 3f3c 007f                 move.w     #$007F,-(a7)
-[0002496e] 4eb9 0001 afd2            jsr        $0001AFD2
+[0002496e] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024974] 548f                      addq.l     #2,a7
 [00024976] 4efa 0088                 jmp        $00024A00(pc)
 [0002497a] 486e fff2                 pea.l      -14(a6)
 [0002497e] 2f3c 0004 0000            move.l     #$00040000,-(a7)
 [00024984] 4eb9 0001 e242            jsr        $0001E242
 [0002498a] 508f                      addq.l     #8,a7
-[0002498c] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[0002498c] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00024994] 6610                      bne.s      $000249A6
 [00024996] 3f3c 007f                 move.w     #$007F,-(a7)
-[0002499a] 4eb9 0001 afd2            jsr        $0001AFD2
+[0002499a] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [000249a0] 548f                      addq.l     #2,a7
 [000249a2] 4efa 005c                 jmp        $00024A00(pc)
-[000249a6] 4eb9 0001 b286            jsr        $0001B286
+[000249a6] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [000249ac] 486e ffe8                 pea.l      -24(a6)
 [000249b0] 4878 107f                 pea.l      ($0000107F).w
 [000249b4] 4eb9 0001 e208            jsr        $0001E208
@@ -23304,16 +23143,16 @@ MCPass1:
 [000249f0] 4a1f                      tst.b      (a7)+
 [000249f2] 660c                      bne.s      $00024A00
 [000249f4] 3f3c 0080                 move.w     #$0080,-(a7)
-[000249f8] 4eb9 0001 b020            jsr        $0001B020
+[000249f8] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000249fe] 548f                      addq.l     #2,a7
 [00024a00] 4efa 03f0                 jmp        $00024DF2(pc)
-[00024a04] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[00024a04] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [00024a0c] 6606                      bne.s      $00024A14
-[00024a0e] 4eb9 0001 b286            jsr        $0001B286
-[00024a14] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[00024a0e] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
+[00024a14] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00024a1c] 6610                      bne.s      $00024A2E
 [00024a1e] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024a22] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024a22] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024a28] 548f                      addq.l     #2,a7
 [00024a2a] 4efa 012e                 jmp        $00024B5A(pc)
 [00024a2e] 526e fffc                 addq.w     #1,-4(a6)
@@ -23337,7 +23176,7 @@ MCPass1:
 [00024a78] 4a1f                      tst.b      (a7)+
 [00024a7a] 660c                      bne.s      $00024A88
 [00024a7c] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024a80] 4eb9 0001 b020            jsr        $0001B020
+[00024a80] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00024a86] 548f                      addq.l     #2,a7
 [00024a88] 4efa 00cc                 jmp        $00024B56(pc)
 [00024a8c] 486e fff2                 pea.l      -14(a6)
@@ -23353,7 +23192,7 @@ MCPass1:
 [00024ab8] 4a1f                      tst.b      (a7)+
 [00024aba] 660c                      bne.s      $00024AC8
 [00024abc] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024ac0] 4eb9 0001 b020            jsr        $0001B020
+[00024ac0] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00024ac6] 548f                      addq.l     #2,a7
 [00024ac8] 4efa 008c                 jmp        $00024B56(pc)
 [00024acc] 486e fff2                 pea.l      -14(a6)
@@ -23376,10 +23215,10 @@ MCPass1:
 [00024b0c] 6710                      beq.s      $00024B1E
 [00024b0e] 2f0c                      move.l     a4,-(a7)
 [00024b10] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024b14] 4eb9 0001 b020            jsr        $0001B020
+[00024b14] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00024b1a] 548f                      addq.l     #2,a7
 [00024b1c] 285f                      movea.l    (a7)+,a4
-[00024b1e] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[00024b1e] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [00024b26] 6704                      beq.s      $00024B2C
 [00024b28] 4efa 0030                 jmp        $00024B5A(pc)
 [00024b2c] 4efa 0028                 jmp        $00024B56(pc)
@@ -23395,13 +23234,13 @@ MCPass1:
 [00024b50] 008c 00a0 00f0            ori.l      #$00A000F0,a4 ; apollo only
 [00024b56] 6000 feac                 bra        $00024A04
 [00024b5a] 4efa 0296                 jmp        $00024DF2(pc)
-[00024b5e] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[00024b5e] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [00024b66] 6606                      bne.s      $00024B6E
-[00024b68] 4eb9 0001 b286            jsr        $0001B286
-[00024b6e] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[00024b68] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
+[00024b6e] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00024b76] 6610                      bne.s      $00024B88
 [00024b78] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024b7c] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024b7c] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024b82] 548f                      addq.l     #2,a7
 [00024b84] 4efa 00c8                 jmp        $00024C4E(pc)
 [00024b88] 526e fffc                 addq.w     #1,-4(a6)
@@ -23426,7 +23265,7 @@ MCPass1:
 [00024bd2] 6710                      beq.s      $00024BE4
 [00024bd4] 2f0c                      move.l     a4,-(a7)
 [00024bd6] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024bda] 4eb9 0001 b020            jsr        $0001B020
+[00024bda] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00024be0] 548f                      addq.l     #2,a7
 [00024be2] 285f                      movea.l    (a7)+,a4
 [00024be4] 0c6e 0002 fffc            cmpi.w     #$0002,-4(a6)
@@ -23448,7 +23287,7 @@ MCPass1:
 [00024c28] 4a1f                      tst.b      (a7)+
 [00024c2a] 660c                      bne.s      $00024C38
 [00024c2c] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024c30] 4eb9 0001 b020            jsr        $0001B020
+[00024c30] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00024c36] 548f                      addq.l     #2,a7
 [00024c38] 4efa 0014                 jmp        $00024C4E(pc)
 [00024c3c] 4efa 000c                 jmp        $00024C4A(pc)
@@ -23457,10 +23296,10 @@ MCPass1:
 [00024c48] 0062 6000                 ori.w      #$6000,-(a2)
 [00024c4c] ff12                      dc.w       $FF12 ; illegal
 [00024c4e] 4efa 01a2                 jmp        $00024DF2(pc)
-[00024c52] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[00024c52] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00024c5a] 6610                      bne.s      $00024C6C
 [00024c5c] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024c60] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024c60] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024c66] 548f                      addq.l     #2,a7
 [00024c68] 4efa 0038                 jmp        $00024CA2(pc)
 [00024c6c] 486e ffe4                 pea.l      -28(a6)
@@ -23471,16 +23310,16 @@ MCPass1:
 [00024c80] 486e ffe0                 pea.l      -32(a6)
 [00024c84] 4eb9 0001 e190            jsr        $0001E190
 [00024c8a] 508f                      addq.l     #8,a7
-[00024c8c] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[00024c8c] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [00024c94] 6704                      beq.s      $00024C9A
 [00024c96] 4efa 000a                 jmp        $00024CA2(pc)
-[00024c9a] 4eb9 0001 b286            jsr        $0001B286
+[00024c9a] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00024ca0] 60ca                      bra.s      $00024C6C
 [00024ca2] 4efa 014e                 jmp        $00024DF2(pc)
-[00024ca6] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[00024ca6] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00024cae] 6610                      bne.s      $00024CC0
 [00024cb0] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024cb4] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024cb4] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024cba] 548f                      addq.l     #2,a7
 [00024cbc] 4efa 008a                 jmp        $00024D48(pc)
 [00024cc0] 486e ffe4                 pea.l      -28(a6)
@@ -23501,43 +23340,43 @@ MCPass1:
 [00024d02] bab9 0003 602c            cmp.l      MCP1Ident.cardptr,d5
 [00024d08] 670c                      beq.s      $00024D16
 [00024d0a] 3f3c 00c6                 move.w     #$00C6,-(a7)
-[00024d0e] 4eb9 0001 b020            jsr        $0001B020
+[00024d0e] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00024d14] 548f                      addq.l     #2,a7
-[00024d16] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[00024d16] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [00024d1e] 661c                      bne.s      $00024D3C
-[00024d20] 4eb9 0001 b286            jsr        $0001B286
+[00024d20] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00024d26] 486e fff2                 pea.l      -14(a6)
 [00024d2a] 2f3c 000f ffff            move.l     #$000FFFFF,-(a7)
 [00024d30] 4eb9 0001 e208            jsr        $0001E208
 [00024d36] 508f                      addq.l     #8,a7
 [00024d38] 4efa 000e                 jmp        $00024D48(pc)
 [00024d3c] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024d40] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024d40] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024d46] 548f                      addq.l     #2,a7
 [00024d48] 4efa 00a8                 jmp        $00024DF2(pc)
-[00024d4c] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[00024d4c] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00024d54] 6610                      bne.s      $00024D66
 [00024d56] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024d5a] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024d5a] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024d60] 548f                      addq.l     #2,a7
 [00024d62] 4efa 0038                 jmp        $00024D9C(pc)
 [00024d66] 486e fff2                 pea.l      -14(a6)
 [00024d6a] 2f3c 000f ffff            move.l     #$000FFFFF,-(a7)
 [00024d70] 4eb9 0001 e208            jsr        $0001E208
 [00024d76] 508f                      addq.l     #8,a7
-[00024d78] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[00024d78] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [00024d80] 661a                      bne.s      $00024D9C
-[00024d82] 4eb9 0001 b286            jsr        $0001B286
+[00024d82] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00024d88] 486e fff2                 pea.l      -14(a6)
 [00024d8c] 2f3c 000f ffff            move.l     #$000FFFFF,-(a7)
 [00024d92] 4eb9 0001 e208            jsr        $0001E208
 [00024d98] 508f                      addq.l     #8,a7
 [00024d9a] 60dc                      bra.s      $00024D78
 [00024d9c] 4efa 0054                 jmp        $00024DF2(pc)
-[00024da0] 0c39 0012 0003 d9ca       cmpi.b     #$12,$0003D9CA
+[00024da0] 0c39 0012 0003 d9ca       cmpi.b     #$12,MCP2IO.sy
 [00024da8] 6610                      bne.s      $00024DBA
 [00024daa] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024dae] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024dae] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024db4] 548f                      addq.l     #2,a7
 [00024db6] 4efa 0014                 jmp        $00024DCC(pc)
 [00024dba] 486e fff2                 pea.l      -14(a6)
@@ -23557,10 +23396,10 @@ MCPass1:
 [00024df4] 0012 0003                 ori.b      #$03,(a2)
 [00024df8] d9ca                      adda.l     a2,a4
 [00024dfa] 660a                      bne.s      $00024E06
-[00024dfc] 4eb9 0001 b286            jsr        $0001B286
+[00024dfc] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00024e02] 4efa 0014                 jmp        $00024E18(pc)
 [00024e06] 3f3c 007f                 move.w     #$007F,-(a7)
-[00024e0a] 4eb9 0001 b020            jsr        $0001B020
+[00024e0a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00024e10] 548f                      addq.l     #2,a7
 [00024e12] 4eb9 0001 ec58            jsr        $0001EC58
 [00024e18] 4e5e                      unlk       a6
@@ -23571,17 +23410,17 @@ MCPass1:
 [00024e28] 2f2c 0034                 move.l     52(a4),-(a7)
 [00024e2c] 4eb9 0001 ba12            jsr        $0001BA12
 [00024e32] 588f                      addq.l     #4,a7
-[00024e34] 0c39 0027 0003 d9ca       cmpi.b     #$27,$0003D9CA
+[00024e34] 0c39 0027 0003 d9ca       cmpi.b     #$27,MCP2IO.sy
 [00024e3c] 670a                      beq.s      $00024E48
-[00024e3e] 0c39 0029 0003 d9ca       cmpi.b     #$29,$0003D9CA
+[00024e3e] 0c39 0029 0003 d9ca       cmpi.b     #$29,MCP2IO.sy
 [00024e46] 6602                      bne.s      $00024E4A
 [00024e48] 6004                      bra.s      $00024E4E
 [00024e4a] 4efa 00e8                 jmp        $00024F34(pc)
-[00024e4e] 0c39 0029 0003 d9ca       cmpi.b     #$29,$0003D9CA
+[00024e4e] 0c39 0029 0003 d9ca       cmpi.b     #$29,MCP2IO.sy
 [00024e56] 57c5                      seq        d5
 [00024e58] 4405                      neg.b      d5
 [00024e5a] 1d45 fff7                 move.b     d5,-9(a6)
-[00024e5e] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00024e5e] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00024e64] 4a2e fff7                 tst.b      -9(a6)
 [00024e68] 6752                      beq.s      $00024EBC
 [00024e6a] 486e fffc                 pea.l      -4(a6)
@@ -23594,17 +23433,17 @@ MCPass1:
 [00024e82] 0c2c 0006 0010            cmpi.b     #$06,16(a4)
 [00024e88] 6722                      beq.s      $00024EAC
 [00024e8a] 3f3c 0069                 move.w     #$0069,-(a7)
-[00024e8e] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024e8e] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024e94] 548f                      addq.l     #2,a7
-[00024e96] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[00024e96] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [00024e9e] 6608                      bne.s      $00024EA8
-[00024ea0] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00024ea0] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00024ea6] 60ee                      bra.s      $00024E96
 [00024ea8] 4efa 0012                 jmp        $00024EBC(pc)
-[00024eac] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00024eac] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00024eb2] 286e fffc                 movea.l    -4(a6),a4
 [00024eb6] 2d6c 0038 fff8            move.l     56(a4),-8(a6)
-[00024ebc] 0c39 0047 0003 d9ca       cmpi.b     #$47,$0003D9CA
+[00024ebc] 0c39 0047 0003 d9ca       cmpi.b     #$47,MCP2IO.sy
 [00024ec4] 666a                      bne.s      $00024F30
 [00024ec6] 4a2e fff7                 tst.b      -9(a6)
 [00024eca] 6728                      beq.s      $00024EF4
@@ -23616,7 +23455,7 @@ MCPass1:
 [00024ede] baae fffc                 cmp.l      -4(a6),d5
 [00024ee2] 660c                      bne.s      $00024EF0
 [00024ee4] 3f3c 0047                 move.w     #$0047,-(a7)
-[00024ee8] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024ee8] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024eee] 548f                      addq.l     #2,a7
 [00024ef0] 4efa 0022                 jmp        $00024F14(pc)
 [00024ef4] 486e fffc                 pea.l      -4(a6)
@@ -23626,7 +23465,7 @@ MCPass1:
 [00024f02] baae fffc                 cmp.l      -4(a6),d5
 [00024f06] 660c                      bne.s      $00024F14
 [00024f08] 3f3c 0049                 move.w     #$0049,-(a7)
-[00024f0c] 4eb9 0001 afd2            jsr        $0001AFD2
+[00024f0c] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00024f12] 548f                      addq.l     #2,a7
 [00024f14] 7aff                      moveq.l    #-1,d5
 [00024f16] baae fffc                 cmp.l      -4(a6),d5
@@ -23634,7 +23473,7 @@ MCPass1:
 [00024f1c] 2f2e fffc                 move.l     -4(a6),-(a7)
 [00024f20] 4eb9 0001 b83a            jsr        $0001B83A
 [00024f26] 588f                      addq.l     #4,a7
-[00024f28] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00024f28] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00024f2e] 608c                      bra.s      $00024EBC
 [00024f30] 6000 ff02                 bra        $00024E34
 [00024f34] 286d fffc                 movea.l    -4(a5),a4
@@ -23648,7 +23487,7 @@ MCPass1:
 [00024f50] 2f2d fffc                 move.l     -4(a5),-(a7)
 [00024f54] 2b4e fffc                 move.l     a6,-4(a5)
 [00024f58] 2d79 0003 d9d4 fffc       move.l     $0003D9D4,-4(a6)
-[00024f60] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00024f60] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00024f66] 6100 feb4                 bsr        $00024E1C
 [00024f6a] 2f2e fffc                 move.l     -4(a6),-(a7)
 [00024f6e] 4eb9 0001 c45a            jsr        $0001C45A
@@ -23661,17 +23500,17 @@ MCPass1:
 [00024f8a] 486c 0034                 pea.l      52(a4)
 [00024f8e] 4eb9 0001 ba60            jsr        $0001BA60
 [00024f94] 588f                      addq.l     #4,a7
-[00024f96] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00024f96] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [00024f9c] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [00024fa0] 4e5e                      unlk       a6
 [00024fa2] 4e75                      rts
 [00024fa4] 4e56 fffc                 link       a6,#-4
 [00024fa8] 2d79 0003 d9d4 fffc       move.l     $0003D9D4,-4(a6)
-[00024fb0] 4eb9 0001 b286            jsr        $0001B286
-[00024fb6] 0c39 0041 0003 d9ca       cmpi.b     #$41,$0003D9CA
+[00024fb0] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
+[00024fb6] 0c39 0041 0003 d9ca       cmpi.b     #$41,MCP2IO.sy
 [00024fbe] 660c                      bne.s      $00024FCC
 [00024fc0] 1f3c 002b                 move.b     #$2B,-(a7)
-[00024fc4] 4eb9 0001 ac38            jsr        $0001AC38
+[00024fc4] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [00024fca] 548f                      addq.l     #2,a7
 [00024fcc] 2f2e fffc                 move.l     -4(a6),-(a7)
 [00024fd0] 4eb9 0001 c504            jsr        $0001C504
@@ -23684,9 +23523,9 @@ MCPass1:
 [00024ff0] 3a39 0003 db56            move.w     $0003DB56,d5
 [00024ff6] 49f9 0003 db58            lea.l      $0003DB58,a4
 [00024ffc] 4234 5000                 clr.b      0(a4,d5.w)
-[00025000] 0c39 0048 0003 d9ca       cmpi.b     #$48,$0003D9CA
+[00025000] 0c39 0048 0003 d9ca       cmpi.b     #$48,MCP2IO.sy
 [00025008] 660a                      bne.s      $00025014
-[0002500a] 4eb9 0001 b286            jsr        $0001B286
+[0002500a] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025010] 4efa 000c                 jmp        $0002501E(pc)
 [00025014] 2f2e fffc                 move.l     -4(a6),-(a7)
 [00025018] 6100 0944                 bsr        $0002595E
@@ -23700,11 +23539,11 @@ MCPass1:
 [0002503c] 266e fffc                 movea.l    -4(a6),a3
 [00025040] 1774 5000 0034            move.b     0(a4,d5.w),52(a3)
 [00025046] 5379 0003 db56            subq.w     #1,$0003DB56
-[0002504c] 4eb9 0001 b286            jsr        $0001B286
+[0002504c] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025052] 4e5e                      unlk       a6
 [00025054] 4e75                      rts
 [00025056] 4e56 0000                 link       a6,#0
-[0002505a] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0002505a] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [00025060] ba2e 0008                 cmp.b      8(a6),d5
 [00025064] 6706                      beq.s      $0002506C
 [00025066] 6100 0838                 bsr        $000258A0
@@ -23712,13 +23551,13 @@ MCPass1:
 [0002506c] 4e5e                      unlk       a6
 [0002506e] 4e75                      rts
 [00025070] 4e56 0000                 link       a6,#0
-[00025074] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[00025074] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [0002507a] ba2e 000c                 cmp.b      12(a6),d5
 [0002507e] 671e                      beq.s      $0002509E
-[00025080] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[00025080] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [00025086] ba2e 000a                 cmp.b      10(a6),d5
 [0002508a] 6712                      beq.s      $0002509E
-[0002508c] 1a39 0003 d9ca            move.b     $0003D9CA,d5
+[0002508c] 1a39 0003 d9ca            move.b     MCP2IO.sy,d5
 [00025092] ba2e 0008                 cmp.b      8(a6),d5
 [00025096] 6706                      beq.s      $0002509E
 [00025098] 6100 0806                 bsr        $000258A0
@@ -23759,7 +23598,7 @@ MCPass1:
 [00025112] 4a1f                      tst.b      (a7)+
 [00025114] 660c                      bne.s      $00025122
 [00025116] 3f3c 0080                 move.w     #$0080,-(a7)
-[0002511a] 4eb9 0001 b020            jsr        $0001B020
+[0002511a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00025120] 548f                      addq.l     #2,a7
 [00025122] 4efa 000e                 jmp        $00025132(pc)
 [00025126] 486e ffec                 pea.l      -20(a6)
@@ -23774,15 +23613,15 @@ MCPass1:
 [00025146] 486e fff6                 pea.l      -10(a6)
 [0002514a] 4eb9 0001 e604            jsr        $0001E604
 [00025150] 588f                      addq.l     #4,a7
-[00025152] 4eb9 0001 b286            jsr        $0001B286
+[00025152] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025158] 4eb9 0001 ec58            jsr        $0001EC58
 [0002515e] 4e5e                      unlk       a6
 [00025160] 4e75                      rts
 [00025162] 4e56 ffec                 link       a6,#-20
-[00025166] 0c39 0052 0003 d9ca       cmpi.b     #$52,$0003D9CA
+[00025166] 0c39 0052 0003 d9ca       cmpi.b     #$52,MCP2IO.sy
 [0002516e] 6612                      bne.s      $00025182
 [00025170] 2d79 0003 d9d4 fffc       move.l     $0003D9D4,-4(a6)
-[00025178] 4eb9 0001 b0e6            jsr        $0001B0E6
+[00025178] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [0002517e] 4efa 0016                 jmp        $00025196(pc)
 [00025182] 3f3c 003c                 move.w     #$003C,-(a7)
 [00025186] 3f3c 0049                 move.w     #$0049,-(a7)
@@ -23800,14 +23639,14 @@ MCPass1:
 [000251b0] 286e fffc                 movea.l    -4(a6),a4
 [000251b4] 4a2c 0011                 tst.b      17(a4)
 [000251b8] 672c                      beq.s      $000251E6
-[000251ba] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[000251ba] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [000251c2] 660e                      bne.s      $000251D2
 [000251c4] 2f2e fffc                 move.l     -4(a6),-(a7)
 [000251c8] 6100 f596                 bsr        $00024760
 [000251cc] 588f                      addq.l     #4,a7
 [000251ce] 4efa 0012                 jmp        $000251E2(pc)
 [000251d2] 3f3c 0090                 move.w     #$0090,-(a7)
-[000251d6] 4eb9 0001 afd2            jsr        $0001AFD2
+[000251d6] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [000251dc] 548f                      addq.l     #2,a7
 [000251de] 6100 ff56                 bsr        $00025136
 [000251e2] 4efa 0156                 jmp        $0002533A(pc)
@@ -23817,14 +23656,14 @@ MCPass1:
 [000251f2] 286e fffc                 movea.l    -4(a6),a4
 [000251f6] 4a2c 0011                 tst.b      17(a4)
 [000251fa] 672e                      beq.s      $0002522A
-[000251fc] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[000251fc] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [00025204] 6610                      bne.s      $00025216
 [00025206] 3f3c 009d                 move.w     #$009D,-(a7)
-[0002520a] 4eb9 0001 b020            jsr        $0001B020
+[0002520a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00025210] 548f                      addq.l     #2,a7
 [00025212] 4efa 000e                 jmp        $00025222(pc)
 [00025216] 3f3c 0090                 move.w     #$0090,-(a7)
-[0002521a] 4eb9 0001 afd2            jsr        $0001AFD2
+[0002521a] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00025220] 548f                      addq.l     #2,a7
 [00025222] 6100 ff12                 bsr        $00025136
 [00025226] 4efa 0112                 jmp        $0002533A(pc)
@@ -23856,7 +23695,7 @@ MCPass1:
 [0002528c] 4efa 0012                 jmp        $000252A0(pc)
 [00025290] 2f0c                      move.l     a4,-(a7)
 [00025292] 3f3c 00a1                 move.w     #$00A1,-(a7)
-[00025296] 4eb9 0001 b020            jsr        $0001B020
+[00025296] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002529c] 548f                      addq.l     #2,a7
 [0002529e] 285f                      movea.l    (a7)+,a4
 [000252a0] 1d7c 0001 fffb            move.b     #$01,-5(a6)
@@ -23875,13 +23714,13 @@ MCPass1:
 [000252d2] 4efa 0016                 jmp        $000252EA(pc)
 [000252d6] 2f0c                      move.l     a4,-(a7)
 [000252d8] 3f3c 009d                 move.w     #$009D,-(a7)
-[000252dc] 4eb9 0001 b020            jsr        $0001B020
+[000252dc] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000252e2] 548f                      addq.l     #2,a7
 [000252e4] 285f                      movea.l    (a7)+,a4
 [000252e6] 422e fffb                 clr.b      -5(a6)
 [000252ea] 4a2e fffb                 tst.b      -5(a6)
 [000252ee] 670e                      beq.s      $000252FE
-[000252f0] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[000252f0] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [000252f8] 6604                      bne.s      $000252FE
 [000252fa] 7a01                      moveq.l    #1,d5
 [000252fc] 6002                      bra.s      $00025300
@@ -23889,15 +23728,15 @@ MCPass1:
 [00025300] 1d45 fffb                 move.b     d5,-5(a6)
 [00025304] 4a2e fffb                 tst.b      -5(a6)
 [00025308] 6716                      beq.s      $00025320
-[0002530a] 4eb9 0001 b286            jsr        $0001B286
+[0002530a] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025310] 2f2e ffec                 move.l     -20(a6),-(a7)
 [00025314] 4eb9 0001 e8aa            jsr        $0001E8AA
 [0002531a] 588f                      addq.l     #4,a7
 [0002531c] 4efa 001c                 jmp        $0002533A(pc)
-[00025320] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[00025320] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [00025328] 670c                      beq.s      $00025336
 [0002532a] 3f3c 0090                 move.w     #$0090,-(a7)
-[0002532e] 4eb9 0001 afd2            jsr        $0001AFD2
+[0002532e] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00025334] 548f                      addq.l     #2,a7
 [00025336] 6100 fdfe                 bsr        $00025136
 [0002533a] 4efa 0006                 jmp        $00025342(pc)
@@ -23915,18 +23754,18 @@ MCPass1:
 [00025362] 1f3c 0030                 move.b     #$30,-(a7)
 [00025366] 6100 fd08                 bsr        $00025070
 [0002536a] 5c8f                      addq.l     #6,a7
-[0002536c] 0c39 0030 0003 d9ca       cmpi.b     #$30,$0003D9CA
+[0002536c] 0c39 0030 0003 d9ca       cmpi.b     #$30,MCP2IO.sy
 [00025374] 6704                      beq.s      $0002537A
 [00025376] 4efa 000a                 jmp        $00025382(pc)
-[0002537a] 4eb9 0001 b286            jsr        $0001B286
+[0002537a] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025380] 60c8                      bra.s      $0002534A
-[00025382] 0c39 0031 0003 d9ca       cmpi.b     #$31,$0003D9CA
+[00025382] 0c39 0031 0003 d9ca       cmpi.b     #$31,MCP2IO.sy
 [0002538a] 6610                      bne.s      $0002539C
-[0002538c] 4eb9 0001 b286            jsr        $0001B286
+[0002538c] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025392] 1f3c 003f                 move.b     #$3F,-(a7)
 [00025396] 6100 fcbe                 bsr        $00025056
 [0002539a] 548f                      addq.l     #2,a7
-[0002539c] 4eb9 0001 b286            jsr        $0001B286
+[0002539c] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [000253a2] 4e5e                      unlk       a6
 [000253a4] 4e75                      rts
 [000253a6] 4e56 ffec                 link       a6,#-20
@@ -23964,7 +23803,7 @@ MCPass1:
 [00025424] 588f                      addq.l     #4,a7
 [00025426] 4efa 000e                 jmp        $00025436(pc)
 [0002542a] 3f3c 0079                 move.w     #$0079,-(a7)
-[0002542e] 4eb9 0001 b020            jsr        $0001B020
+[0002542e] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00025434] 548f                      addq.l     #2,a7
 [00025436] 1f3c 003f                 move.b     #$3F,-(a7)
 [0002543a] 6100 fc1a                 bsr        $00025056
@@ -23972,7 +23811,7 @@ MCPass1:
 [00025440] 4a2e ffed                 tst.b      -19(a6)
 [00025444] 6706                      beq.s      $0002544C
 [00025446] 4eb9 0001 c580            jsr        $0001C580
-[0002544c] 4eb9 0001 b286            jsr        $0001B286
+[0002544c] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025452] 4e5e                      unlk       a6
 [00025454] 4e75                      rts
 [00025456] 4e56 ffe4                 link       a6,#-28
@@ -23980,11 +23819,11 @@ MCPass1:
 [0002545e] 4878 107f                 pea.l      ($0000107F).w
 [00025462] 4eb9 0001 e208            jsr        $0001E208
 [00025468] 508f                      addq.l     #8,a7
-[0002546a] 0c39 002d 0003 d9ca       cmpi.b     #$2D,$0003D9CA
+[0002546a] 0c39 002d 0003 d9ca       cmpi.b     #$2D,MCP2IO.sy
 [00025472] 6602                      bne.s      $00025476
 [00025474] 6004                      bra.s      $0002547A
 [00025476] 4efa 0116                 jmp        $0002558E(pc)
-[0002547a] 4eb9 0001 b286            jsr        $0001B286
+[0002547a] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025480] 49ee ffec                 lea.l      -20(a6),a4
 [00025484] 4214                      clr.b      (a4)
 [00025486] 2f0c                      move.l     a4,-(a7)
@@ -24045,29 +23884,29 @@ MCPass1:
 [00025540] 4efa 0012                 jmp        $00025554(pc)
 [00025544] 2f0c                      move.l     a4,-(a7)
 [00025546] 3f3c 0080                 move.w     #$0080,-(a7)
-[0002554a] 4eb9 0001 b020            jsr        $0001B020
+[0002554a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00025550] 548f                      addq.l     #2,a7
 [00025552] 285f                      movea.l    (a7)+,a4
-[00025554] 0c39 0017 0003 d9ca       cmpi.b     #$17,$0003D9CA
+[00025554] 0c39 0017 0003 d9ca       cmpi.b     #$17,MCP2IO.sy
 [0002555c] 6606                      bne.s      $00025564
-[0002555e] 4eb9 0001 b0e6            jsr        $0001B0E6
-[00025564] 0c39 001a 0003 d9ca       cmpi.b     #$1A,$0003D9CA
+[0002555e] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
+[00025564] 0c39 001a 0003 d9ca       cmpi.b     #$1A,MCP2IO.sy
 [0002556c] 6704                      beq.s      $00025572
 [0002556e] 6000 ff10                 bra        $00025480
-[00025572] 4eb9 0001 b286            jsr        $0001B286
+[00025572] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025578] 1f3c 002d                 move.b     #$2D,-(a7)
 [0002557c] 1f3c 0031                 move.b     #$31,-(a7)
 [00025580] 1f3c 003f                 move.b     #$3F,-(a7)
 [00025584] 6100 faea                 bsr        $00025070
 [00025588] 5c8f                      addq.l     #6,a7
 [0002558a] 6000 fede                 bra        $0002546A
-[0002558e] 0c39 0031 0003 d9ca       cmpi.b     #$31,$0003D9CA
+[0002558e] 0c39 0031 0003 d9ca       cmpi.b     #$31,MCP2IO.sy
 [00025596] 6610                      bne.s      $000255A8
-[00025598] 4eb9 0001 b286            jsr        $0001B286
+[00025598] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0002559e] 1f3c 003f                 move.b     #$3F,-(a7)
 [000255a2] 6100 fab2                 bsr        $00025056
 [000255a6] 548f                      addq.l     #2,a7
-[000255a8] 4eb9 0001 b286            jsr        $0001B286
+[000255a8] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [000255ae] 4e5e                      unlk       a6
 [000255b0] 4e75                      rts
 [000255b2] 4e56 fffe                 link       a6,#-2
@@ -24078,7 +23917,7 @@ MCPass1:
 [000255ca] 1f3c 003f                 move.b     #$3F,-(a7)
 [000255ce] 6100 fa86                 bsr        $00025056
 [000255d2] 548f                      addq.l     #2,a7
-[000255d4] 4eb9 0001 b286            jsr        $0001B286
+[000255d4] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [000255da] 286d fffc                 movea.l    -4(a5),a4
 [000255de] 196e ffff ffff            move.b     -1(a6),-1(a4)
 [000255e4] 4e5e                      unlk       a6
@@ -24088,20 +23927,20 @@ MCPass1:
 [000255f0] 4a2c ffff                 tst.b      -1(a4)
 [000255f4] 660c                      bne.s      $00025602
 [000255f6] 3f3c 0097                 move.w     #$0097,-(a7)
-[000255fa] 4eb9 0001 b020            jsr        $0001B020
+[000255fa] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00025600] 548f                      addq.l     #2,a7
 [00025602] 4e5e                      unlk       a6
 [00025604] 4e75                      rts
 [00025606] 4e56 fffc                 link       a6,#-4
-[0002560a] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[0002560a] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [00025612] 6620                      bne.s      $00025634
-[00025614] 4eb9 0001 b286            jsr        $0001B286
+[00025614] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0002561a] 3f3c 0080                 move.w     #$0080,-(a7)
 [0002561e] 3f3c 0071                 move.w     #$0071,-(a7)
 [00025622] 486e fffc                 pea.l      -4(a6)
 [00025626] 4eb9 0001 d6b6            jsr        $0001D6B6
 [0002562c] 508f                      addq.l     #8,a7
-[0002562e] 4eb9 0001 b286            jsr        $0001B286
+[0002562e] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025634] 4e5e                      unlk       a6
 [00025636] 4e75                      rts
 [00025638] 4e56 ffec                 link       a6,#-20
@@ -24114,13 +23953,13 @@ MCPass1:
 [00025652] 0000 0004                 ori.b      #$04,d0
 [00025656] 0000 0002                 ori.b      #$02,d0
 [0002565a] 0000 00bc                 ori.b      #$BC,d0
-[0002565e] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[0002565e] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [00025666] 6710                      beq.s      $00025678
 [00025668] 3f3c 0099                 move.w     #$0099,-(a7)
-[0002566c] 4eb9 0001 afd2            jsr        $0001AFD2
+[0002566c] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [00025672] 548f                      addq.l     #2,a7
 [00025674] 4efa 006a                 jmp        $000256E0(pc)
-[00025678] 4eb9 0001 b286            jsr        $0001B286
+[00025678] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0002567e] 486e fff6                 pea.l      -10(a6)
 [00025682] 4eb9 0002 05ec            jsr        $000205EC
 [00025688] 588f                      addq.l     #4,a7
@@ -24144,14 +23983,14 @@ MCPass1:
 [000256ca] 4a1f                      tst.b      (a7)+
 [000256cc] 660c                      bne.s      $000256DA
 [000256ce] 3f3c 009b                 move.w     #$009B,-(a7)
-[000256d2] 4eb9 0001 b020            jsr        $0001B020
+[000256d2] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000256d8] 548f                      addq.l     #2,a7
-[000256da] 4eb9 0001 b286            jsr        $0001B286
+[000256da] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [000256e0] 4efa 0032                 jmp        $00025714(pc)
-[000256e4] 0c39 0011 0003 d9ca       cmpi.b     #$11,$0003D9CA
+[000256e4] 0c39 0011 0003 d9ca       cmpi.b     #$11,MCP2IO.sy
 [000256ec] 6618                      bne.s      $00025706
 [000256ee] 3f3c 009a                 move.w     #$009A,-(a7)
-[000256f2] 4eb9 0001 afd2            jsr        $0001AFD2
+[000256f2] 4eb9 0001 afd2            jsr        MCP2IO.Error
 [000256f8] 548f                      addq.l     #2,a7
 [000256fa] 486e fff6                 pea.l      -10(a6)
 [000256fe] 4eb9 0002 05ec            jsr        $000205EC
@@ -24192,10 +24031,10 @@ MCPass1:
 [00025782] 4a1f                      tst.b      (a7)+
 [00025784] 660c                      bne.s      $00025792
 [00025786] 3f3c 008b                 move.w     #$008B,-(a7)
-[0002578a] 4eb9 0001 b020            jsr        $0001B020
+[0002578a] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [00025790] 548f                      addq.l     #2,a7
 [00025792] 1f3c 003e                 move.b     #$3E,-(a7)
-[00025796] 4eb9 0001 ac38            jsr        $0001AC38
+[00025796] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [0002579c] 548f                      addq.l     #2,a7
 [0002579e] 486e ffec                 pea.l      -20(a6)
 [000257a2] 4878 11ff                 pea.l      ($000011FF).w
@@ -24209,17 +24048,17 @@ MCPass1:
 [000257c0] 4a1f                      tst.b      (a7)+
 [000257c2] 660c                      bne.s      $000257D0
 [000257c4] 3f3c 0080                 move.w     #$0080,-(a7)
-[000257c8] 4eb9 0001 b020            jsr        $0001B020
+[000257c8] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [000257ce] 548f                      addq.l     #2,a7
-[000257d0] 0c39 0024 0003 d9ca       cmpi.b     #$24,$0003D9CA
+[000257d0] 0c39 0024 0003 d9ca       cmpi.b     #$24,MCP2IO.sy
 [000257d8] 660a                      bne.s      $000257E4
-[000257da] 4eb9 0001 b286            jsr        $0001B286
+[000257da] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [000257e0] 4efa 0006                 jmp        $000257E8(pc)
 [000257e4] 4efa 0004                 jmp        $000257EA(pc)
 [000257e8] 60b4                      bra.s      $0002579E
-[000257ea] 0c39 003a 0003 d9ca       cmpi.b     #$3A,$0003D9CA
+[000257ea] 0c39 003a 0003 d9ca       cmpi.b     #$3A,MCP2IO.sy
 [000257f2] 6648                      bne.s      $0002583C
-[000257f4] 4eb9 0001 b286            jsr        $0001B286
+[000257f4] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [000257fa] 486e ffe4                 pea.l      -28(a6)
 [000257fe] 486e ffe0                 pea.l      -32(a6)
 [00025802] 4eb9 0002 0af2            jsr        $00020AF2
@@ -24236,19 +24075,19 @@ MCPass1:
 [0002582c] 4a1f                      tst.b      (a7)+
 [0002582e] 660c                      bne.s      $0002583C
 [00025830] 3f3c 009c                 move.w     #$009C,-(a7)
-[00025834] 4eb9 0001 b020            jsr        $0001B020
+[00025834] 4eb9 0001 b020            jsr        MCP2IO.ErrorLS
 [0002583a] 548f                      addq.l     #2,a7
 [0002583c] 1f3c 003f                 move.b     #$3F,-(a7)
 [00025840] 6100 f814                 bsr        $00025056
 [00025844] 548f                      addq.l     #2,a7
-[00025846] 4eb9 0001 b286            jsr        $0001B286
+[00025846] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0002584c] 4e5e                      unlk       a6
 [0002584e] 4e75                      rts
 [00025850] 4e56 fff6                 link       a6,#-10
 [00025854] 1f3c 0035                 move.b     #$35,-(a7)
 [00025858] 6100 f7fc                 bsr        $00025056
 [0002585c] 548f                      addq.l     #2,a7
-[0002585e] 4eb9 0001 b286            jsr        $0001B286
+[0002585e] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [00025864] 486e fff6                 pea.l      -10(a6)
 [00025868] 7a02                      moveq.l    #2,d5
 [0002586a] 2f05                      move.l     d5,-(a7)
@@ -24265,12 +24104,12 @@ MCPass1:
 [0002588c] 1f3c 003f                 move.b     #$3F,-(a7)
 [00025890] 6100 f7c4                 bsr        $00025056
 [00025894] 548f                      addq.l     #2,a7
-[00025896] 4eb9 0001 b286            jsr        $0001B286
+[00025896] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0002589c] 4e5e                      unlk       a6
 [0002589e] 4e75                      rts
 [000258a0] 4e56 fffe                 link       a6,#-2
-[000258a4] 1d79 0003 d9ca ffff       move.b     $0003D9CA,-1(a6)
-[000258ac] 4eb9 0001 b286            jsr        $0001B286
+[000258a4] 1d79 0003 d9ca ffff       move.b     MCP2IO.sy,-1(a6)
+[000258ac] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [000258b2] 7a00                      moveq.l    #0,d5
 [000258b4] 1a2e ffff                 move.b     -1(a6),d5
 [000258b8] 2005                      move.l     d5,d0
@@ -24315,16 +24154,16 @@ MCPass1:
 [0002595e] 4e56 fffc                 link       a6,#-4
 [00025962] 2f2d fffc                 move.l     -4(a5),-(a7)
 [00025966] 2b4e fffc                 move.l     a6,-4(a5)
-[0002596a] 0c39 0044 0003 d9ca       cmpi.b     #$44,$0003D9CA
+[0002596a] 0c39 0044 0003 d9ca       cmpi.b     #$44,MCP2IO.sy
 [00025972] 6608                      bne.s      $0002597C
 [00025974] 6100 f62e                 bsr        $00024FA4
 [00025978] 4efa 0010                 jmp        $0002598A(pc)
-[0002597c] 0c39 0045 0003 d9ca       cmpi.b     #$45,$0003D9CA
+[0002597c] 0c39 0045 0003 d9ca       cmpi.b     #$45,MCP2IO.sy
 [00025984] 6604                      bne.s      $0002598A
 [00025986] 6100 f5c4                 bsr        $00024F4C
-[0002598a] 0c39 002b 0003 d9ca       cmpi.b     #$2B,$0003D9CA
+[0002598a] 0c39 002b 0003 d9ca       cmpi.b     #$2B,MCP2IO.sy
 [00025992] 670c                      beq.s      $000259A0
-[00025994] 0c39 0041 0003 d9ca       cmpi.b     #$41,$0003D9CA
+[00025994] 0c39 0041 0003 d9ca       cmpi.b     #$41,MCP2IO.sy
 [0002599c] 6702                      beq.s      $000259A0
 [0002599e] 60ca                      bra.s      $0002596A
 [000259a0] 422e ffff                 clr.b      -1(a6)
@@ -24334,10 +24173,10 @@ MCPass1:
 [000259b2] 7aff                      moveq.l    #-1,d5
 [000259b4] 2945 001c                 move.l     d5,28(a4)
 [000259b8] 4eb9 0001 c5a4            jsr        $0001C5A4
-[000259be] 0c39 002b 0003 d9ca       cmpi.b     #$2B,$0003D9CA
+[000259be] 0c39 002b 0003 d9ca       cmpi.b     #$2B,MCP2IO.sy
 [000259c6] 661e                      bne.s      $000259E6
-[000259c8] 4eb9 0001 b286            jsr        $0001B286
-[000259ce] 0c39 0041 0003 d9ca       cmpi.b     #$41,$0003D9CA
+[000259c8] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
+[000259ce] 0c39 0041 0003 d9ca       cmpi.b     #$41,MCP2IO.sy
 [000259d6] 6708                      beq.s      $000259E0
 [000259d8] 6100 fec6                 bsr        $000258A0
 [000259dc] 4efa 0006                 jmp        $000259E4(pc)
@@ -24346,17 +24185,19 @@ MCPass1:
 [000259e6] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [000259ea] 4e5e                      unlk       a6
 [000259ec] 4e75                      rts
+
 [000259ee] 4e56 0000                 link       a6,#0
-[000259f2] 4eb9 0001 b0e6            jsr        $0001B0E6
+[000259f2] 4eb9 0001 b0e6            jsr        MCP2IO.Scanner.GetSy
 [000259f8] 4279 0003 db56            clr.w      $0003DB56
-[000259fe] 0c39 0045 0003 d9ca       cmpi.b     #$45,$0003D9CA
+[000259fe] 0c39 0045 0003 d9ca       cmpi.b     #$45,MCP2IO.sy
 [00025a06] 6604                      bne.s      $00025A0C
 [00025a08] 6100 f542                 bsr        $00024F4C
 [00025a0c] 1f3c 0041                 move.b     #$41,-(a7)
-[00025a10] 4eb9 0001 ac38            jsr        $0001AC38
+[00025a10] 4eb9 0001 ac38            jsr        MCP2IO.PutSy
 [00025a16] 548f                      addq.l     #2,a7
 [00025a18] 4e5e                      unlk       a6
 [00025a1a] 4e75                      rts
+
 [00025a1c] 4e56 0000                 link       a6,#0
 [00025a20] 3f3c 0003                 move.w     #$0003,-(a7)
 [00025a24] 4eb9 0001 b5e4            jsr        $0001B5E4
@@ -24368,7 +24209,7 @@ MCPass1:
 [00025a3c] 4eb9 0002 0b14            jsr        $00020B14
 [00025a42] 548f                      addq.l     #2,a7
 [00025a44] 6100 ffa8                 bsr.w      $000259EE
-[00025a48] 4eb9 0001 b5ce            jsr        $0001B5CE
+[00025a48] 4eb9 0001 b5ce            jsr        MCP2IO.TermInOut
 [00025a4e] 4e5e                      unlk       a6
 [00025a50] 4e75                      rts
 [00025a52] 4e56 0000                 link       a6,#0
@@ -24486,8 +24327,11 @@ MCPass1:
 [00025bb4] 6564                      bcs.s      $00025C1A
 [00025bb6] 2062                      movea.l    -(a2),a0
 [00025bb8] 7920                      ???
-[00025bba] 0000 3200                 ori.b      #$00,d0
-[00025bbe] 3300                      move.w     d0,-(a1)
+[00025bba] 0000
+[00025bbc] 3200                      .asciiz '2'
+[00025bbe] 3300                      .asciiz '3'
+
+MCP4CodeSys.Emit:
 [00025bc0] 4e56 0000                 link       a6,#0
 [00025bc4] 3a39 0003 dd34            move.w     $0003DD34,d5
 [00025bca] da45                      add.w      d5,d5
@@ -24497,7 +24341,7 @@ MCPass1:
 [00025bde] 0c79 1388 0003 dd34       cmpi.w     #$1388,$0003DD34
 [00025be6] 6f12                      ble.s      $00025BFA
 [00025be8] 3f3c 0191                 move.w     #$0191,-(a7)
-[00025bec] 4eb9 0002 67ba            jsr        $000267BA
+[00025bec] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [00025bf2] 548f                      addq.l     #2,a7
 [00025bf4] 4279 0003 dd34            clr.w      $0003DD34
 [00025bfa] 4e5e                      unlk       a6
@@ -24507,12 +24351,12 @@ MCPass1:
 [00025c06] 7810                      moveq.l    #16,d4
 [00025c08] e8ad                      lsr.l      d4,d5
 [00025c0a] 3f05                      move.w     d5,-(a7)
-[00025c0c] 6100 ffb2                 bsr.w      $00025BC0
+[00025c0c] 6100 ffb2                 bsr.w      MCP4CodeSys.Emit
 [00025c10] 548f                      addq.l     #2,a7
 [00025c12] 2a2e 0008                 move.l     8(a6),d5
 [00025c16] 0285 0000 ffff            andi.l     #$0000FFFF,d5
 [00025c1c] 3f05                      move.w     d5,-(a7)
-[00025c1e] 6100 ffa0                 bsr.w      $00025BC0
+[00025c1e] 6100 ffa0                 bsr.w      MCP4CodeSys.Emit
 [00025c22] 548f                      addq.l     #2,a7
 [00025c24] 4e5e                      unlk       a6
 [00025c26] 4e75                      rts
@@ -24520,7 +24364,7 @@ MCPass1:
 [00025c2c] 0c79 0800 0004 0448       cmpi.w     #$0800,$00040448
 [00025c34] 6312                      bls.s      $00025C48
 [00025c36] 3f3c 0194                 move.w     #$0194,-(a7)
-[00025c3a] 4eb9 0002 67ba            jsr        $000267BA
+[00025c3a] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [00025c40] 548f                      addq.l     #2,a7
 [00025c42] 4279 0004 0448            clr.w      $00040448
 [00025c48] 3a39 0004 0448            move.w     $00040448,d5
@@ -24576,7 +24420,7 @@ MCPass1:
 [00025cf6] 0c79 0800 0004 0448       cmpi.w     #$0800,$00040448
 [00025cfe] 6312                      bls.s      $00025D12
 [00025d00] 3f3c 0194                 move.w     #$0194,-(a7)
-[00025d04] 4eb9 0002 67ba            jsr        $000267BA
+[00025d04] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [00025d0a] 548f                      addq.l     #2,a7
 [00025d0c] 4279 0004 0448            clr.w      $00040448
 [00025d12] 3a39 0004 0448            move.w     $00040448,d5
@@ -24627,7 +24471,7 @@ MCPass1:
 [00025dc8] 0c79 0800 0004 0448       cmpi.w     #$0800,$00040448
 [00025dd0] 6312                      bls.s      $00025DE4
 [00025dd2] 3f3c 0194                 move.w     #$0194,-(a7)
-[00025dd6] 4eb9 0002 67ba            jsr        $000267BA
+[00025dd6] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [00025ddc] 548f                      addq.l     #2,a7
 [00025dde] 4279 0004 0448            clr.w      $00040448
 [00025de4] 3a39 0004 0448            move.w     $00040448,d5
@@ -25108,13 +24952,15 @@ MCPass1:
 [0002645a] 60c8                      bra.s      $00026424
 [0002645c] 4e5e                      unlk       a6
 [0002645e] 4e75                      rts
+
 [00026460] 4e56 0000                 link       a6,#0
 [00026464] 3f3c 0004                 move.w     #$0004,-(a7)
-[00026468] 4879 0002 6766            pea.l      $00026766
+[00026468] 4879 0002 6766            pea.l      $00026766 ' ****'
 [0002646e] 6100 ffac                 bsr.w      $0002641C
 [00026472] 5c8f                      addq.l     #6,a7
 [00026474] 4e5e                      unlk       a6
 [00026476] 4e75                      rts
+
 [00026478] 4e56 0000                 link       a6,#0
 [0002647c] 0c39 0050 0004 4480       cmpi.b     #$50,$00044480
 [00026484] 6708                      beq.s      $0002648E
@@ -25127,9 +24973,10 @@ MCPass1:
 [000264a6] 49f9 0004 445c            lea.l      $0004445C,a4
 [000264ac] 49f4 5000                 lea.l      0(a4,d5.w),a4
 [000264b0] 38ae 0008                 move.w     8(a6),(a4)
-[000264b4] 3979 0004 449e 0002       move.w     $0004449E,2(a4)
+[000264b4] 3979 0004 449e 0002       move.w     MCP3IO.pos,2(a4)
 [000264bc] 4e5e                      unlk       a6
 [000264be] 4e75                      rts
+
 [000264c0] 4e56 fffc                 link       a6,#-4
 [000264c4] 6100 ff9a                 bsr.w      $00026460
 [000264c8] 426e fffc                 clr.w      -4(a6)
@@ -25176,7 +25023,7 @@ MCPass1:
 [00026564] 4e5e                      unlk       a6
 [00026566] 4e75                      rts
 [00026568] 4e56 fffc                 link       a6,#-4
-[0002656c] 3a39 0004 449c            move.w     $0004449C,d5
+[0002656c] 3a39 0004 449c            move.w     MCP3IO.line,d5
 [00026572] ba79 0004 445a            cmp.w      $0004445A,d5
 [00026578] 6302                      bls.s      $0002657C
 [0002657a] 6004                      bra.s      $00026580
@@ -25214,7 +25061,7 @@ MCPass1:
 [000265fc] 508f                      addq.l     #8,a7
 [000265fe] 4efa 0012                 jmp        $00026612(pc)
 [00026602] 3f3c 000a                 move.w     #$000A,-(a7)
-[00026606] 4879 0002 676c            pea.l      $0002676C
+[00026606] 4879 0002 676c            pea.l      $0002676C '           '
 [0002660c] 6100 fe0e                 bsr        $0002641C
 [00026610] 5c8f                      addq.l     #6,a7
 [00026612] 4879 0004 4cc6            pea.l      $00044CC6
@@ -25251,7 +25098,7 @@ MCPass1:
 [00026692] 6726                      beq.s      $000266BA
 [00026694] 6100 fdca                 bsr        $00026460
 [00026698] 4879 0004 4cc6            pea.l      $00044CC6
-[0002669e] 3f39 0004 449c            move.w     $0004449C,-(a7)
+[0002669e] 3f39 0004 449c            move.w     MCP3IO.line,-(a7)
 [000266a4] 3f3c 0006                 move.w     #$0006,-(a7)
 [000266a8] 6100 fd28                 bsr        $000263D2
 [000266ac] 508f                      addq.l     #8,a7
@@ -25263,7 +25110,7 @@ MCPass1:
 [000266be] 4e56 fffe                 link       a6,#-2
 [000266c2] 4a39 0004 445e            tst.b      $0004445E
 [000266c8] 6722                      beq.s      $000266EC
-[000266ca] 5279 0004 449c            addq.w     #1,$0004449C
+[000266ca] 5279 0004 449c            addq.w     #1,MCP3IO.line
 [000266d0] 1f3c 0001                 move.b     #$01,-(a7)
 [000266d4] 6100 fe92                 bsr        $00026568
 [000266d8] 548f                      addq.l     #2,a7
@@ -25280,7 +25127,7 @@ MCPass1:
 [00026704] 674e                      beq.s      $00026754
 [00026706] 13fc 0001 0004 445e       move.b     #$01,$0004445E
 [0002670e] 3f3c 0008                 move.w     #$0008,-(a7)
-[00026712] 4879 0002 6778            pea.l      $00026778
+[00026712] 4879 0002 6778            pea.l      $00026778 'list file '
 [00026718] 3f3c 004f                 move.w     #$004F,-(a7)
 [0002671c] 4879 0004 4d7e            pea.l      $00044D7E
 [00026722] 1f3c 0007                 move.b     #$07,-(a7)
@@ -25299,36 +25146,31 @@ MCPass1:
 [0002675c] 4279 0004 445c            clr.w      $0004445C
 [00026762] 4e5e                      unlk       a6
 [00026764] 4e75                      rts
-[00026766] 202a 2a2a                 move.l     10794(a2),d0
-[0002676a] 2a00                      move.l     d0,d5
-[0002676c] 2020                      move.l     -(a0),d0
-[0002676e] 2020                      move.l     -(a0),d0
-[00026770] 2020                      move.l     -(a0),d0
-[00026772] 2020                      move.l     -(a0),d0
-[00026774] 2020                      move.l     -(a0),d0
-[00026776] 2000                      move.l     d0,d0
-[00026778] 6c69                      bge.s      $000267E3
-[0002677a] 7374                      ???
-[0002677c] 2066                      movea.l    -(a6),a0
-[0002677e] 696c                      bvs.s      $000267EC
-[00026780] 6500 4e56                 bcs        $0002B5D8
-[00026784] 0000 4879                 ori.b      #$79,d0
-[00026788] 0004 4cbe                 ori.b      #$BE,d4
+
+[00026766] 202a 2a2a                 .asciiz ' ****'
+[0002676c] 2020                      .asciiz '           '
+[00026778] 6c69                      .asciiz 'list file '
+
+[00026782] 4e56 0000                 link       a6,#0
+[00026784] 4879                      pea.l      $00044cbe
 [0002678c] 3f2e 0008                 move.w     8(a6),-(a7)
 [00026790] 4eb9 0001 44de            jsr        $000144DE
 [00026796] 5c8f                      addq.l     #6,a7
 [00026798] 4e5e                      unlk       a6
 [0002679a] 4e75                      rts
+
 [0002679c] 4e56 0000                 link       a6,#0
 [000267a0] 7a00                      moveq.l    #0,d5
 [000267a2] 1a2e 0008                 move.b     8(a6),d5
 [000267a6] e145                      asl.w      #8,d5
-[000267a8] da79 0004 449e            add.w      $0004449E,d5
+[000267a8] da79 0004 449e            add.w      MCP3IO.pos,d5
 [000267ae] 3f05                      move.w     d5,-(a7)
 [000267b0] 6100 ffd0                 bsr.w      $00026782
 [000267b4] 548f                      addq.l     #2,a7
 [000267b6] 4e5e                      unlk       a6
 [000267b8] 4e75                      rts
+
+MCP3IO.Error:
 [000267ba] 4e56 0000                 link       a6,#0
 [000267be] 08f9 0001 0004 4e21       bset       #1,M2Public.compstat
 [000267c6] 1f3c 0050                 move.b     #$50,-(a7)
@@ -25342,32 +25184,34 @@ MCPass1:
 [000267e4] 548f                      addq.l     #2,a7
 [000267e6] 4e5e                      unlk       a6
 [000267e8] 4e75                      rts
+
+MCP3IO.ErrorLS:
 [000267ea] 4e56 fffe                 link       a6,#-2
-[000267ee] 3d79 0004 449e fffe       move.w     $0004449E,-2(a6)
-[000267f6] 33f9 0004 44a2 0004 449e  move.w     $000444A2,$0004449E
-[00026800] 3a39 0004 44a4            move.w     $000444A4,d5
-[00026806] ba79 0004 449c            cmp.w      $0004449C,d5
+[000267ee] 3d79 0004 449e fffe       move.w     MCP3IO.pos,-2(a6)
+[000267f6] 33f9 0004 44a2 0004 449e  move.w     MCP3IO.lpos,MCP3IO.pos
+[00026800] 3a39 0004 44a4            move.w     MCP3IO.lline,d5
+[00026806] ba79 0004 449c            cmp.w      MCP3IO.line,d5
 [0002680c] 660e                      bne.s      $0002681C
 [0002680e] 3f2e 0008                 move.w     8(a6),-(a7)
-[00026812] 6100 ffa6                 bsr.w      $000267BA
+[00026812] 6100 ffa6                 bsr.w      MCP3IO.Error
 [00026816] 548f                      addq.l     #2,a7
 [00026818] 4efa 0038                 jmp        $00026852(pc)
 [0002681c] 1f3c 0051                 move.b     #$51,-(a7)
 [00026820] 6100 ff7a                 bsr        $0002679C
 [00026824] 548f                      addq.l     #2,a7
-[00026826] 3f39 0004 44a4            move.w     $000444A4,-(a7)
+[00026826] 3f39 0004 44a4            move.w     MCP3IO.lline,-(a7)
 [0002682c] 6100 ff54                 bsr        $00026782
 [00026830] 548f                      addq.l     #2,a7
 [00026832] 3f2e 0008                 move.w     8(a6),-(a7)
-[00026836] 6100 ff82                 bsr.w      $000267BA
+[00026836] 6100 ff82                 bsr.w      MCP3IO.Error
 [0002683a] 548f                      addq.l     #2,a7
 [0002683c] 1f3c 0051                 move.b     #$51,-(a7)
 [00026840] 6100 ff5a                 bsr        $0002679C
 [00026844] 548f                      addq.l     #2,a7
-[00026846] 3f39 0004 449c            move.w     $0004449C,-(a7)
+[00026846] 3f39 0004 449c            move.w     MCP3IO.line,-(a7)
 [0002684c] 6100 ff34                 bsr        $00026782
 [00026850] 548f                      addq.l     #2,a7
-[00026852] 33ee fffe 0004 449e       move.w     -2(a6),$0004449E
+[00026852] 33ee fffe 0004 449e       move.w     -2(a6),MCP3IO.pos
 [0002685a] 4e5e                      unlk       a6
 [0002685c] 4e75                      rts
 [0002685e] 4e56 0000                 link       a6,#0
@@ -25398,93 +25242,100 @@ MCPass1:
 [000268c4] 23ee 000c 0004 44a8       move.l     12(a6),$000444A8
 [000268cc] 4e5e                      unlk       a6
 [000268ce] 4e75                      rts
+
+CompilerOption:
 [000268d0] 4e56 fffe                 link       a6,#-2
 [000268d4] 3a39 0004 4484            move.w     $00044484,d5
 [000268da] 1d45 ffff                 move.b     d5,-1(a6)
-[000268de] 0c39 0007 0004 4480       cmpi.b     #$07,$00044480
+[000268de] 0c39 0007 0004 4480       cmpi.b     #$07,$00044480 ; b := sy = plus
 [000268e6] 57c5                      seq        d5
 [000268e8] 4405                      neg.b      d5
 [000268ea] 1d45 fffe                 move.b     d5,-2(a6)
 [000268ee] 0c2e 0054 ffff            cmpi.b     #$54,-1(a6)
 [000268f4] 660c                      bne.s      $00026902
-[000268f6] 13ee fffe 0004 44a6       move.b     -2(a6),$000444A6
+[000268f6] 13ee fffe 0004 44a6       move.b     -2(a6),RangeChecking
 [000268fe] 4efa 00a4                 jmp        $000269A4(pc)
 [00026902] 0c2e 0043 ffff            cmpi.b     #$43,-1(a6)
 [00026908] 660c                      bne.s      $00026916
-[0002690a] 13ee fffe 0004 44a7       move.b     -2(a6),$000444A7
+[0002690a] 13ee fffe 0004 44a7       move.b     -2(a6),ClearInstructions
 [00026912] 4efa 0090                 jmp        $000269A4(pc)
 [00026916] 0c2e 0053 ffff            cmpi.b     #$53,-1(a6)
 [0002691c] 660c                      bne.s      $0002692A
-[0002691e] 13ee fffe 0004 4493       move.b     -2(a6),$00044493
+[0002691e] 13ee fffe 0004 4493       move.b     -2(a6),StackChecking
 [00026926] 4efa 007c                 jmp        $000269A4(pc)
 [0002692a] 0c2e 0051 ffff            cmpi.b     #$51,-1(a6)
 [00026930] 660c                      bne.s      $0002693E
-[00026932] 13ee fffe 0004 4495       move.b     -2(a6),$00044495
+[00026932] 13ee fffe 0004 4495       move.b     -2(a6),QuickCalls
 [0002693a] 4efa 0068                 jmp        $000269A4(pc)
 [0002693e] 0c2e 0041 ffff            cmpi.b     #$41,-1(a6)
 [00026944] 660c                      bne.s      $00026952
-[00026946] 13ee fffe 0004 4496       move.b     -2(a6),$00044496
+[00026946] 13ee fffe 0004 4496       move.b     -2(a6),AllQuickCalls
 [0002694e] 4efa 0054                 jmp        $000269A4(pc)
 [00026952] 0c2e 0056 ffff            cmpi.b     #$56,-1(a6)
 [00026958] 660c                      bne.s      $00026966
-[0002695a] 13ee fffe 0004 4497       move.b     -2(a6),$00044497
+[0002695a] 13ee fffe 0004 4497       move.b     -2(a6),UseTrapv
 [00026962] 4efa 0040                 jmp        $000269A4(pc)
 [00026966] 0c2e 0052 ffff            cmpi.b     #$52,-1(a6)
 [0002696c] 660c                      bne.s      $0002697A
-[0002696e] 13ee fffe 0004 4498       move.b     -2(a6),$00044498
+[0002696e] 13ee fffe 0004 4498       move.b     -2(a6),SubrangeChecks
 [00026976] 4efa 002c                 jmp        $000269A4(pc)
 [0002697a] 0c2e 0050 ffff            cmpi.b     #$50,-1(a6)
 [00026980] 6612                      bne.s      $00026994
 [00026982] 4a2e fffe                 tst.b      -2(a6)
 [00026986] 57c5                      seq        d5
 [00026988] 4405                      neg.b      d5
-[0002698a] 13c5 0004 449a            move.b     d5,$0004449A
+[0002698a] 13c5 0004 449a            move.b     d5,NoEntryCode
 [00026990] 4efa 0012                 jmp        $000269A4(pc)
 [00026994] 0c2e 004e ffff            cmpi.b     #$4E,-1(a6)
 [0002699a] 6608                      bne.s      $000269A4
 [0002699c] 13ee fffe 0004 4499       move.b     -2(a6),$00044499
 [000269a4] 4e5e                      unlk       a6
 [000269a6] 4e75                      rts
+
 [000269a8] 4e56 fffc                 link       a6,#-4
-[000269ac] 33f9 0004 449e 0004 44a2  move.w     $0004449E,$000444A2
-[000269b6] 33f9 0004 449c 0004 44a4  move.w     $0004449C,$000444A4
-[000269c0] 13f9 0004 44a6 0004 4492  move.b     $000444A6,$00044492
-[000269ca] 13f9 0004 44a7 0004 4494  move.b     $000444A7,$00044494
+[000269ac] 33f9 0004 449e 0004 44a2  move.w     MCP3IO.pos,MCP3IO.lpos
+[000269b6] 33f9 0004 449c 0004 44a4  move.w     MCP3IO.line,MCP3IO.lline
+[000269c0] 13f9 0004 44a6 0004 4492  move.b     RangeChecking,$00044492
+[000269ca] 13f9 0004 44a7 0004 4494  move.b     ClearInstructions,$00044494
 [000269d4] 1d7c 0001 ffff            move.b     #$01,-1(a6)
 [000269da] 486e fffc                 pea.l      -4(a6)
-[000269de] 6100 01c0                 bsr        $00026BA0
+[000269de] 6100 01c0                 bsr        MCP3IO.ReadWord
 [000269e2] 588f                      addq.l     #4,a7
 [000269e4] 3a2e fffc                 move.w     -4(a6),d5
 [000269e8] e04d                      lsr.w      #8,d5
 [000269ea] 13c5 0004 4480            move.b     d5,$00044480
 [000269f0] 3a2e fffc                 move.w     -4(a6),d5
 [000269f4] 0245 00ff                 andi.w     #$00FF,d5
-[000269f8] 33c5 0004 449e            move.w     d5,$0004449E
+[000269f8] 33c5 0004 449e            move.w     d5,MCP3IO.pos
 [000269fe] 7a00                      moveq.l    #0,d5
 [00026a00] 1a39 0004 4480            move.b     $00044480,d5
 [00026a06] 2005                      move.l     d5,d0
 [00026a08] 4eb9 0001 000a            jsr        CASEX
-[00026a0e] 0000 0044                 ori.b      #$44,d0
-[00026a12] 0000 0010                 ori.b      #$10,d0
-[00026a16] 0000 0162                 ori.b      #$62,d0
+[00026a0e] 0000 0044
+[00026a12] 0000 0010
+[00026a16] 0000 0162
+case namesy:
 [00026a1a] 4879 0004 448a            pea.l      $0004448A
 [00026a20] 6100 019a                 bsr        $00026BBC
 [00026a24] 588f                      addq.l     #4,a7
 [00026a26] 4efa 016a                 jmp        $00026B92(pc)
+case proceduresy:
 [00026a2a] 4879 0004 448a            pea.l      $0004448A
 [00026a30] 6100 018a                 bsr        $00026BBC
 [00026a34] 588f                      addq.l     #4,a7
 [00026a36] 4eb9 0003 4afe            jsr        $00034AFE
 [00026a3c] 4efa 0154                 jmp        $00026B92(pc)
+case field:
 [00026a40] 4879 0004 4484            pea.l      $00044484
-[00026a46] 6100 0158                 bsr        $00026BA0
+[00026a46] 6100 0158                 bsr        MCP3IO.ReadWord
 [00026a4a] 588f                      addq.l     #4,a7
 [00026a4c] 4efa 0144                 jmp        $00026B92(pc)
+case option:
 [00026a50] 4879 0004 4484            pea.l      $00044484
-[00026a56] 6100 0148                 bsr        $00026BA0
+[00026a56] 6100 0148                 bsr        MCP3IO.ReadWord
 [00026a5a] 588f                      addq.l     #4,a7
 [00026a5c] 486e fffc                 pea.l      -4(a6)
-[00026a60] 6100 013e                 bsr        $00026BA0
+[00026a60] 6100 013e                 bsr        MCP3IO.ReadWord
 [00026a64] 588f                      addq.l     #4,a7
 [00026a66] 3a2e fffc                 move.w     -4(a6),d5
 [00026a6a] e04d                      lsr.w      #8,d5
@@ -25492,6 +25343,7 @@ MCPass1:
 [00026a72] 6100 fe5c                 bsr        $000268D0
 [00026a76] 422e ffff                 clr.b      -1(a6)
 [00026a7a] 4efa 0116                 jmp        $00026B92(pc)
+case anycon:
 [00026a7e] 4879 0004 4486            pea.l      $00044486
 [00026a84] 6100 0136                 bsr        $00026BBC
 [00026a88] 588f                      addq.l     #4,a7
@@ -25532,43 +25384,63 @@ MCPass1:
 [00026b08] 6100 fd54                 bsr        $0002685E
 [00026b0c] 508f                      addq.l     #8,a7
 [00026b0e] 4efa 000e                 jmp        $00026B1E(pc)
+case eol:
 [00026b12] 4879 0004 4482            pea.l      $00044482
 [00026b18] 6100 00a2                 bsr        $00026BBC
 [00026b1c] 588f                      addq.l     #4,a7
 [00026b1e] 4efa 0072                 jmp        $00026B92(pc)
 [00026b22] 422e ffff                 clr.b      -1(a6)
-[00026b26] 4879 0004 449c            pea.l      $0004449C
-[00026b2c] 6100 0072                 bsr.w      $00026BA0
+[00026b26] 4879 0004 449c            pea.l      MCP3IO.line
+[00026b2c] 6100 0072                 bsr.w      MCP3IO.ReadWord
 [00026b30] 588f                      addq.l     #4,a7
 [00026b32] 1f3c 0051                 move.b     #$51,-(a7)
 [00026b36] 6100 fc64                 bsr        $0002679C
 [00026b3a] 548f                      addq.l     #2,a7
-[00026b3c] 3f39 0004 449c            move.w     $0004449C,-(a7)
+[00026b3c] 3f39 0004 449c            move.w     MCP3IO.line,-(a7)
 [00026b42] 6100 fc3e                 bsr        $00026782
 [00026b46] 548f                      addq.l     #2,a7
 [00026b48] 4227                      clr.b      -(a7)
 [00026b4a] 4eb9 0002 6568            jsr        $00026568
 [00026b50] 548f                      addq.l     #2,a7
 [00026b52] 4efa 003e                 jmp        $00026B92(pc)
+case ident:
+case intcon:
+case cardcon:
+case intcarcon:
+case realcon:
+case charcon:
+case stringcon:
 [00026b56] 3f3c 0004                 move.w     #$0004,-(a7)
-[00026b5a] 4879 0002 6c9a            pea.l      $00026C9A
+[00026b5a] 4879 0002 6c9a            pea.l      $00026C9A 'GETSY'
 [00026b60] 4eb9 0002 5aa8            jsr        $00025AA8
 [00026b66] 5c8f                      addq.l     #6,a7
 [00026b68] 4efa 0028                 jmp        $00026B92(pc)
 [00026b6c] 4efa 0024                 jmp        $00026B92(pc)
-[00026b70] 001c 015e                 ori.b      #$5E,(a4)+
-[00026b74] 015e                      bchg       d0,(a6)+
-[00026b76] 0148 015e                 movep.l    350(a0),d0
-[00026b7a] 0148 0148                 movep.l    328(a0),d0
-[00026b7e] 0148 0148                 movep.l    328(a0),d0
-[00026b82] 0148 0148                 movep.l    328(a0),d0
-[00026b86] 0042 015e                 ori.w      #$015E,d2
-[00026b8a] 0114                      btst       d0,(a4)
-[00026b8c] 000c 0032                 ori.b      #$32,a4 ; apollo only
-[00026b90] 0070 4a2e ffff 6604 6000  ori.w      #$4A2E,([$66046000],za7.l*8,$FE3A4E5E) ; 68020+ only; reserved OD=3
-[00026b9a] fe3a 4e5e
+
+[00026b70] 001c 44
+           015e                 
+[00026b74] 015e                      
+[00026b76] 0148 47
+           015e                 
+[00026b7a] 0148 49
+           0148 
+[00026b7e] 0148 
+           0148                 
+[00026b82] 0148
+           0148                 
+[00026b86] 0042
+           015e                 
+[00026b8a] 0114                      
+[00026b8c] 000c
+           0032                 
+[00026b90] 0070
+[00026b92] 4a2e ffff                 tst.b      -1(a6)
+[00026b96] 6604                      bne.s      $00026b9c
+[00026b98] 6000 fe3a                 bra        $000269D4
+[00026b9c] 4e5e                      unlk       a6
 [00026b9e] 4e75                      rts
 
+MCP3IO.ReadWord:
 [00026ba0] 4e56 0000                 link       a6,#0
 [00026ba4] 4879 0004 4cba            pea.l      $00044CBA
 [00026baa] 286e 0008                 movea.l    8(a6),a4
@@ -25580,10 +25452,10 @@ MCPass1:
 
 [00026bbc] 4e56 fffc                 link       a6,#-4
 [00026bc0] 486e fffe                 pea.l      -2(a6)
-[00026bc4] 6100 ffda                 bsr.w      $00026BA0
+[00026bc4] 6100 ffda                 bsr.w      MCP3IO.ReadWord
 [00026bc8] 588f                      addq.l     #4,a7
 [00026bca] 486e fffc                 pea.l      -4(a6)
-[00026bce] 6100 ffd0                 bsr.w      $00026BA0
+[00026bce] 6100 ffd0                 bsr.w      MCP3IO.ReadWord
 [00026bd2] 588f                      addq.l     #4,a7
 [00026bd4] 7a00                      moveq.l    #0,d5
 [00026bd6] 3a2e fffe                 move.w     -2(a6),d5
@@ -25597,8 +25469,8 @@ MCPass1:
 [00026bec] 4e5e                      unlk       a6
 [00026bee] 4e75                      rts
 [00026bf0] 4e56 0000                 link       a6,#0
-[00026bf4] 13fc 0001 0004 44a6       move.b     #$01,$000444A6
-[00026bfc] 13fc 0001 0004 44a7       move.b     #$01,$000444A7
+[00026bf4] 13fc 0001 0004 44a6       move.b     #$01,RangeChecking
+[00026bfc] 13fc 0001 0004 44a7       move.b     #$01,ClearInstructions
 [00026c04] 7aff                      moveq.l    #-1,d5
 [00026c06] 23c5 0003 60d4            move.l     d5,$000360D4
 [00026c0c] 42b9 0003 60d8            clr.l      $000360D8
@@ -25614,25 +25486,28 @@ MCPass1:
 [00026c3a] 588f                      addq.l     #4,a7
 [00026c3c] 4e5e                      unlk       a6
 [00026c3e] 4e75                      rts
+
 [00026c40] 4e56 0000                 link       a6,#0
 [00026c44] 6100 ffaa                 bsr.w      $00026BF0
 [00026c48] 13fc 0001 0004 4492       move.b     #$01,$00044492
-[00026c50] 13fc 0001 0004 4493       move.b     #$01,$00044493
-[00026c58] 4239 0004 449a            clr.b      $0004449A
+[00026c50] 13fc 0001 0004 4493       move.b     #$01,StackChecking
+[00026c58] 4239 0004 449a            clr.b      NoEntryCode
 [00026c5e] 13fc 0001 0004 4494       move.b     #$01,$00044494
-[00026c66] 4239 0004 4495            clr.b      $00044495
-[00026c6c] 4239 0004 4496            clr.b      $00044496
-[00026c72] 4239 0004 4497            clr.b      $00044497
-[00026c78] 4239 0004 4498            clr.b      $00044498
+[00026c66] 4239 0004 4495            clr.b      QuickCalls
+[00026c6c] 4239 0004 4496            clr.b      AllQuickCalls
+[00026c72] 4239 0004 4497            clr.b      UseTrapv
+[00026c78] 4239 0004 4498            clr.b      SubrangeChecks
 [00026c7e] 4239 0004 4499            clr.b      $00044499
-[00026c84] 4279 0004 449e            clr.w      $0004449E
-[00026c8a] 4279 0004 449c            clr.w      $0004449C
+[00026c84] 4279 0004 449e            clr.w      MCP3IO.pos
+[00026c8a] 4279 0004 449c            clr.w      MCP3IO.line
 [00026c90] 4239 0004 44a0            clr.b      $000444A0
 [00026c96] 4e5e                      unlk       a6
 [00026c98] 4e75                      rts
-[00026c9a] 4765                      lea.l      -(a5),b3 ; apollo only
+
+[00026c9a] 4765                      .asciiz 'GETSY'
 [00026c9c] 7453                      moveq.l    #83,d2
 [00026c9e] 7900                      ???
+
 [00026ca0] 4e56 fffe                 link       a6,#-2
 [00026ca4] 286e 000a                 movea.l    10(a6),a4
 [00026ca8] 4854                      pea.l      (a4)
@@ -25700,7 +25575,7 @@ MCPass1:
 [00026d94] 285f                      movea.l    (a7)+,a4
 [00026d96] 2f0c                      move.l     a4,-(a7)
 [00026d98] 3f3c 0a97                 move.w     #$0A97,-(a7)
-[00026d9c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00026d9c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00026da2] 548f                      addq.l     #2,a7
 [00026da4] 285f                      movea.l    (a7)+,a4
 [00026da6] 2f0c                      move.l     a4,-(a7)
@@ -25719,12 +25594,12 @@ MCPass1:
 [00026dd0] 3a2c 000c                 move.w     12(a4),d5
 [00026dd4] 0645 0840                 addi.w     #$0840,d5
 [00026dd8] 3f05                      move.w     d5,-(a7)
-[00026dda] 4eb9 0002 5bc0            jsr        $00025BC0
+[00026dda] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00026de0] 548f                      addq.l     #2,a7
 [00026de2] 285f                      movea.l    (a7)+,a4
 [00026de4] 2f0c                      move.l     a4,-(a7)
 [00026de6] 3f3c 001f                 move.w     #$001F,-(a7)
-[00026dea] 4eb9 0002 5bc0            jsr        $00025BC0
+[00026dea] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00026df0] 548f                      addq.l     #2,a7
 [00026df2] 285f                      movea.l    (a7)+,a4
 [00026df4] 4e5e                      unlk       a6
@@ -25748,7 +25623,7 @@ MCPass1:
 [00026e32] 285f                      movea.l    (a7)+,a4
 [00026e34] 2f0c                      move.l     a4,-(a7)
 [00026e36] 3f3c 0297                 move.w     #$0297,-(a7)
-[00026e3a] 4eb9 0002 5bc0            jsr        $00025BC0
+[00026e3a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00026e40] 548f                      addq.l     #2,a7
 [00026e42] 285f                      movea.l    (a7)+,a4
 [00026e44] 2f0c                      move.l     a4,-(a7)
@@ -25767,12 +25642,12 @@ MCPass1:
 [00026e6e] 3a2c 000c                 move.w     12(a4),d5
 [00026e72] 0645 0880                 addi.w     #$0880,d5
 [00026e76] 3f05                      move.w     d5,-(a7)
-[00026e78] 4eb9 0002 5bc0            jsr        $00025BC0
+[00026e78] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00026e7e] 548f                      addq.l     #2,a7
 [00026e80] 285f                      movea.l    (a7)+,a4
 [00026e82] 2f0c                      move.l     a4,-(a7)
 [00026e84] 3f3c 001f                 move.w     #$001F,-(a7)
-[00026e88] 4eb9 0002 5bc0            jsr        $00025BC0
+[00026e88] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00026e8e] 548f                      addq.l     #2,a7
 [00026e90] 285f                      movea.l    (a7)+,a4
 [00026e92] 4e5e                      unlk       a6
@@ -25818,7 +25693,7 @@ MCPass1:
 [00026f1a] 4854                      pea.l      (a4)
 [00026f1c] 4eb9 0002 a43c            jsr        $0002A43C
 [00026f22] 588f                      addq.l     #4,a7
-[00026f24] 4a39 0004 4498            tst.b      $00044498
+[00026f24] 4a39 0004 4498            tst.b      SubrangeChecks
 [00026f2a] 6714                      beq.s      $00026F40
 [00026f2c] 286e 0008                 movea.l    8(a6),a4
 [00026f30] 4854                      pea.l      (a4)
@@ -25972,9 +25847,11 @@ MCPass1:
 [00027120] 6c6c                      bge.s      $0002718E
 [00027122] 4172 6974 686d 6574       lea.l      ([$686D6574,a2]),b0 ; 68020+ only; reserved OD=0
 [0002712a] 6963                      bvs.s      $0002718F
-[0002712c] 0000 4e56                 ori.b      #$56,d0
-[00027130] 0000 4a2e                 ori.b      #$2E,d0
-[00027134] 0008 6754                 ori.b      #$54,a0 ; apollo only
+[0002712c] 0000
+
+[0002712e] 4e56                      link       a6,#0
+[00027132] 4a2e 0008                 tst.b      8(a6)
+6754
 [00027138] 558f                      subq.l     #2,a7
 [0002713a] 286e 000a                 movea.l    10(a6),a4
 [0002713e] 2f14                      move.l     (a4),-(a7)
@@ -25983,20 +25860,20 @@ MCPass1:
 [00027148] 4a1f                      tst.b      (a7)+
 [0002714a] 6710                      beq.s      $0002715C
 [0002714c] 3f3c 4e76                 move.w     #$4E76,-(a7)
-[00027150] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027150] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027156] 548f                      addq.l     #2,a7
 [00027158] 4efa 0032                 jmp        $0002718C(pc)
 [0002715c] 3f3c 6406                 move.w     #$6406,-(a7)
-[00027160] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027160] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027166] 548f                      addq.l     #2,a7
 [00027168] 3f3c 003c                 move.w     #$003C,-(a7)
-[0002716c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002716c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027172] 548f                      addq.l     #2,a7
 [00027174] 3f3c 0002                 move.w     #$0002,-(a7)
-[00027178] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027178] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002717e] 548f                      addq.l     #2,a7
 [00027180] 3f3c 4e76                 move.w     #$4E76,-(a7)
-[00027184] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027184] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002718a] 548f                      addq.l     #2,a7
 [0002718c] 4e5e                      unlk       a6
 [0002718e] 4e75                      rts
@@ -26058,27 +25935,27 @@ MCPass1:
 [0002723a] 0645 b080                 addi.w     #$B080,d5
 [0002723e] da6e ffe6                 add.w      -26(a6),d5
 [00027242] 3f05                      move.w     d5,-(a7)
-[00027244] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027244] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002724a] 548f                      addq.l     #2,a7
 [0002724c] 285f                      movea.l    (a7)+,a4
 [0002724e] 2f0c                      move.l     a4,-(a7)
 [00027250] 3f3c 6706                 move.w     #$6706,-(a7)
-[00027254] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027254] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002725a] 548f                      addq.l     #2,a7
 [0002725c] 285f                      movea.l    (a7)+,a4
 [0002725e] 2f0c                      move.l     a4,-(a7)
 [00027260] 3f3c 003c                 move.w     #$003C,-(a7)
-[00027264] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027264] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002726a] 548f                      addq.l     #2,a7
 [0002726c] 285f                      movea.l    (a7)+,a4
 [0002726e] 2f0c                      move.l     a4,-(a7)
 [00027270] 3f3c 0002                 move.w     #$0002,-(a7)
-[00027274] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027274] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002727a] 548f                      addq.l     #2,a7
 [0002727c] 285f                      movea.l    (a7)+,a4
 [0002727e] 2f0c                      move.l     a4,-(a7)
 [00027280] 3f3c 4e76                 move.w     #$4E76,-(a7)
-[00027284] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027284] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002728a] 548f                      addq.l     #2,a7
 [0002728c] 285f                      movea.l    (a7)+,a4
 [0002728e] 2f0c                      move.l     a4,-(a7)
@@ -26091,41 +25968,41 @@ MCPass1:
 [000272a4] 3a2c 000c                 move.w     12(a4),d5
 [000272a8] 0645 4840                 addi.w     #$4840,d5
 [000272ac] 3f05                      move.w     d5,-(a7)
-[000272ae] 4eb9 0002 5bc0            jsr        $00025BC0
+[000272ae] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000272b4] 548f                      addq.l     #2,a7
 [000272b6] 285f                      movea.l    (a7)+,a4
 [000272b8] 2f0c                      move.l     a4,-(a7)
 [000272ba] 3a2c 000c                 move.w     12(a4),d5
 [000272be] 0645 4a40                 addi.w     #$4A40,d5
 [000272c2] 3f05                      move.w     d5,-(a7)
-[000272c4] 4eb9 0002 5bc0            jsr        $00025BC0
+[000272c4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000272ca] 548f                      addq.l     #2,a7
 [000272cc] 285f                      movea.l    (a7)+,a4
 [000272ce] 2f0c                      move.l     a4,-(a7)
 [000272d0] 3f3c 6706                 move.w     #$6706,-(a7)
-[000272d4] 4eb9 0002 5bc0            jsr        $00025BC0
+[000272d4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000272da] 548f                      addq.l     #2,a7
 [000272dc] 285f                      movea.l    (a7)+,a4
 [000272de] 2f0c                      move.l     a4,-(a7)
 [000272e0] 3f3c 003c                 move.w     #$003C,-(a7)
-[000272e4] 4eb9 0002 5bc0            jsr        $00025BC0
+[000272e4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000272ea] 548f                      addq.l     #2,a7
 [000272ec] 285f                      movea.l    (a7)+,a4
 [000272ee] 2f0c                      move.l     a4,-(a7)
 [000272f0] 3f3c 0002                 move.w     #$0002,-(a7)
-[000272f4] 4eb9 0002 5bc0            jsr        $00025BC0
+[000272f4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000272fa] 548f                      addq.l     #2,a7
 [000272fc] 285f                      movea.l    (a7)+,a4
 [000272fe] 2f0c                      move.l     a4,-(a7)
 [00027300] 3f3c 4e76                 move.w     #$4E76,-(a7)
-[00027304] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027304] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002730a] 548f                      addq.l     #2,a7
 [0002730c] 285f                      movea.l    (a7)+,a4
 [0002730e] 2f0c                      move.l     a4,-(a7)
 [00027310] 3a2c 000c                 move.w     12(a4),d5
 [00027314] 0645 4840                 addi.w     #$4840,d5
 [00027318] 3f05                      move.w     d5,-(a7)
-[0002731a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002731a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027320] 548f                      addq.l     #2,a7
 [00027322] 285f                      movea.l    (a7)+,a4
 [00027324] 4e5e                      unlk       a6
@@ -26179,7 +26056,7 @@ MCPass1:
 [000273c4] da44                      add.w      d4,d5
 [000273c6] da6e fffa                 add.w      -6(a6),d5
 [000273ca] 3f05                      move.w     d5,-(a7)
-[000273cc] 4eb9 0002 5bc0            jsr        $00025BC0
+[000273cc] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000273d2] 548f                      addq.l     #2,a7
 [000273d4] 286e 000a                 movea.l    10(a6),a4
 [000273d8] 4854                      pea.l      (a4)
@@ -26201,7 +26078,7 @@ MCPass1:
 [00027414] da6e fffe                 add.w      -2(a6),d5
 [00027418] da6e fffa                 add.w      -6(a6),d5
 [0002741c] 3f05                      move.w     d5,-(a7)
-[0002741e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002741e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027424] 548f                      addq.l     #2,a7
 [00027426] 286e 000e                 movea.l    14(a6),a4
 [0002742a] 4854                      pea.l      (a4)
@@ -26236,7 +26113,7 @@ MCPass1:
 [00027490] da6e fffe                 add.w      -2(a6),d5
 [00027494] da6e fffc                 add.w      -4(a6),d5
 [00027498] 3f05                      move.w     d5,-(a7)
-[0002749a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002749a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000274a0] 548f                      addq.l     #2,a7
 [000274a2] 286e 000e                 movea.l    14(a6),a4
 [000274a6] 4854                      pea.l      (a4)
@@ -26262,7 +26139,7 @@ MCPass1:
 [000274e8] 0645 0080                 addi.w     #$0080,d5
 [000274ec] da6e fffc                 add.w      -4(a6),d5
 [000274f0] 3f05                      move.w     d5,-(a7)
-[000274f2] 4eb9 0002 5bc0            jsr        $00025BC0
+[000274f2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000274f8] 548f                      addq.l     #2,a7
 [000274fa] 286e 000e                 movea.l    14(a6),a4
 [000274fe] 4854                      pea.l      (a4)
@@ -26283,7 +26160,7 @@ MCPass1:
 [00027532] da6e fffe                 add.w      -2(a6),d5
 [00027536] da6e fffa                 add.w      -6(a6),d5
 [0002753a] 3f05                      move.w     d5,-(a7)
-[0002753c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002753c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027542] 548f                      addq.l     #2,a7
 [00027544] 286e 000a                 movea.l    10(a6),a4
 [00027548] 4854                      pea.l      (a4)
@@ -26340,7 +26217,7 @@ MCPass1:
 [00027602] da6e fffe                 add.w      -2(a6),d5
 [00027606] da6e fffa                 add.w      -6(a6),d5
 [0002760a] 3f05                      move.w     d5,-(a7)
-[0002760c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002760c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027612] 548f                      addq.l     #2,a7
 [00027614] 286e 000c                 movea.l    12(a6),a4
 [00027618] 4854                      pea.l      (a4)
@@ -26372,7 +26249,7 @@ MCPass1:
 [00027674] da6e fffe                 add.w      -2(a6),d5
 [00027678] da6e fffc                 add.w      -4(a6),d5
 [0002767c] 3f05                      move.w     d5,-(a7)
-[0002767e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002767e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027684] 548f                      addq.l     #2,a7
 [00027686] 286e 000c                 movea.l    12(a6),a4
 [0002768a] 4854                      pea.l      (a4)
@@ -26392,7 +26269,7 @@ MCPass1:
 [000276be] da6e fffe                 add.w      -2(a6),d5
 [000276c2] da6e fffa                 add.w      -6(a6),d5
 [000276c6] 3f05                      move.w     d5,-(a7)
-[000276c8] 4eb9 0002 5bc0            jsr        $00025BC0
+[000276c8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000276ce] 548f                      addq.l     #2,a7
 [000276d0] 286e 0008                 movea.l    8(a6),a4
 [000276d4] 4854                      pea.l      (a4)
@@ -26436,7 +26313,7 @@ MCPass1:
 [0002775c] da6e fffe                 add.w      -2(a6),d5
 [00027760] da6e fffc                 add.w      -4(a6),d5
 [00027764] 3f05                      move.w     d5,-(a7)
-[00027766] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027766] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002776c] 548f                      addq.l     #2,a7
 [0002776e] 286e 0008                 movea.l    8(a6),a4
 [00027772] 4854                      pea.l      (a4)
@@ -26471,7 +26348,7 @@ MCPass1:
 [000277da] da6e fffe                 add.w      -2(a6),d5
 [000277de] da6e fffa                 add.w      -6(a6),d5
 [000277e2] 3f05                      move.w     d5,-(a7)
-[000277e4] 4eb9 0002 5bc0            jsr        $00025BC0
+[000277e4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000277ea] 548f                      addq.l     #2,a7
 [000277ec] 286e 0008                 movea.l    8(a6),a4
 [000277f0] 4854                      pea.l      (a4)
@@ -26492,7 +26369,7 @@ MCPass1:
 [00027822] 0645 01c0                 addi.w     #$01C0,d5
 [00027826] da6e fffa                 add.w      -6(a6),d5
 [0002782a] 3f05                      move.w     d5,-(a7)
-[0002782c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002782c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027832] 548f                      addq.l     #2,a7
 [00027834] 286e 0008                 movea.l    8(a6),a4
 [00027838] 4854                      pea.l      (a4)
@@ -26550,7 +26427,7 @@ MCPass1:
 [000278e8] e165                      asl.w      d0,d5
 [000278ea] da6e fffe                 add.w      -2(a6),d5
 [000278ee] 3f05                      move.w     d5,-(a7)
-[000278f0] 4eb9 0002 5bc0            jsr        $00025BC0
+[000278f0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000278f6] 548f                      addq.l     #2,a7
 [000278f8] 285f                      movea.l    (a7)+,a4
 [000278fa] 4a6e fffa                 tst.w      -6(a6)
@@ -26558,7 +26435,7 @@ MCPass1:
 [00027900] 2f0c                      move.l     a4,-(a7)
 [00027902] 3a2e fffe                 move.w     -2(a6),d5
 [00027906] 3f05                      move.w     d5,-(a7)
-[00027908] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027908] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002790e] 548f                      addq.l     #2,a7
 [00027910] 285f                      movea.l    (a7)+,a4
 [00027912] 4efa 0034                 jmp        $00027948(pc)
@@ -26575,7 +26452,7 @@ MCPass1:
 [00027934] db6e fffe                 add.w      d5,-2(a6)
 [00027938] 2f0c                      move.l     a4,-(a7)
 [0002793a] 3f2e fffe                 move.w     -2(a6),-(a7)
-[0002793e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002793e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027944] 548f                      addq.l     #2,a7
 [00027946] 285f                      movea.l    (a7)+,a4
 [00027948] 266e 000c                 movea.l    12(a6),a3
@@ -26630,12 +26507,12 @@ MCPass1:
 [000279fe] 3a2e fffe                 move.w     -2(a6),d5
 [00027a02] da6e fffc                 add.w      -4(a6),d5
 [00027a06] 3f05                      move.w     d5,-(a7)
-[00027a08] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027a08] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027a0e] 548f                      addq.l     #2,a7
 [00027a10] 285f                      movea.l    (a7)+,a4
 [00027a12] 2f0c                      move.l     a4,-(a7)
 [00027a14] 3f2c 0008                 move.w     8(a4),-(a7)
-[00027a18] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027a18] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027a1e] 548f                      addq.l     #2,a7
 [00027a20] 285f                      movea.l    (a7)+,a4
 [00027a22] 266e 0008                 movea.l    8(a6),a3
@@ -26656,7 +26533,7 @@ MCPass1:
 [00027a54] 3d45 fffe                 move.w     d5,-2(a6)
 [00027a58] 2f0c                      move.l     a4,-(a7)
 [00027a5a] 3f2e fffe                 move.w     -2(a6),-(a7)
-[00027a5e] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027a5e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027a64] 548f                      addq.l     #2,a7
 [00027a66] 285f                      movea.l    (a7)+,a4
 [00027a68] 266e 0008                 movea.l    8(a6),a3
@@ -26740,7 +26617,7 @@ MCPass1:
 [00027b6a] 3a2e fffc                 move.w     -4(a6),d5
 [00027b6e] 0645 4c00                 addi.w     #$4C00,d5
 [00027b72] 3f05                      move.w     d5,-(a7)
-[00027b74] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027b74] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027b7a] 548f                      addq.l     #2,a7
 [00027b7c] 285f                      movea.l    (a7)+,a4
 [00027b7e] 2f0c                      move.l     a4,-(a7)
@@ -26749,7 +26626,7 @@ MCPass1:
 [00027b86] e165                      asl.w      d0,d5
 [00027b88] 0645 0800                 addi.w     #$0800,d5
 [00027b8c] 3f05                      move.w     d5,-(a7)
-[00027b8e] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027b8e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027b94] 548f                      addq.l     #2,a7
 [00027b96] 285f                      movea.l    (a7)+,a4
 [00027b98] 4efa 002e                 jmp        $00027BC8(pc)
@@ -26757,7 +26634,7 @@ MCPass1:
 [00027b9e] 3a2e fffc                 move.w     -4(a6),d5
 [00027ba2] 0645 4c00                 addi.w     #$4C00,d5
 [00027ba6] 3f05                      move.w     d5,-(a7)
-[00027ba8] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027ba8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027bae] 548f                      addq.l     #2,a7
 [00027bb0] 285f                      movea.l    (a7)+,a4
 [00027bb2] 2f0c                      move.l     a4,-(a7)
@@ -26765,7 +26642,7 @@ MCPass1:
 [00027bb8] 700c                      moveq.l    #12,d0
 [00027bba] e165                      asl.w      d0,d5
 [00027bbc] 3f05                      move.w     d5,-(a7)
-[00027bbe] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027bbe] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027bc4] 548f                      addq.l     #2,a7
 [00027bc6] 285f                      movea.l    (a7)+,a4
 [00027bc8] 4efa 0056                 jmp        $00027C20(pc)
@@ -26846,7 +26723,7 @@ MCPass1:
 [00027ccc] 3a2e fffe                 move.w     -2(a6),d5
 [00027cd0] da6e fffc                 add.w      -4(a6),d5
 [00027cd4] 3f05                      move.w     d5,-(a7)
-[00027cd6] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027cd6] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027cdc] 548f                      addq.l     #2,a7
 [00027cde] 286e 000a                 movea.l    10(a6),a4
 [00027ce2] 4854                      pea.l      (a4)
@@ -26908,7 +26785,7 @@ MCPass1:
 [00027da8] 3a2e fffe                 move.w     -2(a6),d5
 [00027dac] da6e fffc                 add.w      -4(a6),d5
 [00027db0] 3f05                      move.w     d5,-(a7)
-[00027db2] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027db2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027db8] 548f                      addq.l     #2,a7
 [00027dba] 286e 0008                 movea.l    8(a6),a4
 [00027dbe] 4854                      pea.l      (a4)
@@ -26991,14 +26868,14 @@ MCPass1:
 [00027ebc] e165                      asl.w      d0,d5
 [00027ebe] da6e fffe                 add.w      -2(a6),d5
 [00027ec2] 3f05                      move.w     d5,-(a7)
-[00027ec4] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027ec4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027eca] 548f                      addq.l     #2,a7
 [00027ecc] 285f                      movea.l    (a7)+,a4
 [00027ece] 4a2e 0008                 tst.b      8(a6)
 [00027ed2] 6710                      beq.s      $00027EE4
 [00027ed4] 2f0c                      move.l     a4,-(a7)
 [00027ed6] 3f3c 4e76                 move.w     #$4E76,-(a7)
-[00027eda] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027eda] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027ee0] 548f                      addq.l     #2,a7
 [00027ee2] 285f                      movea.l    (a7)+,a4
 [00027ee4] 4efa 0044                 jmp        $00027F2A(pc)
@@ -27007,19 +26884,19 @@ MCPass1:
 [00027ef0] 3a2e fffc                 move.w     -4(a6),d5
 [00027ef4] 0645 7000                 addi.w     #$7000,d5
 [00027ef8] 3f05                      move.w     d5,-(a7)
-[00027efa] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027efa] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027f00] 548f                      addq.l     #2,a7
 [00027f02] 285f                      movea.l    (a7)+,a4
 [00027f04] 2f0c                      move.l     a4,-(a7)
 [00027f06] 3f2e fffe                 move.w     -2(a6),-(a7)
-[00027f0a] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027f0a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027f10] 548f                      addq.l     #2,a7
 [00027f12] 285f                      movea.l    (a7)+,a4
 [00027f14] 4a2e 0008                 tst.b      8(a6)
 [00027f18] 6710                      beq.s      $00027F2A
 [00027f1a] 2f0c                      move.l     a4,-(a7)
 [00027f1c] 3f3c 4e76                 move.w     #$4E76,-(a7)
-[00027f20] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027f20] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027f26] 548f                      addq.l     #2,a7
 [00027f28] 285f                      movea.l    (a7)+,a4
 [00027f2a] 4efa 010a                 jmp        $00028036(pc)
@@ -27031,7 +26908,7 @@ MCPass1:
 [00027f3e] 3a2c 000c                 move.w     12(a4),d5
 [00027f42] 0645 2f00                 addi.w     #$2F00,d5
 [00027f46] 3f05                      move.w     d5,-(a7)
-[00027f48] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027f48] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027f4e] 548f                      addq.l     #2,a7
 [00027f50] 285f                      movea.l    (a7)+,a4
 [00027f52] 2f0c                      move.l     a4,-(a7)
@@ -27072,7 +26949,7 @@ MCPass1:
 [00027fb4] e165                      asl.w      d0,d5
 [00027fb6] 0645 201f                 addi.w     #$201F,d5
 [00027fba] 3f05                      move.w     d5,-(a7)
-[00027fbc] 4eb9 0002 5bc0            jsr        $00025BC0
+[00027fbc] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00027fc2] 548f                      addq.l     #2,a7
 [00027fc4] 285f                      movea.l    (a7)+,a4
 [00027fc6] 4efa 006e                 jmp        $00028036(pc)
@@ -27096,13 +26973,13 @@ MCPass1:
 [00028000] e164                      asl.w      d0,d4
 [00028002] da44                      add.w      d4,d5
 [00028004] 3f05                      move.w     d5,-(a7)
-[00028006] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028006] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002800c] 548f                      addq.l     #2,a7
 [0002800e] 285f                      movea.l    (a7)+,a4
 [00028010] 2f0c                      move.l     a4,-(a7)
 [00028012] 2a2e 000a                 move.l     10(a6),d5
 [00028016] 3f05                      move.w     d5,-(a7)
-[00028018] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028018] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002801e] 548f                      addq.l     #2,a7
 [00028020] 285f                      movea.l    (a7)+,a4
 [00028022] 2f0c                      move.l     a4,-(a7)
@@ -27157,7 +27034,7 @@ MCPass1:
 [000280b0] 4efa 0020                 jmp        $000280D2(pc)
 [000280b4] 2f0c                      move.l     a4,-(a7)
 [000280b6] 3f3c 03e5                 move.w     #$03E5,-(a7)
-[000280ba] 4eb9 0002 67ea            jsr        $000267EA
+[000280ba] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [000280c0] 548f                      addq.l     #2,a7
 [000280c2] 285f                      movea.l    (a7)+,a4
 [000280c4] 197c 0007 0004            move.b     #$07,4(a4)
@@ -27209,7 +27086,7 @@ MCPass1:
 [00028162] 0645 4180                 addi.w     #$4180,d5
 [00028166] da6e fffe                 add.w      -2(a6),d5
 [0002816a] 3f05                      move.w     d5,-(a7)
-[0002816c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002816c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028172] 548f                      addq.l     #2,a7
 [00028174] 285f                      movea.l    (a7)+,a4
 [00028176] 2f0c                      move.l     a4,-(a7)
@@ -27228,7 +27105,7 @@ MCPass1:
 [000281a2] 4e5e                      unlk       a6
 [000281a4] 4e75                      rts
 [000281a6] 4e56 0000                 link       a6,#0
-[000281aa] 4a39 0004 4498            tst.b      $00044498
+[000281aa] 4a39 0004 4498            tst.b      SubrangeChecks
 [000281b0] 6764                      beq.s      $00028216
 [000281b2] 286e 0008                 movea.l    8(a6),a4
 [000281b6] 4854                      pea.l      (a4)
@@ -27238,7 +27115,7 @@ MCPass1:
 [000281c4] 3a2c 000c                 move.w     12(a4),d5
 [000281c8] 0645 4840                 addi.w     #$4840,d5
 [000281cc] 3f05                      move.w     d5,-(a7)
-[000281ce] 4eb9 0002 5bc0            jsr        $00025BC0
+[000281ce] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000281d4] 548f                      addq.l     #2,a7
 [000281d6] 286e 0008                 movea.l    8(a6),a4
 [000281da] 3a2c 000c                 move.w     12(a4),d5
@@ -27247,16 +27124,16 @@ MCPass1:
 [000281e2] 0645 4180                 addi.w     #$4180,d5
 [000281e6] 0645 003c                 addi.w     #$003C,d5
 [000281ea] 3f05                      move.w     d5,-(a7)
-[000281ec] 4eb9 0002 5bc0            jsr        $00025BC0
+[000281ec] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000281f2] 548f                      addq.l     #2,a7
 [000281f4] 3f3c 7fff                 move.w     #$7FFF,-(a7)
-[000281f8] 4eb9 0002 5bc0            jsr        $00025BC0
+[000281f8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000281fe] 548f                      addq.l     #2,a7
 [00028200] 286e 0008                 movea.l    8(a6),a4
 [00028204] 3a2c 000c                 move.w     12(a4),d5
 [00028208] 0645 4840                 addi.w     #$4840,d5
 [0002820c] 3f05                      move.w     d5,-(a7)
-[0002820e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002820e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028214] 548f                      addq.l     #2,a7
 [00028216] 4e5e                      unlk       a6
 [00028218] 4e75                      rts
@@ -27313,11 +27190,11 @@ MCPass1:
 [000282c8] 0645 4180                 addi.w     #$4180,d5
 [000282cc] 0645 003c                 addi.w     #$003C,d5
 [000282d0] 3f05                      move.w     d5,-(a7)
-[000282d2] 4eb9 0002 5bc0            jsr        $00025BC0
+[000282d2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000282d8] 548f                      addq.l     #2,a7
 [000282da] 2a2e 0008                 move.l     8(a6),d5
 [000282de] 3f05                      move.w     d5,-(a7)
-[000282e0] 4eb9 0002 5bc0            jsr        $00025BC0
+[000282e0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000282e6] 548f                      addq.l     #2,a7
 [000282e8] 4efa 0068                 jmp        $00028352(pc)
 [000282ec] 3a2e fffe                 move.w     -2(a6),d5
@@ -27326,26 +27203,26 @@ MCPass1:
 [000282f6] 286e 000c                 movea.l    12(a6),a4
 [000282fa] da6c 000c                 add.w      12(a4),d5
 [000282fe] 3f05                      move.w     d5,-(a7)
-[00028300] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028300] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028306] 548f                      addq.l     #2,a7
 [00028308] 0c6e 0001 fffe            cmpi.w     #$0001,-2(a6)
 [0002830e] 6612                      bne.s      $00028322
 [00028310] 2a2e 0008                 move.l     8(a6),d5
 [00028314] 3f05                      move.w     d5,-(a7)
-[00028316] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028316] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002831c] 548f                      addq.l     #2,a7
 [0002831e] 4efa 000e                 jmp        $0002832E(pc)
 [00028322] 2f2e 0008                 move.l     8(a6),-(a7)
 [00028326] 4eb9 0002 5bfe            jsr        $00025BFE
 [0002832c] 588f                      addq.l     #4,a7
 [0002832e] 3f3c 6304                 move.w     #$6304,-(a7)
-[00028332] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028332] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028338] 548f                      addq.l     #2,a7
 [0002833a] 3f3c 41bc                 move.w     #$41BC,-(a7)
-[0002833e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002833e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028344] 548f                      addq.l     #2,a7
 [00028346] 3f3c ffff                 move.w     #$FFFF,-(a7)
-[0002834a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002834a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028350] 548f                      addq.l     #2,a7
 [00028352] 4e5e                      unlk       a6
 [00028354] 4e75                      rts
@@ -27393,7 +27270,7 @@ MCPass1:
 [000283de] 4e5e                      unlk       a6
 [000283e0] 4e75                      rts
 [000283e2] 4e56 fffe                 link       a6,#-2
-[000283e6] 4a39 0004 4498            tst.b      $00044498
+[000283e6] 4a39 0004 4498            tst.b      SubrangeChecks
 [000283ec] 6702                      beq.s      $000283F0
 [000283ee] 6004                      bra.s      $000283F4
 [000283f0] 4efa 010c                 jmp        $000284FE(pc)
@@ -27417,7 +27294,7 @@ MCPass1:
 [0002842a] e165                      asl.w      d0,d5
 [0002842c] 0645 7000                 addi.w     #$7000,d5
 [00028430] 3f05                      move.w     d5,-(a7)
-[00028432] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028432] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028438] 548f                      addq.l     #2,a7
 [0002843a] 3a2e fffe                 move.w     -2(a6),d5
 [0002843e] 7009                      moveq.l    #9,d0
@@ -27426,7 +27303,7 @@ MCPass1:
 [00028446] 286e 000c                 movea.l    12(a6),a4
 [0002844a] da6c 000c                 add.w      12(a4),d5
 [0002844e] 3f05                      move.w     d5,-(a7)
-[00028450] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028450] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028456] 548f                      addq.l     #2,a7
 [00028458] 558f                      subq.l     #2,a7
 [0002845a] 286e 0008                 movea.l    8(a6),a4
@@ -27443,12 +27320,12 @@ MCPass1:
 [0002847c] 4a1f                      tst.b      (a7)+
 [0002847e] 660c                      bne.s      $0002848C
 [00028480] 3f3c 6b06                 move.w     #$6B06,-(a7)
-[00028484] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028484] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002848a] 548f                      addq.l     #2,a7
 [0002848c] 3a2e fffe                 move.w     -2(a6),d5
 [00028490] 0645 48c0                 addi.w     #$48C0,d5
 [00028494] 3f05                      move.w     d5,-(a7)
-[00028496] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028496] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002849c] 548f                      addq.l     #2,a7
 [0002849e] 286e 000c                 movea.l    12(a6),a4
 [000284a2] 3a2c 000c                 move.w     12(a4),d5
@@ -27458,10 +27335,10 @@ MCPass1:
 [000284ae] 0645 0080                 addi.w     #$0080,d5
 [000284b2] da6e fffe                 add.w      -2(a6),d5
 [000284b6] 3f05                      move.w     d5,-(a7)
-[000284b8] 4eb9 0002 5bc0            jsr        $00025BC0
+[000284b8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000284be] 548f                      addq.l     #2,a7
 [000284c0] 3f3c 6704                 move.w     #$6704,-(a7)
-[000284c4] 4eb9 0002 5bc0            jsr        $00025BC0
+[000284c4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000284ca] 548f                      addq.l     #2,a7
 [000284cc] 3a2e fffe                 move.w     -2(a6),d5
 [000284d0] 7009                      moveq.l    #9,d0
@@ -27469,10 +27346,10 @@ MCPass1:
 [000284d4] 0645 4180                 addi.w     #$4180,d5
 [000284d8] 0645 003c                 addi.w     #$003C,d5
 [000284dc] 3f05                      move.w     d5,-(a7)
-[000284de] 4eb9 0002 5bc0            jsr        $00025BC0
+[000284de] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000284e4] 548f                      addq.l     #2,a7
 [000284e6] 3f3c ffff                 move.w     #$FFFF,-(a7)
-[000284ea] 4eb9 0002 5bc0            jsr        $00025BC0
+[000284ea] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000284f0] 548f                      addq.l     #2,a7
 [000284f2] 3f2e fffe                 move.w     -2(a6),-(a7)
 [000284f6] 4eb9 0002 9700            jsr        $00029700
@@ -27495,10 +27372,10 @@ MCPass1:
 [00028534] 6100 f1d8                 bsr        $0002770E
 [00028538] 508f                      addq.l     #8,a7
 [0002853a] 3f3c 6608                 move.w     #$6608,-(a7)
-[0002853e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002853e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028544] 548f                      addq.l     #2,a7
 [00028546] 3f3c 7009                 move.w     #$7009,-(a7)
-[0002854a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002854a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028550] 548f                      addq.l     #2,a7
 [00028552] 3f3c 0002                 move.w     #$0002,-(a7)
 [00028556] 6100 01fa                 bsr        $00028752
@@ -27552,7 +27429,7 @@ MCPass1:
 [000285f4] 0645 d1c0                 addi.w     #$D1C0,d5
 [000285f8] 0645 003c                 addi.w     #$003C,d5
 [000285fc] 3f05                      move.w     d5,-(a7)
-[000285fe] 4eb9 0002 5bc0            jsr        $00025BC0
+[000285fe] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028604] 548f                      addq.l     #2,a7
 [00028606] 285f                      movea.l    (a7)+,a4
 [00028608] 2f0c                      move.l     a4,-(a7)
@@ -27655,7 +27532,7 @@ MCPass1:
 [00028750] 4e75                      rts
 [00028752] 4e56 0000                 link       a6,#0
 [00028756] 3f3c 4eb9                 move.w     #$4EB9,-(a7)
-[0002875a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002875a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028760] 548f                      addq.l     #2,a7
 [00028762] 3f39 0003 dd34            move.w     $0003DD34,-(a7)
 [00028768] 3f2e 0008                 move.w     8(a6),-(a7)
@@ -27707,7 +27584,7 @@ MCPass1:
 [0002880c] 2d6b 000e fff4            move.l     14(a3),-12(a6)
 [00028812] 2654                      movea.l    (a4),a3
 [00028814] 2d6b 0012 fff0            move.l     18(a3),-16(a6)
-[0002881a] 4a39 0004 4498            tst.b      $00044498
+[0002881a] 4a39 0004 4498            tst.b      SubrangeChecks
 [00028820] 671a                      beq.s      $0002883C
 [00028822] 2f0c                      move.l     a4,-(a7)
 [00028824] 266e 0008                 movea.l    8(a6),a3
@@ -27738,7 +27615,7 @@ MCPass1:
 [00028880] 662e                      bne.s      $000288B0
 [00028882] 0c2e 000c fffd            cmpi.b     #$0C,-3(a6)
 [00028888] 6722                      beq.s      $000288AC
-[0002888a] 4a39 0004 4498            tst.b      $00044498
+[0002888a] 4a39 0004 4498            tst.b      SubrangeChecks
 [00028890] 671a                      beq.s      $000288AC
 [00028892] 0cae 0000 7fff fff0       cmpi.l     #$00007FFF,-16(a6)
 [0002889a] 6f10                      ble.s      $000288AC
@@ -27758,7 +27635,7 @@ MCPass1:
 [000288c6] 1f05                      move.b     d5,-(a7)
 [000288c8] 4eb9 0002 5ae4            jsr        $00025AE4
 [000288ce] 548f                      addq.l     #2,a7
-[000288d0] 4a39 0004 4498            tst.b      $00044498
+[000288d0] 4a39 0004 4498            tst.b      SubrangeChecks
 [000288d6] 6720                      beq.s      $000288F8
 [000288d8] 286e 0008                 movea.l    8(a6),a4
 [000288dc] 4854                      pea.l      (a4)
@@ -27782,7 +27659,7 @@ MCPass1:
 [0002891a] 662e                      bne.s      $0002894A
 [0002891c] 0c2e 000c fffd            cmpi.b     #$0C,-3(a6)
 [00028922] 6722                      beq.s      $00028946
-[00028924] 4a39 0004 4498            tst.b      $00044498
+[00028924] 4a39 0004 4498            tst.b      SubrangeChecks
 [0002892a] 671a                      beq.s      $00028946
 [0002892c] 0cae 0000 7fff fff0       cmpi.l     #$00007FFF,-16(a6)
 [00028934] 6f10                      ble.s      $00028946
@@ -27802,7 +27679,7 @@ MCPass1:
 [00028960] 1f05                      move.b     d5,-(a7)
 [00028962] 4eb9 0002 5ae4            jsr        $00025AE4
 [00028968] 548f                      addq.l     #2,a7
-[0002896a] 4a39 0004 4498            tst.b      $00044498
+[0002896a] 4a39 0004 4498            tst.b      SubrangeChecks
 [00028970] 6720                      beq.s      $00028992
 [00028972] 286e 0008                 movea.l    8(a6),a4
 [00028976] 4854                      pea.l      (a4)
@@ -27829,7 +27706,7 @@ MCPass1:
 [000289bc] 4efa 003e                 jmp        $000289FC(pc)
 [000289c0] 0c2e 0005 fffe            cmpi.b     #$05,-2(a6)
 [000289c6] 6618                      bne.s      $000289E0
-[000289c8] 4a39 0004 4498            tst.b      $00044498
+[000289c8] 4a39 0004 4498            tst.b      SubrangeChecks
 [000289ce] 6710                      beq.s      $000289E0
 [000289d0] 286e 0008                 movea.l    8(a6),a4
 [000289d4] 4854                      pea.l      (a4)
@@ -27856,7 +27733,7 @@ MCPass1:
 [00028a1c] 4efa 003e                 jmp        $00028A5C(pc)
 [00028a20] 0c2e 0006 fffe            cmpi.b     #$06,-2(a6)
 [00028a26] 6618                      bne.s      $00028A40
-[00028a28] 4a39 0004 4498            tst.b      $00044498
+[00028a28] 4a39 0004 4498            tst.b      SubrangeChecks
 [00028a2e] 6710                      beq.s      $00028A40
 [00028a30] 286e 0008                 movea.l    8(a6),a4
 [00028a34] 4854                      pea.l      (a4)
@@ -27976,7 +27853,7 @@ MCPass1:
 [00028ba4] e165                      asl.w      d0,d5
 [00028ba6] 0645 518f                 addi.w     #$518F,d5
 [00028baa] 3f05                      move.w     d5,-(a7)
-[00028bac] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028bac] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028bb2] 548f                      addq.l     #2,a7
 [00028bb4] 4efa 001c                 jmp        $00028BD2(pc)
 [00028bb8] 2a2e 0008                 move.l     8(a6),d5
@@ -27985,7 +27862,7 @@ MCPass1:
 [00028bc2] e165                      asl.w      d0,d5
 [00028bc4] 0645 508f                 addi.w     #$508F,d5
 [00028bc8] 3f05                      move.w     d5,-(a7)
-[00028bca] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028bca] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028bd0] 548f                      addq.l     #2,a7
 [00028bd2] 4efa 004a                 jmp        $00028C1E(pc)
 [00028bd6] 2a2e 0008                 move.l     8(a6),d5
@@ -27995,15 +27872,15 @@ MCPass1:
 [00028be0] 0c85 0000 7fff            cmpi.l     #$00007FFF,d5
 [00028be6] 6e1e                      bgt.s      $00028C06
 [00028be8] 3f3c 4fef                 move.w     #$4FEF,-(a7)
-[00028bec] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028bec] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028bf2] 548f                      addq.l     #2,a7
 [00028bf4] 2a2e 0008                 move.l     8(a6),d5
 [00028bf8] 3f05                      move.w     d5,-(a7)
-[00028bfa] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028bfa] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028c00] 548f                      addq.l     #2,a7
 [00028c02] 4efa 001a                 jmp        $00028C1E(pc)
 [00028c06] 3f3c dffc                 move.w     #$DFFC,-(a7)
-[00028c0a] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028c0a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028c10] 548f                      addq.l     #2,a7
 [00028c12] 2f2e 0008                 move.l     8(a6),-(a7)
 [00028c16] 4eb9 0002 5bfe            jsr        $00025BFE
@@ -28126,7 +28003,7 @@ MCPass1:
 [00028d94] 0645 2040                 addi.w     #$2040,d5
 [00028d98] da6e fffa                 add.w      -6(a6),d5
 [00028d9c] 3f05                      move.w     d5,-(a7)
-[00028d9e] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028d9e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028da4] 548f                      addq.l     #2,a7
 [00028da6] 285f                      movea.l    (a7)+,a4
 [00028da8] 4aac 0006                 tst.l      6(a4)
@@ -28142,7 +28019,7 @@ MCPass1:
 [00028dc6] 2f0c                      move.l     a4,-(a7)
 [00028dc8] 2a2c 0006                 move.l     6(a4),d5
 [00028dcc] 3f05                      move.w     d5,-(a7)
-[00028dce] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028dce] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028dd4] 548f                      addq.l     #2,a7
 [00028dd6] 285f                      movea.l    (a7)+,a4
 [00028dd8] 4efa 0052                 jmp        $00028E2C(pc)
@@ -28164,7 +28041,7 @@ MCPass1:
 [00028e08] 0645 d1c0                 addi.w     #$D1C0,d5
 [00028e0c] 0645 003c                 addi.w     #$003C,d5
 [00028e10] 3f05                      move.w     d5,-(a7)
-[00028e12] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028e12] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028e18] 548f                      addq.l     #2,a7
 [00028e1a] 285f                      movea.l    (a7)+,a4
 [00028e1c] 2f0c                      move.l     a4,-(a7)
@@ -28207,7 +28084,7 @@ MCPass1:
 [00028e9c] 0645 2040                 addi.w     #$2040,d5
 [00028ea0] da6e fffa                 add.w      -6(a6),d5
 [00028ea4] 3f05                      move.w     d5,-(a7)
-[00028ea6] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028ea6] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028eac] 548f                      addq.l     #2,a7
 [00028eae] 285f                      movea.l    (a7)+,a4
 [00028eb0] 2f0c                      move.l     a4,-(a7)
@@ -28234,7 +28111,7 @@ MCPass1:
 [00028eee] 6c10                      bge.s      $00028F00
 [00028ef0] 2f0c                      move.l     a4,-(a7)
 [00028ef2] 3f3c 03ad                 move.w     #$03AD,-(a7)
-[00028ef6] 4eb9 0002 67ea            jsr        $000267EA
+[00028ef6] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [00028efc] 548f                      addq.l     #2,a7
 [00028efe] 285f                      movea.l    (a7)+,a4
 [00028f00] 2f0c                      move.l     a4,-(a7)
@@ -28252,7 +28129,7 @@ MCPass1:
 [00028f22] 4cdf 1020                 movem.l    (a7)+,d5/a4
 [00028f26] da44                      add.w      d4,d5
 [00028f28] 3f05                      move.w     d5,-(a7)
-[00028f2a] 4eb9 0002 5bc0            jsr        $00025BC0
+[00028f2a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00028f30] 548f                      addq.l     #2,a7
 [00028f32] 285f                      movea.l    (a7)+,a4
 [00028f34] 396e fffc 000c            move.w     -4(a6),12(a4)
@@ -28427,7 +28304,7 @@ MCPass1:
 [00029178] 3a1f                      move.w     (a7)+,d5
 [0002917a] 285f                      movea.l    (a7)+,a4
 [0002917c] 3f05                      move.w     d5,-(a7)
-[0002917e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002917e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029184] 548f                      addq.l     #2,a7
 [00029186] 285f                      movea.l    (a7)+,a4
 [00029188] 4efa 027a                 jmp        $00029404(pc)
@@ -28486,7 +28363,7 @@ MCPass1:
 [0002923e] 3a1f                      move.w     (a7)+,d5
 [00029240] 285f                      movea.l    (a7)+,a4
 [00029242] 3f05                      move.w     d5,-(a7)
-[00029244] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029244] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002924a] 548f                      addq.l     #2,a7
 [0002924c] 285f                      movea.l    (a7)+,a4
 [0002924e] 4efa 0012                 jmp        $00029262(pc)
@@ -28544,7 +28421,7 @@ MCPass1:
 [000292f6] 6f10                      ble.s      $00029308
 [000292f8] 2f0c                      move.l     a4,-(a7)
 [000292fa] 3f3c 03ad                 move.w     #$03AD,-(a7)
-[000292fe] 4eb9 0002 67ea            jsr        $000267EA
+[000292fe] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [00029304] 548f                      addq.l     #2,a7
 [00029306] 285f                      movea.l    (a7)+,a4
 [00029308] 4aac 0006                 tst.l      6(a4)
@@ -28552,7 +28429,7 @@ MCPass1:
 [0002930e] 2f0c                      move.l     a4,-(a7)
 [00029310] 2a2c 0006                 move.l     6(a4),d5
 [00029314] 3f05                      move.w     d5,-(a7)
-[00029316] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029316] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002931c] 548f                      addq.l     #2,a7
 [0002931e] 285f                      movea.l    (a7)+,a4
 [00029320] 4efa 00e2                 jmp        $00029404(pc)
@@ -28577,7 +28454,7 @@ MCPass1:
 [00029352] 6c10                      bge.s      $00029364
 [00029354] 2f0c                      move.l     a4,-(a7)
 [00029356] 3f3c 03ad                 move.w     #$03AD,-(a7)
-[0002935a] 4eb9 0002 67ea            jsr        $000267EA
+[0002935a] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [00029360] 548f                      addq.l     #2,a7
 [00029362] 285f                      movea.l    (a7)+,a4
 [00029364] 3a2c 0010                 move.w     16(a4),d5
@@ -28601,7 +28478,7 @@ MCPass1:
 [0002939a] 6614                      bne.s      $000293B0
 [0002939c] 2f0c                      move.l     a4,-(a7)
 [0002939e] 3f2e fffe                 move.w     -2(a6),-(a7)
-[000293a2] 4eb9 0002 5bc0            jsr        $00025BC0
+[000293a2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000293a8] 548f                      addq.l     #2,a7
 [000293aa] 285f                      movea.l    (a7)+,a4
 [000293ac] 4efa 0018                 jmp        $000293C6(pc)
@@ -28609,7 +28486,7 @@ MCPass1:
 [000293b2] 3a2e fffe                 move.w     -2(a6),d5
 [000293b6] 0645 0800                 addi.w     #$0800,d5
 [000293ba] 3f05                      move.w     d5,-(a7)
-[000293bc] 4eb9 0002 5bc0            jsr        $00025BC0
+[000293bc] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000293c2] 548f                      addq.l     #2,a7
 [000293c4] 285f                      movea.l    (a7)+,a4
 [000293c6] 4efa 003c                 jmp        $00029404(pc)
@@ -28630,10 +28507,11 @@ MCPass1:
 [00029402] 285f                      movea.l    (a7)+,a4
 [00029404] 4e5e                      unlk       a6
 [00029406] 4e75                      rts
+
 [00029408] 4e56 fffe                 link       a6,#-2
-[0002940c] 4a39 0004 4496            tst.b      $00044496
+[0002940c] 4a39 0004 4496            tst.b      AllQuickCalls
 [00029412] 6618                      bne.s      $0002942C
-[00029414] 4a39 0004 4495            tst.b      $00044495
+[00029414] 4a39 0004 4495            tst.b      QuickCalls
 [0002941a] 6714                      beq.s      $00029430
 [0002941c] 286e 0008                 movea.l    8(a6),a4
 [00029420] 2a2c 000a                 move.l     10(a4),d5
@@ -28646,11 +28524,11 @@ MCPass1:
 [00029436] 4a2e ffff                 tst.b      -1(a6)
 [0002943a] 6710                      beq.s      $0002944C
 [0002943c] 3f3c 6100                 move.w     #$6100,-(a7)
-[00029440] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029440] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029446] 548f                      addq.l     #2,a7
 [00029448] 4efa 000e                 jmp        $00029458(pc)
 [0002944c] 3f3c 4eb9                 move.w     #$4EB9,-(a7)
-[00029450] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029450] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029456] 548f                      addq.l     #2,a7
 [00029458] 3f39 0003 dd34            move.w     $0003DD34,-(a7)
 [0002945e] 2f2e 0008                 move.l     8(a6),-(a7)
@@ -28661,7 +28539,7 @@ MCPass1:
 [00029474] 4a2e ffff                 tst.b      -1(a6)
 [00029478] 670e                      beq.s      $00029488
 [0002947a] 4267                      clr.w      -(a7)
-[0002947c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002947c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029482] 548f                      addq.l     #2,a7
 [00029484] 4efa 000c                 jmp        $00029492(pc)
 [00029488] 42a7                      clr.l      -(a7)
@@ -28751,7 +28629,7 @@ MCPass1:
 [0002959e] da6e 000c                 add.w      12(a6),d5
 [000295a2] da6e fffe                 add.w      -2(a6),d5
 [000295a6] 3f05                      move.w     d5,-(a7)
-[000295a8] 4eb9 0002 5bc0            jsr        $00025BC0
+[000295a8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000295ae] 548f                      addq.l     #2,a7
 [000295b0] 286e 0008                 movea.l    8(a6),a4
 [000295b4] 4854                      pea.l      (a4)
@@ -28796,16 +28674,16 @@ MCPass1:
 [0002963a] 3a2e fffc                 move.w     -4(a6),d5
 [0002963e] 0645 2f00                 addi.w     #$2F00,d5
 [00029642] 3f05                      move.w     d5,-(a7)
-[00029644] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029644] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002964a] 548f                      addq.l     #2,a7
 [0002964c] 4efa 001e                 jmp        $0002966C(pc)
 [00029650] 3f3c 48e7                 move.w     #$48E7,-(a7)
-[00029654] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029654] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002965a] 548f                      addq.l     #2,a7
 [0002965c] 286e 0008                 movea.l    8(a6),a4
 [00029660] 2a14                      move.l     (a4),d5
 [00029662] 3f05                      move.w     d5,-(a7)
-[00029664] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029664] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002966a] 548f                      addq.l     #2,a7
 [0002966c] 4e5e                      unlk       a6
 [0002966e] 4e75                      rts
@@ -28840,15 +28718,15 @@ MCPass1:
 [000296ce] ed45                      asl.w      #6,d5
 [000296d0] 0645 201f                 addi.w     #$201F,d5
 [000296d4] 3f05                      move.w     d5,-(a7)
-[000296d6] 4eb9 0002 5bc0            jsr        $00025BC0
+[000296d6] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000296dc] 548f                      addq.l     #2,a7
 [000296de] 4efa 001c                 jmp        $000296FC(pc)
 [000296e2] 3f3c 4cdf                 move.w     #$4CDF,-(a7)
-[000296e6] 4eb9 0002 5bc0            jsr        $00025BC0
+[000296e6] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000296ec] 548f                      addq.l     #2,a7
 [000296ee] 2a2e fff8                 move.l     -8(a6),d5
 [000296f2] 3f05                      move.w     d5,-(a7)
-[000296f4] 4eb9 0002 5bc0            jsr        $00025BC0
+[000296f4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000296fa] 548f                      addq.l     #2,a7
 [000296fc] 4e5e                      unlk       a6
 [000296fe] 4e75                      rts
@@ -28906,7 +28784,7 @@ MCPass1:
 [000297be] ba6e fffc                 cmp.w      -4(a6),d5
 [000297c2] 661a                      bne.s      $000297DE
 [000297c4] 3f3c 0190                 move.w     #$0190,-(a7)
-[000297c8] 4eb9 0002 67ba            jsr        $000267BA
+[000297c8] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [000297ce] 548f                      addq.l     #2,a7
 [000297d0] 3f2e fffc                 move.w     -4(a6),-(a7)
 [000297d4] 6100 ff2a                 bsr        $00029700
@@ -29136,7 +29014,7 @@ MCPass1:
 [00029ade] 2a1f                      move.l     (a7)+,d5
 [00029ae0] da44                      add.w      d4,d5
 [00029ae2] 3f05                      move.w     d5,-(a7)
-[00029ae4] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029ae4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029aea] 548f                      addq.l     #2,a7
 [00029aec] 4efa 002c                 jmp        $00029B1A(pc)
 [00029af0] 286e 0008                 movea.l    8(a6),a4
@@ -29146,7 +29024,7 @@ MCPass1:
 [00029afc] 0645 2000                 addi.w     #$2000,d5
 [00029b00] 0645 003c                 addi.w     #$003C,d5
 [00029b04] 3f05                      move.w     d5,-(a7)
-[00029b06] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029b06] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029b0c] 548f                      addq.l     #2,a7
 [00029b0e] 2f2e fff2                 move.l     -14(a6),-(a7)
 [00029b12] 4eb9 0002 5bfe            jsr        $00025BFE
@@ -29178,7 +29056,7 @@ MCPass1:
 [00029b72] d86e fffc                 add.w      -4(a6),d4
 [00029b76] d86e fffe                 add.w      -2(a6),d4
 [00029b7a] 3f04                      move.w     d4,-(a7)
-[00029b7c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029b7c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029b82] 548f                      addq.l     #2,a7
 [00029b84] 286e 000c                 movea.l    12(a6),a4
 [00029b88] 4854                      pea.l      (a4)
@@ -29209,18 +29087,18 @@ MCPass1:
 [00029be2] 0645 3040                 addi.w     #$3040,d5
 [00029be6] 0645 003c                 addi.w     #$003C,d5
 [00029bea] 3f05                      move.w     d5,-(a7)
-[00029bec] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029bec] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029bf2] 548f                      addq.l     #2,a7
 [00029bf4] 286e 000c                 movea.l    12(a6),a4
 [00029bf8] 3f2c 0008                 move.w     8(a4),-(a7)
-[00029bfc] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029bfc] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029c02] 548f                      addq.l     #2,a7
 [00029c04] 4efa 0024                 jmp        $00029C2A(pc)
 [00029c08] 3a2e fffc                 move.w     -4(a6),d5
 [00029c0c] 0645 2040                 addi.w     #$2040,d5
 [00029c10] 0645 003c                 addi.w     #$003C,d5
 [00029c14] 3f05                      move.w     d5,-(a7)
-[00029c16] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029c16] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029c1c] 548f                      addq.l     #2,a7
 [00029c1e] 2f2e fff2                 move.l     -14(a6),-(a7)
 [00029c22] 4eb9 0002 5bfe            jsr        $00025BFE
@@ -29258,7 +29136,7 @@ MCPass1:
 [00029c94] d86e fffc                 add.w      -4(a6),d4
 [00029c98] d86e fffe                 add.w      -2(a6),d4
 [00029c9c] 3f04                      move.w     d4,-(a7)
-[00029c9e] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029c9e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029ca4] 548f                      addq.l     #2,a7
 [00029ca6] 286e 000c                 movea.l    12(a6),a4
 [00029caa] 4854                      pea.l      (a4)
@@ -29292,7 +29170,7 @@ MCPass1:
 [00029d04] 0645 4200                 addi.w     #$4200,d5
 [00029d08] da6e fffc                 add.w      -4(a6),d5
 [00029d0c] 3f05                      move.w     d5,-(a7)
-[00029d0e] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029d0e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029d14] 548f                      addq.l     #2,a7
 [00029d16] 286e 0008                 movea.l    8(a6),a4
 [00029d1a] 4854                      pea.l      (a4)
@@ -29329,7 +29207,7 @@ MCPass1:
 [00029d96] 4efa 0008                 jmp        $00029DA0(pc)
 [00029d9a] 066e 0f3c fffa            addi.w     #$0F3C,-6(a6)
 [00029da0] 3f2e fffa                 move.w     -6(a6),-(a7)
-[00029da4] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029da4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029daa] 548f                      addq.l     #2,a7
 [00029dac] 0c6e 0001 fff8            cmpi.w     #$0001,-8(a6)
 [00029db2] 6218                      bhi.s      $00029DCC
@@ -29337,7 +29215,7 @@ MCPass1:
 [00029db6] 2f2e fff2                 move.l     -14(a6),-(a7)
 [00029dba] 6100 ed9c                 bsr        $00028B58
 [00029dbe] 588f                      addq.l     #4,a7
-[00029dc0] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029dc0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029dc6] 548f                      addq.l     #2,a7
 [00029dc8] 4efa 000e                 jmp        $00029DD8(pc)
 [00029dcc] 2f2e fff2                 move.l     -14(a6),-(a7)
@@ -29378,7 +29256,7 @@ MCPass1:
 [00029e42] 3a2e fffa                 move.w     -6(a6),d5
 [00029e46] da6e fffe                 add.w      -2(a6),d5
 [00029e4a] 3f05                      move.w     d5,-(a7)
-[00029e4c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029e4c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029e52] 548f                      addq.l     #2,a7
 [00029e54] 286e 000c                 movea.l    12(a6),a4
 [00029e58] 4854                      pea.l      (a4)
@@ -29397,7 +29275,7 @@ MCPass1:
 [00029e82] 3a2e fffa                 move.w     -6(a6),d5
 [00029e86] da6e fffe                 add.w      -2(a6),d5
 [00029e8a] 3f05                      move.w     d5,-(a7)
-[00029e8c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029e8c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029e92] 548f                      addq.l     #2,a7
 [00029e94] 486e ffd8                 pea.l      -40(a6)
 [00029e98] 6100 f2ac                 bsr        $00029146
@@ -29442,7 +29320,7 @@ MCPass1:
 [00029f26] da6e 0010                 add.w      16(a6),d5
 [00029f2a] da6e fffe                 add.w      -2(a6),d5
 [00029f2e] 3f05                      move.w     d5,-(a7)
-[00029f30] 4eb9 0002 5bc0            jsr        $00025BC0
+[00029f30] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00029f36] 548f                      addq.l     #2,a7
 [00029f38] 4e5e                      unlk       a6
 [00029f3a] 4e75                      rts
@@ -29607,19 +29485,19 @@ MCPass1:
 [0002a164] 3a2e ffea                 move.w     -22(a6),d5
 [0002a168] 0645 5380                 addi.w     #$5380,d5
 [0002a16c] 3f05                      move.w     d5,-(a7)
-[0002a16e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a16e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a174] 548f                      addq.l     #2,a7
 [0002a176] 3f3c 64fa                 move.w     #$64FA,-(a7)
-[0002a17a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a17a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a180] 548f                      addq.l     #2,a7
 [0002a182] 4efa 0020                 jmp        $0002A1A4(pc)
 [0002a186] 3a2e ffea                 move.w     -22(a6),d5
 [0002a18a] 0645 51c8                 addi.w     #$51C8,d5
 [0002a18e] 3f05                      move.w     d5,-(a7)
-[0002a190] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a190] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a196] 548f                      addq.l     #2,a7
 [0002a198] 3f3c fffc                 move.w     #$FFFC,-(a7)
-[0002a19c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a19c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a1a2] 548f                      addq.l     #2,a7
 [0002a1a4] 3f2e ffea                 move.w     -22(a6),-(a7)
 [0002a1a8] 6100 f556                 bsr        $00029700
@@ -29730,12 +29608,12 @@ MCPass1:
 [0002a30a] 0645 1000                 addi.w     #$1000,d5
 [0002a30e] da6e fffe                 add.w      -2(a6),d5
 [0002a312] 3f05                      move.w     d5,-(a7)
-[0002a314] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a314] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a31a] 548f                      addq.l     #2,a7
 [0002a31c] 3a2e ffe6                 move.w     -26(a6),d5
 [0002a320] 0645 57c8                 addi.w     #$57C8,d5
 [0002a324] 3f05                      move.w     d5,-(a7)
-[0002a326] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a326] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a32c] 548f                      addq.l     #2,a7
 [0002a32e] 3a39 0003 dd34            move.w     $0003DD34,d5
 [0002a334] 9a6e ffa8                 sub.w      -88(a6),d5
@@ -29744,7 +29622,7 @@ MCPass1:
 [0002a340] 9845                      sub.w      d5,d4
 [0002a342] 5244                      addq.w     #1,d4
 [0002a344] 3f04                      move.w     d4,-(a7)
-[0002a346] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a346] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a34c] 548f                      addq.l     #2,a7
 [0002a34e] 486e ffc2                 pea.l      -62(a6)
 [0002a352] 6100 f65a                 bsr        $000299AE
@@ -29916,7 +29794,7 @@ MCPass1:
 [0002a568] e165                      asl.w      d0,d5
 [0002a56a] 0645 7000                 addi.w     #$7000,d5
 [0002a56e] 3f05                      move.w     d5,-(a7)
-[0002a570] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a570] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a576] 548f                      addq.l     #2,a7
 [0002a578] 285f                      movea.l    (a7)+,a4
 [0002a57a] 2f0c                      move.l     a4,-(a7)
@@ -29940,7 +29818,7 @@ MCPass1:
 [0002a5b4] 3a2e fffe                 move.w     -2(a6),d5
 [0002a5b8] 0645 48c0                 addi.w     #$48C0,d5
 [0002a5bc] 3f05                      move.w     d5,-(a7)
-[0002a5be] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a5be] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a5c4] 548f                      addq.l     #2,a7
 [0002a5c6] 285f                      movea.l    (a7)+,a4
 [0002a5c8] 286d fffc                 movea.l    -4(a5),a4
@@ -30021,7 +29899,7 @@ MCPass1:
 [0002a6ac] 4cdf 1020                 movem.l    (a7)+,d5/a4
 [0002a6b0] da44                      add.w      d4,d5
 [0002a6b2] 3f05                      move.w     d5,-(a7)
-[0002a6b4] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a6b4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a6ba] 548f                      addq.l     #2,a7
 [0002a6bc] 285f                      movea.l    (a7)+,a4
 [0002a6be] 4efa 0086                 jmp        $0002A746(pc)
@@ -30036,7 +29914,7 @@ MCPass1:
 [0002a6da] 0645 2000                 addi.w     #$2000,d5
 [0002a6de] 0645 003c                 addi.w     #$003C,d5
 [0002a6e2] 3f05                      move.w     d5,-(a7)
-[0002a6e4] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a6e4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a6ea] 548f                      addq.l     #2,a7
 [0002a6ec] 285f                      movea.l    (a7)+,a4
 [0002a6ee] 2f0c                      move.l     a4,-(a7)
@@ -30052,19 +29930,19 @@ MCPass1:
 [0002a70c] 0645 3000                 addi.w     #$3000,d5
 [0002a710] 0645 003c                 addi.w     #$003C,d5
 [0002a714] 3f05                      move.w     d5,-(a7)
-[0002a716] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a716] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a71c] 548f                      addq.l     #2,a7
 [0002a71e] 285f                      movea.l    (a7)+,a4
 [0002a720] 2f0c                      move.l     a4,-(a7)
 [0002a722] 3f2c 0008                 move.w     8(a4),-(a7)
-[0002a726] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a726] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a72c] 548f                      addq.l     #2,a7
 [0002a72e] 285f                      movea.l    (a7)+,a4
 [0002a730] 2f0c                      move.l     a4,-(a7)
 [0002a732] 3a2e ffe4                 move.w     -28(a6),d5
 [0002a736] 0645 48c0                 addi.w     #$48C0,d5
 [0002a73a] 3f05                      move.w     d5,-(a7)
-[0002a73c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a73c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a742] 548f                      addq.l     #2,a7
 [0002a744] 285f                      movea.l    (a7)+,a4
 [0002a746] 3d6e 0008 fff6            move.w     8(a6),-10(a6)
@@ -30100,12 +29978,12 @@ MCPass1:
 [0002a7a8] 3a2c 000c                 move.w     12(a4),d5
 [0002a7ac] 0645 0240                 addi.w     #$0240,d5
 [0002a7b0] 3f05                      move.w     d5,-(a7)
-[0002a7b2] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a7b2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a7b8] 548f                      addq.l     #2,a7
 [0002a7ba] 285f                      movea.l    (a7)+,a4
 [0002a7bc] 2f0c                      move.l     a4,-(a7)
 [0002a7be] 3f3c 00ff                 move.w     #$00FF,-(a7)
-[0002a7c2] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a7c2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a7c8] 548f                      addq.l     #2,a7
 [0002a7ca] 285f                      movea.l    (a7)+,a4
 [0002a7cc] 4efa 00a4                 jmp        $0002A872(pc)
@@ -30117,7 +29995,7 @@ MCPass1:
 [0002a7e0] 3a2c 000c                 move.w     12(a4),d5
 [0002a7e4] 0645 48c0                 addi.w     #$48C0,d5
 [0002a7e8] 3f05                      move.w     d5,-(a7)
-[0002a7ea] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a7ea] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a7f0] 548f                      addq.l     #2,a7
 [0002a7f2] 285f                      movea.l    (a7)+,a4
 [0002a7f4] 4efa 007c                 jmp        $0002A872(pc)
@@ -30129,7 +30007,7 @@ MCPass1:
 [0002a808] 3a2c 000c                 move.w     12(a4),d5
 [0002a80c] 0645 0280                 addi.w     #$0280,d5
 [0002a810] 3f05                      move.w     d5,-(a7)
-[0002a812] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a812] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a818] 548f                      addq.l     #2,a7
 [0002a81a] 285f                      movea.l    (a7)+,a4
 [0002a81c] 2f0c                      move.l     a4,-(a7)
@@ -30142,21 +30020,21 @@ MCPass1:
 [0002a832] 3a2c 000c                 move.w     12(a4),d5
 [0002a836] 0645 4840                 addi.w     #$4840,d5
 [0002a83a] 3f05                      move.w     d5,-(a7)
-[0002a83c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a83c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a842] 548f                      addq.l     #2,a7
 [0002a844] 285f                      movea.l    (a7)+,a4
 [0002a846] 2f0c                      move.l     a4,-(a7)
 [0002a848] 3a2c 000c                 move.w     12(a4),d5
 [0002a84c] 0645 4240                 addi.w     #$4240,d5
 [0002a850] 3f05                      move.w     d5,-(a7)
-[0002a852] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a852] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a858] 548f                      addq.l     #2,a7
 [0002a85a] 285f                      movea.l    (a7)+,a4
 [0002a85c] 2f0c                      move.l     a4,-(a7)
 [0002a85e] 3a2c 000c                 move.w     12(a4),d5
 [0002a862] 0645 4840                 addi.w     #$4840,d5
 [0002a866] 3f05                      move.w     d5,-(a7)
-[0002a868] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a868] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a86e] 548f                      addq.l     #2,a7
 [0002a870] 285f                      movea.l    (a7)+,a4
 [0002a872] 396e 0008 000e            move.w     8(a6),14(a4)
@@ -30279,7 +30157,7 @@ MCPass1:
 [0002a9ea] 0645 3040                 addi.w     #$3040,d5
 [0002a9ee] da6c 000c                 add.w      12(a4),d5
 [0002a9f2] 3f05                      move.w     d5,-(a7)
-[0002a9f4] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002a9f4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002a9fa] 548f                      addq.l     #2,a7
 [0002a9fc] 285f                      movea.l    (a7)+,a4
 [0002a9fe] 4efa 0046                 jmp        $0002AA46(pc)
@@ -30293,7 +30171,7 @@ MCPass1:
 [0002aa18] 0645 2040                 addi.w     #$2040,d5
 [0002aa1c] da6c 000c                 add.w      12(a4),d5
 [0002aa20] 3f05                      move.w     d5,-(a7)
-[0002aa22] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002aa22] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002aa28] 548f                      addq.l     #2,a7
 [0002aa2a] 285f                      movea.l    (a7)+,a4
 [0002aa2c] 4efa 0018                 jmp        $0002AA46(pc)
@@ -30479,7 +30357,7 @@ MCPass1:
 [0002ac88] da6e fffa                 add.w      -6(a6),d5
 [0002ac8c] da6e fffe                 add.w      -2(a6),d5
 [0002ac90] 3f05                      move.w     d5,-(a7)
-[0002ac92] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002ac92] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002ac98] 548f                      addq.l     #2,a7
 [0002ac9a] 285f                      movea.l    (a7)+,a4
 [0002ac9c] 2f0c                      move.l     a4,-(a7)
@@ -30769,7 +30647,7 @@ MCPass1:
 [0002afd0] 0645 2000                 addi.w     #$2000,d5
 [0002afd4] 0645 003c                 addi.w     #$003C,d5
 [0002afd8] 3f05                      move.w     d5,-(a7)
-[0002afda] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002afda] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002afe0] 548f                      addq.l     #2,a7
 [0002afe2] 285f                      movea.l    (a7)+,a4
 [0002afe4] 2f0c                      move.l     a4,-(a7)
@@ -30906,7 +30784,7 @@ MCPass1:
 [0002b19c] 3a2e fffc                 move.w     -4(a6),d5
 [0002b1a0] da6e fffe                 add.w      -2(a6),d5
 [0002b1a4] 3f05                      move.w     d5,-(a7)
-[0002b1a6] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002b1a6] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002b1ac] 548f                      addq.l     #2,a7
 [0002b1ae] 285f                      movea.l    (a7)+,a4
 [0002b1b0] 2f0c                      move.l     a4,-(a7)
@@ -30922,7 +30800,7 @@ MCPass1:
 [0002b1ce] 0c79 0006 0004 451c       cmpi.w     #$0006,$0004451C
 [0002b1d6] 631c                      bls.s      $0002B1F4
 [0002b1d8] 3f3c 03de                 move.w     #$03DE,-(a7)
-[0002b1dc] 4eb9 0002 67ba            jsr        $000267BA
+[0002b1dc] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [0002b1e2] 548f                      addq.l     #2,a7
 [0002b1e4] 286e 0008                 movea.l    8(a6),a4
 [0002b1e8] 4854                      pea.l      (a4)
@@ -31094,7 +30972,7 @@ MCPass1:
 [0002b452] 6f14                      ble.s      $0002B468
 [0002b454] 2f0c                      move.l     a4,-(a7)
 [0002b456] 3f3c 0192                 move.w     #$0192,-(a7)
-[0002b45a] 4eb9 0002 67ba            jsr        $000267BA
+[0002b45a] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [0002b460] 548f                      addq.l     #2,a7
 [0002b462] 285f                      movea.l    (a7)+,a4
 [0002b464] 426e fffc                 clr.w      -4(a6)
@@ -31221,7 +31099,7 @@ MCPass1:
 [0002b60e] 6f18                      ble.s      $0002B628
 [0002b610] 2f0c                      move.l     a4,-(a7)
 [0002b612] 3f3c 0193                 move.w     #$0193,-(a7)
-[0002b616] 4eb9 0002 67ba            jsr        $000267BA
+[0002b616] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [0002b61c] 548f                      addq.l     #2,a7
 [0002b61e] 285f                      movea.l    (a7)+,a4
 [0002b620] 33fc 00ff 0004 4bbc       move.w     #$00FF,$00044BBC
@@ -31236,7 +31114,7 @@ MCPass1:
 [0002b656] 4efa 001c                 jmp        $0002B674(pc)
 [0002b65a] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0002b65e] 3f3c 0196                 move.w     #$0196,-(a7)
-[0002b662] 4eb9 0002 67ba            jsr        $000267BA
+[0002b662] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [0002b668] 548f                      addq.l     #2,a7
 [0002b66a] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002b66e] 377c 007f 0002            move.w     #$007F,2(a3)
@@ -31245,7 +31123,7 @@ MCPass1:
 [0002b67a] 3a2e fffc                 move.w     -4(a6),d5
 [0002b67e] 0645 6000                 addi.w     #$6000,d5
 [0002b682] 3f05                      move.w     d5,-(a7)
-[0002b684] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002b684] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002b68a] 548f                      addq.l     #2,a7
 [0002b68c] 285f                      movea.l    (a7)+,a4
 [0002b68e] 4e5e                      unlk       a6
@@ -31335,12 +31213,12 @@ MCPass1:
 [0002b790] 0645 7000                 addi.w     #$7000,d5
 [0002b794] 5245                      addq.w     #1,d5
 [0002b796] 3f05                      move.w     d5,-(a7)
-[0002b798] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002b798] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002b79e] 548f                      addq.l     #2,a7
 [0002b7a0] 285f                      movea.l    (a7)+,a4
 [0002b7a2] 2f0c                      move.l     a4,-(a7)
 [0002b7a4] 3f3c 6002                 move.w     #$6002,-(a7)
-[0002b7a8] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002b7a8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002b7ae] 548f                      addq.l     #2,a7
 [0002b7b0] 285f                      movea.l    (a7)+,a4
 [0002b7b2] 2f0c                      move.l     a4,-(a7)
@@ -31355,7 +31233,7 @@ MCPass1:
 [0002b7cc] e165                      asl.w      d0,d5
 [0002b7ce] 0645 7000                 addi.w     #$7000,d5
 [0002b7d2] 3f05                      move.w     d5,-(a7)
-[0002b7d4] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002b7d4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002b7da] 548f                      addq.l     #2,a7
 [0002b7dc] 285f                      movea.l    (a7)+,a4
 [0002b7de] 2f0c                      move.l     a4,-(a7)
@@ -31381,14 +31259,14 @@ MCPass1:
 [0002b820] 0645 50c0                 addi.w     #$50C0,d5
 [0002b824] da6e fffe                 add.w      -2(a6),d5
 [0002b828] 3f05                      move.w     d5,-(a7)
-[0002b82a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002b82a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002b830] 548f                      addq.l     #2,a7
 [0002b832] 285f                      movea.l    (a7)+,a4
 [0002b834] 2f0c                      move.l     a4,-(a7)
 [0002b836] 3a2e fffe                 move.w     -2(a6),d5
 [0002b83a] 0645 4400                 addi.w     #$4400,d5
 [0002b83e] 3f05                      move.w     d5,-(a7)
-[0002b840] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002b840] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002b846] 548f                      addq.l     #2,a7
 [0002b848] 285f                      movea.l    (a7)+,a4
 [0002b84a] 2f0c                      move.l     a4,-(a7)
@@ -31731,7 +31609,7 @@ MCPass1:
 [0002bc9e] 0c6e 0020 fffc            cmpi.w     #$0020,-4(a6)
 [0002bca4] 6310                      bls.s      $0002BCB6
 [0002bca6] 3f3c 012c                 move.w     #$012C,-(a7)
-[0002bcaa] 4eb9 0002 67ea            jsr        $000267EA
+[0002bcaa] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002bcb0] 548f                      addq.l     #2,a7
 [0002bcb2] 426e fffc                 clr.w      -4(a6)
 [0002bcb6] 3a2e fffc                 move.w     -4(a6),d5
@@ -31747,12 +31625,12 @@ MCPass1:
 [0002bcd8] e165                      asl.w      d0,d5
 [0002bcda] da6e fffe                 add.w      -2(a6),d5
 [0002bcde] 3f05                      move.w     d5,-(a7)
-[0002bce0] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002bce0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002bce6] 548f                      addq.l     #2,a7
 [0002bce8] 4a6e fffc                 tst.w      -4(a6)
 [0002bcec] 6312                      bls.s      $0002BD00
 [0002bcee] 3f2e fffe                 move.w     -2(a6),-(a7)
-[0002bcf2] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002bcf2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002bcf8] 548f                      addq.l     #2,a7
 [0002bcfa] 536e fffc                 subq.w     #1,-4(a6)
 [0002bcfe] 60e8                      bra.s      $0002BCE8
@@ -31779,10 +31657,10 @@ MCPass1:
 [0002bd46] 286e 0008                 movea.l    8(a6),a4
 [0002bd4a] da6c 000c                 add.w      12(a4),d5
 [0002bd4e] 3f05                      move.w     d5,-(a7)
-[0002bd50] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002bd50] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002bd56] 548f                      addq.l     #2,a7
 [0002bd58] 3f3c 6a06                 move.w     #$6A06,-(a7)
-[0002bd5c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002bd5c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002bd62] 548f                      addq.l     #2,a7
 [0002bd64] 3a2e fff6                 move.w     -10(a6),d5
 [0002bd68] ed45                      asl.w      #6,d5
@@ -31790,18 +31668,18 @@ MCPass1:
 [0002bd6e] 286e 0008                 movea.l    8(a6),a4
 [0002bd72] da6c 000c                 add.w      12(a4),d5
 [0002bd76] 3f05                      move.w     d5,-(a7)
-[0002bd78] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002bd78] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002bd7e] 548f                      addq.l     #2,a7
 [0002bd80] 3f2e fffe                 move.w     -2(a6),-(a7)
-[0002bd84] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002bd84] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002bd8a] 548f                      addq.l     #2,a7
 [0002bd8c] 3f3c 6002                 move.w     #$6002,-(a7)
-[0002bd90] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002bd90] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002bd96] 548f                      addq.l     #2,a7
 [0002bd98] 3a2e fffe                 move.w     -2(a6),d5
 [0002bd9c] 0645 0100                 addi.w     #$0100,d5
 [0002bda0] 3f05                      move.w     d5,-(a7)
-[0002bda2] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002bda2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002bda8] 548f                      addq.l     #2,a7
 [0002bdaa] 286e 000c                 movea.l    12(a6),a4
 [0002bdae] 396e fff8 000e            move.w     -8(a6),14(a4)
@@ -32026,7 +31904,7 @@ MCPass1:
 [0002c0be] 4eb9 0002 9510            jsr        $00029510
 [0002c0c4] 5c8f                      addq.l     #6,a7
 [0002c0c6] 3f3c 6c02                 move.w     #$6C02,-(a7)
-[0002c0ca] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c0ca] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c0d0] 548f                      addq.l     #2,a7
 [0002c0d2] 3f3c 4400                 move.w     #$4400,-(a7)
 [0002c0d6] 286d fffc                 movea.l    -4(a5),a4
@@ -32073,46 +31951,46 @@ MCPass1:
 [0002c164] 3a2c 000c                 move.w     12(a4),d5
 [0002c168] 0645 0c00                 addi.w     #$0C00,d5
 [0002c16c] 3f05                      move.w     d5,-(a7)
-[0002c16e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c16e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c174] 548f                      addq.l     #2,a7
 [0002c176] 285f                      movea.l    (a7)+,a4
 [0002c178] 2f0c                      move.l     a4,-(a7)
 [0002c17a] 3f3c 0061                 move.w     #$0061,-(a7)
-[0002c17e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c17e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c184] 548f                      addq.l     #2,a7
 [0002c186] 285f                      movea.l    (a7)+,a4
 [0002c188] 2f0c                      move.l     a4,-(a7)
 [0002c18a] 3f3c 650a                 move.w     #$650A,-(a7)
-[0002c18e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c18e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c194] 548f                      addq.l     #2,a7
 [0002c196] 285f                      movea.l    (a7)+,a4
 [0002c198] 2f0c                      move.l     a4,-(a7)
 [0002c19a] 3a2c 000c                 move.w     12(a4),d5
 [0002c19e] 0645 0c00                 addi.w     #$0C00,d5
 [0002c1a2] 3f05                      move.w     d5,-(a7)
-[0002c1a4] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c1a4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c1aa] 548f                      addq.l     #2,a7
 [0002c1ac] 285f                      movea.l    (a7)+,a4
 [0002c1ae] 2f0c                      move.l     a4,-(a7)
 [0002c1b0] 3f3c 007a                 move.w     #$007A,-(a7)
-[0002c1b4] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c1b4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c1ba] 548f                      addq.l     #2,a7
 [0002c1bc] 285f                      movea.l    (a7)+,a4
 [0002c1be] 2f0c                      move.l     a4,-(a7)
 [0002c1c0] 3f3c 6204                 move.w     #$6204,-(a7)
-[0002c1c4] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c1c4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c1ca] 548f                      addq.l     #2,a7
 [0002c1cc] 285f                      movea.l    (a7)+,a4
 [0002c1ce] 2f0c                      move.l     a4,-(a7)
 [0002c1d0] 3a2c 000c                 move.w     12(a4),d5
 [0002c1d4] 0645 0200                 addi.w     #$0200,d5
 [0002c1d8] 3f05                      move.w     d5,-(a7)
-[0002c1da] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c1da] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c1e0] 548f                      addq.l     #2,a7
 [0002c1e2] 285f                      movea.l    (a7)+,a4
 [0002c1e4] 2f0c                      move.l     a4,-(a7)
 [0002c1e6] 3f3c 005f                 move.w     #$005F,-(a7)
-[0002c1ea] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c1ea] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c1f0] 548f                      addq.l     #2,a7
 [0002c1f2] 285f                      movea.l    (a7)+,a4
 [0002c1f4] 4efa 051e                 jmp        $0002C714(pc)
@@ -32133,7 +32011,7 @@ MCPass1:
 [0002c226] 662e                      bne.s      $0002C256
 [0002c228] 2f0c                      move.l     a4,-(a7)
 [0002c22a] 3f3c 00c6                 move.w     #$00C6,-(a7)
-[0002c22e] 4eb9 0002 67ea            jsr        $000267EA
+[0002c22e] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002c234] 548f                      addq.l     #2,a7
 [0002c236] 285f                      movea.l    (a7)+,a4
 [0002c238] 2f0c                      move.l     a4,-(a7)
@@ -32151,7 +32029,7 @@ MCPass1:
 [0002c262] 6f10                      ble.s      $0002C274
 [0002c264] 2f0c                      move.l     a4,-(a7)
 [0002c266] 3f3c 03d5                 move.w     #$03D5,-(a7)
-[0002c26a] 4eb9 0002 67ea            jsr        $000267EA
+[0002c26a] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002c270] 548f                      addq.l     #2,a7
 [0002c272] 285f                      movea.l    (a7)+,a4
 [0002c274] 2f0c                      move.l     a4,-(a7)
@@ -32172,7 +32050,7 @@ MCPass1:
 [0002c2a2] 0244 0007                 andi.w     #$0007,d4
 [0002c2a6] da44                      add.w      d4,d5
 [0002c2a8] 3f05                      move.w     d5,-(a7)
-[0002c2aa] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c2aa] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c2b0] 548f                      addq.l     #2,a7
 [0002c2b2] 285f                      movea.l    (a7)+,a4
 [0002c2b4] 4efa 0026                 jmp        $0002C2DC(pc)
@@ -32185,7 +32063,7 @@ MCPass1:
 [0002c2ca] 0244 0007                 andi.w     #$0007,d4
 [0002c2ce] da44                      add.w      d4,d5
 [0002c2d0] 3f05                      move.w     d5,-(a7)
-[0002c2d2] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002c2d2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002c2d8] 548f                      addq.l     #2,a7
 [0002c2da] 285f                      movea.l    (a7)+,a4
 [0002c2dc] 28b9 0003 6064            move.l     MCP1Ident.addrptr,(a4)
@@ -32279,7 +32157,7 @@ MCPass1:
 [0002c412] 266d fffc                 movea.l    -4(a5),a3
 [0002c416] 2779 0003 602c ffd2       move.l     MCP1Ident.cardptr,-46(a3)
 [0002c41e] 2d7c 0000 ffff ffd2       move.l     #$0000FFFF,-46(a6)
-[0002c426] 4a39 0004 4498            tst.b      $00044498
+[0002c426] 4a39 0004 4498            tst.b      SubrangeChecks
 [0002c42c] 671e                      beq.s      $0002C44C
 [0002c42e] 2f0c                      move.l     a4,-(a7)
 [0002c430] 266d fffc                 movea.l    -4(a5),a3
@@ -32361,7 +32239,7 @@ MCPass1:
 [0002c540] 486c 0006                 pea.l      6(a4)
 [0002c544] 4eb9 0002 a43c            jsr        $0002A43C
 [0002c54a] 588f                      addq.l     #4,a7
-[0002c54c] 4a39 0004 4498            tst.b      $00044498
+[0002c54c] 4a39 0004 4498            tst.b      SubrangeChecks
 [0002c552] 671a                      beq.s      $0002C56E
 [0002c554] 286d fffc                 movea.l    -4(a5),a4
 [0002c558] 286c 0008                 movea.l    8(a4),a4
@@ -32393,7 +32271,7 @@ MCPass1:
 [0002c5b8] 588f                      addq.l     #4,a7
 [0002c5ba] 4a1f                      tst.b      (a7)+
 [0002c5bc] 6722                      beq.s      $0002C5E0
-[0002c5be] 4a39 0004 4498            tst.b      $00044498
+[0002c5be] 4a39 0004 4498            tst.b      SubrangeChecks
 [0002c5c4] 671a                      beq.s      $0002C5E0
 [0002c5c6] 286d fffc                 movea.l    -4(a5),a4
 [0002c5ca] 286c 0008                 movea.l    8(a4),a4
@@ -32772,7 +32650,7 @@ MCPass1:
 [0002cb7e] 3a2e 0008                 move.w     8(a6),d5
 [0002cb82] 0645 7000                 addi.w     #$7000,d5
 [0002cb86] 3f05                      move.w     d5,-(a7)
-[0002cb88] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002cb88] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002cb8e] 548f                      addq.l     #2,a7
 [0002cb90] 3f3c 0007                 move.w     #$0007,-(a7)
 [0002cb94] 4eb9 0002 8752            jsr        $00028752
@@ -32787,7 +32665,7 @@ MCPass1:
 [0002cbb4] 4eb9 0002 95d6            jsr        $000295D6
 [0002cbba] 588f                      addq.l     #4,a7
 [0002cbbc] 3f3c 7000                 move.w     #$7000,-(a7)
-[0002cbc0] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002cbc0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002cbc6] 548f                      addq.l     #2,a7
 [0002cbc8] 3f3c 0002                 move.w     #$0002,-(a7)
 [0002cbcc] 4eb9 0002 8752            jsr        $00028752
@@ -32848,7 +32726,7 @@ MCPass1:
 [0002cc90] 4a39 0004 4492            tst.b      $00044492
 [0002cc96] 670c                      beq.s      $0002CCA4
 [0002cc98] 3f3c 007f                 move.w     #$007F,-(a7)
-[0002cc9c] 4eb9 0002 67ea            jsr        $000267EA
+[0002cc9c] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002cca2] 548f                      addq.l     #2,a7
 [0002cca4] 7a03                      moveq.l    #3,d5
 [0002cca6] 182e ffd4                 move.b     -44(a6),d4
@@ -32879,7 +32757,7 @@ MCPass1:
 [0002ccfc] ba9f                      cmp.l      (a7)+,d5
 [0002ccfe] 660c                      bne.s      $0002CD0C
 [0002cd00] 3f3c 03e1                 move.w     #$03E1,-(a7)
-[0002cd04] 4eb9 0002 67ba            jsr        $000267BA
+[0002cd04] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [0002cd0a] 548f                      addq.l     #2,a7
 [0002cd0c] 4efa 0038                 jmp        $0002CD46(pc)
 [0002cd10] 2d6e ffe8 ffd0            move.l     -24(a6),-48(a6)
@@ -32895,9 +32773,9 @@ MCPass1:
 [0002cd32] 0c6e 007f ffd8            cmpi.w     #$007F,-40(a6)
 [0002cd38] 6f0c                      ble.s      $0002CD46
 [0002cd3a] 3f3c 03d5                 move.w     #$03D5,-(a7)
-[0002cd3e] 4eb9 0002 67ea            jsr        $000267EA
+[0002cd3e] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002cd44] 548f                      addq.l     #2,a7
-[0002cd46] 4a39 0004 4498            tst.b      $00044498
+[0002cd46] 4a39 0004 4498            tst.b      SubrangeChecks
 [0002cd4c] 670c                      beq.s      $0002CD5A
 [0002cd4e] 486e ffe8                 pea.l      -24(a6)
 [0002cd52] 4eb9 0002 a43c            jsr        $0002A43C
@@ -32907,17 +32785,17 @@ MCPass1:
 [0002cd62] 3f3c d000                 move.w     #$D000,-(a7)
 [0002cd66] 486e ffd0                 pea.l      -48(a6)
 [0002cd6a] 486e ffe8                 pea.l      -24(a6)
-[0002cd6e] 1f39 0004 4498            move.b     $00044498,-(a7)
+[0002cd6e] 1f39 0004 4498            move.b     SubrangeChecks,-(a7)
 [0002cd74] 4eb9 0002 7328            jsr        $00027328
 [0002cd7a] 4fef 000c                 lea.l      12(a7),a7
 [0002cd7e] 4efa 001e                 jmp        $0002CD9E(pc)
 [0002cd82] 3f3c 9000                 move.w     #$9000,-(a7)
 [0002cd86] 486e ffd0                 pea.l      -48(a6)
 [0002cd8a] 486e ffe8                 pea.l      -24(a6)
-[0002cd8e] 1f39 0004 4498            move.b     $00044498,-(a7)
+[0002cd8e] 1f39 0004 4498            move.b     SubrangeChecks,-(a7)
 [0002cd94] 4eb9 0002 7328            jsr        $00027328
 [0002cd9a] 4fef 000c                 lea.l      12(a7),a7
-[0002cd9e] 4a39 0004 4498            tst.b      $00044498
+[0002cd9e] 4a39 0004 4498            tst.b      SubrangeChecks
 [0002cda4] 6710                      beq.s      $0002CDB6
 [0002cda6] 486e ffb8                 pea.l      -72(a6)
 [0002cdaa] 486e ffe8                 pea.l      -24(a6)
@@ -32975,7 +32853,7 @@ MCPass1:
 [0002ce64] 6314                      bls.s      $0002CE7A
 [0002ce66] 2f0c                      move.l     a4,-(a7)
 [0002ce68] 3f3c 012c                 move.w     #$012C,-(a7)
-[0002ce6c] 4eb9 0002 67ea            jsr        $000267EA
+[0002ce6c] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002ce72] 548f                      addq.l     #2,a7
 [0002ce74] 285f                      movea.l    (a7)+,a4
 [0002ce76] 42ac 0006                 clr.l      6(a4)
@@ -33128,7 +33006,7 @@ MCPass1:
 [0002d0c2] 6100 eada                 bsr        $0002BB9E
 [0002d0c6] 508f                      addq.l     #8,a7
 [0002d0c8] 3f2e fff0                 move.w     -16(a6),-(a7)
-[0002d0cc] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002d0cc] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002d0d2] 548f                      addq.l     #2,a7
 [0002d0d4] 7aff                      moveq.l    #-1,d5
 [0002d0d6] baae ff8a                 cmp.l      -118(a6),d5
@@ -33168,7 +33046,7 @@ MCPass1:
 [0002d14a] 6610                      bne.s      $0002D15C
 [0002d14c] 2f0c                      move.l     a4,-(a7)
 [0002d14e] 3f3c 03d5                 move.w     #$03D5,-(a7)
-[0002d152] 4eb9 0002 67ea            jsr        $000267EA
+[0002d152] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002d158] 548f                      addq.l     #2,a7
 [0002d15a] 285f                      movea.l    (a7)+,a4
 [0002d15c] 2f0c                      move.l     a4,-(a7)
@@ -33197,7 +33075,7 @@ MCPass1:
 [0002d1a4] 6614                      bne.s      $0002D1BA
 [0002d1a6] 2f0c                      move.l     a4,-(a7)
 [0002d1a8] 3f3c 007f                 move.w     #$007F,-(a7)
-[0002d1ac] 4eb9 0002 67ea            jsr        $000267EA
+[0002d1ac] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002d1b2] 548f                      addq.l     #2,a7
 [0002d1b4] 285f                      movea.l    (a7)+,a4
 [0002d1b6] 4efa 007a                 jmp        $0002D232(pc)
@@ -33228,7 +33106,7 @@ MCPass1:
 [0002d208] 6614                      bne.s      $0002D21E
 [0002d20a] 2f0c                      move.l     a4,-(a7)
 [0002d20c] 3f3c 007f                 move.w     #$007F,-(a7)
-[0002d210] 4eb9 0002 67ea            jsr        $000267EA
+[0002d210] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002d216] 548f                      addq.l     #2,a7
 [0002d218] 285f                      movea.l    (a7)+,a4
 [0002d21a] 4efa 0016                 jmp        $0002D232(pc)
@@ -33340,7 +33218,7 @@ MCPass1:
 [0002d396] 0645 0040                 addi.w     #$0040,d5
 [0002d39a] da6e ffd0                 add.w      -48(a6),d5
 [0002d39e] 3f05                      move.w     d5,-(a7)
-[0002d3a0] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002d3a0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002d3a6] 548f                      addq.l     #2,a7
 [0002d3a8] 285f                      movea.l    (a7)+,a4
 [0002d3aa] 4efa 0148                 jmp        $0002D4F4(pc)
@@ -33603,7 +33481,7 @@ MCPass1:
 [0002d702] 6614                      bne.s      $0002D718
 [0002d704] 2f0c                      move.l     a4,-(a7)
 [0002d706] 3f3c 03e5                 move.w     #$03E5,-(a7)
-[0002d70a] 4eb9 0002 67ea            jsr        $000267EA
+[0002d70a] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002d710] 548f                      addq.l     #2,a7
 [0002d712] 285f                      movea.l    (a7)+,a4
 [0002d714] 4efa 0012                 jmp        $0002D728(pc)
@@ -33863,7 +33741,7 @@ MCPass1:
 [0002da88] da45                      add.w      d5,d5
 [0002da8a] 45ea 002c                 lea.l      44(a2),a2
 [0002da8e] 3f32 5000                 move.w     0(a2,d5.w),-(a7)
-[0002da92] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002da92] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002da98] 548f                      addq.l     #2,a7
 [0002da9a] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002da9e] 302e ffca                 move.w     -54(a6),d0
@@ -33889,7 +33767,7 @@ MCPass1:
 [0002dae6] 0245 0007                 andi.w     #$0007,d5
 [0002daea] 0645 4e90                 addi.w     #$4E90,d5
 [0002daee] 3f05                      move.w     d5,-(a7)
-[0002daf0] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002daf0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002daf6] 548f                      addq.l     #2,a7
 [0002daf8] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002dafc] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -34036,16 +33914,16 @@ MCPass1:
 [0002dd22] 2a3c 0000 6b00            move.l     #$00006B00,d5
 [0002dd28] 9a6e fffe                 sub.w      -2(a6),d5
 [0002dd2c] 3f05                      move.w     d5,-(a7)
-[0002dd2e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002dd2e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002dd34] 548f                      addq.l     #2,a7
 [0002dd36] 4efa 001e                 jmp        $0002DD56(pc)
 [0002dd3a] 3f3c 6a00                 move.w     #$6A00,-(a7)
-[0002dd3e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002dd3e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002dd44] 548f                      addq.l     #2,a7
 [0002dd46] 3a2e fffe                 move.w     -2(a6),d5
 [0002dd4a] 4445                      neg.w      d5
 [0002dd4c] 3f05                      move.w     d5,-(a7)
-[0002dd4e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002dd4e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002dd54] 548f                      addq.l     #2,a7
 [0002dd56] 3f39 0004 4bca            move.w     $00044BCA,-(a7)
 [0002dd5c] 4eb9 0002 9818            jsr        $00029818
@@ -34523,7 +34401,7 @@ MCPass1:
 [0002e416] 0645 0028                 addi.w     #$0028,d5
 [0002e41a] 5a45                      addq.w     #5,d5
 [0002e41c] 3f05                      move.w     d5,-(a7)
-[0002e41e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002e41e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002e424] 548f                      addq.l     #2,a7
 [0002e426] 285f                      movea.l    (a7)+,a4
 [0002e428] 2f0c                      move.l     a4,-(a7)
@@ -34533,7 +34411,7 @@ MCPass1:
 [0002e436] 9845                      sub.w      d5,d4
 [0002e438] 5244                      addq.w     #1,d4
 [0002e43a] 3f04                      move.w     d4,-(a7)
-[0002e43c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002e43c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002e442] 548f                      addq.l     #2,a7
 [0002e444] 285f                      movea.l    (a7)+,a4
 [0002e446] 47ec 0006                 lea.l      6(a4),a3
@@ -34951,7 +34829,7 @@ MCPass1:
 [0002ea12] 6618                      bne.s      $0002EA2C
 [0002ea14] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0002ea18] 3f3c 2e9f                 move.w     #$2E9F,-(a7)
-[0002ea1c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002ea1c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002ea22] 548f                      addq.l     #2,a7
 [0002ea24] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002ea28] 4efa 0016                 jmp        $0002EA40(pc)
@@ -34984,7 +34862,7 @@ MCPass1:
 [0002ea90] 3a2a 0012                 move.w     18(a2),d5
 [0002ea94] 0645 4840                 addi.w     #$4840,d5
 [0002ea98] 3f05                      move.w     d5,-(a7)
-[0002ea9a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002ea9a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002eaa0] 548f                      addq.l     #2,a7
 [0002eaa2] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002eaa6] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -35099,7 +34977,7 @@ MCPass1:
 [0002ec2e] 486a 0006                 pea.l      6(a2)
 [0002ec32] 246c 000a                 movea.l    10(a4),a2
 [0002ec36] 486a 0006                 pea.l      6(a2)
-[0002ec3a] 1f39 0004 4497            move.b     $00044497,-(a7)
+[0002ec3a] 1f39 0004 4497            move.b     UseTrapv,-(a7)
 [0002ec40] 4eb9 0002 7aa0            jsr        $00027AA0
 [0002ec46] 4fef 000a                 lea.l      10(a7),a7
 [0002ec4a] 4cdf 1800                 movem.l    (a7)+,a3-a4
@@ -35347,7 +35225,7 @@ MCPass1:
 [0002ef5a] 4854                      pea.l      (a4)
 [0002ef5c] 286e 000c                 movea.l    12(a6),a4
 [0002ef60] 4854                      pea.l      (a4)
-[0002ef62] 1f39 0004 4497            move.b     $00044497,-(a7)
+[0002ef62] 1f39 0004 4497            move.b     UseTrapv,-(a7)
 [0002ef68] 4eb9 0002 7328            jsr        $00027328
 [0002ef6e] 4fef 000c                 lea.l      12(a7),a7
 [0002ef72] 558f                      subq.l     #2,a7
@@ -35516,7 +35394,7 @@ MCPass1:
 [0002f18c] 4854                      pea.l      (a4)
 [0002f18e] 286e 000c                 movea.l    12(a6),a4
 [0002f192] 4854                      pea.l      (a4)
-[0002f194] 1f39 0004 4497            move.b     $00044497,-(a7)
+[0002f194] 1f39 0004 4497            move.b     UseTrapv,-(a7)
 [0002f19a] 4eb9 0002 7328            jsr        $00027328
 [0002f1a0] 4fef 000c                 lea.l      12(a7),a7
 [0002f1a4] 558f                      subq.l     #2,a7
@@ -35596,9 +35474,9 @@ MCPass1:
 [0002f29a] 1a14                      move.b     (a4),d5
 [0002f29c] 2005                      move.l     d5,d0
 [0002f29e] 4eb9 0001 000a            jsr        CASEX
-[0002f2a4] 0000 000c                 ori.b      #$0C,d0
-[0002f2a8] 0000 0003                 ori.b      #$03,d0
-[0002f2ac] 0000 0040                 ori.b      #$40,d0
+[0002f2a4] 0000 000c
+[0002f2a8] 0000 0003
+[0002f2ac] 0000 0040
 [0002f2b0] 286e 0010                 movea.l    16(a6),a4
 [0002f2b4] 18bc 000c                 move.b     #$0C,(a4)
 [0002f2b8] 4efa 0032                 jmp        $0002F2EC(pc)
@@ -35723,7 +35601,7 @@ MCPass1:
 [0002f458] 4a39 0004 4bd6            tst.b      $00044BD6
 [0002f45e] 6710                      beq.s      $0002F470
 [0002f460] 3f3c 6604                 move.w     #$6604,-(a7)
-[0002f464] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002f464] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002f46a] 548f                      addq.l     #2,a7
 [0002f46c] 6100 e860                 bsr        $0002DCCE
 [0002f470] 1d7c 000a 0010            move.b     #$0A,16(a6)
@@ -35832,7 +35710,7 @@ MCPass1:
 [0002f5bc] 4a39 0004 4bd6            tst.b      $00044BD6
 [0002f5c2] 6710                      beq.s      $0002F5D4
 [0002f5c4] 3f3c 6604                 move.w     #$6604,-(a7)
-[0002f5c8] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002f5c8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002f5ce] 548f                      addq.l     #2,a7
 [0002f5d0] 6100 e6fc                 bsr        $0002DCCE
 [0002f5d4] 286e 000c                 movea.l    12(a6),a4
@@ -35978,7 +35856,7 @@ MCPass1:
 [0002f7e4] e165                      asl.w      d0,d5
 [0002f7e6] 0645 7000                 addi.w     #$7000,d5
 [0002f7ea] 3f05                      move.w     d5,-(a7)
-[0002f7ec] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002f7ec] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002f7f2] 548f                      addq.l     #2,a7
 [0002f7f4] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002f7f8] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -36077,7 +35955,7 @@ MCPass1:
 [0002f95c] 0645 3000                 addi.w     #$3000,d5
 [0002f960] da6b 000c                 add.w      12(a3),d5
 [0002f964] 3f05                      move.w     d5,-(a7)
-[0002f966] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002f966] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002f96c] 548f                      addq.l     #2,a7
 [0002f96e] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002f972] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -36086,7 +35964,7 @@ MCPass1:
 [0002f97c] 0645 e608                 addi.w     #$E608,d5
 [0002f980] da6e fff8                 add.w      -8(a6),d5
 [0002f984] 3f05                      move.w     d5,-(a7)
-[0002f986] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002f986] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002f98c] 548f                      addq.l     #2,a7
 [0002f98e] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002f992] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -36133,12 +36011,12 @@ MCPass1:
 [0002fa1e] 3a2b 000c                 move.w     12(a3),d5
 [0002fa22] 0645 0240                 addi.w     #$0240,d5
 [0002fa26] 3f05                      move.w     d5,-(a7)
-[0002fa28] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002fa28] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002fa2e] 548f                      addq.l     #2,a7
 [0002fa30] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002fa34] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0002fa38] 3f3c 0007                 move.w     #$0007,-(a7)
-[0002fa3c] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002fa3c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002fa42] 548f                      addq.l     #2,a7
 [0002fa44] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002fa48] 4efa 0008                 jmp        $0002FA52(pc)
@@ -36166,17 +36044,17 @@ MCPass1:
 [0002faa0] 3a2b 000c                 move.w     12(a3),d5
 [0002faa4] 0645 0c40                 addi.w     #$0C40,d5
 [0002faa8] 3f05                      move.w     d5,-(a7)
-[0002faaa] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002faaa] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002fab0] 548f                      addq.l     #2,a7
 [0002fab2] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002fab6] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0002faba] 3f2e fffe                 move.w     -2(a6),-(a7)
-[0002fabe] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002fabe] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002fac4] 548f                      addq.l     #2,a7
 [0002fac6] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002faca] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0002face] 3f3c 6304                 move.w     #$6304,-(a7)
-[0002fad2] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002fad2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002fad8] 548f                      addq.l     #2,a7
 [0002fada] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002fade] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -36185,14 +36063,14 @@ MCPass1:
 [0002fae8] e165                      asl.w      d0,d5
 [0002faea] 0645 7000                 addi.w     #$7000,d5
 [0002faee] 3f05                      move.w     d5,-(a7)
-[0002faf0] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002faf0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002faf6] 548f                      addq.l     #2,a7
 [0002faf8] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002fafc] 48e7 0018                 movem.l    a3-a4,-(a7)
 [0002fb00] 3a2e fff6                 move.w     -10(a6),d5
 [0002fb04] 0645 6000                 addi.w     #$6000,d5
 [0002fb08] 3f05                      move.w     d5,-(a7)
-[0002fb0a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0002fb0a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0002fb10] 548f                      addq.l     #2,a7
 [0002fb12] 4cdf 1800                 movem.l    (a7)+,a3-a4
 [0002fb16] 48e7 0018                 movem.l    a3-a4,-(a7)
@@ -37239,13 +37117,13 @@ MCPass1:
 [0003097a] 4e5e                      unlk       a6
 [0003097c] 4e75                      rts
 [0003097e] 4e56 ffcc                 link       a6,#-52
-[00030982] 4a39 0004 449a            tst.b      $0004449A
+[00030982] 4a39 0004 449a            tst.b      NoEntryCode
 [00030988] 6602                      bne.s      $0003098C
 [0003098a] 6004                      bra.s      $00030990
 [0003098c] 4efa 023c                 jmp        $00030BCA(pc)
 [00030990] 286e 000a                 movea.l    10(a6),a4
 [00030994] 2d6c 0022 fffc            move.l     34(a4),-4(a6)
-[0003099a] 4a39 0004 4493            tst.b      $00044493
+[0003099a] 4a39 0004 4493            tst.b      StackChecking
 [000309a0] 6768                      beq.s      $00030A0A
 [000309a2] 4a2e 0008                 tst.b      8(a6)
 [000309a6] 6662                      bne.s      $00030A0A
@@ -37300,14 +37178,14 @@ MCPass1:
 [00030a5e] 4efa 0026                 jmp        $00030A86(pc)
 [00030a62] 2f0c                      move.l     a4,-(a7)
 [00030a64] 3f3c 4e56                 move.w     #$4E56,-(a7)
-[00030a68] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030a68] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030a6e] 548f                      addq.l     #2,a7
 [00030a70] 285f                      movea.l    (a7)+,a4
 [00030a72] 2f0c                      move.l     a4,-(a7)
 [00030a74] 2a2e fffc                 move.l     -4(a6),d5
 [00030a78] 4485                      neg.l      d5
 [00030a7a] 3f05                      move.w     d5,-(a7)
-[00030a7c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030a7c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030a82] 548f                      addq.l     #2,a7
 [00030a84] 285f                      movea.l    (a7)+,a4
 [00030a86] 2f0c                      move.l     a4,-(a7)
@@ -37327,7 +37205,7 @@ MCPass1:
 [00030ab4] 6510                      bcs.s      $00030AC6
 [00030ab6] 2f0c                      move.l     a4,-(a7)
 [00030ab8] 3f3c 03e2                 move.w     #$03E2,-(a7)
-[00030abc] 4eb9 0002 67ba            jsr        $000267BA
+[00030abc] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [00030ac2] 548f                      addq.l     #2,a7
 [00030ac4] 285f                      movea.l    (a7)+,a4
 [00030ac6] 47f9 0004 44c8            lea.l      $000444C8,a3
@@ -37387,24 +37265,24 @@ MCPass1:
 [00030b74] 6754                      beq.s      $00030BCA
 [00030b76] 2f0c                      move.l     a4,-(a7)
 [00030b78] 3f3c 40e7                 move.w     #$40E7,-(a7)
-[00030b7c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030b7c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030b82] 548f                      addq.l     #2,a7
 [00030b84] 285f                      movea.l    (a7)+,a4
 [00030b86] 2f0c                      move.l     a4,-(a7)
 [00030b88] 3f3c 7000                 move.w     #$7000,-(a7)
-[00030b8c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030b8c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030b92] 548f                      addq.l     #2,a7
 [00030b94] 285f                      movea.l    (a7)+,a4
 [00030b96] 2f0c                      move.l     a4,-(a7)
 [00030b98] 3f3c 307c                 move.w     #$307C,-(a7)
-[00030b9c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030b9c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030ba2] 548f                      addq.l     #2,a7
 [00030ba4] 285f                      movea.l    (a7)+,a4
 [00030ba6] 2f0c                      move.l     a4,-(a7)
 [00030ba8] 3a2c 0026                 move.w     38(a4),d5
 [00030bac] e145                      asl.w      #8,d5
 [00030bae] 3f05                      move.w     d5,-(a7)
-[00030bb0] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030bb0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030bb6] 548f                      addq.l     #2,a7
 [00030bb8] 285f                      movea.l    (a7)+,a4
 [00030bba] 2f0c                      move.l     a4,-(a7)
@@ -37414,8 +37292,9 @@ MCPass1:
 [00030bc8] 285f                      movea.l    (a7)+,a4
 [00030bca] 4e5e                      unlk       a6
 [00030bcc] 4e75                      rts
+
 [00030bce] 4e56 ffd0                 link       a6,#-48
-[00030bd2] 4a39 0004 449a            tst.b      $0004449A
+[00030bd2] 4a39 0004 449a            tst.b      NoEntryCode
 [00030bd8] 6602                      bne.s      $00030BDC
 [00030bda] 6004                      bra.s      $00030BE0
 [00030bdc] 4efa 00d2                 jmp        $00030CB0(pc)
@@ -37426,12 +37305,12 @@ MCPass1:
 [00030bf0] 6730                      beq.s      $00030C22
 [00030bf2] 2f0c                      move.l     a4,-(a7)
 [00030bf4] 3f3c 7001                 move.w     #$7001,-(a7)
-[00030bf8] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030bf8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030bfe] 548f                      addq.l     #2,a7
 [00030c00] 285f                      movea.l    (a7)+,a4
 [00030c02] 2f0c                      move.l     a4,-(a7)
 [00030c04] 3f3c 305f                 move.w     #$305F,-(a7)
-[00030c08] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030c08] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030c0e] 548f                      addq.l     #2,a7
 [00030c10] 285f                      movea.l    (a7)+,a4
 [00030c12] 2f0c                      move.l     a4,-(a7)
@@ -37474,17 +37353,18 @@ MCPass1:
 [00030c8c] 285f                      movea.l    (a7)+,a4
 [00030c8e] 2f0c                      move.l     a4,-(a7)
 [00030c90] 3f3c 4e5e                 move.w     #$4E5E,-(a7)
-[00030c94] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030c94] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030c9a] 548f                      addq.l     #2,a7
 [00030c9c] 285f                      movea.l    (a7)+,a4
 [00030c9e] 4a2e 0008                 tst.b      8(a6)
 [00030ca2] 660c                      bne.s      $00030CB0
 [00030ca4] 3f3c 4e75                 move.w     #$4E75,-(a7)
-[00030ca8] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030ca8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030cae] 548f                      addq.l     #2,a7
-[00030cb0] 4239 0004 449a            clr.b      $0004449A
+[00030cb0] 4239 0004 449a            clr.b      NoEntryCode
 [00030cb6] 4e5e                      unlk       a6
 [00030cb8] 4e75                      rts
+
 [00030cba] 4e56 fffe                 link       a6,#-2
 [00030cbe] 4a39 0004 4bed            tst.b      $00044BED
 [00030cc4] 6636                      bne.s      $00030CFC
@@ -37495,7 +37375,7 @@ MCPass1:
 [00030cd6] 0c6e 7fff fffe            cmpi.w     #$7FFF,-2(a6)
 [00030cdc] 6f0c                      ble.s      $00030CEA
 [00030cde] 3f3c 03b0                 move.w     #$03B0,-(a7)
-[00030ce2] 4eb9 0002 67ea            jsr        $000267EA
+[00030ce2] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [00030ce8] 548f                      addq.l     #2,a7
 [00030cea] 3a2e 0008                 move.w     8(a6),d5
 [00030cee] da45                      add.w      d5,d5
@@ -37505,12 +37385,12 @@ MCPass1:
 [00030cfe] 4e75                      rts
 [00030d00] 4e56 0000                 link       a6,#0
 [00030d04] 3f3c 4efa                 move.w     #$4EFA,-(a7)
-[00030d08] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030d08] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030d0e] 548f                      addq.l     #2,a7
 [00030d10] 286e 0008                 movea.l    8(a6),a4
 [00030d14] 38b9 0003 dd34            move.w     $0003DD34,(a4)
 [00030d1a] 4267                      clr.w      -(a7)
-[00030d1c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030d1c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030d22] 548f                      addq.l     #2,a7
 [00030d24] 4e5e                      unlk       a6
 [00030d26] 4e75                      rts
@@ -37539,7 +37419,7 @@ MCPass1:
 [00030d72] 0c45 007f                 cmpi.w     #$007F,d5
 [00030d76] 6f0c                      ble.s      $00030D84
 [00030d78] 3f3c 0192                 move.w     #$0192,-(a7)
-[00030d7c] 4eb9 0002 67ba            jsr        $000267BA
+[00030d7c] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [00030d82] 548f                      addq.l     #2,a7
 [00030d84] 3a2e 000a                 move.w     10(a6),d5
 [00030d88] da45                      add.w      d5,d5
@@ -37560,17 +37440,17 @@ MCPass1:
 [00030dba] 0c6e 0080 fffe            cmpi.w     #$0080,-2(a6)
 [00030dc0] 6d34                      blt.s      $00030DF6
 [00030dc2] 3f2e 000a                 move.w     10(a6),-(a7)
-[00030dc6] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030dc6] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030dcc] 548f                      addq.l     #2,a7
 [00030dce] 3a2e fffe                 move.w     -2(a6),d5
 [00030dd2] 4445                      neg.w      d5
 [00030dd4] 3f05                      move.w     d5,-(a7)
-[00030dd6] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030dd6] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030ddc] 548f                      addq.l     #2,a7
 [00030dde] 0c6e 7fff fffe            cmpi.w     #$7FFF,-2(a6)
 [00030de4] 6f0c                      ble.s      $00030DF2
 [00030de6] 3f3c 03b0                 move.w     #$03B0,-(a7)
-[00030dea] 4eb9 0002 67ea            jsr        $000267EA
+[00030dea] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [00030df0] 548f                      addq.l     #2,a7
 [00030df2] 4efa 0022                 jmp        $00030E16(pc)
 [00030df6] 3a2e fffe                 move.w     -2(a6),d5
@@ -37582,7 +37462,7 @@ MCPass1:
 [00030e06] 4845                      swap       d5
 [00030e08] da6e 000a                 add.w      10(a6),d5
 [00030e0c] 3f05                      move.w     d5,-(a7)
-[00030e0e] 4eb9 0002 5bc0            jsr        $00025BC0
+[00030e0e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030e14] 548f                      addq.l     #2,a7
 [00030e16] 4e5e                      unlk       a6
 [00030e18] 4e75                      rts
@@ -37605,7 +37485,7 @@ MCPass1:
 [00030e52] 0c6e 007f fffa            cmpi.w     #$007F,-6(a6)
 [00030e58] 6f0c                      ble.s      $00030E66
 [00030e5a] 3f3c 0192                 move.w     #$0192,-(a7)
-[00030e5e] 4eb9 0002 67ba            jsr        $000267BA
+[00030e5e] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [00030e64] 548f                      addq.l     #2,a7
 [00030e66] 3a2e fffe                 move.w     -2(a6),d5
 [00030e6a] da45                      add.w      d5,d5
@@ -37694,7 +37574,7 @@ MCPass1:
 [00030fb4] 6614                      bne.s      $00030FCA
 [00030fb6] 13fc 0001 0004 4bed       move.b     #$01,$00044BED
 [00030fbe] 3f3c 0195                 move.w     #$0195,-(a7)
-[00030fc2] 4eb9 0002 67ba            jsr        $000267BA
+[00030fc2] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [00030fc8] 548f                      addq.l     #2,a7
 [00030fca] 3a2e 000c                 move.w     12(a6),d5
 [00030fce] 5445                      addq.w     #2,d5
@@ -38092,7 +37972,7 @@ MCPass1:
 [00031582] ba9f                      cmp.l      (a7)+,d5
 [00031584] 660c                      bne.s      $00031592
 [00031586] 3f3c 7000                 move.w     #$7000,-(a7)
-[0003158a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0003158a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031590] 548f                      addq.l     #2,a7
 [00031592] 286e 000c                 movea.l    12(a6),a4
 [00031596] 4854                      pea.l      (a4)
@@ -38122,7 +38002,7 @@ MCPass1:
 [000315ea] ba9f                      cmp.l      (a7)+,d5
 [000315ec] 660c                      bne.s      $000315FA
 [000315ee] 3f3c 7000                 move.w     #$7000,-(a7)
-[000315f2] 4eb9 0002 5bc0            jsr        $00025BC0
+[000315f2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000315f8] 548f                      addq.l     #2,a7
 [000315fa] 286e 0008                 movea.l    8(a6),a4
 [000315fe] 4854                      pea.l      (a4)
@@ -38169,7 +38049,7 @@ MCPass1:
 [0003168e] 6610                      bne.s      $000316A0
 [00031690] 2f0c                      move.l     a4,-(a7)
 [00031692] 3f3c 03b2                 move.w     #$03B2,-(a7)
-[00031696] 4eb9 0002 67ea            jsr        $000267EA
+[00031696] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0003169c] 548f                      addq.l     #2,a7
 [0003169e] 285f                      movea.l    (a7)+,a4
 [000316a0] 286e fffc                 movea.l    -4(a6),a4
@@ -38251,7 +38131,7 @@ MCPass1:
 [000317be] 0c79 7fff 0004 4484       cmpi.w     #$7FFF,$00044484
 [000317c6] 630c                      bls.s      $000317D4
 [000317c8] 3f3c 03e3                 move.w     #$03E3,-(a7)
-[000317cc] 4eb9 0002 67ba            jsr        $000267BA
+[000317cc] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [000317d2] 548f                      addq.l     #2,a7
 [000317d4] 3d79 0004 4484 fff2       move.w     $00044484,-14(a6)
 [000317dc] 4eb9 0002 69a8            jsr        $000269A8
@@ -38260,7 +38140,7 @@ MCPass1:
 [000317ec] 4a6e fff2                 tst.w      -14(a6)
 [000317f0] 6612                      bne.s      $00031804
 [000317f2] 3f3c 03ce                 move.w     #$03CE,-(a7)
-[000317f6] 4eb9 0002 67ea            jsr        $000267EA
+[000317f6] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [000317fc] 548f                      addq.l     #2,a7
 [000317fe] 3d7c 0001 fff2            move.w     #$0001,-14(a6)
 [00031804] 3a2e fff2                 move.w     -14(a6),d5
@@ -38375,11 +38255,11 @@ MCPass1:
 [00031996] 4a2e ffe1                 tst.b      -31(a6)
 [0003199a] 6710                      beq.s      $000319AC
 [0003199c] 3f3c 6f04                 move.w     #$6F04,-(a7)
-[000319a0] 4eb9 0002 5bc0            jsr        $00025BC0
+[000319a0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000319a6] 548f                      addq.l     #2,a7
 [000319a8] 4efa 000e                 jmp        $000319B8(pc)
 [000319ac] 3f3c 6304                 move.w     #$6304,-(a7)
-[000319b0] 4eb9 0002 5bc0            jsr        $00025BC0
+[000319b0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000319b6] 548f                      addq.l     #2,a7
 [000319b8] 486e ffc4                 pea.l      -60(a6)
 [000319bc] 6100 f342                 bsr        $00030D00
@@ -38401,7 +38281,7 @@ MCPass1:
 [000319ec] bab9 0003 6100            cmp.l      $00036100,d5
 [000319f2] 6424                      bcc.s      $00031A18
 [000319f4] 3f3c 03e0                 move.w     #$03E0,-(a7)
-[000319f8] 4eb9 0002 67ba            jsr        $000267BA
+[000319f8] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [000319fe] 548f                      addq.l     #2,a7
 [00031a00] 286e fffc                 movea.l    -4(a6),a4
 [00031a04] 2979 0003 602c 0006       move.l     MCP1Ident.cardptr,6(a4)
@@ -38474,13 +38354,13 @@ MCPass1:
 [00031af8] 3a2e ffe4                 move.w     -28(a6),d5
 [00031afc] 0645 5100                 addi.w     #$5100,d5
 [00031b00] 3f05                      move.w     d5,-(a7)
-[00031b02] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031b02] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031b08] 548f                      addq.l     #2,a7
 [00031b0a] 4efa 0014                 jmp        $00031B20(pc)
 [00031b0e] 3a2e ffe4                 move.w     -28(a6),d5
 [00031b12] 0645 5000                 addi.w     #$5000,d5
 [00031b16] 3f05                      move.w     d5,-(a7)
-[00031b18] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031b18] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031b1e] 548f                      addq.l     #2,a7
 [00031b20] 4efa 0056                 jmp        $00031B78(pc)
 [00031b24] 4a6e fff2                 tst.w      -14(a6)
@@ -38488,13 +38368,13 @@ MCPass1:
 [00031b2a] 3a2e ffe4                 move.w     -28(a6),d5
 [00031b2e] 0645 0400                 addi.w     #$0400,d5
 [00031b32] 3f05                      move.w     d5,-(a7)
-[00031b34] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031b34] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031b3a] 548f                      addq.l     #2,a7
 [00031b3c] 4efa 0014                 jmp        $00031B52(pc)
 [00031b40] 3a2e ffe4                 move.w     -28(a6),d5
 [00031b44] 0645 0600                 addi.w     #$0600,d5
 [00031b48] 3f05                      move.w     d5,-(a7)
-[00031b4a] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031b4a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031b50] 548f                      addq.l     #2,a7
 [00031b52] 4a2e ffe0                 tst.b      -32(a6)
 [00031b56] 6714                      beq.s      $00031B6C
@@ -38505,7 +38385,7 @@ MCPass1:
 [00031b66] 588f                      addq.l     #4,a7
 [00031b68] 4efa 000e                 jmp        $00031B78(pc)
 [00031b6c] 3f2e ffe2                 move.w     -30(a6),-(a7)
-[00031b70] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031b70] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031b76] 548f                      addq.l     #2,a7
 [00031b78] 4a2e ffe1                 tst.b      -31(a6)
 [00031b7c] 6702                      beq.s      $00031B80
@@ -38514,10 +38394,10 @@ MCPass1:
 [00031b84] 4a2e ffe0                 tst.b      -32(a6)
 [00031b88] 6740                      beq.s      $00031BCA
 [00031b8a] 3f3c 6806                 move.w     #$6806,-(a7)
-[00031b8e] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031b8e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031b94] 548f                      addq.l     #2,a7
 [00031b96] 3f3c 2ebc                 move.w     #$2EBC,-(a7)
-[00031b9a] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031b9a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031ba0] 548f                      addq.l     #2,a7
 [00031ba2] 4a6e fff2                 tst.w      -14(a6)
 [00031ba6] 5dc5                      slt        d5
@@ -38533,10 +38413,10 @@ MCPass1:
 [00031bc4] 588f                      addq.l     #4,a7
 [00031bc6] 4efa 0038                 jmp        $00031C00(pc)
 [00031bca] 3f3c 6804                 move.w     #$6804,-(a7)
-[00031bce] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031bce] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031bd4] 548f                      addq.l     #2,a7
 [00031bd6] 3f3c 3ebc                 move.w     #$3EBC,-(a7)
-[00031bda] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031bda] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031be0] 548f                      addq.l     #2,a7
 [00031be2] 4a6e fff2                 tst.w      -14(a6)
 [00031be6] 5dc5                      slt        d5
@@ -38545,29 +38425,29 @@ MCPass1:
 [00031bee] 283c 0000 8000            move.l     #$00008000,d4
 [00031bf4] 9845                      sub.w      d5,d4
 [00031bf6] 3f04                      move.w     d4,-(a7)
-[00031bf8] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031bf8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031bfe] 548f                      addq.l     #2,a7
 [00031c00] 4efa 0082                 jmp        $00031C84(pc)
 [00031c04] 4a6e fff2                 tst.w      -14(a6)
 [00031c08] 6f28                      ble.s      $00031C32
 [00031c0a] 3f3c 6402                 move.w     #$6402,-(a7)
-[00031c0e] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031c0e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031c14] 548f                      addq.l     #2,a7
 [00031c16] 3a2e ffde                 move.w     -34(a6),d5
 [00031c1a] ed45                      asl.w      #6,d5
 [00031c1c] 0645 4200                 addi.w     #$4200,d5
 [00031c20] 0645 0017                 addi.w     #$0017,d5
 [00031c24] 3f05                      move.w     d5,-(a7)
-[00031c26] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031c26] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031c2c] 548f                      addq.l     #2,a7
 [00031c2e] 4efa 0054                 jmp        $00031C84(pc)
 [00031c32] 4a2e ffe0                 tst.b      -32(a6)
 [00031c36] 6728                      beq.s      $00031C60
 [00031c38] 3f3c 6406                 move.w     #$6406,-(a7)
-[00031c3c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031c3c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031c42] 548f                      addq.l     #2,a7
 [00031c44] 3f3c 2ebc                 move.w     #$2EBC,-(a7)
-[00031c48] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031c48] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031c4e] 548f                      addq.l     #2,a7
 [00031c50] 7aff                      moveq.l    #-1,d5
 [00031c52] 2f05                      move.l     d5,-(a7)
@@ -38575,13 +38455,13 @@ MCPass1:
 [00031c5a] 588f                      addq.l     #4,a7
 [00031c5c] 4efa 0026                 jmp        $00031C84(pc)
 [00031c60] 3f3c 6404                 move.w     #$6404,-(a7)
-[00031c64] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031c64] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031c6a] 548f                      addq.l     #2,a7
 [00031c6c] 3f3c 3ebc                 move.w     #$3EBC,-(a7)
-[00031c70] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031c70] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031c76] 548f                      addq.l     #2,a7
 [00031c78] 3f3c ffff                 move.w     #$FFFF,-(a7)
-[00031c7c] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031c7c] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031c82] 548f                      addq.l     #2,a7
 [00031c84] 4efa 0016                 jmp        $00031C9C(pc)
 [00031c88] 4a2e ffbe                 tst.b      -66(a6)
@@ -38623,11 +38503,11 @@ MCPass1:
 [00031d06] 4a2e ffe1                 tst.b      -31(a6)
 [00031d0a] 6710                      beq.s      $00031D1C
 [00031d0c] 3f3c 6c00                 move.w     #$6C00,-(a7)
-[00031d10] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031d10] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031d16] 548f                      addq.l     #2,a7
 [00031d18] 4efa 000e                 jmp        $00031D28(pc)
 [00031d1c] 3f3c 6400                 move.w     #$6400,-(a7)
-[00031d20] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031d20] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031d26] 548f                      addq.l     #2,a7
 [00031d28] 4a6e fff2                 tst.w      -14(a6)
 [00031d2c] 6f20                      ble.s      $00031D4E
@@ -38764,7 +38644,7 @@ MCPass1:
 [00031f08] ba6e 0008                 cmp.w      8(a6),d5
 [00031f0c] 660c                      bne.s      $00031F1A
 [00031f0e] 3f3c 012f                 move.w     #$012F,-(a7)
-[00031f12] 4eb9 0002 67ea            jsr        $000267EA
+[00031f12] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [00031f18] 548f                      addq.l     #2,a7
 [00031f1a] 286e 000e                 movea.l    14(a6),a4
 [00031f1e] 4854                      pea.l      (a4)
@@ -38824,12 +38704,12 @@ MCPass1:
 [00031fdc] 6f10                      ble.s      $00031FEE
 [00031fde] 2f0c                      move.l     a4,-(a7)
 [00031fe0] 3f3c 03b1                 move.w     #$03B1,-(a7)
-[00031fe4] 4eb9 0002 67ea            jsr        $000267EA
+[00031fe4] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [00031fea] 548f                      addq.l     #2,a7
 [00031fec] 285f                      movea.l    (a7)+,a4
 [00031fee] 2f0c                      move.l     a4,-(a7)
 [00031ff0] 3f2e fff6                 move.w     -10(a6),-(a7)
-[00031ff4] 4eb9 0002 5bc0            jsr        $00025BC0
+[00031ff4] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00031ffa] 548f                      addq.l     #2,a7
 [00031ffc] 285f                      movea.l    (a7)+,a4
 [00031ffe] 302e fff8                 move.w     -8(a6),d0
@@ -38850,12 +38730,12 @@ MCPass1:
 [00032030] 6f10                      ble.s      $00032042
 [00032032] 2f0c                      move.l     a4,-(a7)
 [00032034] 3f3c 03b1                 move.w     #$03B1,-(a7)
-[00032038] 4eb9 0002 67ea            jsr        $000267EA
+[00032038] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0003203e] 548f                      addq.l     #2,a7
 [00032040] 285f                      movea.l    (a7)+,a4
 [00032042] 2f0c                      move.l     a4,-(a7)
 [00032044] 3f2e fff6                 move.w     -10(a6),-(a7)
-[00032048] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032048] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0003204e] 548f                      addq.l     #2,a7
 [00032050] 285f                      movea.l    (a7)+,a4
 [00032052] 2d6c 0006 fffc            move.l     6(a4),-4(a6)
@@ -38909,7 +38789,7 @@ MCPass1:
 [00032100] 3a2c 0012                 move.w     18(a4),d5
 [00032104] 0645 2000                 addi.w     #$2000,d5
 [00032108] 3f05                      move.w     d5,-(a7)
-[0003210a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0003210a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00032110] 548f                      addq.l     #2,a7
 [00032112] 285f                      movea.l    (a7)+,a4
 [00032114] 2f0c                      move.l     a4,-(a7)
@@ -38957,7 +38837,7 @@ MCPass1:
 [000321bc] 0cb9 0000 7fff 0004 4482  cmpi.l     #$00007FFF,$00044482
 [000321c6] 650c                      bcs.s      $000321D4
 [000321c8] 3f3c 03e4                 move.w     #$03E4,-(a7)
-[000321cc] 4eb9 0002 67ba            jsr        $000267BA
+[000321cc] 4eb9 0002 67ba            jsr        MCP3IO.Error
 [000321d2] 548f                      addq.l     #2,a7
 [000321d4] 486e ffec                 pea.l      -20(a6)
 [000321d8] 2f2e fff0                 move.l     -16(a6),-(a7)
@@ -39003,7 +38883,7 @@ MCPass1:
 [0003226e] 4a2e ffe7                 tst.b      -25(a6)
 [00032272] 6718                      beq.s      $0003228C
 [00032274] 3f3c 7002                 move.w     #$7002,-(a7)
-[00032278] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032278] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0003227e] 548f                      addq.l     #2,a7
 [00032280] 3f3c 0002                 move.w     #$0002,-(a7)
 [00032284] 4eb9 0002 8752            jsr        $00028752
@@ -39350,7 +39230,7 @@ MCPass1:
 [000327d2] 3d6e ffe8 fffe            move.w     -24(a6),-2(a6)
 [000327d8] 4a39 0004 4492            tst.b      $00044492
 [000327de] 6608                      bne.s      $000327E8
-[000327e0] 4a39 0004 4498            tst.b      $00044498
+[000327e0] 4a39 0004 4498            tst.b      SubrangeChecks
 [000327e6] 6710                      beq.s      $000327F8
 [000327e8] 486e ffdc                 pea.l      -36(a6)
 [000327ec] 4878 7fff                 pea.l      ($00007FFF).w
@@ -39367,7 +39247,7 @@ MCPass1:
 [00032814] 2f2e 0008                 move.l     8(a6),-(a7)
 [00032818] 4a39 0004 4492            tst.b      $00044492
 [0003281e] 6608                      bne.s      $00032828
-[00032820] 4a39 0004 4498            tst.b      $00044498
+[00032820] 4a39 0004 4498            tst.b      SubrangeChecks
 [00032826] 6704                      beq.s      $0003282C
 [00032828] 7a01                      moveq.l    #1,d5
 [0003282a] 6002                      bra.s      $0003282E
@@ -39382,18 +39262,18 @@ MCPass1:
 [00032846] 3a2e fffe                 move.w     -2(a6),d5
 [0003284a] 0645 0800                 addi.w     #$0800,d5
 [0003284e] 3f05                      move.w     d5,-(a7)
-[00032850] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032850] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00032856] 548f                      addq.l     #2,a7
 [00032858] 4267                      clr.w      -(a7)
-[0003285a] 4eb9 0002 5bc0            jsr        $00025BC0
+[0003285a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00032860] 548f                      addq.l     #2,a7
 [00032862] 3f3c 6702                 move.w     #$6702,-(a7)
-[00032866] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032866] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0003286c] 548f                      addq.l     #2,a7
 [0003286e] 3a2e fffe                 move.w     -2(a6),d5
 [00032872] 0645 5240                 addi.w     #$5240,d5
 [00032876] 3f05                      move.w     d5,-(a7)
-[00032878] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032878] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0003287e] 548f                      addq.l     #2,a7
 [00032880] 486e ffdc                 pea.l      -36(a6)
 [00032884] 3f3c 0002                 move.w     #$0002,-(a7)
@@ -39401,18 +39281,18 @@ MCPass1:
 [0003288e] 5c8f                      addq.l     #6,a7
 [00032890] 4a39 0004 4492            tst.b      $00044492
 [00032896] 6608                      bne.s      $000328A0
-[00032898] 4a39 0004 4498            tst.b      $00044498
+[00032898] 4a39 0004 4498            tst.b      SubrangeChecks
 [0003289e] 6710                      beq.s      $000328B0
 [000328a0] 486e ffdc                 pea.l      -36(a6)
 [000328a4] 4878 7fff                 pea.l      ($00007FFF).w
 [000328a8] 4eb9 0002 828e            jsr        $0002828E
 [000328ae] 508f                      addq.l     #8,a7
-[000328b0] 4a39 0004 4493            tst.b      $00044493
+[000328b0] 4a39 0004 4493            tst.b      StackChecking
 [000328b6] 671e                      beq.s      $000328D6
 [000328b8] 3a2e fffe                 move.w     -2(a6),d5
 [000328bc] 0645 d080                 addi.w     #$D080,d5
 [000328c0] 3f05                      move.w     d5,-(a7)
-[000328c2] 4eb9 0002 5bc0            jsr        $00025BC0
+[000328c2] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000328c8] 548f                      addq.l     #2,a7
 [000328ca] 3f3c 0003                 move.w     #$0003,-(a7)
 [000328ce] 4eb9 0002 8752            jsr        $00028752
@@ -39434,7 +39314,7 @@ MCPass1:
 [0003290e] 3a2e fffe                 move.w     -2(a6),d5
 [00032912] 0645 9fc0                 addi.w     #$9FC0,d5
 [00032916] 3f05                      move.w     d5,-(a7)
-[00032918] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032918] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0003291e] 548f                      addq.l     #2,a7
 [00032920] 3a2e fff6                 move.w     -10(a6),d5
 [00032924] 7009                      moveq.l    #9,d0
@@ -39443,11 +39323,11 @@ MCPass1:
 [0003292c] 0645 0028                 addi.w     #$0028,d5
 [00032930] 5c45                      addq.w     #6,d5
 [00032932] 3f05                      move.w     d5,-(a7)
-[00032934] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032934] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0003293a] 548f                      addq.l     #2,a7
 [0003293c] 2a2e 000c                 move.l     12(a6),d5
 [00032940] 3f05                      move.w     d5,-(a7)
-[00032942] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032942] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00032948] 548f                      addq.l     #2,a7
 [0003294a] 558f                      subq.l     #2,a7
 [0003294c] 3f3c 002e                 move.w     #$002E,-(a7)
@@ -39459,11 +39339,11 @@ MCPass1:
 [00032960] 5045                      addq.w     #8,d5
 [00032962] 5e45                      addq.w     #7,d5
 [00032964] 3f05                      move.w     d5,-(a7)
-[00032966] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032966] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0003296c] 548f                      addq.l     #2,a7
 [0003296e] 2a2e 000c                 move.l     12(a6),d5
 [00032972] 3f05                      move.w     d5,-(a7)
-[00032974] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032974] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [0003297a] 548f                      addq.l     #2,a7
 [0003297c] 3a2e fff4                 move.w     -12(a6),d5
 [00032980] 7009                      moveq.l    #9,d0
@@ -39472,7 +39352,7 @@ MCPass1:
 [00032988] 5045                      addq.w     #8,d5
 [0003298a] 5e45                      addq.w     #7,d5
 [0003298c] 3f05                      move.w     d5,-(a7)
-[0003298e] 4eb9 0002 5bc0            jsr        $00025BC0
+[0003298e] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00032994] 548f                      addq.l     #2,a7
 [00032996] 3a2e fff6                 move.w     -10(a6),d5
 [0003299a] 0645 0018                 addi.w     #$0018,d5
@@ -39483,7 +39363,7 @@ MCPass1:
 [000329ae] 3a2e fffe                 move.w     -2(a6),d5
 [000329b2] 0645 5340                 addi.w     #$5340,d5
 [000329b6] 3f05                      move.w     d5,-(a7)
-[000329b8] 4eb9 0002 5bc0            jsr        $00025BC0
+[000329b8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000329be] 548f                      addq.l     #2,a7
 [000329c0] 558f                      subq.l     #2,a7
 [000329c2] 3f2e fff4                 move.w     -12(a6),-(a7)
@@ -39494,15 +39374,15 @@ MCPass1:
 [000329d2] 0645 1000                 addi.w     #$1000,d5
 [000329d6] da6e fff6                 add.w      -10(a6),d5
 [000329da] 3f05                      move.w     d5,-(a7)
-[000329dc] 4eb9 0002 5bc0            jsr        $00025BC0
+[000329dc] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000329e2] 548f                      addq.l     #2,a7
 [000329e4] 3a2e fffe                 move.w     -2(a6),d5
 [000329e8] 0645 51c8                 addi.w     #$51C8,d5
 [000329ec] 3f05                      move.w     d5,-(a7)
-[000329ee] 4eb9 0002 5bc0            jsr        $00025BC0
+[000329ee] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [000329f4] 548f                      addq.l     #2,a7
 [000329f6] 3f3c fffc                 move.w     #$FFFC,-(a7)
-[000329fa] 4eb9 0002 5bc0            jsr        $00025BC0
+[000329fa] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00032a00] 548f                      addq.l     #2,a7
 [00032a02] 486e ffdc                 pea.l      -36(a6)
 [00032a06] 4eb9 0002 99ae            jsr        $000299AE
@@ -39533,7 +39413,7 @@ MCPass1:
 [00032a62] 286e fffc                 movea.l    -4(a6),a4
 [00032a66] 0c2c 0003 0019            cmpi.b     #$03,25(a4)
 [00032a6c] 660a                      bne.s      $00032A78
-[00032a6e] 4a39 0004 449a            tst.b      $0004449A
+[00032a6e] 4a39 0004 449a            tst.b      NoEntryCode
 [00032a74] 6602                      bne.s      $00032A78
 [00032a76] 6004                      bra.s      $00032A7C
 [00032a78] 4efa 00e2                 jmp        $00032B5C(pc)
@@ -39682,7 +39562,7 @@ MCPass1:
 [00032ca8] 285f                      movea.l    (a7)+,a4
 [00032caa] 2f0c                      move.l     a4,-(a7)
 [00032cac] 3f3c 4ef9                 move.w     #$4EF9,-(a7)
-[00032cb0] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032cb0] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00032cb6] 548f                      addq.l     #2,a7
 [00032cb8] 285f                      movea.l    (a7)+,a4
 [00032cba] 2f0c                      move.l     a4,-(a7)
@@ -39727,7 +39607,7 @@ MCPass1:
 [00032d52] 6720                      beq.s      $00032D74
 [00032d54] 2f0c                      move.l     a4,-(a7)
 [00032d56] 3f3c 7001                 move.w     #$7001,-(a7)
-[00032d5a] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032d5a] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00032d60] 548f                      addq.l     #2,a7
 [00032d62] 285f                      movea.l    (a7)+,a4
 [00032d64] 2f0c                      move.l     a4,-(a7)
@@ -39751,7 +39631,7 @@ MCPass1:
 [00032da4] 285f                      movea.l    (a7)+,a4
 [00032da6] 2f0c                      move.l     a4,-(a7)
 [00032da8] 3f3c 4ef9                 move.w     #$4EF9,-(a7)
-[00032dac] 4eb9 0002 5bc0            jsr        $00025BC0
+[00032dac] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00032db2] 548f                      addq.l     #2,a7
 [00032db4] 285f                      movea.l    (a7)+,a4
 [00032db6] 2f0c                      move.l     a4,-(a7)
@@ -39803,11 +39683,9 @@ MCPass1:
 [00032e76] 42b9 0003 60e4            clr.l      $000360E4
 [00032e7c] 4e5e                      unlk       a6
 [00032e7e] 4e75                      rts
-[00032e80] 5374 6174 656d 656e       subq.w     #1,([$656D656E,a4]) ; 68020+ only; reserved OD=0
-[00032e88] 7400                      moveq.l    #0,d2
-[00032e8a] 536b 6970                 subq.w     #1,26992(a3)
-[00032e8e] 5374 6174 656d 656e       subq.w     #1,([$656D656E,a4]) ; 68020+ only; reserved OD=0
-[00032e96] 7400                      moveq.l    #0,d2
+[00032e80] 5374 6174 656d 656e       .asciiz 'Statement'
+[00032e8a] 536b 6970                 .asciiz 'SkipStatement'
+
 [00032e98] 4e56 0000                 link       a6,#0
 [00032e9c] 4239 0004 4ca2            clr.b      $00044CA2
 [00032ea2] 7a00                      moveq.l    #0,d5
@@ -39833,6 +39711,7 @@ MCPass1:
 [00032f26] 33fc 0004 0004 4ca0       move.w     #$0004,$00044CA0
 [00032f2e] 4e5e                      unlk       a6
 [00032f30] 4e75                      rts
+
 [00032f32] 4e56 fff2                 link       a6,#-14
 [00032f36] 3d7c 0001 fffa            move.w     #$0001,-6(a6)
 [00032f3c] 4879 0004 4bf4            pea.l      $00044BF4
@@ -42078,9 +41957,9 @@ MCPass1:
 [00034d76] 3a39 0004 4e2a            move.w     $00044E2A,d5
 [00034d7c] 2005                      move.l     d5,d0
 [00034d7e] 4eb9 0001 000a            jsr        CASEX
-[00034d84] 0000 0000                      dc.w       $0000
-[00034d88] 0000 0007                 ori.b      #$07,d0
-[00034d8c] 0000 0056                 ori.b      #$56,d0
+[00034d84] 0000 0000
+[00034d88] 0000 0007
+[00034d8c] 0000 0056
 [00034d90] 4eb9 0001 5292            jsr        $00015292
 [00034d96] 4efa 0052                 jmp        $00034DEA(pc)
 [00034d9a] 4eb9 0001 a43c            jsr        $0001A43C
@@ -42096,11 +41975,15 @@ MCPass1:
 [00034dcc] 4eb9 0003 37a6            jsr        $000337A6
 [00034dd2] 4efa 0016                 jmp        $00034DEA(pc)
 [00034dd6] 4efa 0012                 jmp        $00034DEA(pc)
-[00034dda] 000c 0016                 ori.b      #$16,a4 ; apollo only
-[00034dde] 0020 002a                 ori.b      #$2A,-(a0)
-[00034de2] 0034 0052 003e            ori.b      #$52,62(a4,d0.w)
-[00034de8] 0048 4279                 ori.w      #$4279,a0 ; apollo only
-[00034dec] 0003 5694                 ori.b      #$94,d3
+[00034dda] 000c
+           0016     
+[00034dde] 0020
+           002a     
+[00034de2] 0034
+           0052
+           003e
+[00034de8] 0048
+[00034dea] 4279 0003 5694            clr.w      $00035694
 [00034df0] 33f9 0004 4e2a 0004 4e1e  move.w     $00044E2A,$00044E1E
 [00034dfa] 4a39 0004 4e28            tst.b      $00044E28
 [00034e00] 6610                      bne.s      $00034E12
@@ -48169,5 +48052,38 @@ MCPass1:
 3d9bc: MCPass1.copysepmod
 3d9bd: MCPass1.globalmod
 3d9be: MCPass1.defmod
+3d9c0: MCPass1.s0
+3d9ca: MCP2IO.sy
+3d9cc: MCP2IO.val
+3d9d0: MCP2IO.length
+3d9d2: MCP2IO.spix
+3d9d8: MCP2IO.line
+3d9da: MCP2IO.pos
+3d9dc: MCP2IO.lpos
+3d9de: MCP2IO.lline
+3d9e0:
+3d9e2: MCP2IO.il1
+3d9e6: MCP2IO.il2
+3d9fd: MCP2IO.output
+3d9fe: MCP2IO.errcount
+3da00: MCP2IO.scanner.card
+3da02: MCP2IO.scanner.issy
+3db68: MCPass2.symmod
+3dd28: MCPass2.defmod
+44480: MCP3IO.sy
+44486: MCP3IO.val
+44493: StackChecking
+44495: QuickCalls
+44496: AllQuickCalls
+44497: UseTrapv
+44498: SubrangeChecks
+4449A: NoEntryCode
+4449c: MCP3IO.line
+4449e: MCP3IO.pos
+444a2: MCP3IO.lpos
+444a4: MCP3IO.lline
+444a6: RangeChecking
+444a7: ClearInstructions
 44cba: MCP1IO.OutputSystem.Il1
 44E21: M2Public.compstat
+44E22: M2Public.comptime

@@ -1,0 +1,7 @@
+DEFINITION MODULE ProgramMessage;
+
+FROM Program IMPORT Status;
+
+PROCEDURE WriteStatus(s: Status);
+
+END ProgramMessage.

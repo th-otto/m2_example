@@ -1,0 +1,6 @@
+DEFINITION MODULE MCErrors;
+
+CONST
+   TooManyErrors = 5;
+   
+END MCErrors.
