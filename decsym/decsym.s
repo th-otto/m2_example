@@ -2337,7 +2337,7 @@ Strings.init:
 [00011fc6] 4e56 0000                 link       a6,#0
 [00011fca] 6100 fc66                 bsr        Strings.InitStringModule
 [00011fce] 4e5e                      unlk       a6
-[00011fd0] 4ef9 0001 2046            jmp        $00012046
+[00011fd0] 4ef9 0001 2046            jmp        Buffers.init+6
 
 ***
 * MODULE Buffers
@@ -2374,13 +2374,13 @@ Buffers.FreeAll:
 [0001203c] 4e5e                      unlk       a6
 [0001203e] 4e75                      rts
 
-.init
+Buffers.init:
 [00012040] 4ef9 0001 1fc0            jmp        Strings.init
 
 [00012046] 4e56 0000                 link       a6,#0
 [0001204a] 33fc ffff 0001 67d2       move.w     #$FFFF,$000167D2
 [00012052] 4e5e                      unlk       a6
-[00012054] 4ef9 0001 2622            jmp        $00012622
+[00012054] 4ef9 0001 2622            jmp        ExecUtil.init+6
 
 ***
 * MODULE ExecUtil
@@ -2392,8 +2392,9 @@ ExecUtil.FreeBuffers.
 [00012064] 4e5e                      unlk       a6
 [00012066] 4e75                      rts
 
+ExecUtil.Terminate:
 [00012068] 4e56 fff8                 link       a6,#-8
-[0001206c] 4a39 0001 6806            tst.b      $00016806
+[0001206c] 4a39 0001 6806            tst.b      ExecUtil.terminated
 [00012072] 6602                      bne.s      $00012076
 [00012074] 6004                      bra.s      $0001207A
 [00012076] 4efa 00b8                 jmp        $00012130(pc)
@@ -2439,10 +2440,11 @@ ExecUtil.FreeBuffers.
 [0001211a] 4eb9 0001 0ca8            jsr        AESGraphics.GrafMouse
 [00012120] 5c8f                      addq.l     #6,a7
 [00012122] 4eb9 0001 1aca            jsr        AESApplications.ApplExit
-[00012128] 13fc 0001 0001 6806       move.b     #$01,$00016806
+[00012128] 13fc 0001 0001 6806       move.b     #$01,ExecUtil.terminated
 [00012130] 4e5e                      unlk       a6
 [00012132] 4e75                      rts
 
+ExecUtil.ReplaceExtension:
 [00012134] 4e56 fffc                 link       a6,#-4
 [00012138] 426e fffe                 clr.w      -2(a6)
 [0001213c] 426e fffc                 clr.w      -4(a6)
@@ -2523,7 +2525,7 @@ ExecUtil.FreeBuffers.
 [00012244] 4e5e                      unlk       a6
 [00012246] 4e75                      rts
 
-RunCmd(VAR cmd: ARRAY OF CHAR; VAR tail: ARRAY OF CHAR);
+ExecUtil.RunCmd(VAR cmd: ARRAY OF CHAR; VAR tail: ARRAY OF CHAR);
 [00012248] 4e56 0000                 link       a6,#0
 [0001224c] 3f3c 0001                 move.w     #$0001,-(a7)
 [00012250] 3f3c 0001                 move.w     #$0001,-(a7)
@@ -2551,7 +2553,7 @@ OpenStream:
 [00012296] 4879 0001 2656            pea.l      $00012656
 [0001229c] 3f3c 004f                 move.w     #$004F,-(a7)
 [000122a0] 4879 0001 625c            pea.l      AppBase.shellTail
-[000122a6] 6100 ffa0                 bsr.w      $00012248
+[000122a6] 6100 ffa0                 bsr.w      ExecUtil.RunCmd
 [000122aa] 4fef 000c                 lea.l      12(a7),a7
 [000122ae] 4efa 0112                 jmp        $000123C2(pc)
 [000122b2] 558f                      subq.l     #2,a7
@@ -2570,8 +2572,8 @@ OpenStream:
 [000122e2] 3f3c 004f                 move.w     #$004F,-(a7)
 [000122e6] 4879 0001 625c            pea.l      AppBase.shellTail
 [000122ec] 3f3c 0002                 move.w     #$0002,-(a7)
-[000122f0] 4879 0001 2668            pea.l      $00012668
-[000122f6] 6100 fe3c                 bsr        $00012134
+[000122f0] 4879 0001 2668            pea.l      $00012668 'DEF'
+[000122f6] 6100 fe3c                 bsr        ExecUtil.ReplaceExtension
 [000122fa] 4fef 000c                 lea.l      12(a7),a7
 [000122fe] 3f3c 004f                 move.w     #$004F,-(a7)
 [00012302] 4879 0001 625c            pea.l      AppBase.shellTail
@@ -2585,13 +2587,13 @@ OpenStream:
 [00012322] 4879 0001 625c            pea.l      AppBase.shellTail
 [00012328] 3f3c 0002                 move.w     #$0002,-(a7)
 [0001232c] 4879 0001 266c            pea.l      $0001266C
-[00012332] 6100 fe00                 bsr        $00012134
+[00012332] 6100 fe00                 bsr        ExecUtil.ReplaceExtension
 [00012336] 4fef 000c                 lea.l      12(a7),a7
 [0001233a] 3f3c 0009                 move.w     #$0009,-(a7)
 [0001233e] 4879 0001 2670            pea.l      $00012670
 [00012344] 3f3c 004f                 move.w     #$004F,-(a7)
 [00012348] 4879 0001 625c            pea.l      AppBase.shellTail
-[0001234e] 6100 fef8                 bsr        $00012248
+[0001234e] 6100 fef8                 bsr        ExecUtil.RunCmd
 [00012352] 4fef 000c                 lea.l      12(a7),a7
 [00012356] 4efa 002e                 jmp        $00012386(pc)
 [0001235a] 558f                      subq.l     #2,a7
@@ -2604,24 +2606,25 @@ OpenStream:
 [00012370] 4879 0001 267c            pea.l      $0001267C
 [00012376] 4267                      clr.w      -(a7)
 [00012378] 4879 0001 2688            pea.l      $00012688
-[0001237e] 6100 fec8                 bsr        $00012248
+[0001237e] 6100 fec8                 bsr        ExecUtil.RunCmd
 [00012382] 4fef 000c                 lea.l      12(a7),a7
 [00012386] 4efa 003a                 jmp        $000123C2(pc)
 [0001238a] 3f3c 004f                 move.w     #$004F,-(a7)
 [0001238e] 4879 0001 625c            pea.l      AppBase.shellTail
 [00012394] 3f3c 0002                 move.w     #$0002,-(a7)
 [00012398] 4879 0001 268a            pea.l      $0001268A
-[0001239e] 6100 fd94                 bsr        $00012134
+[0001239e] 6100 fd94                 bsr        ExecUtil.ReplaceExtension
 [000123a2] 4fef 000c                 lea.l      12(a7),a7
 [000123a6] 3f3c 0009                 move.w     #$0009,-(a7)
 [000123aa] 4879 0001 268e            pea.l      $0001268E
 [000123b0] 3f3c 004f                 move.w     #$004F,-(a7)
 [000123b4] 4879 0001 625c            pea.l      AppBase.shellTail
-[000123ba] 6100 fe8c                 bsr        $00012248
+[000123ba] 6100 fe8c                 bsr        ExecUtil.RunCmd
 [000123be] 4fef 000c                 lea.l      12(a7),a7
 [000123c2] 4e5e                      unlk       a6
 [000123c4] 4e75                      rts
 
+ExecUtil.IOError.RunProgram:
 [000123c6] 4e56 0000                 link       a6,#0
 [000123ca] 2a39 0001 6258            move.l     AppBase.openStreams,d5
 [000123d0] 0805 0007                 btst       #7,d5
@@ -2633,19 +2636,20 @@ OpenStream:
 [000123e4] 4879 0001 625c            pea.l      AppBase.shellTail
 [000123ea] 3f3c 0002                 move.w     #$0002,-(a7)
 [000123ee] 4879 0001 269a            pea.l      $0001269A
-[000123f4] 6100 fd3e                 bsr        $00012134
+[000123f4] 6100 fd3e                 bsr        ExecUtil.ReplaceExtension
 [000123f8] 4fef 000c                 lea.l      12(a7),a7
 [000123fc] 3f3c 0007                 move.w     #$0007,-(a7)
 [00012400] 4879 0001 269e            pea.l      $0001269E
 [00012406] 3f3c 004f                 move.w     #$004F,-(a7)
 [0001240a] 4879 0001 625c            pea.l      AppBase.shellTail
-[00012410] 6100 fe36                 bsr        $00012248
+[00012410] 6100 fe36                 bsr        ExecUtil.RunCmd
 [00012414] 4fef 000c                 lea.l      12(a7),a7
 [00012418] 4efa 0008                 jmp        $00012422(pc)
 [0001241c] 4239 0001 62ac            clr.b      $000162AC
 [00012422] 4e5e                      unlk       a6
 [00012424] 4e75                      rts
 
+ExecUtil.IOError.RunCompiler:
 [00012426] 4e56 0000                 link       a6,#0
 [0001242a] 286d fffc                 movea.l    -4(a5),a4
 [0001242e] 4a2c 0008                 tst.b      8(a4)
@@ -2654,13 +2658,14 @@ OpenStream:
 [00012438] 4879 0001 26a8            pea.l      $000126A8
 [0001243e] 3f3c 004f                 move.w     #$004F,-(a7)
 [00012442] 4879 0001 625c            pea.l      AppBase.shellTail
-[00012448] 6100 fdfe                 bsr        $00012248
+[00012448] 6100 fdfe                 bsr        ExecUtil.RunCmd
 [0001244c] 4fef 000c                 lea.l      12(a7),a7
 [00012450] 4efa 0008                 jmp        $0001245A(pc)
 [00012454] 4239 0001 62ac            clr.b      $000162AC
 [0001245a] 4e5e                      unlk       a6
 [0001245c] 4e75                      rts
 
+ExecUtil.IOError:
 [0001245e] 4e56 ff5a                 link       a6,#-166
 [00012462] 2f2d fffc                 move.l     -4(a5),-(a7)
 [00012466] 2b4e fffc                 move.l     a6,-4(a5)
@@ -2684,10 +2689,10 @@ case 0:
 [0001249e] 6100 fdd6                 bsr        OpenStream
 [000124a2] 4efa 0038                 jmp        $000124DC(pc)
 case 1:
-[000124a6] 6100 ff1e                 bsr        $000123C6
+[000124a6] 6100 ff1e                 bsr        RunProgram
 [000124aa] 4efa 0030                 jmp        $000124DC(pc)
 case 3:
-[000124ae] 6100 ff76                 bsr        $00012426
+[000124ae] 6100 ff76                 bsr        ExecUtil.IOError.RunCompiler
 [000124b2] 4efa 0028                 jmp        $000124DC(pc)
 case 2:
 default:
@@ -2701,7 +2706,7 @@ casex1_tab:
 [000124c6] 4879 0001 26b4            pea.l      $000126B4
 [000124cc] 4267                      clr.w      -(a7)
 [000124ce] 4879 0001 26c0            pea.l      $000126C0
-[000124d4] 6100 fd72                 bsr        $00012248
+[000124d4] 6100 fd72                 bsr        ExecUtil.RunCmd
 [000124d8] 4fef 000c                 lea.l      12(a7),a7
 [000124dc] 4a2e 0008                 tst.b      8(a6)
 [000124e0] 670a                      beq.s      $000124EC
@@ -2745,7 +2750,7 @@ case 3:
 [00012558] 16dc                      move.b     (a4)+,(a3)+
 [0001255a] 57cd fffc                 dbeq       d5,$00012558
 [0001255e] 4efa 0038                 jmp        $00012598(pc)
-case 5:
+case 4:
 [00012562] 49f9 0001 26e8            lea.l      $000126E8,a4
 [00012568] 47ee ffae                 lea.l      -82(a6),a3
 [0001256c] 7a0f                      moveq.l    #15,d5
@@ -2788,7 +2793,8 @@ casex2_tab:
 [000125ee] 4eb9 0001 1af2            jsr        AESForms.FormAlert
 [000125f4] 508f                      addq.l     #8,a7
 [000125f6] 3d5f fffe                 move.w     (a7)+,-2(a6)
-[000125fa] 6100 fa6c                 bsr        $00012068
+
+[000125fa] 6100 fa6c                 bsr        ExecUtil.Terminate
 [000125fe] 2a0d                      move.l     a5,d5
 [00012600] 7828                      moveq.l    #40,d4
 [00012602] 9a84                      sub.l      d4,d5
@@ -2802,8 +2808,8 @@ casex2_tab:
 [00012618] 4e5e                      unlk       a6
 [0001261a] 4e75                      rts
 
-.init
-[0001261c] 4ef9 0001 2040            jmp        $00012040
+ExecUtil.init:
+[0001261c] 4ef9 0001 2040            jmp        Buffers.init
 
 [00012622] 4e56 0000                 link       a6,#0
 [00012626] 4279 0001 6804            clr.w      $00016804
@@ -2813,9 +2819,9 @@ casex2_tab:
 [0001263a] 558f                      subq.l     #2,a7
 [0001263c] 4eb9 0001 1a2c            jsr        AESApplications.ApplInitialise
 [00012642] 33df 0001 624a            move.w     (a7)+,AppBase.apId
-[00012648] 4239 0001 6806            clr.b      $00016806
+[00012648] 4239 0001 6806            clr.b      ExecUtil.terminated
 [0001264e] 4e5e                      unlk       a6
-[00012650] 4ef9 0001 2b42            jmp        $00012B42
+[00012650] 4ef9 0001 2b42            jmp        M2Option.init+6
 
 [00012656] 4544                      .asciiz 'EDITOR.PRG'
 [00012662] 2e4d                      .asciiz '.MOD'
@@ -2863,12 +2869,13 @@ AESEvents.EventMessage:
 * MODULE
 ***
 
+M2Option.SendMsg:
 [00012762] 4e56 0000                 link       a6,#0
 [00012766] 33fc 0046 0001 680a       move.w     #$0046,$0001680A
 [0001276e] 33f9 0001 624a 0001 680c  move.w     AppBase.apId,$0001680C
 [00012778] 4279 0001 680e            clr.w      $0001680E
 [0001277e] 33ee 0008 0001 6810       move.w     8(a6),$00016810
-[00012786] 3f39 0001 6808            move.w     $00016808,-(a7)
+[00012786] 3f39 0001 6808            move.w     M2Option.accId,-(a7)
 [0001278c] 3f3c 0010                 move.w     #$0010,-(a7)
 [00012790] 49f9 0001 680a            lea.l      $0001680A,a4
 [00012796] 2a0c                      move.l     a4,d5
@@ -2887,7 +2894,7 @@ AESEvents.EventMessage:
 [000127c2] 4e75                      rts
 
 [000127c4] 4e56 fff8                 link       a6,#-8
-[000127c8] 4a79 0001 6808            tst.w      $00016808
+[000127c8] 4a79 0001 6808            tst.w      M2Option.accId
 [000127ce] 6d02                      blt.s      $000127D2
 [000127d0] 6004                      bra.s      $000127D6
 [000127d2] 4efa 00a8                 jmp        $0001287C(pc)
@@ -2900,7 +2907,7 @@ AESEvents.EventMessage:
 [000127ee] 2a0c                      move.l     a4,d5
 [000127f0] 33c5 0001 6814            move.w     d5,$00016814
 [000127f6] 3f3c 0005                 move.w     #$0005,-(a7)
-[000127fa] 4eb9 0001 2762            jsr        $00012762
+[000127fa] 4eb9 0001 2762            jsr        M2Option.SendMsg
 [00012800] 548f                      addq.l     #2,a7
 [00012802] 3a39 0001 6830            move.w     $00016830,d5
 [00012808] 48c5                      ext.l      d5
@@ -3062,10 +3069,10 @@ AESEvents.EventMessage:
 [00012a64] 4e75                      rts
 
 [00012a66] 4e56 0000                 link       a6,#0
-[00012a6a] 4a79 0001 6808            tst.w      $00016808
+[00012a6a] 4a79 0001 6808            tst.w      M2Option.accId
 [00012a70] 6d36                      blt.s      $00012AA8
 [00012a72] 3f3c 0003                 move.w     #$0003,-(a7)
-[00012a76] 4eb9 0001 2762            jsr        $00012762
+[00012a76] 4eb9 0001 2762            jsr        M2Option.SendMsg
 [00012a7c] 548f                      addq.l     #2,a7
 [00012a7e] 3a39 0001 6830            move.w     $00016830,d5
 [00012a84] 48c5                      ext.l      d5
@@ -3088,10 +3095,10 @@ AESEvents.EventMessage:
 [00012abc] 4e75                      rts
 
 [00012abe] 4e56 0000                 link       a6,#0
-[00012ac2] 4a79 0001 6808            tst.w      $00016808
+[00012ac2] 4a79 0001 6808            tst.w      M2Option.accId
 [00012ac8] 6d56                      blt.s      $00012B20
 [00012aca] 3f3c 0002                 move.w     #$0002,-(a7)
-[00012ace] 4eb9 0001 2762            jsr        $00012762
+[00012ace] 4eb9 0001 2762            jsr        M2Option.SendMsg
 [00012ad4] 548f                      addq.l     #2,a7
 [00012ad6] 3a39 0001 6830            move.w     $00016830,d5
 [00012adc] 48c5                      ext.l      d5
@@ -3126,8 +3133,8 @@ AESEvents.EventMessage:
 [00012b38] 4e5e                      unlk       a6
 [00012b3a] 4e75                      rts
 
-.init
-[00012b3c] 4ef9 0001 261c            jmp        $0001261C
+M2Option.init:
+[00012b3c] 4ef9 0001 261c            jmp        ExecUtil.init
 
 [00012b42] 4e56 0000                 link       a6,#0
 [00012b46] 558f                      subq.l     #2,a7
@@ -3135,11 +3142,11 @@ AESEvents.EventMessage:
 [00012b4c] 4879 0001 2b70            pea.l      $00012B70 'M2OPTION'
 [00012b52] 4eb9 0001 1a96            jsr        AESApplications.ApplFind
 [00012b58] 5c8f                      addq.l     #6,a7
-[00012b5a] 33df 0001 6808            move.w     (a7)+,$00016808
+[00012b5a] 33df 0001 6808            move.w     (a7)+,M2Option.accId
 [00012b60] 4e5e                      unlk       a6
 [00012b62] 4ef9 0001 3f42            jmp        $00013F42
 
-[00012b68] 413a 5c00                 .asciiz "A:\\"
+[00012b68] 413a 5c00                 .asciiz "A:\"
 [00012b6c] 413a 0000                 .asciiz "A:"
 [00012b70] 4d32 4f50                 .asciiz 'M2OPTION'
 
@@ -3250,7 +3257,7 @@ AESEvents.EventMessage:
 [00012cf2] 3d5f fffe                 move.w     (a7)+,-2(a6)
 [00012cf6] 3f3c 0063                 move.w     #$0063,-(a7)
 [00012cfa] 1f3c 0001                 move.b     #$01,-(a7)
-[00012cfe] 4eb9 0001 245e            jsr        $0001245E
+[00012cfe] 4eb9 0001 245e            jsr        ExecUtil.IOError
 [00012d04] 588f                      addq.l     #4,a7
 [00012d06] 4e5e                      unlk       a6
 [00012d08] 4e75                      rts
@@ -3275,7 +3282,7 @@ AESEvents.EventMessage:
 [00012d44] 3d5f fffe                 move.w     (a7)+,-2(a6)
 [00012d48] 3f3c 0063                 move.w     #$0063,-(a7)
 [00012d4c] 1f3c 0001                 move.b     #$01,-(a7)
-[00012d50] 4eb9 0001 245e            jsr        $0001245E
+[00012d50] 4eb9 0001 245e            jsr        ExecUtil.IOError
 [00012d56] 588f                      addq.l     #4,a7
 [00012d58] 4e5e                      unlk       a6
 [00012d5a] 4e75                      rts
@@ -3300,7 +3307,7 @@ AESEvents.EventMessage:
 [00012d96] 3d5f fffe                 move.w     (a7)+,-2(a6)
 [00012d9a] 3f3c 0063                 move.w     #$0063,-(a7)
 [00012d9e] 1f3c 0001                 move.b     #$01,-(a7)
-[00012da2] 4eb9 0001 245e            jsr        $0001245E
+[00012da2] 4eb9 0001 245e            jsr        ExecUtil.IOError
 [00012da8] 588f                      addq.l     #4,a7
 [00012daa] 4e5e                      unlk       a6
 [00012dac] 4e75                      rts
@@ -4651,7 +4658,7 @@ BufferedIO.Read16Bit(VAR s: BufferedStream; VAR v: WORD)
 [00013f3a] 4e75                      rts
 
 .init
-[00013f3c] 4ef9 0001 2b3c            jmp        $00012B3C
+[00013f3c] 4ef9 0001 2b3c            jmp        M2Option.init
 
 [00013f42] 4e56 0000                 link       a6,#0
 [00013f46] 42b9 0001 6258            clr.l      AppBase.openStreams
@@ -4991,7 +4998,7 @@ casex5_tab:
 [00014500] 4eb9 0001 449e            jsr        $0001449E
 [00014506] 3f3c 0004                 move.w     #$0004,-(a7)
 [0001450a] 1f3c 0001                 move.b     #$01,-(a7)
-[0001450e] 4eb9 0001 245e            jsr        $0001245E
+[0001450e] 4eb9 0001 245e            jsr        ExecUtil.IOError
 [00014514] 588f                      addq.l     #4,a7
 [00014516] 4e5e                      unlk       a6
 [00014518] 4e75                      rts
@@ -6396,7 +6403,7 @@ DecSym.init:
 [0001598c] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [00015992] 4267                      clr.w      -(a7)
 [00015994] 4227                      clr.b      -(a7)
-[00015996] 4eb9 0001 245e            jsr        $0001245E
+[00015996] 4eb9 0001 245e            jsr        ExecUtil.IOError
 [0001599c] 588f                      addq.l     #4,a7
 [0001599e] 4e5e                      unlk       a6
 [000159a0] 4e75                      rts
@@ -6495,6 +6502,7 @@ DecSym.init:
 16254: AppBase.openFiles
 16258: AppBase.openStreams
 1625c: AppBase.shellTail
+162ac: AppBase.
 162ae: AppWindow.wchar
 162b0: AppWindow.hchar
 162b2: AppWindow.wbox
@@ -6512,4 +6520,11 @@ DecSym.init:
 167cc: Strings.terminator
 167ce: Buffers.bufptr
 167d2: Buffers.count
+167d4: Buffers.buffers
+167fc: Executil.
+16800: Executil.
+16804: Executil.
+16806: Executil.terminated
+16808: M2Option.accId
+1680a: M2Option.msg
 16e48: Symfile.lastByte

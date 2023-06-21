@@ -1,3 +1,5 @@
 DEFINITION MODULE ExecUtil;
 
+PROCEDURE IOError(n: CARDINAL; error: BOOLEAN);
+
 END ExecUtil.

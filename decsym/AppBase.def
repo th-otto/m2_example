@@ -13,5 +13,6 @@ TYPE StreamType = (none, tmp, mod, ref, sym, lnk, lst, ttp, prg, map, cor, erm, 
 TYPE StreamSet = SET OF StreamType;
 VAR openStreams: StreamSet;
 VAR shellTail: ARRAY [0..79] OF CHAR;
+VAR x162ac: BOOLEAN;
 
 END AppBase.

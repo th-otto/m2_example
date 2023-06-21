@@ -9,7 +9,7 @@ IMPORT GEMDOS;
 
 VAR bufptr: ADDRESS;
 VAR count: INTEGER;
-VAR buffers: ARRAY[0..10] OF ADDRESS;
+VAR buffers: ARRAY[0..9] OF ADDRESS;
 
 
 PROCEDURE FreeAll();

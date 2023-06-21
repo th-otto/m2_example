@@ -37,7 +37,7 @@ $A: short (bsr) calls
 
 $Q: short (bsr) calls for local functions
 
-$H: block names?
+$H: match identifiers case-insensitive 
 
 $V: trapv
 
