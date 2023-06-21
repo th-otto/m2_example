@@ -13,7 +13,7 @@ IMPORT VDIControls;
 IMPORT GEMDOS;
 IMPORT Strings;
 FROM SYSTEM IMPORT ADR, ADDRESS, REGISTER;
-FROM AppBase IMPORT wdwHandle, vdiHandle, openStreams, StreamType, shellTail, x162ac, apId;
+FROM AppBase IMPORT wdwHandle, vdiHandle, openStreams, StreamType, shellTail, xfer, apId;
 FROM GEMAESbase IMPORT Arrow, MouseOn, MouseOff, WorkXYWH, CurrXYWH;
 
 CONST EDITOR = 'EDITOR.PRG';
@@ -124,7 +124,7 @@ TYPE frame = RECORD call: PROC; END;
       ReplaceExtension(shellTail, 'PRG');
       RunCmd('EXEC.PRG', shellTail);
     ELSE
-      x162ac := FALSE;
+      xfer := FALSE;
     END;
   END RunProgram;
 
@@ -133,14 +133,14 @@ TYPE frame = RECORD call: PROC; END;
     IF NOT error THEN
       RunCmd('MODULA.PRG', shellTail);
     ELSE
-      x162ac := FALSE;
+      xfer := FALSE;
     END;
   END RunCompiler;
   
 BEGIN
   FreeBuffers();
   AESGraphics.GrafMouse(Arrow, NIL);
-  IF x162ac THEN
+  IF xfer THEN
     CASE n OF
       0: OpenStream();
     | 1: RunProgram();
@@ -148,7 +148,7 @@ BEGIN
     | ELSE RunCmd(EDITOR, '');
     END;
   END;
-  IF error AND (NOT x162ac) THEN
+  IF error AND (NOT xfer) THEN
     CASE n OF
       0: which := 'compilation';
     | 1: which := 'linking';

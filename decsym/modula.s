@@ -1008,6 +1008,8 @@ STACKCHECK:
 [00010caa] 2945 0014                 move.l     d5,20(a4)
 [00010cae] 4e5e                      unlk       a6
 [00010cb0] 4ef9 0001 120c            jmp        $0001120C
+
+AESApplications.ApplInitialise:
 [00010cb6] 4e56 0000                 link       a6,#0
 [00010cba] 558f                      subq.l     #2,a7
 [00010cbc] 3f3c 000a                 move.w     #$000A,-(a7)
@@ -1037,6 +1039,8 @@ STACKCHECK:
 [00010d16] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00010d1c] 4e5e                      unlk       a6
 [00010d1e] 4e75                      rts
+
+AESApplications.ApplFind:
 [00010d20] 4e56 0000                 link       a6,#0
 [00010d24] 286e 0008                 movea.l    8(a6),a4
 [00010d28] 2a0c                      move.l     a4,d5
@@ -1047,11 +1051,12 @@ STACKCHECK:
 [00010d38] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010d3c] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010d40] 4267                      clr.w      -(a7)
-[00010d42] 4eb9 0001 0b38            jsr        $00010B38
+[00010d42] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010d48] 4fef 000a                 lea.l      10(a7),a7
 [00010d4c] 3d5f 000e                 move.w     (a7)+,14(a6)
 [00010d50] 4e5e                      unlk       a6
 [00010d52] 4e75                      rts
+
 [00010d54] 4e56 0000                 link       a6,#0
 [00010d58] 558f                      subq.l     #2,a7
 [00010d5a] 3f3c 0013                 move.w     #$0013,-(a7)
@@ -1059,7 +1064,7 @@ STACKCHECK:
 [00010d60] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010d64] 4267                      clr.w      -(a7)
 [00010d66] 4267                      clr.w      -(a7)
-[00010d68] 4eb9 0001 0b38            jsr        $00010B38
+[00010d68] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010d6e] 4fef 000a                 lea.l      10(a7),a7
 [00010d72] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00010d78] 4e5e                      unlk       a6
@@ -1075,7 +1080,7 @@ STACKCHECK:
 [00010d9e] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010da2] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010da6] 4267                      clr.w      -(a7)
-[00010da8] 4eb9 0001 0b38            jsr        $00010B38
+[00010da8] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010dae] 4fef 000a                 lea.l      10(a7),a7
 [00010db2] 3d5f 0010                 move.w     (a7)+,16(a6)
 [00010db6] 4e5e                      unlk       a6
@@ -1088,7 +1093,7 @@ STACKCHECK:
 [00010dd0] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010dd4] 4267                      clr.w      -(a7)
 [00010dd6] 4267                      clr.w      -(a7)
-[00010dd8] 4eb9 0001 0b38            jsr        $00010B38
+[00010dd8] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010dde] 4fef 000a                 lea.l      10(a7),a7
 [00010de2] 3d5f 000a                 move.w     (a7)+,10(a6)
 [00010de6] 4e5e                      unlk       a6
@@ -1102,7 +1107,7 @@ STACKCHECK:
 [00010e06] 3f3c 0002                 move.w     #$0002,-(a7)
 [00010e0a] 3f3c 0002                 move.w     #$0002,-(a7)
 [00010e0e] 4267                      clr.w      -(a7)
-[00010e10] 4eb9 0001 0b38            jsr        $00010B38
+[00010e10] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010e16] 4fef 000a                 lea.l      10(a7),a7
 [00010e1a] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00010e20] 286e 0008                 movea.l    8(a6),a4
@@ -1126,7 +1131,7 @@ STACKCHECK:
 [00010e66] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010e6a] 4267                      clr.w      -(a7)
 [00010e6c] 4267                      clr.w      -(a7)
-[00010e6e] 4eb9 0001 0b38            jsr        $00010B38
+[00010e6e] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010e74] 4fef 000a                 lea.l      10(a7),a7
 [00010e78] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00010e7e] 4e5e                      unlk       a6
@@ -1148,7 +1153,7 @@ STACKCHECK:
 [00010eba] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010ebe] 4267                      clr.w      -(a7)
 [00010ec0] 4267                      clr.w      -(a7)
-[00010ec2] 4eb9 0001 0b38            jsr        $00010B38
+[00010ec2] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010ec8] 4fef 000a                 lea.l      10(a7),a7
 [00010ecc] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00010ed2] 4e5e                      unlk       a6
@@ -1160,7 +1165,7 @@ STACKCHECK:
 [00010ee2] 3f3c 0005                 move.w     #$0005,-(a7)
 [00010ee6] 4267                      clr.w      -(a7)
 [00010ee8] 4267                      clr.w      -(a7)
-[00010eea] 4eb9 0001 0b38            jsr        $00010B38
+[00010eea] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010ef0] 4fef 000a                 lea.l      10(a7),a7
 [00010ef4] 3d5f fffe                 move.w     (a7)+,-2(a6)
 [00010ef8] 286e 0014                 movea.l    20(a6),a4
@@ -1185,7 +1190,7 @@ STACKCHECK:
 [00010f42] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010f46] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010f4a] 4267                      clr.w      -(a7)
-[00010f4c] 4eb9 0001 0b38            jsr        $00010B38
+[00010f4c] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010f52] 4fef 000a                 lea.l      10(a7),a7
 [00010f56] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00010f5c] 4e5e                      unlk       a6
@@ -1204,7 +1209,7 @@ STACKCHECK:
 [00010f8e] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010f92] 4267                      clr.w      -(a7)
 [00010f94] 4267                      clr.w      -(a7)
-[00010f96] 4eb9 0001 0b38            jsr        $00010B38
+[00010f96] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010f9c] 4fef 000a                 lea.l      10(a7),a7
 [00010fa0] 3d5f 0012                 move.w     (a7)+,18(a6)
 [00010fa4] 4e5e                      unlk       a6
@@ -1223,7 +1228,7 @@ STACKCHECK:
 [00010fd6] 3f3c 0001                 move.w     #$0001,-(a7)
 [00010fda] 4267                      clr.w      -(a7)
 [00010fdc] 4267                      clr.w      -(a7)
-[00010fde] 4eb9 0001 0b38            jsr        $00010B38
+[00010fde] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00010fe4] 4fef 000a                 lea.l      10(a7),a7
 [00010fe8] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00010fee] 4e5e                      unlk       a6
@@ -1236,7 +1241,7 @@ STACKCHECK:
 [00011008] 3f3c 0001                 move.w     #$0001,-(a7)
 [0001100c] 4267                      clr.w      -(a7)
 [0001100e] 4267                      clr.w      -(a7)
-[00011010] 4eb9 0001 0b38            jsr        $00010B38
+[00011010] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00011016] 4fef 000a                 lea.l      10(a7),a7
 [0001101a] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00011020] 4e5e                      unlk       a6
@@ -1249,7 +1254,7 @@ STACKCHECK:
 [0001103a] 3f3c 0001                 move.w     #$0001,-(a7)
 [0001103e] 4267                      clr.w      -(a7)
 [00011040] 4267                      clr.w      -(a7)
-[00011042] 4eb9 0001 0b38            jsr        $00010B38
+[00011042] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00011048] 4fef 000a                 lea.l      10(a7),a7
 [0001104c] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00011052] 4e5e                      unlk       a6
@@ -1265,7 +1270,7 @@ STACKCHECK:
 [00011074] 3f3c 0005                 move.w     #$0005,-(a7)
 [00011078] 4267                      clr.w      -(a7)
 [0001107a] 4267                      clr.w      -(a7)
-[0001107c] 4eb9 0001 0b38            jsr        $00010B38
+[0001107c] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00011082] 4fef 000a                 lea.l      10(a7),a7
 [00011086] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [0001108c] 286e 0014                 movea.l    20(a6),a4
@@ -1295,7 +1300,7 @@ STACKCHECK:
 [000110e8] 3f3c 0001                 move.w     #$0001,-(a7)
 [000110ec] 4267                      clr.w      -(a7)
 [000110ee] 4267                      clr.w      -(a7)
-[000110f0] 4eb9 0001 0b38            jsr        $00010B38
+[000110f0] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [000110f6] 4fef 000a                 lea.l      10(a7),a7
 [000110fa] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00011100] 4e5e                      unlk       a6
@@ -1308,7 +1313,7 @@ STACKCHECK:
 [0001111a] 3f3c 0001                 move.w     #$0001,-(a7)
 [0001111e] 4267                      clr.w      -(a7)
 [00011120] 4267                      clr.w      -(a7)
-[00011122] 4eb9 0001 0b38            jsr        $00010B38
+[00011122] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00011128] 4fef 000a                 lea.l      10(a7),a7
 [0001112c] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00011132] 4e5e                      unlk       a6
@@ -1322,7 +1327,7 @@ STACKCHECK:
 [00011152] 3f3c 0001                 move.w     #$0001,-(a7)
 [00011156] 3f3c 0002                 move.w     #$0002,-(a7)
 [0001115a] 4267                      clr.w      -(a7)
-[0001115c] 4eb9 0001 0b38            jsr        $00010B38
+[0001115c] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [00011162] 4fef 000a                 lea.l      10(a7),a7
 [00011166] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [0001116c] 4e5e                      unlk       a6
@@ -1341,7 +1346,7 @@ STACKCHECK:
 [000111a6] 3f3c 0001                 move.w     #$0001,-(a7)
 [000111aa] 3f3c 0002                 move.w     #$0002,-(a7)
 [000111ae] 4267                      clr.w      -(a7)
-[000111b0] 4eb9 0001 0b38            jsr        $00010B38
+[000111b0] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [000111b6] 4fef 000a                 lea.l      10(a7),a7
 [000111ba] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [000111c0] 4e5e                      unlk       a6
@@ -1693,9 +1698,9 @@ STACKCHECK:
 [000116e2] 4ef9 0001 16c4            jmp        $000116C4
 [000116e8] 4e56 0000                 link       a6,#0
 [000116ec] 23fc 0001 16da 0003 55f4  move.l     #$000116DA,$000355F4
-[000116f6] 33fc ffff 0003 55ee       move.w     #$FFFF,$000355EE
-[000116fe] 33fc ffff 0003 55f2       move.w     #$FFFF,$000355F2
-[00011706] 33fc ffff 0003 55f0       move.w     #$FFFF,$000355F0
+[000116f6] 33fc ffff 0003 55ee       move.w     #$FFFF,AppBase.apId
+[000116fe] 33fc ffff 0003 55f2       move.w     #$FFFF,AppBase.vdiHandle
+[00011706] 33fc ffff 0003 55f0       move.w     #$FFFF,AppBase.wdwHandle
 [0001170e] 42b9 0003 55f8            clr.l      $000355F8
 [00011714] 42b9 0003 55fc            clr.l      $000355FC
 [0001171a] 4239 0003 5600            clr.b      $00035600
@@ -2007,7 +2012,7 @@ STACKCHECK:
 [00011afc] 4e5e                      unlk       a6
 [00011afe] 4e75                      rts
 [00011b00] 4e56 fff8                 link       a6,#-8
-[00011b04] 4a39 0003 5696            tst.b      $00035696
+[00011b04] 4a39 0003 5696            tst.b      ExecUtil.terminated
 [00011b0a] 6602                      bne.s      $00011B0E
 [00011b0c] 6004                      bra.s      $00011B12
 [00011b0e] 4efa 00b8                 jmp        $00011BC8(pc)
@@ -2016,9 +2021,9 @@ STACKCHECK:
 [00011b18] 2f05                      move.l     d5,-(a7)
 [00011b1a] 4eb9 0001 0f24            jsr        $00010F24
 [00011b20] 5c8f                      addq.l     #6,a7
-[00011b22] 4a79 0003 55f0            tst.w      $000355F0
+[00011b22] 4a79 0003 55f0            tst.w      AppBase.wdwHandle
 [00011b28] 6d6a                      blt.s      $00011B94
-[00011b2a] 3f39 0003 55f0            move.w     $000355F0,-(a7)
+[00011b2a] 3f39 0003 55f0            move.w     AppBase.wdwHandle,-(a7)
 [00011b30] 3f3c 0005                 move.w     #$0005,-(a7)
 [00011b34] 486e fffe                 pea.l      -2(a6)
 [00011b38] 486e fffc                 pea.l      -4(a6)
@@ -2036,15 +2041,15 @@ STACKCHECK:
 [00011b6a] 3f2e fff8                 move.w     -8(a6),-(a7)
 [00011b6e] 4eb9 0001 0e82            jsr        $00010E82
 [00011b74] 4fef 0010                 lea.l      16(a7),a7
-[00011b78] 3f39 0003 55f0            move.w     $000355F0,-(a7)
+[00011b78] 3f39 0003 55f0            move.w     AppBase.wdwHandle,-(a7)
 [00011b7e] 4eb9 0001 0ff2            jsr        $00010FF2
 [00011b84] 548f                      addq.l     #2,a7
-[00011b86] 3f39 0003 55f0            move.w     $000355F0,-(a7)
+[00011b86] 3f39 0003 55f0            move.w     AppBase.wdwHandle,-(a7)
 [00011b8c] 4eb9 0001 1024            jsr        $00011024
 [00011b92] 548f                      addq.l     #2,a7
-[00011b94] 4a79 0003 55f2            tst.w      $000355F2
+[00011b94] 4a79 0003 55f2            tst.w      AppBase.vdiHandle
 [00011b9a] 6d0e                      blt.s      $00011BAA
-[00011b9c] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00011b9c] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [00011ba2] 4eb9 0001 1370            jsr        $00011370
 [00011ba8] 548f                      addq.l     #2,a7
 [00011baa] 3f3c 0101                 move.w     #$0101,-(a7)
@@ -2053,7 +2058,7 @@ STACKCHECK:
 [00011bb2] 4eb9 0001 0f24            jsr        $00010F24
 [00011bb8] 5c8f                      addq.l     #6,a7
 [00011bba] 4eb9 0001 0d54            jsr        $00010D54
-[00011bc0] 13fc 0001 0003 5696       move.b     #$01,$00035696
+[00011bc0] 13fc 0001 0003 5696       move.b     #$01,ExecUtil.terminated
 [00011bc8] 4e5e                      unlk       a6
 [00011bca] 4e75                      rts
 [00011bcc] 4e56 fffc                 link       a6,#-4
@@ -2250,7 +2255,7 @@ STACKCHECK:
 [00011ea8] 6100 fe36                 bsr        $00011CE0
 [00011eac] 4fef 000c                 lea.l      12(a7),a7
 [00011eb0] 4efa 0008                 jmp        $00011EBA(pc)
-[00011eb4] 4239 0003 5650            clr.b      $00035650
+[00011eb4] 4239 0003 5650            clr.b      AppBase.xfer
 [00011eba] 4e5e                      unlk       a6
 [00011ebc] 4e75                      rts
 [00011ebe] 4e56 0000                 link       a6,#0
@@ -2264,7 +2269,7 @@ STACKCHECK:
 [00011ee0] 6100 fdfe                 bsr        $00011CE0
 [00011ee4] 4fef 000c                 lea.l      12(a7),a7
 [00011ee8] 4efa 0008                 jmp        $00011EF2(pc)
-[00011eec] 4239 0003 5650            clr.b      $00035650
+[00011eec] 4239 0003 5650            clr.b      AppBase.xfer
 [00011ef2] 4e5e                      unlk       a6
 [00011ef4] 4e75                      rts
 [00011ef6] 4e56 ff5a                 link       a6,#-166
@@ -2276,7 +2281,7 @@ STACKCHECK:
 [00011f0a] 2f05                      move.l     d5,-(a7)
 [00011f0c] 4eb9 0001 0f24            jsr        $00010F24
 [00011f12] 5c8f                      addq.l     #6,a7
-[00011f14] 4a39 0003 5650            tst.b      $00035650
+[00011f14] 4a39 0003 5650            tst.b      AppBase.xfer
 [00011f1a] 6758                      beq.s      $00011F74
 [00011f1c] 7a00                      moveq.l    #0,d5
 [00011f1e] 3a2e 000a                 move.w     10(a6),d5
@@ -2302,7 +2307,7 @@ STACKCHECK:
 [00011f70] 4fef 000c                 lea.l      12(a7),a7
 [00011f74] 4a2e 0008                 tst.b      8(a6)
 [00011f78] 670a                      beq.s      $00011F84
-[00011f7a] 4a39 0003 5650            tst.b      $00035650
+[00011f7a] 4a39 0003 5650            tst.b      AppBase.xfer
 [00011f80] 6602                      bne.s      $00011F84
 [00011f82] 6004                      bra.s      $00011F88
 [00011f84] 4efa 010c                 jmp        $00012092(pc)
@@ -2394,9 +2399,9 @@ STACKCHECK:
 [000120ca] 7aff                      moveq.l    #-1,d5
 [000120cc] 23c5 0003 5690            move.l     d5,$00035690
 [000120d2] 558f                      subq.l     #2,a7
-[000120d4] 4eb9 0001 0cb6            jsr        $00010CB6
-[000120da] 33df 0003 55ee            move.w     (a7)+,$000355EE
-[000120e0] 4239 0003 5696            clr.b      $00035696
+[000120d4] 4eb9 0001 0cb6            jsr        AESApplications.ApplInitialise
+[000120da] 33df 0003 55ee            move.w     (a7)+,AppBase.apId
+[000120e0] 4239 0003 5696            clr.b      ExecUtil.terminated
 [000120e6] 4e5e                      unlk       a6
 [000120e8] 4ef9 0001 25e6            jmp        $000125E6
 [000120ee] 4544                      lea.l      d4,b2 ; apollo only
@@ -2488,6 +2493,8 @@ STACKCHECK:
 [000121c2] 4f4b                      lea.l      (b3),b7 ; apollo only
 [000121c4] 2020                      move.l     -(a0),d0
 [000121c6] 5d00                      subq.b     #6,d0
+
+AESEvents.EventMessage:
 [000121c8] 4e56 0000                 link       a6,#0
 [000121cc] 23ee 0008 0003 518e       move.l     8(a6),$0003518E
 [000121d4] 558f                      subq.l     #2,a7
@@ -2496,60 +2503,64 @@ STACKCHECK:
 [000121dc] 3f3c 0001                 move.w     #$0001,-(a7)
 [000121e0] 3f3c 0001                 move.w     #$0001,-(a7)
 [000121e4] 4267                      clr.w      -(a7)
-[000121e6] 4eb9 0001 0b38            jsr        $00010B38
+[000121e6] 4eb9 0001 0b38            jsr        GEMAESbase.GemCall
 [000121ec] 4fef 000a                 lea.l      10(a7),a7
 [000121f0] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [000121f6] 4e5e                      unlk       a6
 [000121f8] 4e75                      rts
+
+M2Option.SendMsg:
 [000121fa] 4e56 0000                 link       a6,#0
-[000121fe] 33fc 0046 0003 569a       move.w     #$0046,$0003569A
-[00012206] 33f9 0003 55ee 0003 569c  move.w     $000355EE,$0003569C
-[00012210] 4279 0003 569e            clr.w      $0003569E
-[00012216] 33ee 0008 0003 56a0       move.w     8(a6),$000356A0
-[0001221e] 3f39 0003 5698            move.w     $00035698,-(a7)
+[000121fe] 33fc 0046 0003 569a       move.w     #$0046,M2Option.msgbuf
+[00012206] 33f9 0003 55ee 0003 569c  move.w     AppBase.apId,M2Option.msgbuf+2
+[00012210] 4279 0003 569e            clr.w      M2Option.msgbuf+4
+[00012216] 33ee 0008 0003 56a0       move.w     8(a6),M2Option.msgbuf+6
+[0001221e] 3f39 0003 5698            move.w     M2Option.accId,-(a7)
 [00012224] 3f3c 0010                 move.w     #$0010,-(a7)
-[00012228] 49f9 0003 569a            lea.l      $0003569A,a4
+[00012228] 49f9 0003 569a            lea.l      M2Option.msgbuf,a4
 [0001222e] 2a0c                      move.l     a4,d5
 [00012230] 2f05                      move.l     d5,-(a7)
 [00012232] 4eb9 0001 0cdc            jsr        $00010CDC
 [00012238] 508f                      addq.l     #8,a7
-[0001223a] 49f9 0003 56ba            lea.l      $000356BA,a4
+[0001223a] 49f9 0003 56ba            lea.l      M2Option.replybuf,a4
 [00012240] 2a0c                      move.l     a4,d5
 [00012242] 2f05                      move.l     d5,-(a7)
-[00012244] 4eb9 0001 21c8            jsr        $000121C8
+[00012244] 4eb9 0001 21c8            jsr        AESEvents.EventMessage
 [0001224a] 588f                      addq.l     #4,a7
-[0001224c] 0c79 0047 0003 56ba       cmpi.w     #$0047,$000356BA
+[0001224c] 0c79 0047 0003 56ba       cmpi.w     #$0047,M2Option.replybuf
 [00012254] 6702                      beq.s      $00012258
 [00012256] 60e2                      bra.s      $0001223A
 [00012258] 4e5e                      unlk       a6
 [0001225a] 4e75                      rts
+
+M2Option.GetSystemOptions:
 [0001225c] 4e56 fff8                 link       a6,#-8
-[00012260] 4a79 0003 5698            tst.w      $00035698
+[00012260] 4a79 0003 5698            tst.w      M2Option.accId
 [00012266] 6d02                      blt.s      $0001226A
 [00012268] 6004                      bra.s      $0001226E
 [0001226a] 4efa 00b0                 jmp        $0001231C(pc)
-[0001226e] 49f9 0003 56da            lea.l      $000356DA,a4
+[0001226e] 49f9 0003 56da            lea.l      M2Option.options,a4
 [00012274] 2a0c                      move.l     a4,d5
 [00012276] 7810                      moveq.l    #16,d4
 [00012278] e8ad                      lsr.l      d4,d5
-[0001227a] 33c5 0003 56a2            move.w     d5,$000356A2
-[00012280] 49f9 0003 56da            lea.l      $000356DA,a4
+[0001227a] 33c5 0003 56a2            move.w     d5,M2Option.msgbuf+8
+[00012280] 49f9 0003 56da            lea.l      M2Option.options,a4
 [00012286] 2a0c                      move.l     a4,d5
-[00012288] 33c5 0003 56a4            move.w     d5,$000356A4
+[00012288] 33c5 0003 56a4            move.w     d5,M2Option.msgbuf+10
 [0001228e] 3f3c 0005                 move.w     #$0005,-(a7)
-[00012292] 4eb9 0001 21fa            jsr        $000121FA
+[00012292] 4eb9 0001 21fa            jsr        M2Option.SendMsg
 [00012298] 548f                      addq.l     #2,a7
-[0001229a] 0c79 0001 0003 56c0       cmpi.w     #$0001,$000356C0
+[0001229a] 0c79 0001 0003 56c0       cmpi.w     #$0001,M2Option.replybuf+6
 [000122a2] 57c5                      seq        d5
 [000122a4] 4405                      neg.b      d5
 [000122a6] 286e 0014                 movea.l    20(a6),a4
 [000122aa] 1885                      move.b     d5,(a4)
-[000122ac] 0c79 0001 0003 56c2       cmpi.w     #$0001,$000356C2
+[000122ac] 0c79 0001 0003 56c2       cmpi.w     #$0001,M2Option.replybuf+8
 [000122b4] 57c5                      seq        d5
 [000122b6] 4405                      neg.b      d5
 [000122b8] 286e 0010                 movea.l    16(a6),a4
 [000122bc] 1885                      move.b     d5,(a4)
-[000122be] 3a39 0003 56c4            move.w     $000356C4,d5
+[000122be] 3a39 0003 56c4            move.w     M2Option.replybuf+10,d5
 [000122c4] 48c5                      ext.l      d5
 [000122c6] 286e 000c                 movea.l    12(a6),a4
 [000122ca] 1885                      move.b     d5,(a4)
@@ -2558,7 +2569,7 @@ STACKCHECK:
 [000122d4] 3a2e fffe                 move.w     -2(a6),d5
 [000122d8] cafc 0026                 mulu.w     #$0026,d5
 [000122dc] da6e fffc                 add.w      -4(a6),d5
-[000122e0] 49f9 0003 56da            lea.l      $000356DA,a4
+[000122e0] 49f9 0003 56da            lea.l      M2Option.options,a4
 [000122e6] 382e fffe                 move.w     -2(a6),d4
 [000122ea] 266e 0008                 movea.l    8(a6),a3
 [000122ee] c8fc 0032                 mulu.w     #$0032,d4
@@ -2699,22 +2710,24 @@ STACKCHECK:
 [00012502] 6600 fe50                 bne        $00012354
 [00012506] 4e5e                      unlk       a6
 [00012508] 4e75                      rts
+
+M2Option.GetCompilerOptions:
 [0001250a] 4e56 0000                 link       a6,#0
-[0001250e] 4a79 0003 5698            tst.w      $00035698
+[0001250e] 4a79 0003 5698            tst.w      M2Option.accId
 [00012514] 6d36                      blt.s      $0001254C
 [00012516] 3f3c 0003                 move.w     #$0003,-(a7)
-[0001251a] 4eb9 0001 21fa            jsr        $000121FA
+[0001251a] 4eb9 0001 21fa            jsr        M2Option.SendMsg
 [00012520] 548f                      addq.l     #2,a7
-[00012522] 3a39 0003 56c0            move.w     $000356C0,d5
+[00012522] 3a39 0003 56c0            move.w     M2Option.replybuf+6,d5
 [00012528] 48c5                      ext.l      d5
 [0001252a] 286e 0010                 movea.l    16(a6),a4
 [0001252e] 1885                      move.b     d5,(a4)
-[00012530] 3a39 0003 56c2            move.w     $000356C2,d5
+[00012530] 3a39 0003 56c2            move.w     M2Option.replybuf+8,d5
 [00012536] 48c5                      ext.l      d5
 [00012538] 286e 000c                 movea.l    12(a6),a4
 [0001253c] 1885                      move.b     d5,(a4)
 [0001253e] 286e 0008                 movea.l    8(a6),a4
-[00012542] 38b9 0003 56c4            move.w     $000356C4,(a4)
+[00012542] 38b9 0003 56c4            move.w     M2Option.replybuf+10,(a4)
 [00012548] 4efa 0014                 jmp        $0001255E(pc)
 [0001254c] 286e 0010                 movea.l    16(a6),a4
 [00012550] 4214                      clr.b      (a4)
@@ -2724,26 +2737,27 @@ STACKCHECK:
 [0001255c] 4254                      clr.w      (a4)
 [0001255e] 4e5e                      unlk       a6
 [00012560] 4e75                      rts
+
 [00012562] 4e56 0000                 link       a6,#0
-[00012566] 4a79 0003 5698            tst.w      $00035698
+[00012566] 4a79 0003 5698            tst.w      M2Option.accId
 [0001256c] 6d56                      blt.s      $000125C4
 [0001256e] 3f3c 0002                 move.w     #$0002,-(a7)
-[00012572] 4eb9 0001 21fa            jsr        $000121FA
+[00012572] 4eb9 0001 21fa            jsr        M2Option.SendMsg
 [00012578] 548f                      addq.l     #2,a7
-[0001257a] 3a39 0003 56c0            move.w     $000356C0,d5
+[0001257a] 3a39 0003 56c0            move.w     M2Option.replybuf+6,d5
 [00012580] 48c5                      ext.l      d5
 [00012582] 286e 000c                 movea.l    12(a6),a4
 [00012586] 1885                      move.b     d5,(a4)
-[00012588] 3a39 0003 56c2            move.w     $000356C2,d5
+[00012588] 3a39 0003 56c2            move.w     M2Option.replybuf+8,d5
 [0001258e] 48c5                      ext.l      d5
 [00012590] 286e 0010                 movea.l    16(a6),a4
 [00012594] 1885                      move.b     d5,(a4)
-[00012596] 3a39 0003 56c4            move.w     $000356C4,d5
+[00012596] 3a39 0003 56c4            move.w     M2Option.replybuf+10,d5
 [0001259c] 48c5                      ext.l      d5
 [0001259e] 286e 0014                 movea.l    20(a6),a4
 [000125a2] 1885                      move.b     d5,(a4)
 [000125a4] 7a00                      moveq.l    #0,d5
-[000125a6] 3a39 0003 56c6            move.w     $000356C6,d5
+[000125a6] 3a39 0003 56c6            move.w     M2Option.replybuf+12,d5
 [000125ac] 7010                      moveq.l    #16,d0
 [000125ae] e1a5                      asl.l      d0,d5
 [000125b0] 7800                      moveq.l    #0,d4
@@ -2762,25 +2776,25 @@ STACKCHECK:
 [000125da] 4294                      clr.l      (a4)
 [000125dc] 4e5e                      unlk       a6
 [000125de] 4e75                      rts
+
+M2Option.init:
 [000125e0] 4ef9 0001 20b4            jmp        $000120B4
 [000125e6] 4e56 0000                 link       a6,#0
 [000125ea] 558f                      subq.l     #2,a7
 [000125ec] 3f3c 0007                 move.w     #$0007,-(a7)
 [000125f0] 4879 0001 2614            pea.l      $00012614
-[000125f6] 4eb9 0001 0d20            jsr        $00010D20
+[000125f6] 4eb9 0001 0d20            jsr        AESApplications.ApplFind
 [000125fc] 5c8f                      addq.l     #6,a7
-[000125fe] 33df 0003 5698            move.w     (a7)+,$00035698
+[000125fe] 33df 0003 5698            move.w     (a7)+,M2Option.accId
 [00012604] 4e5e                      unlk       a6
 [00012606] 4ef9 0001 2fea            jmp        $00012FEA
-[0001260c] 413a 5c00                 chk.l      $0001820E(pc),d0 ; 68020+ only
-[00012610] 413a 0000                 chk.l      $00012612(pc),d0 ; 68020+ only
-[00012614] 4d32 4f50                 chk.l      (a2,zd4.l*8),d6 ; 68020+ only
-[00012618] 5449                      addq.w     #2,a1
-[0001261a] 4f4e                      lea.l      (b6),b7 ; apollo only
-[0001261c] 0000 4e56                 ori.b      #$56,d0
-[00012620] 0000 33ee                 ori.b      #$EE,d0
-[00012624] 0012 0003                 ori.b      #$03,(a2)
-[00012628] 51bc                      subq.l     #8,# ; illegal
+
+[0001260c] 413a 5c00                 .asciiz "A:\"
+[00012610] 413a 0000                 .asciiz "A:"
+[00012614] 4d32 4f50                 .asciiz 'M2OPTION'
+
+[0001261e] 4e56                      link       a6,#0
+[00012622] 33ee 0012 0003 51bc       move.w     18(a6),$000351BC
 [0001262a] 33ee 0010 0003 51be       move.w     16(a6),$000351BE
 [00012632] 3f3c 0027                 move.w     #$0027,-(a7)
 [00012636] 4267                      clr.w      -(a7)
@@ -2923,7 +2937,7 @@ STACKCHECK:
 [00012882] 4efa 0086                 jmp        $0001290A(pc)
 [00012886] 1d6e 0008 fffe            move.b     8(a6),-2(a6)
 [0001288c] 422e ffff                 clr.b      -1(a6)
-[00012890] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00012890] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [00012896] 3a39 0003 5806            move.w     $00035806,d5
 [0001289c] cbf9 0003 57f6            muls.w     $000357F6,d5
 [000128a2] da79 0003 57fe            add.w      $000357FE,d5
@@ -2957,7 +2971,7 @@ STACKCHECK:
 [0001291e] 4227                      clr.b      -(a7)
 [00012920] 4eb9 0001 2820            jsr        $00012820
 [00012926] 548f                      addq.l     #2,a7
-[00012928] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00012928] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [0001292e] 3a39 0003 5806            move.w     $00035806,d5
 [00012934] cbf9 0003 57f6            muls.w     $000357F6,d5
 [0001293a] da79 0003 57fe            add.w      $000357FE,d5
@@ -3084,7 +3098,7 @@ STACKCHECK:
 [00012b38] 4227                      clr.b      -(a7)
 [00012b3a] 4eb9 0001 2820            jsr        $00012820
 [00012b40] 548f                      addq.l     #2,a7
-[00012b42] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00012b42] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [00012b48] 3f3c 0003                 move.w     #$0003,-(a7)
 [00012b4c] 486e ffe8                 pea.l      -24(a6)
 [00012b50] 49ee fffc                 lea.l      -4(a6),a4
@@ -3116,7 +3130,7 @@ STACKCHECK:
 [00012bbc] da79 0003 57f8            add.w      $000357F8,d5
 [00012bc2] 5345                      subq.w     #1,d5
 [00012bc4] 3d45 ffe6                 move.w     d5,-26(a6)
-[00012bc8] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00012bc8] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [00012bce] 486e ffe0                 pea.l      -32(a6)
 [00012bd2] 4eb9 0001 2770            jsr        $00012770
 [00012bd8] 5c8f                      addq.l     #6,a7
@@ -3150,7 +3164,7 @@ STACKCHECK:
 [00012c54] 4879 0003 57fc            pea.l      $000357FC
 [00012c5a] 4eb9 0001 0ed6            jsr        $00010ED6
 [00012c60] 4fef 0010                 lea.l      16(a7),a7
-[00012c64] 33df 0003 55f2            move.w     (a7)+,$000355F2
+[00012c64] 33df 0003 55f2            move.w     (a7)+,AppBase.vdiHandle
 [00012c6a] 426e fffe                 clr.w      -2(a6)
 [00012c6e] 3a2e fffe                 move.w     -2(a6),d5
 [00012c72] da45                      add.w      d5,d5
@@ -3161,7 +3175,7 @@ STACKCHECK:
 [00012c88] 66e4                      bne.s      $00012C6E
 [00012c8a] 3d7c 0002 fffc            move.w     #$0002,-4(a6)
 [00012c90] 486e ffe8                 pea.l      -24(a6)
-[00012c94] 4879 0003 55f2            pea.l      $000355F2
+[00012c94] 4879 0003 55f2            pea.l      AppBase.vdiHandle
 [00012c9a] 486e ff74                 pea.l      -140(a6)
 [00012c9e] 4eb9 0001 1294            jsr        $00011294
 [00012ca4] 4fef 000c                 lea.l      12(a7),a7
@@ -3182,7 +3196,7 @@ STACKCHECK:
 [00012cde] 3f05                      move.w     d5,-(a7)
 [00012ce0] 4eb9 0001 0f60            jsr        $00010F60
 [00012ce6] 4fef 000a                 lea.l      10(a7),a7
-[00012cea] 33df 0003 55f0            move.w     (a7)+,$000355F0
+[00012cea] 33df 0003 55f0            move.w     (a7)+,AppBase.wdwHandle
 [00012cf0] 3f3c 000a                 move.w     #$000A,-(a7)
 [00012cf4] 3f3c 0019                 move.w     #$0019,-(a7)
 [00012cf8] 3f3c 0001                 move.w     #$0001,-(a7)
@@ -3197,7 +3211,7 @@ STACKCHECK:
 [00012d1a] 3f05                      move.w     d5,-(a7)
 [00012d1c] 4eb9 0001 0e2e            jsr        $00010E2E
 [00012d22] 4fef 0010                 lea.l      16(a7),a7
-[00012d26] 3f39 0003 55f0            move.w     $000355F0,-(a7)
+[00012d26] 3f39 0003 55f0            move.w     AppBase.wdwHandle,-(a7)
 [00012d2c] 3f3c 000a                 move.w     #$000A,-(a7)
 [00012d30] 3f3c 0019                 move.w     #$0019,-(a7)
 [00012d34] 3a2e ff72                 move.w     -142(a6),d5
@@ -3208,7 +3222,7 @@ STACKCHECK:
 [00012d46] 3f05                      move.w     d5,-(a7)
 [00012d48] 4eb9 0001 0fa8            jsr        $00010FA8
 [00012d4e] 4fef 000a                 lea.l      10(a7),a7
-[00012d52] 3f39 0003 55f0            move.w     $000355F0,-(a7)
+[00012d52] 3f39 0003 55f0            move.w     AppBase.wdwHandle,-(a7)
 [00012d58] 3f3c 0004                 move.w     #$0004,-(a7)
 [00012d5c] 4879 0003 57fe            pea.l      $000357FE
 [00012d62] 4879 0003 5800            pea.l      $00035800
@@ -3225,7 +3239,7 @@ STACKCHECK:
 [00012d9e] 7a1f                      moveq.l    #31,d5
 [00012da0] 16dc                      move.b     (a4)+,(a3)+
 [00012da2] 57cd fffc                 dbeq       d5,$00012DA0
-[00012da6] 3f39 0003 55f0            move.w     $000355F0,-(a7)
+[00012da6] 3f39 0003 55f0            move.w     AppBase.wdwHandle,-(a7)
 [00012dac] 3f3c 0002                 move.w     #$0002,-(a7)
 [00012db0] 49f9 0003 5cec            lea.l      $00035CEC,a4
 [00012db6] 2a0c                      move.l     a4,d5
@@ -3241,18 +3255,18 @@ STACKCHECK:
 [00012dd2] 4eb9 0001 10b2            jsr        $000110B2
 [00012dd8] 4fef 000c                 lea.l      12(a7),a7
 [00012ddc] 558f                      subq.l     #2,a7
-[00012dde] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00012dde] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [00012de4] 3f3c 0001                 move.w     #$0001,-(a7)
 [00012de8] 4eb9 0001 266a            jsr        $0001266A
 [00012dee] 588f                      addq.l     #4,a7
 [00012df0] 3d5f fffe                 move.w     (a7)+,-2(a6)
 [00012df4] 558f                      subq.l     #2,a7
-[00012df6] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00012df6] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [00012dfc] 4267                      clr.w      -(a7)
 [00012dfe] 4eb9 0001 26a2            jsr        $000126A2
 [00012e04] 588f                      addq.l     #4,a7
 [00012e06] 3d5f fffe                 move.w     (a7)+,-2(a6)
-[00012e0a] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00012e0a] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [00012e10] 4267                      clr.w      -(a7)
 [00012e12] 3f3c 0003                 move.w     #$0003,-(a7)
 [00012e16] 486e fffe                 pea.l      -2(a6)
@@ -3275,7 +3289,7 @@ STACKCHECK:
 [00012e68] 3a39 0003 5800            move.w     $00035800,d5
 [00012e6e] da79 0003 5804            add.w      $00035804,d5
 [00012e74] 3d45 fffe                 move.w     d5,-2(a6)
-[00012e78] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00012e78] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [00012e7e] 486e fff8                 pea.l      -8(a6)
 [00012e82] 4eb9 0001 2770            jsr        $00012770
 [00012e88] 5c8f                      addq.l     #6,a7
@@ -3319,7 +3333,7 @@ STACKCHECK:
 [00012f30] 3a39 0003 5800            move.w     $00035800,d5
 [00012f36] da79 0003 5804            add.w      $00035804,d5
 [00012f3c] 3d45 fffa                 move.w     d5,-6(a6)
-[00012f40] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00012f40] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [00012f46] 486e fff4                 pea.l      -12(a6)
 [00012f4a] 4eb9 0001 2770            jsr        $00012770
 [00012f50] 5c8f                      addq.l     #6,a7
@@ -3334,7 +3348,7 @@ STACKCHECK:
 [00012f76] b057                      cmp.w      (a7),d0
 [00012f78] 6f04                      ble.s      $00012F7E
 [00012f7a] 4efa 004c                 jmp        $00012FC8(pc)
-[00012f7e] 3f39 0003 55f2            move.w     $000355F2,-(a7)
+[00012f7e] 3f39 0003 55f2            move.w     AppBase.vdiHandle,-(a7)
 [00012f84] 3f2e fffe                 move.w     -2(a6),-(a7)
 [00012f88] 3a2e fffc                 move.w     -4(a6),d5
 [00012f8c] cbf9 0003 57f8            muls.w     $000357F8,d5
@@ -4079,7 +4093,7 @@ STACKCHECK:
 [000139bc] 5345                      subq.w     #1,d5
 [000139be] 49ee ff42                 lea.l      -190(a6),a4
 [000139c2] 4234 5000                 clr.b      0(a4,d5.w)
-[000139c6] 4239 0003 5650            clr.b      $00035650
+[000139c6] 4239 0003 5650            clr.b      AppBase.xfer
 [000139cc] 4efa 0024                 jmp        $000139F2(pc)
 [000139d0] 3f3c 003c                 move.w     #$003C,-(a7)
 [000139d4] 486e ff42                 pea.l      -190(a6)
@@ -4127,7 +4141,7 @@ STACKCHECK:
 [00013a66] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013a6a] 486e ffbe                 pea.l      -66(a6)
 [00013a6e] 3f3c 0031                 move.w     #$0031,-(a7)
-[00013a72] 4879 0003 5d14            pea.l      $00035D14
+[00013a72] 4879 0003 5d14            pea.l      M2Option.searchpaths
 [00013a78] 4eb9 0001 13da            jsr        $000113DA
 [00013a7e] 4fef 000c                 lea.l      12(a7),a7
 [00013a82] 558f                      subq.l     #2,a7
@@ -4228,7 +4242,7 @@ STACKCHECK:
 [00013be0] 676e                      beq.s      $00013C50
 [00013be2] 3a2e ff34                 move.w     -204(a6),d5
 [00013be6] cafc 0032                 mulu.w     #$0032,d5
-[00013bea] 49f9 0003 5d14            lea.l      $00035D14,a4
+[00013bea] 49f9 0003 5d14            lea.l      M2Option.searchpaths,a4
 [00013bf0] 3f3c 0031                 move.w     #$0031,-(a7)
 [00013bf4] 4874 5000                 pea.l      0(a4,d5.w)
 [00013bf8] 3f2e 0020                 move.w     32(a6),-(a7)
@@ -4403,7 +4417,7 @@ STACKCHECK:
 [00013e50] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013e54] 486e ff3e                 pea.l      -194(a6)
 [00013e58] 3f3c 0031                 move.w     #$0031,-(a7)
-[00013e5c] 4879 0003 5d14            pea.l      $00035D14
+[00013e5c] 4879 0003 5d14            pea.l      M2Option.searchpaths
 [00013e62] 4eb9 0001 13da            jsr        $000113DA
 [00013e68] 4fef 000c                 lea.l      12(a7),a7
 [00013e6c] 3f3c 003c                 move.w     #$003C,-(a7)
@@ -4595,6 +4609,7 @@ STACKCHECK:
 [00014118] 4234 5000                 clr.b      0(a4,d5.w)
 [0001411c] 4e5e                      unlk       a6
 [0001411e] 4e75                      rts
+
 [00014120] 4e56 0000                 link       a6,#0
 [00014124] 2f2d fffc                 move.l     -4(a5),-(a7)
 [00014128] 2b4e fffc                 move.l     a6,-4(a5)
@@ -4613,7 +4628,7 @@ STACKCHECK:
 [0001415a] 0000 0000
 [0001415e] 0000 0008
 [00014162] 0000 0146
-[00014166] 4a79 0003 6010            tst.w      $00036010
+[00014166] 4a79 0003 6010            tst.w      BufferedIO.heapsize
 [0001416c] 6728                      beq.s      $00014196
 [0001416e] 47f9 0001 4752            lea.l      $00014752,a3
 [00014174] 45d4                      lea.l      (a4),a2
@@ -4622,14 +4637,14 @@ STACKCHECK:
 [0001417a] 57cd fffc                 dbeq       d5,$00014178
 [0001417e] 2f0c                      move.l     a4,-(a7)
 [00014180] 7a00                      moveq.l    #0,d5
-[00014182] 3a39 0003 6010            move.w     $00036010,d5
+[00014182] 3a39 0003 6010            move.w     BufferedIO.heapsize,d5
 [00014188] 2f05                      move.l     d5,-(a7)
 [0001418a] 6100 fec4                 bsr        $00014050
 [0001418e] 588f                      addq.l     #4,a7
 [00014190] 285f                      movea.l    (a7)+,a4
 [00014192] 4efa 0128                 jmp        $000142BC(pc)
 [00014196] 4efa 011a                 jmp        $000142B2(pc)
-[0001419a] 4a39 0003 6006            tst.b      $00036006
+[0001419a] 4a39 0003 6006            tst.b      BufferedIO.query
 [000141a0] 6714                      beq.s      $000141B6
 [000141a2] 47f9 0001 4758            lea.l      $00014758,a3
 [000141a8] 45d4                      lea.l      (a4),a2
@@ -4638,7 +4653,7 @@ STACKCHECK:
 [000141ae] 57cd fffc                 dbeq       d5,$000141AC
 [000141b2] 4efa 0108                 jmp        $000142BC(pc)
 [000141b6] 4efa 00fa                 jmp        $000142B2(pc)
-[000141ba] 4a39 0003 6007            tst.b      $00036007
+[000141ba] 4a39 0003 6007            tst.b      BufferedIO.reffiles
 [000141c0] 6714                      beq.s      $000141D6
 [000141c2] 47f9 0001 475e            lea.l      $0001475E,a3
 [000141c8] 45d4                      lea.l      (a4),a2
@@ -4647,7 +4662,7 @@ STACKCHECK:
 [000141ce] 57cd fffc                 dbeq       d5,$000141CC
 [000141d2] 4efa 00e8                 jmp        $000142BC(pc)
 [000141d6] 4efa 00da                 jmp        $000142B2(pc)
-[000141da] 4a39 0003 6008            tst.b      $00036008
+[000141da] 4a39 0003 6008            tst.b      BufferedIO.listing
 [000141e0] 6714                      beq.s      $000141F6
 [000141e2] 47f9 0001 4762            lea.l      $00014762,a3
 [000141e8] 45d4                      lea.l      (a4),a2
@@ -4656,7 +4671,7 @@ STACKCHECK:
 [000141ee] 57cd fffc                 dbeq       d5,$000141EC
 [000141f2] 4efa 00c8                 jmp        $000142BC(pc)
 [000141f6] 4efa 00ba                 jmp        $000142B2(pc)
-[000141fa] 4ab9 0003 600c            tst.l      $0003600C
+[000141fa] 4ab9 0003 600c            tst.l      BufferedIO.stacksize
 [00014200] 6724                      beq.s      $00014226
 [00014202] 47f9 0001 4768            lea.l      $00014768,a3
 [00014208] 45d4                      lea.l      (a4),a2
@@ -4664,13 +4679,13 @@ STACKCHECK:
 [0001420c] 14db                      move.b     (a3)+,(a2)+
 [0001420e] 57cd fffc                 dbeq       d5,$0001420C
 [00014212] 2f0c                      move.l     a4,-(a7)
-[00014214] 2f39 0003 600c            move.l     $0003600C,-(a7)
+[00014214] 2f39 0003 600c            move.l     BufferedIO.stacksize,-(a7)
 [0001421a] 6100 fe34                 bsr        $00014050
 [0001421e] 588f                      addq.l     #4,a7
 [00014220] 285f                      movea.l    (a7)+,a4
 [00014222] 4efa 0098                 jmp        $000142BC(pc)
 [00014226] 4efa 008a                 jmp        $000142B2(pc)
-[0001422a] 4a39 0003 6009            tst.b      $00036009
+[0001422a] 4a39 0003 6009            tst.b      BufferedIO.linkmap
 [00014230] 6714                      beq.s      $00014246
 [00014232] 47f9 0001 476e            lea.l      $0001476E,a3
 [00014238] 45d4                      lea.l      (a4),a2
@@ -4679,7 +4694,7 @@ STACKCHECK:
 [0001423e] 57cd fffc                 dbeq       d5,$0001423C
 [00014242] 4efa 0078                 jmp        $000142BC(pc)
 [00014246] 4efa 006a                 jmp        $000142B2(pc)
-[0001424a] 4a39 0003 600b            tst.b      $0003600B
+[0001424a] 4a39 0003 600b            tst.b      BufferedIO.debugtable
 [00014250] 6714                      beq.s      $00014266
 [00014252] 47f9 0001 4772            lea.l      $00014772,a3
 [00014258] 45d4                      lea.l      (a4),a2
@@ -4688,7 +4703,7 @@ STACKCHECK:
 [0001425e] 57cd fffc                 dbeq       d5,$0001425C
 [00014262] 4efa 0058                 jmp        $000142BC(pc)
 [00014266] 4efa 004a                 jmp        $000142B2(pc)
-[0001426a] 4a39 0003 600a            tst.b      $0003600A
+[0001426a] 4a39 0003 600a            tst.b      BufferedIO.linkopt
 [00014270] 6714                      beq.s      $00014286
 [00014272] 47f9 0001 477a            lea.l      $0001477A,a3
 [00014278] 45d4                      lea.l      (a4),a2
@@ -4923,21 +4938,21 @@ NewStreams.WriteWord:
 [00014522] 4e56 0000                 link       a6,#0
 [00014526] 42b9 0003 55fc            clr.l      $000355FC
 [0001452c] 42b9 0003 55f8            clr.l      $000355F8
-[00014532] 4879 0003 6005            pea.l      $00036005
-[00014538] 4879 0003 6006            pea.l      $00036006
-[0001453e] 4879 0003 5650            pea.l      $00035650
-[00014544] 4879 0003 5d14            pea.l      $00035D14
-[0001454a] 4eb9 0001 225c            jsr        $0001225C
+[00014532] 4879 0003 6005            pea.l      BufferedIO.dump
+[00014538] 4879 0003 6006            pea.l      BufferedIO.query
+[0001453e] 4879 0003 5650            pea.l      AppBase.xfer
+[00014544] 4879 0003 5d14            pea.l      M2Option.searchpaths
+[0001454a] 4eb9 0001 225c            jsr        M2Option.GetSystemOptions
 [00014550] 4fef 0010                 lea.l      16(a7),a7
-[00014554] 4879 0003 6007            pea.l      $00036007
-[0001455a] 4879 0003 6008            pea.l      $00036008
-[00014560] 4879 0003 6010            pea.l      $00036010
-[00014566] 4eb9 0001 250a            jsr        $0001250A
+[00014554] 4879 0003 6007            pea.l      BufferedIO.reffiles
+[0001455a] 4879 0003 6008            pea.l      BufferedIO.listing
+[00014560] 4879 0003 6010            pea.l      BufferedIO.heapsize
+[00014566] 4eb9 0001 250a            jsr        M2Option.GetCompilerOptions
 [0001456c] 4fef 000c                 lea.l      12(a7),a7
-[00014570] 4879 0003 6009            pea.l      $00036009
-[00014576] 4879 0003 600a            pea.l      $0003600A
-[0001457c] 4879 0003 600b            pea.l      $0003600B
-[00014582] 4879 0003 600c            pea.l      $0003600C
+[00014570] 4879 0003 6009            pea.l      BufferedIO.linkmap
+[00014576] 4879 0003 600a            pea.l      BufferedIO.linkopt
+[0001457c] 4879 0003 600b            pea.l      BufferedIO.debugtable
+[00014582] 4879 0003 600c            pea.l      BufferedIO.stacksize
 [00014588] 4eb9 0001 2562            jsr        $00012562
 [0001458e] 4fef 0010                 lea.l      16(a7),a7
 [00014592] 13fc 0001 0003 5e72       move.b     #$01,$00035E72
@@ -5109,9 +5124,8 @@ NewStreams.WriteWord:
 [0001474c] 203a 2000                 move.l     $0001674E(pc),d0
 [00014750] 0000 4845                 ori.b      #$45,d0
 [00014754] 4150                      lea.l      (a0),b0 ; apollo only
-[00014756] 0000 5155                 ori.b      #$55,d0
-[0001475a] 4552                      lea.l      (a2),b2 ; apollo only
-[0001475c] 5900                      subq.b     #4,d0
+[00014756] 0000
+[00014758] 5155                      .asciiz 'QUERY'
 [0001475e] 5245                      addq.w     #1,d5
 [00014760] 4600                      not.b      d0
 [00014762] 4c49 5354                 divul.l    a1,d4:d5 ; remu.l for ColdFire
@@ -5195,10 +5209,10 @@ NewStreams.WriteWord:
 [0001486c] 6314                      bls.s      $00014882
 [0001486e] 2a2e 0008                 move.l     8(a6),d5
 [00014872] 0685 0000 0400            addi.l     #$00000400,d5
-[00014878] 23c5 0003 6018            move.l     d5,$00036018
+[00014878] 23c5 0003 6018            move.l     d5,BufferedIO.lheapsize
 [0001487e] 4efa 000c                 jmp        $0001488C(pc)
-[00014882] 23fc 0000 a000 0003 6018  move.l     #$0000A000,$00036018
-[0001488c] 2f39 0003 6018            move.l     $00036018,-(a7)
+[00014882] 23fc 0000 a000 0003 6018  move.l     #$0000A000,BufferedIO.lheapsize
+[0001488c] 2f39 0003 6018            move.l     BufferedIO.lheapsize,-(a7)
 [00014892] 6100 01c8                 bsr        $00014A5C
 [00014896] 588f                      addq.l     #4,a7
 [00014898] 2879 0003 565e            movea.l    $0003565E,a4
@@ -5389,14 +5403,14 @@ DEALLOCATE:
 [00014b20] 4879 0003 601c            pea.l      $0003601C
 [00014b26] 4879 0003 601c            pea.l      $0003601C
 [00014b2c] 4879 0003 601e            pea.l      $0003601E
-[00014b32] 4eb9 0001 250a            jsr        $0001250A
+[00014b32] 4eb9 0001 250a            jsr        M2Option.GetCompilerOptions
 [00014b38] 4fef 000c                 lea.l      12(a7),a7
 [00014b3c] 7a00                      moveq.l    #0,d5
 [00014b3e] 3a39 0003 601e            move.w     $0003601E,d5
-[00014b44] 23c5 0003 6018            move.l     d5,$00036018
-[00014b4a] 4ab9 0003 6018            tst.l      $00036018
+[00014b44] 23c5 0003 6018            move.l     d5,BufferedIO.lheapsize
+[00014b4a] 4ab9 0003 6018            tst.l      BufferedIO.lheapsize
 [00014b50] 660a                      bne.s      $00014B5C
-[00014b52] 23fc 0000 a000 0003 6018  move.l     #$0000A000,$00036018
+[00014b52] 23fc 0000 a000 0003 6018  move.l     #$0000A000,BufferedIO.lheapsize
 [00014b5c] 4e5e                      unlk       a6
 [00014b5e] 4ef9 0003 4eb2            jmp        $00034EB2
 [00014b64] 5b33 5d5b 4865 6170       subq.b     #5,([a3,zd5.l*4],$48656170) ; 68020+ only
@@ -47991,6 +48005,25 @@ MCP3IO.ReadWord:
 ; $00034f66
 
 1a516: MCPass1.arids
+355ee: AppBase.apId
+355f0: AppBase.wdwHandle
+355f2: AppBase.vdiHandle
+35696: ExecUtil.terminated
+35698: M2Option.accId
+3569a: M2Option.msgbuf
+356ba: M2Option.replybuf
+356da: M2Option.options
+35d14: M2Option.searchpaths
+36005: BufferedIO.dump
+36006: BufferedIO.query
+36007: BufferedIO.reffiles
+36008: BufferedIO.listing
+36009: BufferedIO.linkmap
+3600a: BufferedIO.linkopt
+3600b: BufferedIO.debugtable
+3600c: BufferedIO.stacksize
+36010: BufferedIO.heapsize
+36018: BufferedIO.lheapsize
 36020: MCP1Ident.boolptr
 36024: MCP1Ident.charptr
 36028: MCP1Ident.intptr

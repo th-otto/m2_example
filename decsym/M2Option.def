@@ -1,0 +1,12 @@
+DEFINITION MODULE M2Option;
+
+CONST MaxPaths = 6;
+
+TYPE SearchPath = ARRAY [0..49] OF CHAR; (* FIXME: way too short *)
+TYPE SearchPathArray = ARRAY[0..MaxPaths] OF SearchPath;
+
+PROCEDURE GetSystemOptions(VAR dump: BOOLEAN; VAR query: BOOLEAN; VAR xfer: BOOLEAN; VAR paths: SearchPathArray);
+PROCEDURE GetCompilerOptions(VAR reffiles: BOOLEAN; VAR listing: BOOLEAN; VAR heapsize: CARDINAL);
+PROCEDURE GetLinkerOptions(VAR linkmap: BOOLEAN; VAR linkopt: BOOLEAN; VAR debugtable: BOOLEAN; VAR stacksize: LONGCARD);
+
+END M2Option.

@@ -2645,7 +2645,7 @@ ExecUtil.IOError.RunProgram:
 [00012410] 6100 fe36                 bsr        ExecUtil.RunCmd
 [00012414] 4fef 000c                 lea.l      12(a7),a7
 [00012418] 4efa 0008                 jmp        $00012422(pc)
-[0001241c] 4239 0001 62ac            clr.b      $000162AC
+[0001241c] 4239 0001 62ac            clr.b      AppBase.xfer
 [00012422] 4e5e                      unlk       a6
 [00012424] 4e75                      rts
 
@@ -2661,7 +2661,7 @@ ExecUtil.IOError.RunCompiler:
 [00012448] 6100 fdfe                 bsr        ExecUtil.RunCmd
 [0001244c] 4fef 000c                 lea.l      12(a7),a7
 [00012450] 4efa 0008                 jmp        $0001245A(pc)
-[00012454] 4239 0001 62ac            clr.b      $000162AC
+[00012454] 4239 0001 62ac            clr.b      AppBase.xfer
 [0001245a] 4e5e                      unlk       a6
 [0001245c] 4e75                      rts
 
@@ -2675,7 +2675,7 @@ ExecUtil.IOError:
 [00012472] 2f05                      move.l     d5,-(a7)
 [00012474] 4eb9 0001 0ca8            jsr        AESGraphics.GrafMouse
 [0001247a] 5c8f                      addq.l     #6,a7
-[0001247c] 4a39 0001 62ac            tst.b      $000162AC
+[0001247c] 4a39 0001 62ac            tst.b      AppBase.xfer
 [00012482] 6758                      beq.s      $000124DC
 [00012484] 7a00                      moveq.l    #0,d5
 [00012486] 3a2e 000a                 move.w     10(a6),d5
@@ -2710,7 +2710,7 @@ casex1_tab:
 [000124d8] 4fef 000c                 lea.l      12(a7),a7
 [000124dc] 4a2e 0008                 tst.b      8(a6)
 [000124e0] 670a                      beq.s      $000124EC
-[000124e2] 4a39 0001 62ac            tst.b      $000162AC
+[000124e2] 4a39 0001 62ac            tst.b      AppBase.xfer
 [000124e8] 6602                      bne.s      $000124EC
 [000124ea] 6004                      bra.s      $000124F0
 [000124ec] 4efa 010c                 jmp        $000125FA(pc)
@@ -2866,18 +2866,18 @@ AESEvents.EventMessage:
 [00012760] 4e75                      rts
 
 ***
-* MODULE
+* MODULE M2Option
 ***
 
 M2Option.SendMsg:
 [00012762] 4e56 0000                 link       a6,#0
-[00012766] 33fc 0046 0001 680a       move.w     #$0046,$0001680A
-[0001276e] 33f9 0001 624a 0001 680c  move.w     AppBase.apId,$0001680C
-[00012778] 4279 0001 680e            clr.w      $0001680E
-[0001277e] 33ee 0008 0001 6810       move.w     8(a6),$00016810
+[00012766] 33fc 0046 0001 680a       move.w     #$0046,M2Option.msgbuf
+[0001276e] 33f9 0001 624a 0001 680c  move.w     AppBase.apId,M2Option.msgbuf+2
+[00012778] 4279 0001 680e            clr.w      M2Option.msgbuf+4
+[0001277e] 33ee 0008 0001 6810       move.w     8(a6),M2Option.msgbuf+6
 [00012786] 3f39 0001 6808            move.w     M2Option.accId,-(a7)
 [0001278c] 3f3c 0010                 move.w     #$0010,-(a7)
-[00012790] 49f9 0001 680a            lea.l      $0001680A,a4
+[00012790] 49f9 0001 680a            lea.l      M2Option.msgbuf,a4
 [00012796] 2a0c                      move.l     a4,d5
 [00012798] 2f05                      move.l     d5,-(a7)
 [0001279a] 4eb9 0001 1a52            jsr        AESApplications.ApplWrite
@@ -2893,6 +2893,7 @@ M2Option.SendMsg:
 [000127c0] 4e5e                      unlk       a6
 [000127c2] 4e75                      rts
 
+M2Option.GetSystemOptions:
 [000127c4] 4e56 fff8                 link       a6,#-8
 [000127c8] 4a79 0001 6808            tst.w      M2Option.accId
 [000127ce] 6d02                      blt.s      $000127D2
@@ -2902,22 +2903,22 @@ M2Option.SendMsg:
 [000127dc] 2a0c                      move.l     a4,d5
 [000127de] 7810                      moveq.l    #16,d4
 [000127e0] e8ad                      lsr.l      d4,d5
-[000127e2] 33c5 0001 6812            move.w     d5,$00016812
+[000127e2] 33c5 0001 6812            move.w     d5,M2Option.msgbuf+8
 [000127e8] 49f9 0001 684a            lea.l      $0001684A,a4
 [000127ee] 2a0c                      move.l     a4,d5
-[000127f0] 33c5 0001 6814            move.w     d5,$00016814
+[000127f0] 33c5 0001 6814            move.w     d5,M2Option.msgbuf+10
 [000127f6] 3f3c 0005                 move.w     #$0005,-(a7)
 [000127fa] 4eb9 0001 2762            jsr        M2Option.SendMsg
 [00012800] 548f                      addq.l     #2,a7
-[00012802] 3a39 0001 6830            move.w     $00016830,d5
+[00012802] 3a39 0001 6830            move.w     M2Option.replybuf+6,d5
 [00012808] 48c5                      ext.l      d5
 [0001280a] 286e 0014                 movea.l    20(a6),a4
 [0001280e] 1885                      move.b     d5,(a4)
-[00012810] 3a39 0001 6832            move.w     $00016832,d5
+[00012810] 3a39 0001 6832            move.w     M2Option.replybuf+8,d5
 [00012816] 48c5                      ext.l      d5
 [00012818] 286e 0010                 movea.l    16(a6),a4
 [0001281c] 1885                      move.b     d5,(a4)
-[0001281e] 3a39 0001 6834            move.w     $00016834,d5
+[0001281e] 3a39 0001 6834            move.w     M2Option.replybuf+10,d5
 [00012824] 48c5                      ext.l      d5
 [00012826] 286e 000c                 movea.l    12(a6),a4
 [0001282a] 1885                      move.b     d5,(a4)
@@ -3068,22 +3069,23 @@ M2Option.SendMsg:
 [00012a62] 4e5e                      unlk       a6
 [00012a64] 4e75                      rts
 
+M2Option.GetCompilerOptions:
 [00012a66] 4e56 0000                 link       a6,#0
 [00012a6a] 4a79 0001 6808            tst.w      M2Option.accId
 [00012a70] 6d36                      blt.s      $00012AA8
 [00012a72] 3f3c 0003                 move.w     #$0003,-(a7)
 [00012a76] 4eb9 0001 2762            jsr        M2Option.SendMsg
 [00012a7c] 548f                      addq.l     #2,a7
-[00012a7e] 3a39 0001 6830            move.w     $00016830,d5
+[00012a7e] 3a39 0001 6830            move.w     M2Option.replybuf+6,d5
 [00012a84] 48c5                      ext.l      d5
 [00012a86] 286e 0010                 movea.l    16(a6),a4
 [00012a8a] 1885                      move.b     d5,(a4)
-[00012a8c] 3a39 0001 6832            move.w     $00016832,d5
+[00012a8c] 3a39 0001 6832            move.w     M2Option.replybuf+8,d5
 [00012a92] 48c5                      ext.l      d5
 [00012a94] 286e 000c                 movea.l    12(a6),a4
 [00012a98] 1885                      move.b     d5,(a4)
 [00012a9a] 286e 0008                 movea.l    8(a6),a4
-[00012a9e] 38b9 0001 6834            move.w     $00016834,(a4)
+[00012a9e] 38b9 0001 6834            move.w     M2Option.replybuf+10,(a4)
 [00012aa4] 4efa 0014                 jmp        $00012ABA(pc)
 [00012aa8] 286e 0010                 movea.l    16(a6),a4
 [00012aac] 4214                      clr.b      (a4)
@@ -3094,30 +3096,31 @@ M2Option.SendMsg:
 [00012aba] 4e5e                      unlk       a6
 [00012abc] 4e75                      rts
 
+M2Option.GetLinkerOptions:
 [00012abe] 4e56 0000                 link       a6,#0
 [00012ac2] 4a79 0001 6808            tst.w      M2Option.accId
 [00012ac8] 6d56                      blt.s      $00012B20
 [00012aca] 3f3c 0002                 move.w     #$0002,-(a7)
 [00012ace] 4eb9 0001 2762            jsr        M2Option.SendMsg
 [00012ad4] 548f                      addq.l     #2,a7
-[00012ad6] 3a39 0001 6830            move.w     $00016830,d5
+[00012ad6] 3a39 0001 6830            move.w     M2Option.replybuf+6,d5
 [00012adc] 48c5                      ext.l      d5
 [00012ade] 286e 000c                 movea.l    12(a6),a4
 [00012ae2] 1885                      move.b     d5,(a4)
-[00012ae4] 3a39 0001 6832            move.w     $00016832,d5
+[00012ae4] 3a39 0001 6832            move.w     M2Option.replybuf+8,d5
 [00012aea] 48c5                      ext.l      d5
 [00012aec] 286e 0010                 movea.l    16(a6),a4
 [00012af0] 1885                      move.b     d5,(a4)
-[00012af2] 3a39 0001 6834            move.w     $00016834,d5
+[00012af2] 3a39 0001 6834            move.w     M2Option.replybuf+10,d5
 [00012af8] 48c5                      ext.l      d5
 [00012afa] 286e 0014                 movea.l    20(a6),a4
 [00012afe] 1885                      move.b     d5,(a4)
 [00012b00] 7a00                      moveq.l    #0,d5
-[00012b02] 3a39 0001 6836            move.w     $00016836,d5
+[00012b02] 3a39 0001 6836            move.w     M2Option.replybuf+12,d5
 [00012b08] 7010                      moveq.l    #16,d0
 [00012b0a] e1a5                      asl.l      d0,d5
 [00012b0c] 7800                      moveq.l    #0,d4
-[00012b0e] 3839 0001 6838            move.w     $00016838,d4
+[00012b0e] 3839 0001 6838            move.w     M2Option.replybuf+14,d4
 [00012b14] da84                      add.l      d4,d5
 [00012b16] 286e 0008                 movea.l    8(a6),a4
 [00012b1a] 2885                      move.l     d5,(a4)
@@ -3868,7 +3871,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000134b2] 5345                      subq.w     #1,d5
 [000134b4] 49ee ff42                 lea.l      -190(a6),a4
 [000134b8] 4234 5000                 clr.b      0(a4,d5.w)
-[000134bc] 4239 0001 62ac            clr.b      $000162AC
+[000134bc] 4239 0001 62ac            clr.b      AppBase.xfer
 [000134c2] 4efa 0024                 jmp        $000134E8(pc)
 [000134c6] 3f3c 003c                 move.w     #$003C,-(a7)
 [000134ca] 486e ff42                 pea.l      -190(a6)
@@ -3917,7 +3920,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [0001355e] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013562] 486e ffbe                 pea.l      -66(a6)
 [00013566] 3f3c 0031                 move.w     #$0031,-(a7)
-[0001356a] 4879 0001 6956            pea.l      $00016956
+[0001356a] 4879 0001 6956            pea.l      M2Option.searchpaths
 [00013570] 4eb9 0001 1c40            jsr        Strings.Assign
 [00013576] 4fef 000c                 lea.l      12(a7),a7
 [0001357a] 558f                      subq.l     #2,a7
@@ -4022,7 +4025,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000136e6] 6770                      beq.s      $00013758
 [000136e8] 3a2e ff34                 move.w     -204(a6),d5
 [000136ec] cafc 0032                 mulu.w     #$0032,d5
-[000136f0] 49f9 0001 6956            lea.l      $00016956,a4
+[000136f0] 49f9 0001 6956            lea.l      M2Option.searchpaths,a4
 [000136f6] 3f3c 0031                 move.w     #$0031,-(a7)
 [000136fa] 4874 5000                 pea.l      0(a4,d5.w)
 [000136fe] 3a2e 0020                 move.w     32(a6),d5
@@ -4204,7 +4207,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013968] 3f3c 003c                 move.w     #$003C,-(a7)
 [0001396c] 486e ff3e                 pea.l      -194(a6)
 [00013970] 3f3c 0031                 move.w     #$0031,-(a7)
-[00013974] 4879 0001 6956            pea.l      $00016956
+[00013974] 4879 0001 6956            pea.l      M2Option.searchpaths
 [0001397a] 4eb9 0001 1c40            jsr        Strings.Assign
 [00013980] 4fef 000c                 lea.l      12(a7),a7
 [00013984] 3f3c 003c                 move.w     #$003C,-(a7)
@@ -4420,7 +4423,7 @@ casex4:
 [00013c76] 0000 0008                 dc.l       8
 [00013c7a] 0000 0146                 dc.l casex4_tab-casex4
 case 0:
-[00013c7e] 4a79 0001 6b12            tst.w      $00016B12
+[00013c7e] 4a79 0001 6b12            tst.w      BufferedIO.heapsize
 [00013c84] 6728                      beq.s      $00013CAE
 [00013c86] 47f9 0001 414e            lea.l      $0001414E,a3 'HEAP'
 [00013c8c] 45d4                      lea.l      (a4),a2
@@ -4429,7 +4432,7 @@ case 0:
 [00013c92] 57cd fffc                 dbeq       d5,$00013C90
 [00013c96] 2f0c                      move.l     a4,-(a7)
 [00013c98] 7a00                      moveq.l    #0,d5
-[00013c9a] 3a39 0001 6b12            move.w     $00016B12,d5
+[00013c9a] 3a39 0001 6b12            move.w     BufferedIO.heapsize,d5
 [00013ca0] 2f05                      move.l     d5,-(a7)
 [00013ca2] 6100 fec6                 bsr        $00013B6A
 [00013ca6] 588f                      addq.l     #4,a7
@@ -4437,7 +4440,7 @@ case 0:
 [00013caa] 4efa 0128                 jmp        $00013DD4(pc)
 [00013cae] 4efa 011a                 jmp        $00013DCA(pc)
 case 1:
-[00013cb2] 4a39 0001 6b08            tst.b      $00016B08
+[00013cb2] 4a39 0001 6b08            tst.b      BufferedIO.query
 [00013cb8] 6714                      beq.s      $00013CCE
 [00013cba] 47f9 0001 4154            lea.l      $00014154,a3 'QUERY'
 [00013cc0] 45d4                      lea.l      (a4),a2
@@ -4447,7 +4450,7 @@ case 1:
 [00013cca] 4efa 0108                 jmp        $00013DD4(pc)
 [00013cce] 4efa 00fa                 jmp        $00013DCA(pc)
 case 2:
-[00013cd2] 4a39 0001 6b09            tst.b      $00016B09
+[00013cd2] 4a39 0001 6b09            tst.b      BufferedIO.reffiles
 [00013cd8] 6714                      beq.s      $00013CEE
 [00013cda] 47f9 0001 415a            lea.l      $0001415A,a3 'REF'
 [00013ce0] 45d4                      lea.l      (a4),a2
@@ -4457,7 +4460,7 @@ case 2:
 [00013cea] 4efa 00e8                 jmp        $00013DD4(pc)
 [00013cee] 4efa 00da                 jmp        $00013DCA(pc)
 case 3:
-[00013cf2] 4a39 0001 6b0a            tst.b      $00016B0A
+[00013cf2] 4a39 0001 6b0a            tst.b      BufferedIO.listing
 [00013cf8] 6714                      beq.s      $00013D0E
 [00013cfa] 47f9 0001 415e            lea.l      $0001415E,a3 'LIST'
 [00013d00] 45d4                      lea.l      (a4),a2
@@ -4467,7 +4470,7 @@ case 3:
 [00013d0a] 4efa 00c8                 jmp        $00013DD4(pc)
 [00013d0e] 4efa 00ba                 jmp        $00013DCA(pc)
 case 4:
-[00013d12] 4ab9 0001 6b0e            tst.l      $00016B0E
+[00013d12] 4ab9 0001 6b0e            tst.l      BufferedIO.stacksize
 [00013d18] 6724                      beq.s      $00013D3E
 [00013d1a] 47f9 0001 4164            lea.l      $00014164,a3 'STACK'
 [00013d20] 45d4                      lea.l      (a4),a2
@@ -4475,14 +4478,14 @@ case 4:
 [00013d24] 14db                      move.b     (a3)+,(a2)+
 [00013d26] 57cd fffc                 dbeq       d5,$00013D24
 [00013d2a] 2f0c                      move.l     a4,-(a7)
-[00013d2c] 2f39 0001 6b0e            move.l     $00016B0E,-(a7)
+[00013d2c] 2f39 0001 6b0e            move.l     BufferedIO.stacksize,-(a7)
 [00013d32] 6100 fe36                 bsr        $00013B6A
 [00013d36] 588f                      addq.l     #4,a7
 [00013d38] 285f                      movea.l    (a7)+,a4
 [00013d3a] 4efa 0098                 jmp        $00013DD4(pc)
 [00013d3e] 4efa 008a                 jmp        $00013DCA(pc)
 case 5:
-[00013d42] 4a39 0001 6b0b            tst.b      $00016B0B
+[00013d42] 4a39 0001 6b0b            tst.b      BufferedIO.linkmap
 [00013d48] 6714                      beq.s      $00013D5E
 [00013d4a] 47f9 0001 416a            lea.l      $0001416A,a3 'MAP'
 [00013d50] 45d4                      lea.l      (a4),a2
@@ -4492,7 +4495,7 @@ case 5:
 [00013d5a] 4efa 0078                 jmp        $00013DD4(pc)
 [00013d5e] 4efa 006a                 jmp        $00013DCA(pc)
 case 6:
-[00013d62] 4a39 0001 6b0d            tst.b      $00016B0D
+[00013d62] 4a39 0001 6b0d            tst.b      BufferedIO.debugtable
 [00013d68] 6714                      beq.s      $00013D7E
 [00013d6a] 47f9 0001 416e            lea.l      $0001416E,a3 'DTABLE'
 [00013d70] 45d4                      lea.l      (a4),a2
@@ -4502,7 +4505,7 @@ case 6:
 [00013d7a] 4efa 0058                 jmp        $00013DD4(pc)
 [00013d7e] 4efa 004a                 jmp        $00013DCA(pc)
 case 7:
-[00013d82] 4a39 0001 6b0c            tst.b      $00016B0C
+[00013d82] 4a39 0001 6b0c            tst.b      BufferedIO.linkopt
 [00013d88] 6714                      beq.s      $00013D9E
 [00013d8a] 47f9 0001 4176            lea.l      $00014176,a3 'OPTIMISE'
 [00013d90] 45d4                      lea.l      (a4),a2
@@ -4663,22 +4666,22 @@ BufferedIO.Read16Bit(VAR s: BufferedStream; VAR v: WORD)
 [00013f42] 4e56 0000                 link       a6,#0
 [00013f46] 42b9 0001 6258            clr.l      AppBase.openStreams
 [00013f4c] 42b9 0001 6254            clr.l      AppBase.openFiles
-[00013f52] 4879 0001 6b07            pea.l      $00016B07
-[00013f58] 4879 0001 6b08            pea.l      $00016B08
-[00013f5e] 4879 0001 62ac            pea.l      $000162AC
-[00013f64] 4879 0001 6956            pea.l      $00016956
-[00013f6a] 4eb9 0001 27c4            jsr        $000127C4
+[00013f52] 4879 0001 6b07            pea.l      BufferedIO.dump
+[00013f58] 4879 0001 6b08            pea.l      BufferedIO.query
+[00013f5e] 4879 0001 62ac            pea.l      AppBase.xfer
+[00013f64] 4879 0001 6956            pea.l      M2Option.searchpaths
+[00013f6a] 4eb9 0001 27c4            jsr        M2Option.GetSystemOptions
 [00013f70] 4fef 0010                 lea.l      16(a7),a7
-[00013f74] 4879 0001 6b09            pea.l      $00016B09
-[00013f7a] 4879 0001 6b0a            pea.l      $00016B0A
-[00013f80] 4879 0001 6b12            pea.l      $00016B12
-[00013f86] 4eb9 0001 2a66            jsr        $00012A66
+[00013f74] 4879 0001 6b09            pea.l      BufferedIO.reffiles
+[00013f7a] 4879 0001 6b0a            pea.l      BufferedIO.listing
+[00013f80] 4879 0001 6b12            pea.l      BufferedIO.heapsize
+[00013f86] 4eb9 0001 2a66            jsr        M2Option.GetCompilerOptions
 [00013f8c] 4fef 000c                 lea.l      12(a7),a7
-[00013f90] 4879 0001 6b0b            pea.l      $00016B0B
-[00013f96] 4879 0001 6b0c            pea.l      $00016B0C
-[00013f9c] 4879 0001 6b0d            pea.l      $00016B0D
-[00013fa2] 4879 0001 6b0e            pea.l      $00016B0E
-[00013fa8] 4eb9 0001 2abe            jsr        $00012ABE
+[00013f90] 4879 0001 6b0b            pea.l      BufferedIO.linkmap
+[00013f96] 4879 0001 6b0c            pea.l      BufferedIO.linkopt
+[00013f9c] 4879 0001 6b0d            pea.l      BufferedIO.debugtable
+[00013fa2] 4879 0001 6b0e            pea.l      BufferedIO.stacksize
+[00013fa8] 4eb9 0001 2abe            jsr        M2Option.GetLinkerOptions
 [00013fae] 4fef 0010                 lea.l      16(a7),a7
 [00013fb2] 13fc 0001 0001 6ab4       move.b     #$01,$00016AB4
 [00013fba] 4239 0001 6b06            clr.b      $00016B06
@@ -6498,11 +6501,12 @@ DecSym.init:
 15d1e: ExceptionVecs2 ds.l
 1624a: AppBase.apId
 1624c: AppBase.wdwHandle
+1624e: AppBase.vdiHandle
 16250: AppBase.doUpdateWindow
 16254: AppBase.openFiles
 16258: AppBase.openStreams
 1625c: AppBase.shellTail
-162ac: AppBase.
+162ac: AppBase.xfer
 162ae: AppWindow.wchar
 162b0: AppWindow.hchar
 162b2: AppWindow.wbox
@@ -6526,5 +6530,19 @@ DecSym.init:
 16804: Executil.
 16806: Executil.terminated
 16808: M2Option.accId
-1680a: M2Option.msg
+1680a: M2Option.msgbuf
+1682a: M2Option.replybuf
+1684a-16954: M2Option.options
+16956-16ab4: M2Option.searchpaths
+16ab4:
+16b06: BufferedIO.
+16b07: BufferedIO.dump
+16b08: BufferedIO.query
+16b09: BufferedIO.reffiles
+16b0a: BufferedIO.listing
+16b0b: BufferedIO.linkmap
+16b0c: BufferedIO.linkopt
+16b0d: BufferedIO.debugtable
+16b0e: BufferedIO.stacksize
+16b12: BufferedIO.heapsize
 16e48: Symfile.lastByte
