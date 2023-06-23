@@ -1,0 +1,7 @@
+DEFINITION MODULE StrUtil;
+
+PROCEDURE FormatCard(val: CARDINAL; len: CARDINAL; VAR result: ARRAY OF CHAR);
+PROCEDURE FormatHexCard(val: CARDINAL; len: CARDINAL; VAR result: ARRAY OF CHAR);
+PROCEDURE FormatHexLong(val: LONGCARD; len: CARDINAL; VAR result: ARRAY OF CHAR);
+
+END StrUtil.

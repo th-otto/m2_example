@@ -1,0 +1,7 @@
+DEFINITION MODULE Filepool;
+
+TYPE Poolname = ARRAY [0..79] OF CHAR;
+
+PROCEDURE PoolAlloc(name: Poolname): INTEGER;
+
+END Filepool.
