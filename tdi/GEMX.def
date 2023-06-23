@@ -1,12 +1,9 @@
 DEFINITION MODULE GEMX;
 
 
-IMPORT SYSTEM;
+FROM SYSTEM IMPORT ADDRESS, PROCESS, LONGWORD;
 
-TYPE
-  ErrorCause = (XError(*0*),
-  XRaise(*1*),
-  XPropagate(*2*));
+TYPE ErrorCause = (XError, XRaise, XPropagate);
 
 (* Run time errors *)
 
@@ -39,40 +36,38 @@ TYPE
   ErrorContextType = RECORD
                        Error(*offset: 0H*)  : INTEGER;
                        CameFrom(*offset: 2H*)  : ErrorCause;
-                       PC(*offset: 4H*)  : SYSTEM.ADDRESS;
+                       PC(*offset: 4H*)  : ADDRESS;
                        SR(*offset: 8H*)  : CARDINAL;
-                       A5(*offset: AH*)  : SYSTEM.ADDRESS;
-                       A6(*offset: EH*)  : SYSTEM.ADDRESS;
-                       A7(*offset: 12H*)  : SYSTEM.ADDRESS;
-                       LastMP(*offset: 16H*)  : SYSTEM.ADDRESS;
+                       A5(*offset: AH*)  : ADDRESS;
+                       A6(*offset: EH*)  : ADDRESS;
+                       A7(*offset: 12H*)  : ADDRESS;
+                       LastMP(*offset: 16H*)  : ADDRESS;
                        DumpToDo(*offset: 1AH*)  : BOOLEAN;
-                       FileToDump(*offset: 1CH*)  : ARRAY [0..22] OF CHAR;;
+                       FileToDump(*offset: 1CH*)  : ARRAY [0..22] OF CHAR;
                      END;
                    
 TYPE ErrorProcessorType = PROCEDURE ();
 
 TYPE BasePageType = RECORD
-   LowTPA(*offset: 0H*)  : SYSTEM.ADDRESS;
-   HiTPA(*offset: 4H*)  : SYSTEM.ADDRESS;
-   CodeBase(*offset: 8H*)  : SYSTEM.ADDRESS;
+   LowTPA(*offset: 0H*)  : ADDRESS;
+   HiTPA(*offset: 4H*)  : ADDRESS;
+   CodeBase(*offset: 8H*)  : ADDRESS;
    CodeLen(*offset: CH*)  : LONGCARD;
-   DataBase(*offset: 10H*)  : SYSTEM.ADDRESS;
+   DataBase(*offset: 10H*)  : ADDRESS;
    DataLen(*offset: 14H*)  : LONGCARD;
-   BssBase(*offset: 18H*)  : SYSTEM.ADDRESS;
+   BssBase(*offset: 18H*)  : ADDRESS;
    BssLen(*offset: 1CH*)  : LONGCARD;
-   DtaPtr(*offset: 20H*)  : SYSTEM.ADDRESS;
-   ParentBasePage(*offset: 24H*)  : SYSTEM.ADDRESS;
+   DtaPtr(*offset: 20H*)  : ADDRESS;
+   ParentBasePage(*offset: 24H*)  : ADDRESS;
    resvd1(*offset: 28H*)  : LONGCARD;
    EnvPtr(*offset: 2CH*)  : POINTER TO ARRAY [0..79] OF CHAR;
    resvd2(*offset: 30H*)  : ARRAY [48..127] OF CHAR;
    CmdLine(*offset: 80H*)  : ARRAY [0..79] OF CHAR;
 END;
                
-VAR BasePageAddress (* reladdr: 0H*)  : POINTER TO BasePageType;
-
-VAR ErrorProcessor (* reladdr: 4H*)  : ErrorProcessorType;
-
-VAR ErrorContext (* reladdr: 8H*)  : ErrorContextType;
+VAR BasePageAddress: POINTER TO BasePageType;
+VAR ErrorProcessor: ErrorProcessorType;
+VAR ErrorContext: ErrorContextType;
 
 (* 1 *) PROCEDURE CASEX();
 
@@ -80,7 +75,7 @@ VAR ErrorContext (* reladdr: 8H*)  : ErrorContextType;
 
 (* 3 *) PROCEDURE STACKTEST();
 
-(* 4 *) PROCEDURE NEWPROCESS(PROC; SYSTEM.ADDRESS; LONGCARD; VAR SYSTEM.PROCESS; LONGCARD);
+(* 4 *) PROCEDURE NEWPROCESS(p: PROC; a: ADDRESS; size: LONGCARD; VAR p1: PROCESS; stacksize: LONGCARD);
 
 (* 5 *) PROCEDURE TRANSFER();
 
@@ -88,48 +83,48 @@ VAR ErrorContext (* reladdr: 8H*)  : ErrorContextType;
 
 (* 7 *) PROCEDURE SYSCALL();
 
-(* 8 *) PROCEDURE MULU32(LONGCARD; LONGCARD);
+(* 8 *) PROCEDURE MULU32(a, b: LONGCARD);
 
-(* 9 *) PROCEDURE DIVU32(LONGCARD; LONGCARD);
+(* 9 *) PROCEDURE DIVU32(a, b: LONGCARD);
 
-(* 10 *) PROCEDURE MULS32(LONGINT; LONGINT);
+(* 10 *) PROCEDURE MULS32(a, b: LONGINT);
 
-(* 11 *) PROCEDURE DIVS32(LONGINT; LONGINT);
+(* 11 *) PROCEDURE DIVS32(a, b: LONGINT);
 
-(* 12 *) PROCEDURE FADD(REAL; REAL);
+(* 12 *) PROCEDURE FADD(a, b: REAL);
 
-(* 13 *) PROCEDURE FSUB(REAL; REAL);
+(* 13 *) PROCEDURE FSUB(a, b: REAL);
 
-(* 14 *) PROCEDURE FMUL(REAL; REAL);
+(* 14 *) PROCEDURE FMUL(a, b: REAL);
 
-(* 15 *) PROCEDURE FDIV(REAL; REAL);
+(* 15 *) PROCEDURE FDIV(a, b: REAL);
 
-(* 16 *) PROCEDURE FCMP(REAL; REAL);
+(* 16 *) PROCEDURE FCMP(a, b: REAL);
 
-(* 17 *) PROCEDURE FTST(REAL);
+(* 17 *) PROCEDURE FTST(a: REAL);
 
-(* 18 *) PROCEDURE FLOATX(SYSTEM.LONGWORD);
+(* 18 *) PROCEDURE FLOATX(a: LONGWORD);
 
-(* 19 *) PROCEDURE TRUNCX(REAL);
+(* 19 *) PROCEDURE TRUNCX(a: REAL);
 
-(* 20 *) PROCEDURE LFADD(LONGREAL; LONGREAL);
+(* 20 *) PROCEDURE LFADD(a, b: LONGREAL);
 
-(* 21 *) PROCEDURE LFSUB(LONGREAL; LONGREAL);
+(* 21 *) PROCEDURE LFSUB(a, b: LONGREAL);
 
-(* 22 *) PROCEDURE LFMUL(LONGREAL; LONGREAL);
+(* 22 *) PROCEDURE LFMUL(a, b: LONGREAL);
 
-(* 23 *) PROCEDURE LFDIV(LONGREAL; LONGREAL);
+(* 23 *) PROCEDURE LFDIV(a, b: LONGREAL);
 
-(* 24 *) PROCEDURE LFCMP(LONGREAL; LONGREAL);
+(* 24 *) PROCEDURE LFCMP(a, b: LONGREAL);
 
-(* 25 *) PROCEDURE LFTST(LONGREAL);
+(* 25 *) PROCEDURE LFTST(a: LONGREAL);
 
-(* 26 *) PROCEDURE LFLOATX(SYSTEM.LONGWORD);
+(* 26 *) PROCEDURE LFLOATX(a: LONGWORD);
 
-(* 27 *) PROCEDURE LTRUNCX(LONGREAL);
+(* 27 *) PROCEDURE LTRUNCX(a: LONGREAL);
 
-(* 28 *) PROCEDURE LENGTHEN(REAL);
+(* 28 *) PROCEDURE LENGTHEN(a: REAL);
 
-(* 29 *) PROCEDURE SHORTEN(LONGREAL);
+(* 29 *) PROCEDURE SHORTEN(a: LONGREAL);
 
 END GEMX.

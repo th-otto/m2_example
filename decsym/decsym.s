@@ -3147,16 +3147,17 @@ M2Option.init:
 [00012b58] 5c8f                      addq.l     #6,a7
 [00012b5a] 33df 0001 6808            move.w     (a7)+,M2Option.accId
 [00012b60] 4e5e                      unlk       a6
-[00012b62] 4ef9 0001 3f42            jmp        $00013F42
+[00012b62] 4ef9 0001 3f42            jmp        NewStreams.init+6
 
 [00012b68] 413a 5c00                 .asciiz "A:\"
 [00012b6c] 413a 0000                 .asciiz "A:"
 [00012b70] 4d32 4f50                 .asciiz 'M2OPTION'
 
 ***
-* MODULE
+* MODULE NewStreams
 ***
 
+NewStreams.FileError:
 [00012b7a] 4e56                      link       a6,#-402
 [00012b7e] 4267                      clr.w      -(a7)
 [00012b80] 7aff                      moveq.l    #-1,d5
@@ -3213,13 +3214,14 @@ M2Option.init:
 [00012c3e] 4e5e                      unlk       a6
 [00012c40] 4e75                      rts
 
+NewStreams.Error:
 [00012c42] 4e56 fe6e                 link       a6,#-402
 [00012c46] 4267                      clr.w      -(a7)
 [00012c48] 7aff                      moveq.l    #-1,d5
 [00012c4a] 2f05                      move.l     d5,-(a7)
 [00012c4c] 4eb9 0001 0ca8            jsr        AESGraphics.GrafMouse
 [00012c52] 5c8f                      addq.l     #6,a7
-[00012c54] 49f9 0001 403e            lea.l      $0001403E,a4 '[3][An IO error has occured|whilst'
+[00012c54] 49f9 0001 403e            lea.l      $0001403E,a4 '[3][An IO error has occured|whilst '
 [00012c5a] 47ee ff36                 lea.l      -202(a6),a3
 [00012c5e] 7a23                      moveq.l    #35,d5
 [00012c60] 16dc                      move.b     (a4)+,(a3)+
@@ -3265,6 +3267,7 @@ M2Option.init:
 [00012d06] 4e5e                      unlk       a6
 [00012d08] 4e75                      rts
 
+NewStreams.Enospace:
 [00012d0a] 4e56 ffae                 link       a6,#-82
 [00012d0e] 4267                      clr.w      -(a7)
 [00012d10] 7aff                      moveq.l    #-1,d5
@@ -3290,6 +3293,7 @@ M2Option.init:
 [00012d58] 4e5e                      unlk       a6
 [00012d5a] 4e75                      rts
 
+NewStreams.Enomem:
 [00012d5c] 4e56 ffae                 link       a6,#-82
 [00012d60] 4267                      clr.w      -(a7)
 [00012d62] 7aff                      moveq.l    #-1,d5
@@ -3315,6 +3319,7 @@ M2Option.init:
 [00012daa] 4e5e                      unlk       a6
 [00012dac] 4e75                      rts
 
+NewStreams.setExtension:
 [00012dae] 4e56 fff8                 link       a6,#-8
 [00012db2] 286e 0008                 movea.l    8(a6),a4
 [00012db6] 2d54 fffc                 move.l     (a4),-4(a6)
@@ -3400,6 +3405,7 @@ M2Option.init:
 [00012ede] 4e5e                      unlk       a6
 [00012ee0] 4e75                      rts
 
+NewStreams.SetFileExtension:
 [00012ee2] 4e56 0000                 link       a6,#0
 [00012ee6] 2f2d fffc                 move.l     -4(a5),-(a7)
 [00012eea] 2b4e fffc                 move.l     a6,-4(a5)
@@ -3415,83 +3421,83 @@ case 0:
 [00012f08] 4efa 0136                 jmp        $00013040(pc)
 case 1:
 [00012f0c] 4879 0001 40fe            pea.l      $000140FE 'TMP'
-[00012f12] 6100 fe9a                 bsr        $00012DAE
+[00012f12] 6100 fe9a                 bsr        NewStreams.setExtension
 [00012f16] 588f                      addq.l     #4,a7
 [00012f18] 4efa 0126                 jmp        $00013040(pc)
 case 2:
 [00012f1c] 4879 0001 4102            pea.l      $00014102 'MOD'
-[00012f22] 6100 fe8a                 bsr        $00012DAE
+[00012f22] 6100 fe8a                 bsr        NewStreams.setExtension
 [00012f26] 588f                      addq.l     #4,a7
 [00012f28] 4efa 0116                 jmp        $00013040(pc)
 case 3:
 [00012f2c] 4879 0001 4106            pea.l      $00014106 'REF'
-[00012f32] 6100 fe7a                 bsr        $00012DAE
+[00012f32] 6100 fe7a                 bsr        NewStreams.setExtension
 [00012f36] 588f                      addq.l     #4,a7
 [00012f38] 4efa 0106                 jmp        $00013040(pc)
 case 4:
 [00012f3c] 4879 0001 410a            pea.l      $0001410A 'SYM'
-[00012f42] 6100 fe6a                 bsr        $00012DAE
+[00012f42] 6100 fe6a                 bsr        NewStreams.setExtension
 [00012f46] 588f                      addq.l     #4,a7
 [00012f48] 4efa 00f6                 jmp        $00013040(pc)
 case 5:
 [00012f4c] 4879 0001 410e            pea.l      $0001410E 'LNK'
-[00012f52] 6100 fe5a                 bsr        $00012DAE
+[00012f52] 6100 fe5a                 bsr        NewStreams.setExtension
 [00012f56] 588f                      addq.l     #4,a7
 [00012f58] 4efa 00e6                 jmp        $00013040(pc)
 case 6:
 [00012f5c] 4879 0001 4112            pea.l      $00014112 'LST'
-[00012f62] 6100 fe4a                 bsr        $00012DAE
+[00012f62] 6100 fe4a                 bsr        NewStreams.setExtension
 [00012f66] 588f                      addq.l     #4,a7
 [00012f68] 4efa 00d6                 jmp        $00013040(pc)
 case 7:
 case 8:
 [00012f6c] 4879 0001 4116            pea.l      $00014116 'PRG'
-[00012f72] 6100 fe3a                 bsr        $00012DAE
+[00012f72] 6100 fe3a                 bsr        NewStreams.setExtension
 [00012f76] 588f                      addq.l     #4,a7
 [00012f78] 4efa 00c6                 jmp        $00013040(pc)
 case 9:
 [00012f7c] 4879 0001 411a            pea.l      $0001411A 'MAP'
-[00012f82] 6100 fe2a                 bsr        $00012DAE
+[00012f82] 6100 fe2a                 bsr        NewStreams.setExtension
 [00012f86] 588f                      addq.l     #4,a7
 [00012f88] 4efa 00b6                 jmp        $00013040(pc)
 case 10:
 [00012f8c] 4879 0001 411e            pea.l      $0001411E 'COR'
-[00012f92] 6100 fe1a                 bsr        $00012DAE
+[00012f92] 6100 fe1a                 bsr        NewStreams.setExtension
 [00012f96] 588f                      addq.l     #4,a7
 [00012f98] 4efa 00a6                 jmp        $00013040(pc)
 case 11:
 [00012f9c] 4879 0001 4122            pea.l      $00014122 'ERD'
-[00012fa2] 6100 fe0a                 bsr        $00012DAE
+[00012fa2] 6100 fe0a                 bsr        NewStreams.setExtension
 [00012fa6] 588f                      addq.l     #4,a7
 [00012fa8] 4efa 0096                 jmp        $00013040(pc)
 case 12:
 [00012fac] 4879 0001 4126            pea.l      $00014126 'ERM'
-[00012fb2] 6100 fdfa                 bsr        $00012DAE
+[00012fb2] 6100 fdfa                 bsr        NewStreams.setExtension
 [00012fb6] 588f                      addq.l     #4,a7
 [00012fb8] 4efa 0086                 jmp        $00013040(pc)
 case 13:
 [00012fbc] 4879 0001 412a            pea.l      $0001412A 'XRF'
-[00012fc2] 6100 fdea                 bsr        $00012DAE
+[00012fc2] 6100 fdea                 bsr        NewStreams.setExtension
 [00012fc6] 588f                      addq.l     #4,a7
 [00012fc8] 4efa 0076                 jmp        $00013040(pc)
 case 14:
 [00012fcc] 4879 0001 412e            pea.l      $0001412E 'DEC'
-[00012fd2] 6100 fdda                 bsr        $00012DAE
+[00012fd2] 6100 fdda                 bsr        NewStreams.setExtension
 [00012fd6] 588f                      addq.l     #4,a7
 [00012fd8] 4efa 0066                 jmp        $00013040(pc)
 case 15:
 [00012fdc] 4879 0001 4132            pea.l      $00014132 'PRT'
-[00012fe2] 6100 fdca                 bsr        $00012DAE
+[00012fe2] 6100 fdca                 bsr        NewStreams.setExtension
 [00012fe6] 588f                      addq.l     #4,a7
 [00012fe8] 4efa 0056                 jmp        $00013040(pc)
 case 16:
 [00012fec] 4879 0001 4136            pea.l      $00014136 'IND'
-[00012ff2] 6100 fdba                 bsr        $00012DAE
+[00012ff2] 6100 fdba                 bsr        NewStreams.setExtension
 [00012ff6] 588f                      addq.l     #4,a7
 [00012ff8] 4efa 0046                 jmp        $00013040(pc)
 case 17:
 [00012ffc] 4879 0001 413a            pea.l      $0001413A 'RSC'
-[00013002] 6100 fdaa                 bsr        $00012DAE
+[00013002] 6100 fdaa                 bsr        NewStreams.setExtension
 [00013006] 588f                      addq.l     #4,a7
 [00013008] 4efa 0036                 jmp        $00013040(pc)
 default:
@@ -3515,13 +3521,14 @@ casex3_tab:
            00e0
 [00013030] 00f0
            0100
-[00013034] 4879                      pea.l      $0001413e '  '
-[0001303a] 6100 fd72                 bsr        $00012DAE
+[00013034] 4879                      pea.l      $0001413e '   '
+[0001303a] 6100 fd72                 bsr        NewStreams.setExtension
 [0001303e] 588f                      addq.l     #4,a7
 [00013040] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [00013044] 4e5e                      unlk       a6
 [00013046] 4e75                      rts
 
+NewStreams.max:
 [00013048] 4e56 0000                 link       a6,#0
 [0001304c] 3a2e 000a                 move.w     10(a6),d5
 [00013050] ba6e 0008                 cmp.w      8(a6),d5
@@ -3534,6 +3541,7 @@ casex3_tab:
 [0001306a] 4e5e                      unlk       a6
 [0001306c] 4e75                      rts
 
+NewStreams.allocfile:
 [0001306e] 4e56 fffe                 link       a6,#-2
 [00013072] 4878 023c                 pea.l      ($0000023C).w
 [00013076] 286e 000e                 movea.l    14(a6),a4
@@ -3543,7 +3551,7 @@ casex3_tab:
 [00013084] 286e 000e                 movea.l    14(a6),a4
 [00013088] 4a94                      tst.l      (a4)
 [0001308a] 6604                      bne.s      $00013090
-[0001308c] 6100 fcce                 bsr        $00012D5C
+[0001308c] 6100 fcce                 bsr        NewStreams.Enomem
 [00013090] 266e 000e                 movea.l    14(a6),a3
 [00013094] 2853                      movea.l    (a3),a4
 [00013096] 38bc ffff                 move.w     #$FFFF,(a4)
@@ -3580,7 +3588,7 @@ casex3_tab:
 [0001310c] 4e5e                      unlk       a6
 [0001310e] 4e75                      rts
 
-BufferedIO.Flush(VAR s: BufferedStreamPtr):
+NewStreams.flush(VAR s: STREAM):
 [00013110] 4e56 fffc                 link       a6,#-4
 [00013114] 266e 0008                 movea.l    8(a6),a3
 [00013118] 2853                      movea.l    (a3),a4
@@ -3601,10 +3609,10 @@ BufferedIO.Flush(VAR s: BufferedStreamPtr):
 [00013146] 4fef 000a                 lea.l      10(a7),a7
 [0001314a] 285f                      movea.l    (a7)+,a4
 [0001314c] 4aae fffc                 tst.l      -4(a6)
-[00013150] 6412                      bcc.s      $00013164
+[00013150] 6412                      bcc.s      $00013164 BUG in compiler? tst instruction will always clear carry
 [00013152] 2f0c                      move.l     a4,-(a7)
 [00013154] 1f3c 0001                 move.b     #$01,-(a7)
-[00013158] 6100 fae8                 bsr        $00012C42
+[00013158] 6100 fae8                 bsr        NewStreams.Error
 [0001315c] 548f                      addq.l     #2,a7
 [0001315e] 285f                      movea.l    (a7)+,a4
 [00013160] 4efa 0016                 jmp        $00013178(pc)
@@ -3613,7 +3621,7 @@ BufferedIO.Flush(VAR s: BufferedStreamPtr):
 [0001316a] baae fffc                 cmp.l      -4(a6),d5
 [0001316e] 6708                      beq.s      $00013178
 [00013170] 2f0c                      move.l     a4,-(a7)
-[00013172] 6100 fb96                 bsr        $00012D0A
+[00013172] 6100 fb96                 bsr        NewStreams.Enospace
 [00013176] 285f                      movea.l    (a7)+,a4
 [00013178] 2a2c 0034                 move.l     52(a4),d5
 [0001317c] baac 002a                 cmp.l      42(a4),d5
@@ -3626,7 +3634,7 @@ BufferedIO.Flush(VAR s: BufferedStreamPtr):
 [00013196] 4e5e                      unlk       a6
 [00013198] 4e75                      rts
 
-Stream.ReadByte(VAR s: Stream; VAR ch: CHAR):
+NewStreams.readbyte(f: FilePointer; VAR ch: CHAR):
 [0001319a] 4e56 fff8                 link       a6,#-8
 [0001319e] 286e 000c                 movea.l    12(a6),a4
 [000131a2] 2a2c 0034                 move.l     52(a4),d5
@@ -3640,7 +3648,7 @@ Stream.ReadByte(VAR s: Stream; VAR ch: CHAR):
 [000131b6] 4efa 007e                 jmp        $00013236(pc)
 [000131ba] 2f0c                      move.l     a4,-(a7)
 [000131bc] 486e 000c                 pea.l      12(a6)
-[000131c0] 6100 ff4e                 bsr        BufferedIO.Flush
+[000131c0] 6100 ff4e                 bsr        NewStreams.Flush
 [000131c4] 588f                      addq.l     #4,a7
 [000131c6] 285f                      movea.l    (a7)+,a4
 [000131c8] 2a2c 0034                 move.l     52(a4),d5
@@ -3671,10 +3679,10 @@ Stream.ReadByte(VAR s: Stream; VAR ch: CHAR):
 [0001321e] 4fef 000a                 lea.l      10(a7),a7
 [00013222] 285f                      movea.l    (a7)+,a4
 [00013224] 4aae fff8                 tst.l      -8(a6)
-[00013228] 640c                      bcc.s      $00013236
+[00013228] 640c                      bcc.s      $00013236 BUG in compiler? tst instruction will always clear carry
 [0001322a] 2f0c                      move.l     a4,-(a7)
 [0001322c] 4227                      clr.b      -(a7)
-[0001322e] 6100 fa12                 bsr        $00012C42
+[0001322e] 6100 fa12                 bsr        NewStreams.Error
 [00013232] 548f                      addq.l     #2,a7
 [00013234] 285f                      movea.l    (a7)+,a4
 [00013236] 2f0c                      move.l     a4,-(a7)
@@ -3684,7 +3692,7 @@ Stream.ReadByte(VAR s: Stream; VAR ch: CHAR):
 [00013244] 5245                      addq.w     #1,d5
 [00013246] 3f05                      move.w     d5,-(a7)
 [00013248] 3f2c 0032                 move.w     50(a4),-(a7)
-[0001324c] 6100 fdfa                 bsr        $00013048
+[0001324c] 6100 fdfa                 bsr        NewStreams.max
 [00013250] 588f                      addq.l     #4,a7
 [00013252] 3a1f                      move.w     (a7)+,d5
 [00013254] 285f                      movea.l    (a7)+,a4
@@ -3698,15 +3706,15 @@ Stream.ReadByte(VAR s: Stream; VAR ch: CHAR):
 [00013274] 4e5e                      unlk       a6
 [00013276] 4e75                      rts
 
-Stream.Read16Bit(VAR s: Stream; VAR v: WORD)
+NewStreams.read16bit(f: FilePointer; VAR v: WORD)
 [00013278] 4e56 fffe                 link       a6,#-2
 [0001327c] 2f2e 000c                 move.l     12(a6),-(a7)
 [00013280] 486e ffff                 pea.l      -1(a6)
-[00013284] 6100 ff14                 bsr        Stream.ReadByte
+[00013284] 6100 ff14                 bsr        NewStreams.readbyte
 [00013288] 508f                      addq.l     #8,a7
 [0001328a] 2f2e 000c                 move.l     12(a6),-(a7)
 [0001328e] 486e fffe                 pea.l      -2(a6)
-[00013292] 6100 ff06                 bsr        Stream.ReadByte
+[00013292] 6100 ff06                 bsr        NewStreams.readbyte
 [00013296] 508f                      addq.l     #8,a7
 [00013298] 7a00                      moveq.l    #0,d5
 [0001329a] 1a2e ffff                 move.b     -1(a6),d5
@@ -3719,7 +3727,7 @@ Stream.Read16Bit(VAR s: Stream; VAR v: WORD)
 [000132ae] 4e5e                      unlk       a6
 [000132b0] 4e75                      rts
 
-Stream.WriteChar(VAR s: Stream; ch: CHAR);
+NewStreams.writebyte(f: FilePointer; ch: CHAR);
 [000132b2] 4e56 fff8                 link       a6,#-8
 [000132b6] 286e 000c                 movea.l    12(a6),a4
 [000132ba] 2a2c 0034                 move.l     52(a4),d5
@@ -3733,7 +3741,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000132ce] 4efa 0090                 jmp        $00013360(pc)
 [000132d2] 2f0c                      move.l     a4,-(a7)
 [000132d4] 486e 000c                 pea.l      12(a6)
-[000132d8] 6100 fe36                 bsr        BufferedIO.Flush
+[000132d8] 6100 fe36                 bsr        NewStreams.Flush
 [000132dc] 588f                      addq.l     #4,a7
 [000132de] 285f                      movea.l    (a7)+,a4
 [000132e0] 2a2c 0034                 move.l     52(a4),d5
@@ -3780,7 +3788,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [0001336e] 5245                      addq.w     #1,d5
 [00013370] 3f05                      move.w     d5,-(a7)
 [00013372] 3f2c 0032                 move.w     50(a4),-(a7)
-[00013376] 6100 fcd0                 bsr        $00013048
+[00013376] 6100 fcd0                 bsr        NewStreams.max
 [0001337a] 588f                      addq.l     #4,a7
 [0001337c] 3a1f                      move.w     (a7)+,d5
 [0001337e] 285f                      movea.l    (a7)+,a4
@@ -3800,13 +3808,14 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000133ba] 6614                      bne.s      $000133D0
 [000133bc] 2f0c                      move.l     a4,-(a7)
 [000133be] 486e 000c                 pea.l      12(a6)
-[000133c2] 6100 fd4c                 bsr        BufferedIO.Flush
+[000133c2] 6100 fd4c                 bsr        NewStreams.Flush
 [000133c6] 588f                      addq.l     #4,a7
 [000133c8] 285f                      movea.l    (a7)+,a4
 [000133ca] 296c 0034 002e            move.l     52(a4),46(a4)
 [000133d0] 4e5e                      unlk       a6
 [000133d2] 4e75                      rts
 
+NewStreams.strupr:
 [000133d4] 4e56 fffe                 link       a6,#-2
 [000133d8] 426e fffe                 clr.w      -2(a6)
 [000133dc] 3a2e fffe                 move.w     -2(a6),d5
@@ -3832,17 +3841,18 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013422] 4e5e                      unlk       a6
 [00013424] 4e75                      rts
 
+NewStreams.FileLookup:
 [00013426] 4e56 ff0e                 link       a6,#-242
 [0001342a] 422e ff33                 clr.b      -205(a6)
-[0001342e] 4a39 0001 6ab4            tst.b      $00016AB4
+[0001342e] 4a39 0001 6ab4            tst.b      NewStreams.needfile
 [00013434] 6702                      beq.s      $00013438
 [00013436] 6004                      bra.s      $0001343C
 [00013438] 4efa 00ae                 jmp        $000134E8(pc)
-[0001343c] 4a39 0001 6ab6            tst.b      $00016AB6
+[0001343c] 4a39 0001 6ab6            tst.b      NewStreams.mainfilename
 [00013442] 6602                      bne.s      $00013446
 [00013444] 6004                      bra.s      $0001344A
 [00013446] 4efa 007e                 jmp        $000134C6(pc)
-[0001344a] 4a39 0001 6ade            tst.b      $00016ADE
+[0001344a] 4a39 0001 6ade            tst.b      NewStreams.outfilename
 [00013450] 56c5                      sne        d5
 [00013452] 4405                      neg.b      d5
 [00013454] 1d45 ff33                 move.b     d5,-205(a6)
@@ -3852,15 +3862,15 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013464] 0c6e 0027 ff40            cmpi.w     #$0027,-192(a6)
 [0001346a] 6242                      bhi.s      $000134AE
 [0001346c] 3a2e ff40                 move.w     -192(a6),d5
-[00013470] 49f9 0001 6ade            lea.l      $00016ADE,a4
+[00013470] 49f9 0001 6ade            lea.l      NewStreams.outfilename,a4
 [00013476] 0c34 000d 5000            cmpi.b     #$0D,0(a4,d5.w)
 [0001347c] 6730                      beq.s      $000134AE
 [0001347e] 3a2e ff40                 move.w     -192(a6),d5
-[00013482] 49f9 0001 6ade            lea.l      $00016ADE,a4
+[00013482] 49f9 0001 6ade            lea.l      NewStreams.outfilename,a4
 [00013488] 4a34 5000                 tst.b      0(a4,d5.w)
 [0001348c] 6720                      beq.s      $000134AE
 [0001348e] 3a2e ff40                 move.w     -192(a6),d5
-[00013492] 49f9 0001 6ade            lea.l      $00016ADE,a4
+[00013492] 49f9 0001 6ade            lea.l      NewStreams.outfilename,a4
 [00013498] 382e ff40                 move.w     -192(a6),d4
 [0001349c] 5344                      subq.w     #1,d4
 [0001349e] 47ee ff42                 lea.l      -190(a6),a3
@@ -3876,7 +3886,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000134c6] 3f3c 003c                 move.w     #$003C,-(a7)
 [000134ca] 486e ff42                 pea.l      -190(a6)
 [000134ce] 3f3c 0027                 move.w     #$0027,-(a7)
-[000134d2] 4879 0001 6ab6            pea.l      $00016AB6
+[000134d2] 4879 0001 6ab6            pea.l      NewStreams.mainfilename
 [000134d8] 4eb9 0001 1c40            jsr        Strings.Assign
 [000134de] 4fef 000c                 lea.l      12(a7),a7
 [000134e2] 1d7c 0001 ff33            move.b     #$01,-205(a6)
@@ -3920,7 +3930,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [0001355e] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013562] 486e ffbe                 pea.l      -66(a6)
 [00013566] 3f3c 0031                 move.w     #$0031,-(a7)
-[0001356a] 4879 0001 6956            pea.l      M2Option.searchpaths
+[0001356a] 4879 0001 6956            pea.l      NewStreams.searchpaths
 [00013570] 4eb9 0001 1c40            jsr        Strings.Assign
 [00013576] 4fef 000c                 lea.l      12(a7),a7
 [0001357a] 558f                      subq.l     #2,a7
@@ -3939,7 +3949,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000135ac] 3f3c 003c                 move.w     #$003C,-(a7)
 [000135b0] 486e ffbe                 pea.l      -66(a6)
 [000135b4] 3f2e 001a                 move.w     26(a6),-(a7)
-[000135b8] 6100 f928                 bsr        $00012EE2
+[000135b8] 6100 f928                 bsr        NewStreams.SetFileExtension
 [000135bc] 508f                      addq.l     #8,a7
 [000135be] 3f3c 003c                 move.w     #$003C,-(a7)
 [000135c2] 486e ff80                 pea.l      -128(a6)
@@ -3954,11 +3964,11 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000135e2] 3f3c 003c                 move.w     #$003C,-(a7)
 [000135e6] 486e ff80                 pea.l      -128(a6)
 [000135ea] 3f2e 001a                 move.w     26(a6),-(a7)
-[000135ee] 6100 f8f2                 bsr        $00012EE2
+[000135ee] 6100 f8f2                 bsr        NewStreams.SetFileExtension
 [000135f2] 508f                      addq.l     #8,a7
 [000135f4] 3f3c 003c                 move.w     #$003C,-(a7)
 [000135f8] 486e ff80                 pea.l      -128(a6)
-[000135fc] 6100 fdd6                 bsr        $000133D4
+[000135fc] 6100 fdd6                 bsr        NewStreams.strupr
 [00013600] 5c8f                      addq.l     #6,a7
 [00013602] 49ee ffbe                 lea.l      -66(a6),a4
 [00013606] 2a0c                      move.l     a4,d5
@@ -4025,7 +4035,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000136e6] 6770                      beq.s      $00013758
 [000136e8] 3a2e ff34                 move.w     -204(a6),d5
 [000136ec] cafc 0032                 mulu.w     #$0032,d5
-[000136f0] 49f9 0001 6956            lea.l      M2Option.searchpaths,a4
+[000136f0] 49f9 0001 6956            lea.l      NewStreams.searchpaths,a4
 [000136f6] 3f3c 0031                 move.w     #$0031,-(a7)
 [000136fa] 4874 5000                 pea.l      0(a4,d5.w)
 [000136fe] 3a2e 0020                 move.w     32(a6),d5
@@ -4040,7 +4050,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [0001371e] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013722] 486e ff42                 pea.l      -190(a6)
 [00013726] 4267                      clr.w      -(a7)
-[00013728] 4879 0001 4146            pea.l      $00014146
+[00013728] 4879 0001 4146            pea.l      $00014146 '.'
 [0001372e] 4267                      clr.w      -(a7)
 [00013730] 486e ff40                 pea.l      -192(a6)
 [00013734] 4eb9 0001 1eee            jsr        Strings.Pos
@@ -4050,7 +4060,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013742] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013746] 486e ff42                 pea.l      -190(a6)
 [0001374a] 3f2e 001a                 move.w     26(a6),-(a7)
-[0001374e] 6100 f792                 bsr        $00012EE2
+[0001374e] 6100 f792                 bsr        NewStreams.SetFileExtension
 [00013752] 508f                      addq.l     #8,a7
 [00013754] 4efa 0020                 jmp        $00013776(pc)
 [00013758] 3f3c 003c                 move.w     #$003C,-(a7)
@@ -4063,7 +4073,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013772] 4fef 000c                 lea.l      12(a7),a7
 [00013776] 3f3c 003c                 move.w     #$003C,-(a7)
 [0001377a] 486e ff42                 pea.l      -190(a6)
-[0001377e] 6100 fc54                 bsr        $000133D4
+[0001377e] 6100 fc54                 bsr        NewStreams.strupr
 [00013782] 5c8f                      addq.l     #6,a7
 [00013784] 3a2e 0010                 move.w     16(a6),d5
 [00013788] 3f05                      move.w     d5,-(a7)
@@ -4077,7 +4087,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000137a6] 4854                      pea.l      (a4)
 [000137a8] 3f3c 003c                 move.w     #$003C,-(a7)
 [000137ac] 486e ff42                 pea.l      -190(a6)
-[000137b0] 6100 f8bc                 bsr        $0001306E
+[000137b0] 6100 f8bc                 bsr        NewStreams.allocfile
 [000137b4] 4fef 000a                 lea.l      10(a7),a7
 [000137b8] 3f3c 003c                 move.w     #$003C,-(a7)
 [000137bc] 486e ff42                 pea.l      -190(a6)
@@ -4121,7 +4131,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013834] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013838] 486e ff42                 pea.l      -190(a6)
 [0001383c] 3f3c ffdf                 move.w     #$FFDF,-(a7)
-[00013840] 6100 f338                 bsr        $00012B7A
+[00013840] 6100 f338                 bsr        NewStreams.FileError
 [00013844] 508f                      addq.l     #8,a7
 [00013846] 4a1f                      tst.b      (a7)+
 [00013848] 6710                      beq.s      $0001385A
@@ -4161,7 +4171,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000138c2] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [000138c8] 4efa 0006                 jmp        $000138D0(pc)
 [000138cc] 6000 fc70                 bra        $0001353E
-[000138d0] 4a39 0001 6ab4            tst.b      $00016AB4
+[000138d0] 4a39 0001 6ab4            tst.b      NewStreams.needfile
 [000138d6] 671c                      beq.s      $000138F4
 [000138d8] 3f3c 004f                 move.w     #$004F,-(a7)
 [000138dc] 4879 0001 625c            pea.l      AppBase.shellTail
@@ -4169,7 +4179,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [000138e6] 486e ff42                 pea.l      -190(a6)
 [000138ea] 4eb9 0001 1c40            jsr        Strings.Assign
 [000138f0] 4fef 000c                 lea.l      12(a7),a7
-[000138f4] 4239 0001 6ab4            clr.b      $00016AB4
+[000138f4] 4239 0001 6ab4            clr.b      NewStreams.needfile
 [000138fa] 3a2e 001a                 move.w     26(a6),d5
 [000138fe] 7000                      moveq.l    #0,d0
 [00013900] 0bc0                      bset       d5,d0
@@ -4177,6 +4187,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013908] 4e5e                      unlk       a6
 [0001390a] 4e75                      rts
 
+NewStreams.FileLookupOutput:
 [0001390c] 4e56 ff3e                 link       a6,#-194
 [00013910] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013914] 486e ffba                 pea.l      -70(a6)
@@ -4189,11 +4200,11 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [0001392e] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013932] 486e ffba                 pea.l      -70(a6)
 [00013936] 3f2e 001a                 move.w     26(a6),-(a7)
-[0001393a] 6100 f5a6                 bsr        $00012EE2
+[0001393a] 6100 f5a6                 bsr        NewStreams.SetFileExtension
 [0001393e] 508f                      addq.l     #8,a7
 [00013940] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013944] 486e ffba                 pea.l      -70(a6)
-[00013948] 6100 fa8a                 bsr        $000133D4
+[00013948] 6100 fa8a                 bsr        NewStreams.strupr
 [0001394c] 5c8f                      addq.l     #6,a7
 [0001394e] 4a2e 0014                 tst.b      20(a6)
 [00013952] 6702                      beq.s      $00013956
@@ -4207,13 +4218,13 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013968] 3f3c 003c                 move.w     #$003C,-(a7)
 [0001396c] 486e ff3e                 pea.l      -194(a6)
 [00013970] 3f3c 0031                 move.w     #$0031,-(a7)
-[00013974] 4879 0001 6956            pea.l      M2Option.searchpaths
+[00013974] 4879 0001 6956            pea.l      NewStreams.searchpaths
 [0001397a] 4eb9 0001 1c40            jsr        Strings.Assign
 [00013980] 4fef 000c                 lea.l      12(a7),a7
 [00013984] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013988] 486e ff3e                 pea.l      -194(a6)
 [0001398c] 3f2e 001a                 move.w     26(a6),-(a7)
-[00013990] 6100 f550                 bsr        $00012EE2
+[00013990] 6100 f550                 bsr        NewStreams.SetFileExtension
 [00013994] 508f                      addq.l     #8,a7
 [00013996] 3f3c 003c                 move.w     #$003C,-(a7)
 [0001399a] 486e ff7c                 pea.l      -132(a6)
@@ -4287,7 +4298,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013a9a] 4854                      pea.l      (a4)
 [00013a9c] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013aa0] 486e ffba                 pea.l      -70(a6)
-[00013aa4] 6100 f5c8                 bsr        $0001306E
+[00013aa4] 6100 f5c8                 bsr        NewStreams.allocfile
 [00013aa8] 4fef 000a                 lea.l      10(a7),a7
 [00013aac] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013ab0] 486e ffba                 pea.l      -70(a6)
@@ -4347,6 +4358,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013b66] 4e5e                      unlk       a6
 [00013b68] 4e75                      rts
 
+NewStreams.formatLong:
 [00013b6a] 4e56 fff8                 link       a6,#-8
 [00013b6e] 2d7c 1000 0000 fffc       move.l     #$10000000,-4(a6)
 [00013b76] 426e fff8                 clr.w      -8(a6)
@@ -4365,7 +4377,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013ba4] 7a30                      moveq.l    #48,d5
 [00013ba6] da6e fffa                 add.w      -6(a6),d5
 [00013baa] 286d fffc                 movea.l    -4(a5),a4
-[00013bae] 286c 000c                 movea.l    12(a4),a4
+[00013bae] 286c 000c                 movea.l    12(a4),a4 
 [00013bb2] 382e fff8                 move.w     -8(a6),d4
 [00013bb6] 49ec 0050                 lea.l      80(a4),a4
 [00013bba] 1985 4000                 move.b     d5,0(a4,d4.w)
@@ -4403,6 +4415,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013c34] 4e5e                      unlk       a6
 [00013c36] 4e75                      rts
 
+NewStreams.GetOptionInfo:
 [00013c38] 4e56 0000                 link       a6,#0
 [00013c3c] 2f2d fffc                 move.l     -4(a5),-(a7)
 [00013c40] 2b4e fffc                 move.l     a6,-4(a5)
@@ -4415,7 +4428,7 @@ Stream.WriteChar(VAR s: Stream; ch: CHAR);
 [00013c5c] 14db                      move.b     (a3)+,(a2)+
 [00013c5e] 57cd fffc                 dbeq       d5,$00013C5C
 [00013c62] 7a00                      moveq.l    #0,d5
-[00013c64] 1a39 0001 6b06            move.b     $00016B06,d5
+[00013c64] 1a39 0001 6b06            move.b     NewStreams.currInfoType,d5
 [00013c6a] 2005                      move.l     d5,d0
 [00013c6c] 4eb9 0001 000a            jsr        CASEX
 casex4:
@@ -4423,7 +4436,7 @@ casex4:
 [00013c76] 0000 0008                 dc.l       8
 [00013c7a] 0000 0146                 dc.l casex4_tab-casex4
 case 0:
-[00013c7e] 4a79 0001 6b12            tst.w      BufferedIO.heapsize
+[00013c7e] 4a79 0001 6b12            tst.w      NewStreams.heapsize
 [00013c84] 6728                      beq.s      $00013CAE
 [00013c86] 47f9 0001 414e            lea.l      $0001414E,a3 'HEAP'
 [00013c8c] 45d4                      lea.l      (a4),a2
@@ -4432,15 +4445,15 @@ case 0:
 [00013c92] 57cd fffc                 dbeq       d5,$00013C90
 [00013c96] 2f0c                      move.l     a4,-(a7)
 [00013c98] 7a00                      moveq.l    #0,d5
-[00013c9a] 3a39 0001 6b12            move.w     BufferedIO.heapsize,d5
+[00013c9a] 3a39 0001 6b12            move.w     NewStreams.heapsize,d5
 [00013ca0] 2f05                      move.l     d5,-(a7)
-[00013ca2] 6100 fec6                 bsr        $00013B6A
+[00013ca2] 6100 fec6                 bsr        NewStreams.formatLong
 [00013ca6] 588f                      addq.l     #4,a7
 [00013ca8] 285f                      movea.l    (a7)+,a4
 [00013caa] 4efa 0128                 jmp        $00013DD4(pc)
 [00013cae] 4efa 011a                 jmp        $00013DCA(pc)
 case 1:
-[00013cb2] 4a39 0001 6b08            tst.b      BufferedIO.query
+[00013cb2] 4a39 0001 6b08            tst.b      NewStreams.queryfiles
 [00013cb8] 6714                      beq.s      $00013CCE
 [00013cba] 47f9 0001 4154            lea.l      $00014154,a3 'QUERY'
 [00013cc0] 45d4                      lea.l      (a4),a2
@@ -4450,7 +4463,7 @@ case 1:
 [00013cca] 4efa 0108                 jmp        $00013DD4(pc)
 [00013cce] 4efa 00fa                 jmp        $00013DCA(pc)
 case 2:
-[00013cd2] 4a39 0001 6b09            tst.b      BufferedIO.reffiles
+[00013cd2] 4a39 0001 6b09            tst.b      NewStreams.reffiles
 [00013cd8] 6714                      beq.s      $00013CEE
 [00013cda] 47f9 0001 415a            lea.l      $0001415A,a3 'REF'
 [00013ce0] 45d4                      lea.l      (a4),a2
@@ -4460,7 +4473,7 @@ case 2:
 [00013cea] 4efa 00e8                 jmp        $00013DD4(pc)
 [00013cee] 4efa 00da                 jmp        $00013DCA(pc)
 case 3:
-[00013cf2] 4a39 0001 6b0a            tst.b      BufferedIO.listing
+[00013cf2] 4a39 0001 6b0a            tst.b      NewStreams.listing
 [00013cf8] 6714                      beq.s      $00013D0E
 [00013cfa] 47f9 0001 415e            lea.l      $0001415E,a3 'LIST'
 [00013d00] 45d4                      lea.l      (a4),a2
@@ -4470,7 +4483,7 @@ case 3:
 [00013d0a] 4efa 00c8                 jmp        $00013DD4(pc)
 [00013d0e] 4efa 00ba                 jmp        $00013DCA(pc)
 case 4:
-[00013d12] 4ab9 0001 6b0e            tst.l      BufferedIO.stacksize
+[00013d12] 4ab9 0001 6b0e            tst.l      NewStreams.stacksize
 [00013d18] 6724                      beq.s      $00013D3E
 [00013d1a] 47f9 0001 4164            lea.l      $00014164,a3 'STACK'
 [00013d20] 45d4                      lea.l      (a4),a2
@@ -4478,14 +4491,14 @@ case 4:
 [00013d24] 14db                      move.b     (a3)+,(a2)+
 [00013d26] 57cd fffc                 dbeq       d5,$00013D24
 [00013d2a] 2f0c                      move.l     a4,-(a7)
-[00013d2c] 2f39 0001 6b0e            move.l     BufferedIO.stacksize,-(a7)
+[00013d2c] 2f39 0001 6b0e            move.l     NewStreams.stacksize,-(a7)
 [00013d32] 6100 fe36                 bsr        $00013B6A
 [00013d36] 588f                      addq.l     #4,a7
 [00013d38] 285f                      movea.l    (a7)+,a4
 [00013d3a] 4efa 0098                 jmp        $00013DD4(pc)
 [00013d3e] 4efa 008a                 jmp        $00013DCA(pc)
 case 5:
-[00013d42] 4a39 0001 6b0b            tst.b      BufferedIO.linkmap
+[00013d42] 4a39 0001 6b0b            tst.b      NewStreams.linkmap
 [00013d48] 6714                      beq.s      $00013D5E
 [00013d4a] 47f9 0001 416a            lea.l      $0001416A,a3 'MAP'
 [00013d50] 45d4                      lea.l      (a4),a2
@@ -4495,7 +4508,7 @@ case 5:
 [00013d5a] 4efa 0078                 jmp        $00013DD4(pc)
 [00013d5e] 4efa 006a                 jmp        $00013DCA(pc)
 case 6:
-[00013d62] 4a39 0001 6b0d            tst.b      BufferedIO.debugtable
+[00013d62] 4a39 0001 6b0d            tst.b      NewStreams.debugtable
 [00013d68] 6714                      beq.s      $00013D7E
 [00013d6a] 47f9 0001 416e            lea.l      $0001416E,a3 'DTABLE'
 [00013d70] 45d4                      lea.l      (a4),a2
@@ -4505,7 +4518,7 @@ case 6:
 [00013d7a] 4efa 0058                 jmp        $00013DD4(pc)
 [00013d7e] 4efa 004a                 jmp        $00013DCA(pc)
 case 7:
-[00013d82] 4a39 0001 6b0c            tst.b      BufferedIO.linkopt
+[00013d82] 4a39 0001 6b0c            tst.b      NewStreams.linkopt
 [00013d88] 6714                      beq.s      $00013D9E
 [00013d8a] 47f9 0001 4176            lea.l      $00014176,a3 'OPTIMISE'
 [00013d90] 45d4                      lea.l      (a4),a2
@@ -4533,15 +4546,15 @@ casex4_tab
            00f0
 [00013dc6] 0110
 [00013dc8] 0130
-
-[00013dca] 5239 0001 6b06            addq.b     #1,$00016B06
+default:
+[00013dca] 5239 0001 6b06            addq.b     #1,NewStreams.currInfoType
 [00013dd0] 6000 fe90                 bra        $00013C62
-[00013dd4] 5239 0001 6b06            addq.b     #1,$00016B06
+[00013dd4] 5239 0001 6b06            addq.b     #1,NewStreams.currInfoType
 [00013dda] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [00013dde] 4e5e                      unlk       a6
 [00013de0] 4e75                      rts
 
-BufferedIO.Close(VAR s: BufferedStream; VAR success: BOOLEAN);
+NewStreams.Close(VAR s: BufferedStream; VAR success: BOOLEAN);
 [00013de2] 4e56 fffe                 link       a6,#-2
 [00013de6] 7aff                      moveq.l    #-1,d5
 [00013de8] 286e 000c                 movea.l    12(a6),a4
@@ -4549,7 +4562,7 @@ BufferedIO.Close(VAR s: BufferedStream; VAR success: BOOLEAN);
 [00013dee] 6744                      beq.s      $00013E34
 [00013df0] 286e 000c                 movea.l    12(a6),a4
 [00013df4] 4854                      pea.l      (a4)
-[00013df6] 6100 f318                 bsr        BufferedIO.Flush
+[00013df6] 6100 f318                 bsr        NewStreams.flush
 [00013dfa] 588f                      addq.l     #4,a7
 [00013dfc] 558f                      subq.l     #2,a7
 [00013dfe] 266e 000c                 movea.l    12(a6),a3
@@ -4575,13 +4588,13 @@ BufferedIO.Close(VAR s: BufferedStream; VAR success: BOOLEAN);
 [00013e3c] 4e5e                      unlk       a6
 [00013e3e] 4e75                      rts
 
-BufferedIO.ReadChar(VAR s: BufferedStream; VAR ch: CHAR)
+NewStreams.ReadChar(VAR s: BufferedStream; VAR ch: CHAR)
 [00013e40] 4e56 0000                 link       a6,#0
 [00013e44] 286e 000c                 movea.l    12(a6),a4
 [00013e48] 2f14                      move.l     (a4),-(a7)
 [00013e4a] 286e 0008                 movea.l    8(a6),a4
 [00013e4e] 4854                      pea.l      (a4)
-[00013e50] 6100 f348                 bsr        Stream.ReadByte
+[00013e50] 6100 f348                 bsr        NewStreams.readbyte
 [00013e54] 508f                      addq.l     #8,a7
 [00013e56] 286e 0008                 movea.l    8(a6),a4
 [00013e5a] 0c14 000d                 cmpi.b     #$0D,(a4)
@@ -4595,19 +4608,19 @@ BufferedIO.ReadChar(VAR s: BufferedStream; VAR ch: CHAR)
 [00013e74] 4e5e                      unlk       a6
 [00013e76] 4e75                      rts
 
-BufferedIO.ReadByte(VAR s: BufferedStream; VAR b: BYTE)
+NewStreams.ReadByte(VAR s: BufferedStream; VAR b: BYTE)
 [00013e78] 4e56 fffe                 link       a6,#-2
 [00013e7c] 286e 000c                 movea.l    12(a6),a4
 [00013e80] 2f14                      move.l     (a4),-(a7)
 [00013e82] 486e ffff                 pea.l      -1(a6)
-[00013e86] 6100 f312                 bsr        Stream.ReadByte
+[00013e86] 6100 f312                 bsr        NewStreams.readbyte
 [00013e8a] 508f                      addq.l     #8,a7
 [00013e8c] 286e 0008                 movea.l    8(a6),a4
 [00013e90] 18ae ffff                 move.b     -1(a6),(a4)
 [00013e94] 4e5e                      unlk       a6
 [00013e96] 4e75                      rts
 
-BufferedIO.WriteChar(VAR s: BufferedStream; ch: CHAR)
+NewStreams.WriteChar(VAR s: BufferedStream; ch: CHAR)
 [00013e98] 4e56 0000                 link       a6,#0
 [00013e9c] 0c2e 000d 0008            cmpi.b     #$0D,8(a6)
 [00013ea2] 661e                      bne.s      $00013EC2
@@ -4616,31 +4629,32 @@ BufferedIO.WriteChar(VAR s: BufferedStream; ch: CHAR)
 [00013eae] 2f14                      move.l     (a4),-(a7)
 [00013eb0] 1f2e 0008                 move.b     8(a6),-(a7)
 [00013eb4] 4227                      clr.b      -(a7)
-[00013eb6] 6100 f3fa                 bsr        Stream.WriteChar
+[00013eb6] 6100 f3fa                 bsr        NewStreams.writebyte
 [00013eba] 508f                      addq.l     #8,a7
 [00013ebc] 1d7c 000a 0008            move.b     #$0A,8(a6)
 [00013ec2] 286e 000a                 movea.l    10(a6),a4
 [00013ec6] 2f14                      move.l     (a4),-(a7)
 [00013ec8] 1f2e 0008                 move.b     8(a6),-(a7)
 [00013ecc] 4227                      clr.b      -(a7)
-[00013ece] 6100 f3e2                 bsr        Stream.WriteChar
+[00013ece] 6100 f3e2                 bsr        NewStreams.writebyte
 [00013ed2] 508f                      addq.l     #8,a7
 [00013ed4] 4e5e                      unlk       a6
 [00013ed6] 4e75                      rts
 
-BufferedIO.Read16Bit(VAR s: BufferedStream; VAR v: WORD)
+NewStreams.Read16Bit(VAR s: BufferedStream; VAR v: WORD)
 [00013ed8] 4e56 0000                 link       a6,#0
 [00013edc] 286e 000c                 movea.l    12(a6),a4
 [00013ee0] 2f14                      move.l     (a4),-(a7)
 [00013ee2] 286e 0008                 movea.l    8(a6),a4
 [00013ee6] 4854                      pea.l      (a4)
-[00013ee8] 6100 f38e                 bsr        $00013278
+[00013ee8] 6100 f38e                 bsr        NewStreams.read16bit
 [00013eec] 508f                      addq.l     #8,a7
 [00013eee] 4e5e                      unlk       a6
 [00013ef0] 4e75                      rts
 
+NewStreams.initfilenames:
 [00013ef2] 4e56 ff00                 link       a6,#-256
-[00013ef6] 4239 0001 6ab6            clr.b      $00016AB6
+[00013ef6] 4239 0001 6ab6            clr.b      NewStreams.mainfilename
 [00013efc] 422e ff80                 clr.b      -128(a6)
 [00013f00] 422e ff00                 clr.b      -256(a6)
 [00013f04] 49ee ff80                 lea.l      -128(a6),a4
@@ -4652,7 +4666,7 @@ BufferedIO.Read16Bit(VAR s: BufferedStream; VAR v: WORD)
 [00013f14] 4eb9 0001 1ba4            jsr        AESShells.ShellRead
 [00013f1a] 508f                      addq.l     #8,a7
 [00013f1c] 3f3c 0027                 move.w     #$0027,-(a7)
-[00013f20] 4879 0001 6ab6            pea.l      $00016AB6
+[00013f20] 4879 0001 6ab6            pea.l      NewStreams.mainfilename
 [00013f26] 3f3c 007f                 move.w     #$007F,-(a7)
 [00013f2a] 486e ff00                 pea.l      -256(a6)
 [00013f2e] 4eb9 0001 1c40            jsr        Strings.Assign
@@ -4660,37 +4674,37 @@ BufferedIO.Read16Bit(VAR s: BufferedStream; VAR v: WORD)
 [00013f38] 4e5e                      unlk       a6
 [00013f3a] 4e75                      rts
 
-.init
+NewStreams.init:
 [00013f3c] 4ef9 0001 2b3c            jmp        M2Option.init
 
 [00013f42] 4e56 0000                 link       a6,#0
 [00013f46] 42b9 0001 6258            clr.l      AppBase.openStreams
 [00013f4c] 42b9 0001 6254            clr.l      AppBase.openFiles
-[00013f52] 4879 0001 6b07            pea.l      BufferedIO.dump
-[00013f58] 4879 0001 6b08            pea.l      BufferedIO.query
+[00013f52] 4879 0001 6b07            pea.l      NewStreams.dump
+[00013f58] 4879 0001 6b08            pea.l      NewStreams.queryfiles
 [00013f5e] 4879 0001 62ac            pea.l      AppBase.xfer
-[00013f64] 4879 0001 6956            pea.l      M2Option.searchpaths
+[00013f64] 4879 0001 6956            pea.l      NewStreams.searchpaths
 [00013f6a] 4eb9 0001 27c4            jsr        M2Option.GetSystemOptions
 [00013f70] 4fef 0010                 lea.l      16(a7),a7
-[00013f74] 4879 0001 6b09            pea.l      BufferedIO.reffiles
-[00013f7a] 4879 0001 6b0a            pea.l      BufferedIO.listing
-[00013f80] 4879 0001 6b12            pea.l      BufferedIO.heapsize
+[00013f74] 4879 0001 6b09            pea.l      NewStreams.reffiles
+[00013f7a] 4879 0001 6b0a            pea.l      NewStreams.listing
+[00013f80] 4879 0001 6b12            pea.l      NewStreams.heapsize
 [00013f86] 4eb9 0001 2a66            jsr        M2Option.GetCompilerOptions
 [00013f8c] 4fef 000c                 lea.l      12(a7),a7
-[00013f90] 4879 0001 6b0b            pea.l      BufferedIO.linkmap
-[00013f96] 4879 0001 6b0c            pea.l      BufferedIO.linkopt
-[00013f9c] 4879 0001 6b0d            pea.l      BufferedIO.debugtable
-[00013fa2] 4879 0001 6b0e            pea.l      BufferedIO.stacksize
+[00013f90] 4879 0001 6b0b            pea.l      NewStreams.linkmap
+[00013f96] 4879 0001 6b0c            pea.l      NewStreams.linkopt
+[00013f9c] 4879 0001 6b0d            pea.l      NewStreams.debugtable
+[00013fa2] 4879 0001 6b0e            pea.l      NewStreams.stacksize
 [00013fa8] 4eb9 0001 2abe            jsr        M2Option.GetLinkerOptions
 [00013fae] 4fef 0010                 lea.l      16(a7),a7
-[00013fb2] 13fc 0001 0001 6ab4       move.b     #$01,$00016AB4
-[00013fba] 4239 0001 6b06            clr.b      $00016B06
-[00013fc0] 6100 ff30                 bsr        $00013EF2
+[00013fb2] 13fc 0001 0001 6ab4       move.b     #$01,NewStreams.needfile
+[00013fba] 4239 0001 6b06            clr.b      NewStreams.currInfoType
+[00013fc0] 6100 ff30                 bsr        NewStreams.initfilenames
 [00013fc4] 2879 0001 5caa            movea.l    BasePageAddress,a4
-[00013fca] 23ec 0020 0001 6b14       move.l     32(a4),$00016B14 _base->p_dta
+[00013fca] 23ec 0020 0001 6b14       move.l     32(a4),NewStreams.DtaPtr _base->p_dta
 [00013fd2] 3f3c 0027                 move.w     #$0027,-(a7)
-[00013fd6] 4879 0001 6ade            pea.l      $00016ADE
-[00013fdc] 2879 0001 6b14            movea.l    $00016B14,a4
+[00013fd6] 4879 0001 6ade            pea.l      NewStreams.outfilename
+[00013fdc] 2879 0001 6b14            movea.l    NewStreams.DtaPtr,a4
 [00013fe2] 3f3c 0027                 move.w     #$0027,-(a7)
 [00013fe6] 4854                      pea.l      (a4)
 [00013fe8] 4eb9 0001 1c40            jsr        Strings.Assign
@@ -4722,7 +4736,7 @@ BufferedIO.Read16Bit(VAR s: BufferedStream; VAR v: WORD)
 [00014132] 5052                      .asciiz 'PRT'
 [00014136] 494e                      .asciiz 'IND'
 [0001413a] 5253                      .asciiz 'RSC'
-[0001413e] 2020                      .asciiz '  '
+[0001413e] 2020                      .asciiz '   '
 [00014142] 203a 2000                 .asciiz ' : '
 
 [00014146] 2e00                      .asciiz '.'
@@ -4762,7 +4776,7 @@ BufferedIO.Read16Bit(VAR s: BufferedStream; VAR v: WORD)
 [000141c4] 4e75                      rts
 
 .init
-[000141c6] 4ef9 0001 3f3c            jmp        $00013F3C
+[000141c6] 4ef9 0001 3f3c            jmp        NewStreams.init
 
 [000141cc] 4e56 0000                 link       a6,#0
 [000141d0] 4279 0001 6b18            clr.w      $00016B18
@@ -4939,7 +4953,7 @@ casex5_tab:
 [00014416] 3f3c 0031                 move.w     #$0031,-(a7)
 [0001441a] 486e ffc8                 pea.l      -56(a6)
 [0001441e] 486e ffff                 pea.l      -1(a6)
-[00014422] 4eb9 0001 3426            jsr        $00013426
+[00014422] 4eb9 0001 3426            jsr        NewStreams.FileLookup
 [00014428] 4fef 0020                 lea.l      32(a7),a7
 [0001442c] 4a2e ffff                 tst.b      -1(a6)
 [00014430] 675a                      beq.s      $0001448C
@@ -4950,7 +4964,7 @@ casex5_tab:
 [00014442] 3d5f fffc                 move.w     (a7)+,-4(a6)
 [00014446] 486e fef6                 pea.l      -266(a6)
 [0001444a] 486e fffe                 pea.l      -2(a6)
-[0001444e] 4eb9 0001 3c38            jsr        $00013C38
+[0001444e] 4eb9 0001 3c38            jsr        NewStreams.GetOptionInfo
 [00014454] 508f                      addq.l     #8,a7
 [00014456] 3f3c 000a                 move.w     #$000A,-(a7)
 [0001445a] 4879 0001 59ba            pea.l      $000159BA "Decode file"
@@ -4963,7 +4977,7 @@ casex5_tab:
 [00014476] 3f3c 0031                 move.w     #$0031,-(a7)
 [0001447a] 486e ff96                 pea.l      -106(a6)
 [0001447e] 486e ffff                 pea.l      -1(a6)
-[00014482] 4eb9 0001 390c            jsr        $0001390C
+[00014482] 4eb9 0001 390c            jsr        NewStreams.FileLookupOutput
 [00014488] 4fef 0020                 lea.l      32(a7),a7
 [0001448c] 4a2e ffff                 tst.b      -1(a6)
 [00014490] 57c5                      seq        d5
@@ -4975,11 +4989,11 @@ casex5_tab:
 [0001449e] 4e56 fffe                 link       a6,#-2
 [000144a2] 4879 0001 6e40            pea.l      $00016E40
 [000144a8] 486e ffff                 pea.l      -1(a6)
-[000144ac] 4eb9 0001 3de2            jsr        BufferedIO.Close
+[000144ac] 4eb9 0001 3de2            jsr        NewStreams.Close
 [000144b2] 508f                      addq.l     #8,a7
 [000144b4] 4879 0001 6e44            pea.l      $00016E44
 [000144ba] 486e ffff                 pea.l      -1(a6)
-[000144be] 4eb9 0001 3de2            jsr        BufferedIO.Close
+[000144be] 4eb9 0001 3de2            jsr        NewStreams.Close
 [000144c4] 508f                      addq.l     #8,a7
 [000144c6] 4e5e                      unlk       a6
 [000144c8] 4e75                      rts
@@ -5014,7 +5028,7 @@ InOut.WriteLn:
 [0001451a] 4e56 0000                 link       a6,#0
 [0001451e] 4879 0001 6e44            pea.l      $00016E44
 [00014524] 1f3c 000d                 move.b     #$0D,-(a7)
-[00014528] 4eb9 0001 3e98            jsr        BufferedIO.WriteChar
+[00014528] 4eb9 0001 3e98            jsr        NewStreams.WriteChar
 [0001452e] 5c8f                      addq.l     #6,a7
 [00014530] 4279 0001 6e4a            clr.w      $00016E4A
 [00014536] 4e5e                      unlk       a6
@@ -5027,7 +5041,7 @@ InOut.Write:
 [00014548] 4eb9 0001 451a            jsr        InOut.WriteLn
 [0001454e] 4879 0001 6e44            pea.l      $00016E44
 [00014554] 1f2e 0008                 move.b     8(a6),-(a7)
-[00014558] 4eb9 0001 3e98            jsr        BufferedIO.WriteChar
+[00014558] 4eb9 0001 3e98            jsr        NewStreams.WriteChar
 [0001455e] 5c8f                      addq.l     #6,a7
 [00014560] 5279 0001 6e4a            addq.w     #1,$00016E4A
 [00014566] 4e5e                      unlk       a6
@@ -5113,7 +5127,7 @@ Symfile.ReadByte():
 [00014664] 4e56 fffe                 link       a6,#-2
 [00014668] 4879 0001 6e40            pea.l      $00016E40
 [0001466e] 486e ffff                 pea.l      -1(a6)
-[00014672] 4eb9 0001 3e78            jsr        BufferedIO.ReadByte
+[00014672] 4eb9 0001 3e78            jsr        NewStreams.ReadByte
 [00014678] 508f                      addq.l     #8,a7
 [0001467a] 7a00                      moveq.l    #0,d5
 [0001467c] 1a2e ffff                 move.b     -1(a6),d5
@@ -5145,7 +5159,7 @@ Symfile.Read16Bit(VAR v: WORD):
 [000146d0] 4879 0001 6e40            pea.l      $00016E40
 [000146d6] 286e 0008                 movea.l    8(a6),a4
 [000146da] 4854                      pea.l      (a4)
-[000146dc] 4eb9 0001 3ed8            jsr        BufferedIO.Read16Bit
+[000146dc] 4eb9 0001 3ed8            jsr        NewStreams.Read16Bit
 [000146e2] 508f                      addq.l     #8,a7
 [000146e4] 4e5e                      unlk       a6
 [000146e6] 4e75                      rts
@@ -6533,16 +6547,23 @@ DecSym.init:
 1680a: M2Option.msgbuf
 1682a: M2Option.replybuf
 1684a-16954: M2Option.options
-16956-16ab4: M2Option.searchpaths
-16ab4:
-16b06: BufferedIO.
-16b07: BufferedIO.dump
-16b08: BufferedIO.query
-16b09: BufferedIO.reffiles
-16b0a: BufferedIO.listing
-16b0b: BufferedIO.linkmap
-16b0c: BufferedIO.linkopt
-16b0d: BufferedIO.debugtable
-16b0e: BufferedIO.stacksize
-16b12: BufferedIO.heapsize
+16956-16ab4: NewStreams.searchpaths
+16ab4: NewStreams.needfile
+16ab6-16ade: NewStreams.mainfilename
+16ade-16b06: NewStreams.outfilename
+16b06: NewStreams.currInfoType
+16b07: NewStreams.dump
+16b08: NewStreams.queryfiles
+16b09: NewStreams.reffiles
+16b0a: NewStreams.listing
+16b0b: NewStreams.linkmap
+16b0c: NewStreams.linkopt
+16b0d: NewStreams.debugtable
+16b0e: NewStreams.stacksize
+16b12: NewStreams.heapsize
+16b14: NewStreams.DtaPtr
+16b18: 
+16b1a: 
+16e40: Symfile.symFile
+16e44: Symfile.decFile
 16e48: Symfile.lastByte

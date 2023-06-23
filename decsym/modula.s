@@ -340,6 +340,8 @@ STACKCHECK:
 [00010448] 4cdf 003e                 movem.l    (a7)+,d1-d5
 [0001044c] 4e5e                      unlk       a6
 [0001044e] 4e75                      rts
+
+DIVU32:
 [00010450] 4e56 0000                 link       a6,#0
 [00010454] 48e7 7800                 movem.l    d1-d4,-(a7)
 [00010458] 222e 000c                 move.l     12(a6),d1
@@ -430,7 +432,7 @@ STACKCHECK:
 [0001052a] 5bc7                      smi        d7
 [0001052c] 6a04                      bpl.s      $00010532
 [0001052e] 44af 0000                 neg.l      0(a7)
-[00010532] 207c 0001 0450            movea.l    #$00010450,a0
+[00010532] 207c 0001 0450            movea.l    #DIVU32,a0
 [00010538] 4e90                      jsr        (a0)
 [0001053a] 4a07                      tst.b      d7
 [0001053c] 6704                      beq.s      $00010542
@@ -786,8 +788,8 @@ STACKCHECK:
 [00010948] 204f                      movea.l    a7,a0
 [0001094a] 2068 0004                 movea.l    4(a0),a0
 [0001094e] 2a08                      move.l     a0,d5
-[00010950] 23c5 0003 5068            move.l     d5,$00035068
-[00010956] 2879 0003 5068            movea.l    $00035068,a4
+[00010950] 23c5 0003 5068            move.l     d5,BasePageAddress
+[00010956] 2879 0003 5068            movea.l    BasePageAddress,a4
 [0001095c] 23ec 0008 0003 50a4       move.l     8(a4),$000350A4
 [00010964] 2028 000c                 move.l     12(a0),d0
 [00010968] d0a8 0014                 add.l      20(a0),d0
@@ -804,7 +806,7 @@ STACKCHECK:
 [0001098c] 3f3c 004a                 move.w     #$004A,-(a7) ; Mshrink
 [00010990] 4e41                      trap       #1
 [00010992] dffc 0000 000c            adda.l     #$0000000C,a7
-[00010998] 2879 0003 5068            movea.l    $00035068,a4
+[00010998] 2879 0003 5068            movea.l    BasePageAddress,a4
 [0001099e] 2a2c 0008                 move.l     8(a4),d5
 [000109a2] daac 000c                 add.l      12(a4),d5
 [000109a6] daac 0014                 add.l      20(a4),d5
@@ -1181,6 +1183,8 @@ AESApplications.ApplFind:
 [00010f1a] 3d6e fffe 0018            move.w     -2(a6),24(a6)
 [00010f20] 4e5e                      unlk       a6
 [00010f22] 4e75                      rts
+
+AESGraphics.GrafMouse:
 [00010f24] 4e56 0000                 link       a6,#0
 [00010f28] 33ee 000c 0003 515c       move.w     12(a6),$0003515C
 [00010f30] 23ee 0008 0003 518e       move.l     8(a6),$0003518E
@@ -1318,6 +1322,8 @@ AESApplications.ApplFind:
 [0001112c] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [00011132] 4e5e                      unlk       a6
 [00011134] 4e75                      rts
+
+AESShells.ShellRead:
 [00011136] 4e56 0000                 link       a6,#0
 [0001113a] 23ee 000c 0003 518e       move.l     12(a6),$0003518E
 [00011142] 23ee 0008 0003 5192       move.l     8(a6),$00035192
@@ -1332,6 +1338,7 @@ AESApplications.ApplFind:
 [00011166] 33df 0003 51a2            move.w     (a7)+,$000351A2
 [0001116c] 4e5e                      unlk       a6
 [0001116e] 4e75                      rts
+
 [00011170] 4e56 0000                 link       a6,#0
 [00011174] 3f2e 0014                 move.w     20(a6),-(a7)
 [00011178] 3f2e 0012                 move.w     18(a6),-(a7)
@@ -1469,6 +1476,8 @@ AESApplications.ApplFind:
 [000113d0] 3d6e fffe 000e            move.w     -2(a6),14(a6)
 [000113d6] 4e5e                      unlk       a6
 [000113d8] 4e75                      rts
+
+Strings.Assign:
 [000113da] 4e56 fffe                 link       a6,#-2
 [000113de] 426e fffe                 clr.w      -2(a6)
 [000113e2] 3a2e fffe                 move.w     -2(a6),d5
@@ -1697,13 +1706,13 @@ AESApplications.ApplFind:
 [000116e0] 4e75                      rts
 [000116e2] 4ef9 0001 16c4            jmp        $000116C4
 [000116e8] 4e56 0000                 link       a6,#0
-[000116ec] 23fc 0001 16da 0003 55f4  move.l     #$000116DA,$000355F4
+[000116ec] 23fc 0001 16da 0003 55f4  move.l     #$000116DA,AppBase.doUpdateWindow
 [000116f6] 33fc ffff 0003 55ee       move.w     #$FFFF,AppBase.apId
 [000116fe] 33fc ffff 0003 55f2       move.w     #$FFFF,AppBase.vdiHandle
 [00011706] 33fc ffff 0003 55f0       move.w     #$FFFF,AppBase.wdwHandle
-[0001170e] 42b9 0003 55f8            clr.l      $000355F8
-[00011714] 42b9 0003 55fc            clr.l      $000355FC
-[0001171a] 4239 0003 5600            clr.b      $00035600
+[0001170e] 42b9 0003 55f8            clr.l      AppBase.openFiles
+[00011714] 42b9 0003 55fc            clr.l      AppBase.openStreams
+[0001171a] 4239 0003 5600            clr.b      AppBase.shellTail
 [00011720] 4e5e                      unlk       a6
 [00011722] 4ef9 0001 1ad6            jmp        $00011AD6
 [00011728] 4e56 0000                 link       a6,#0
@@ -1816,6 +1825,8 @@ AESApplications.ApplFind:
 [00011866] 3885                      move.w     d5,(a4)
 [00011868] 4e5e                      unlk       a6
 [0001186a] 4e75                      rts
+
+GEMDOS.Close:
 [0001186c] 4e56 0000                 link       a6,#0
 [00011870] 598f                      subq.l     #4,a7
 [00011872] 3f3c 003e                 move.w     #$003E,-(a7)
@@ -1828,6 +1839,8 @@ AESApplications.ApplFind:
 [00011886] 1d45 000a                 move.b     d5,10(a6)
 [0001188a] 4e5e                      unlk       a6
 [0001188c] 4e75                      rts
+
+GEMDOS.Read:
 [0001188e] 4e56 0000                 link       a6,#0
 [00011892] 598f                      subq.l     #4,a7
 [00011894] 3f3c 003f                 move.w     #$003F,-(a7)
@@ -1841,6 +1854,8 @@ AESApplications.ApplFind:
 [000118b2] 289f                      move.l     (a7)+,(a4)
 [000118b4] 4e5e                      unlk       a6
 [000118b6] 4e75                      rts
+
+GEMDOS.Write:
 [000118b8] 4e56 0000                 link       a6,#0
 [000118bc] 598f                      subq.l     #4,a7
 [000118be] 3f3c 0040                 move.w     #$0040,-(a7)
@@ -1854,6 +1869,8 @@ AESApplications.ApplFind:
 [000118dc] 289f                      move.l     (a7)+,(a4)
 [000118de] 4e5e                      unlk       a6
 [000118e0] 4e75                      rts
+
+GEMDOS.Delete:
 [000118e2] 4e56 0000                 link       a6,#0
 [000118e6] 598f                      subq.l     #4,a7
 [000118e8] 3f3c 0041                 move.w     #$0041,-(a7)
@@ -1868,6 +1885,8 @@ AESApplications.ApplFind:
 [00011900] 1d45 000e                 move.b     d5,14(a6)
 [00011904] 4e5e                      unlk       a6
 [00011906] 4e75                      rts
+
+GEMDOS.Seek:
 [00011908] 4e56 0000                 link       a6,#0
 [0001190c] 598f                      subq.l     #4,a7
 [0001190e] 3f3c 0042                 move.w     #$0042,-(a7)
@@ -1894,6 +1913,8 @@ AESApplications.ApplFind:
 [00011950] 2d5f fffc                 move.l     (a7)+,-4(a6)
 [00011954] 4e5e                      unlk       a6
 [00011956] 4e75                      rts
+
+GEMDOS.Alloc:
 [00011958] 4e56 0000                 link       a6,#0
 [0001195c] 598f                      subq.l     #4,a7
 [0001195e] 3f3c 0048                 move.w     #$0048,-(a7)
@@ -1904,6 +1925,8 @@ AESApplications.ApplFind:
 [00011970] 289f                      move.l     (a7)+,(a4)
 [00011972] 4e5e                      unlk       a6
 [00011974] 4e75                      rts
+
+GEMDOS.Free:
 [00011976] 4e56 0000                 link       a6,#0
 [0001197a] 598f                      subq.l     #4,a7
 [0001197c] 3f3c 0049                 move.w     #$0049,-(a7)
@@ -1916,6 +1939,7 @@ AESApplications.ApplFind:
 [00011990] 1d45 000c                 move.b     d5,12(a6)
 [00011994] 4e5e                      unlk       a6
 [00011996] 4e75                      rts
+
 [00011998] 4e56 fff8                 link       a6,#-8
 [0001199c] 7aff                      moveq.l    #-1,d5
 [0001199e] 286e 0010                 movea.l    16(a6),a4
@@ -1924,10 +1948,11 @@ AESApplications.ApplFind:
 [000119ac] 6d04                      blt.s      $000119B2
 [000119ae] 4e5e                      unlk       a6
 [000119b0] 4e75                      rts
+
 [000119b2] 7aff                      moveq.l    #-1,d5
 [000119b4] 2f05                      move.l     d5,-(a7)
 [000119b6] 486e fff8                 pea.l      -8(a6)
-[000119ba] 4eb9 0001 1958            jsr        $00011958
+[000119ba] 4eb9 0001 1958            jsr        GEMDOS.Alloc
 [000119c0] 508f                      addq.l     #8,a7
 [000119c2] 2a2e 000c                 move.l     12(a6),d5
 [000119c6] 0685 0000 0400            addi.l     #$00000400,d5
@@ -1935,6 +1960,7 @@ AESApplications.ApplFind:
 [000119d0] 6308                      bls.s      $000119DA
 [000119d2] 4e5e                      unlk       a6
 [000119d4] 4e75                      rts
+
 [000119d6] 4efa 003a                 jmp        $00011A12(pc)
 [000119da] 0cae 0000 c000 000c       cmpi.l     #$0000C000,12(a6)
 [000119e2] 6312                      bls.s      $000119F6
@@ -1953,7 +1979,7 @@ AESApplications.ApplFind:
 [00011a20] 2f2e fffc                 move.l     -4(a6),-(a7)
 [00011a24] 286e 0010                 movea.l    16(a6),a4
 [00011a28] 4854                      pea.l      (a4)
-[00011a2a] 4eb9 0001 1958            jsr        $00011958
+[00011a2a] 4eb9 0001 1958            jsr        GEMDOS.Alloc
 [00011a30] 508f                      addq.l     #8,a7
 [00011a32] 286e 0010                 movea.l    16(a6),a4
 [00011a36] 4a94                      tst.l      (a4)
@@ -1985,7 +2011,7 @@ AESApplications.ApplFind:
 [00011a90] e545                      asl.w      #2,d5
 [00011a92] 49f9 0003 5664            lea.l      $00035664,a4
 [00011a98] 2f34 5000                 move.l     0(a4,d5.w),-(a7)
-[00011a9c] 4eb9 0001 1976            jsr        $00011976
+[00011a9c] 4eb9 0001 1976            jsr        GEMDOS.Free
 [00011aa2] 588f                      addq.l     #4,a7
 [00011aa4] 4a1f                      tst.b      (a7)+
 [00011aa6] 6714                      beq.s      $00011ABC
@@ -2019,7 +2045,7 @@ AESApplications.ApplFind:
 [00011b12] 3f3c 0100                 move.w     #$0100,-(a7)
 [00011b16] 7aff                      moveq.l    #-1,d5
 [00011b18] 2f05                      move.l     d5,-(a7)
-[00011b1a] 4eb9 0001 0f24            jsr        $00010F24
+[00011b1a] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00011b20] 5c8f                      addq.l     #6,a7
 [00011b22] 4a79 0003 55f0            tst.w      AppBase.wdwHandle
 [00011b28] 6d6a                      blt.s      $00011B94
@@ -2055,7 +2081,7 @@ AESApplications.ApplFind:
 [00011baa] 3f3c 0101                 move.w     #$0101,-(a7)
 [00011bae] 7aff                      moveq.l    #-1,d5
 [00011bb0] 2f05                      move.l     d5,-(a7)
-[00011bb2] 4eb9 0001 0f24            jsr        $00010F24
+[00011bb2] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00011bb8] 5c8f                      addq.l     #6,a7
 [00011bba] 4eb9 0001 0d54            jsr        $00010D54
 [00011bc0] 13fc 0001 0003 5696       move.b     #$01,ExecUtil.terminated
@@ -2155,22 +2181,22 @@ AESApplications.ApplFind:
 [00011d0a] 4e5e                      unlk       a6
 [00011d0c] 4e75                      rts
 [00011d0e] 4e56 fffc                 link       a6,#-4
-[00011d12] 2a39 0003 55fc            move.l     $000355FC,d5
+[00011d12] 2a39 0003 55fc            move.l     AppBase.openStreams,d5
 [00011d18] 0805 000c                 btst       #12,d5
 [00011d1c] 660c                      bne.s      $00011D2A
-[00011d1e] 2a39 0003 55fc            move.l     $000355FC,d5
+[00011d1e] 2a39 0003 55fc            move.l     AppBase.openStreams,d5
 [00011d24] 0805 000b                 btst       #11,d5
 [00011d28] 6720                      beq.s      $00011D4A
 [00011d2a] 3f3c 0009                 move.w     #$0009,-(a7)
 [00011d2e] 4879 0001 20ee            pea.l      $000120EE
 [00011d34] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011d38] 4879 0003 5600            pea.l      $00035600
+[00011d38] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011d3e] 6100 ffa0                 bsr.w      $00011CE0
 [00011d42] 4fef 000c                 lea.l      12(a7),a7
 [00011d46] 4efa 0112                 jmp        $00011E5A(pc)
 [00011d4a] 558f                      subq.l     #2,a7
 [00011d4c] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011d50] 4879 0003 5600            pea.l      $00035600
+[00011d50] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011d56] 3f3c 0003                 move.w     #$0003,-(a7)
 [00011d5a] 4879 0001 20fa            pea.l      $000120FA
 [00011d60] 4267                      clr.w      -(a7)
@@ -2182,13 +2208,13 @@ AESApplications.ApplFind:
 [00011d74] 6004                      bra.s      $00011D7A
 [00011d76] 4efa 00aa                 jmp        $00011E22(pc)
 [00011d7a] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011d7e] 4879 0003 5600            pea.l      $00035600
+[00011d7e] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011d84] 3f3c 0002                 move.w     #$0002,-(a7)
 [00011d88] 4879 0001 2100            pea.l      $00012100
 [00011d8e] 6100 fe3c                 bsr        $00011BCC
 [00011d92] 4fef 000c                 lea.l      12(a7),a7
 [00011d96] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011d9a] 4879 0003 5600            pea.l      $00035600
+[00011d9a] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011da0] 4267                      clr.w      -(a7)
 [00011da2] 486e fffc                 pea.l      -4(a6)
 [00011da6] 4eb9 0001 1844            jsr        $00011844
@@ -2196,7 +2222,7 @@ AESApplications.ApplFind:
 [00011db0] 4a6e fffc                 tst.w      -4(a6)
 [00011db4] 6c3c                      bge.s      $00011DF2
 [00011db6] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011dba] 4879 0003 5600            pea.l      $00035600
+[00011dba] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011dc0] 3f3c 0002                 move.w     #$0002,-(a7)
 [00011dc4] 4879 0001 2104            pea.l      $00012104
 [00011dca] 6100 fe00                 bsr        $00011BCC
@@ -2204,13 +2230,13 @@ AESApplications.ApplFind:
 [00011dd2] 3f3c 0009                 move.w     #$0009,-(a7)
 [00011dd6] 4879 0001 2108            pea.l      $00012108
 [00011ddc] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011de0] 4879 0003 5600            pea.l      $00035600
+[00011de0] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011de6] 6100 fef8                 bsr        $00011CE0
 [00011dea] 4fef 000c                 lea.l      12(a7),a7
 [00011dee] 4efa 002e                 jmp        $00011E1E(pc)
 [00011df2] 558f                      subq.l     #2,a7
 [00011df4] 3f2e fffc                 move.w     -4(a6),-(a7)
-[00011df8] 4eb9 0001 186c            jsr        $0001186C
+[00011df8] 4eb9 0001 186c            jsr        GEMDOS.Close
 [00011dfe] 548f                      addq.l     #2,a7
 [00011e00] 4a1f                      tst.b      (a7)+
 [00011e02] 4e71                      nop
@@ -2222,7 +2248,7 @@ AESApplications.ApplFind:
 [00011e1a] 4fef 000c                 lea.l      12(a7),a7
 [00011e1e] 4efa 003a                 jmp        $00011E5A(pc)
 [00011e22] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011e26] 4879 0003 5600            pea.l      $00035600
+[00011e26] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011e2c] 3f3c 0002                 move.w     #$0002,-(a7)
 [00011e30] 4879 0001 2122            pea.l      $00012122
 [00011e36] 6100 fd94                 bsr        $00011BCC
@@ -2230,20 +2256,20 @@ AESApplications.ApplFind:
 [00011e3e] 3f3c 0009                 move.w     #$0009,-(a7)
 [00011e42] 4879 0001 2126            pea.l      $00012126
 [00011e48] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011e4c] 4879 0003 5600            pea.l      $00035600
+[00011e4c] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011e52] 6100 fe8c                 bsr        $00011CE0
 [00011e56] 4fef 000c                 lea.l      12(a7),a7
 [00011e5a] 4e5e                      unlk       a6
 [00011e5c] 4e75                      rts
 [00011e5e] 4e56 0000                 link       a6,#0
-[00011e62] 2a39 0003 55fc            move.l     $000355FC,d5
+[00011e62] 2a39 0003 55fc            move.l     AppBase.openStreams,d5
 [00011e68] 0805 0007                 btst       #7,d5
 [00011e6c] 6746                      beq.s      $00011EB4
 [00011e6e] 286d fffc                 movea.l    -4(a5),a4
 [00011e72] 4a2c 0008                 tst.b      8(a4)
 [00011e76] 663c                      bne.s      $00011EB4
 [00011e78] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011e7c] 4879 0003 5600            pea.l      $00035600
+[00011e7c] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011e82] 3f3c 0002                 move.w     #$0002,-(a7)
 [00011e86] 4879 0001 2132            pea.l      $00012132
 [00011e8c] 6100 fd3e                 bsr        $00011BCC
@@ -2251,7 +2277,7 @@ AESApplications.ApplFind:
 [00011e94] 3f3c 0007                 move.w     #$0007,-(a7)
 [00011e98] 4879 0001 2136            pea.l      $00012136
 [00011e9e] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011ea2] 4879 0003 5600            pea.l      $00035600
+[00011ea2] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011ea8] 6100 fe36                 bsr        $00011CE0
 [00011eac] 4fef 000c                 lea.l      12(a7),a7
 [00011eb0] 4efa 0008                 jmp        $00011EBA(pc)
@@ -2265,7 +2291,7 @@ AESApplications.ApplFind:
 [00011ecc] 3f3c 0009                 move.w     #$0009,-(a7)
 [00011ed0] 4879 0001 2140            pea.l      $00012140
 [00011ed6] 3f3c 004f                 move.w     #$004F,-(a7)
-[00011eda] 4879 0003 5600            pea.l      $00035600
+[00011eda] 4879 0003 5600            pea.l      AppBase.shellTail
 [00011ee0] 6100 fdfe                 bsr        $00011CE0
 [00011ee4] 4fef 000c                 lea.l      12(a7),a7
 [00011ee8] 4efa 0008                 jmp        $00011EF2(pc)
@@ -2279,7 +2305,7 @@ AESApplications.ApplFind:
 [00011f06] 4267                      clr.w      -(a7)
 [00011f08] 7aff                      moveq.l    #-1,d5
 [00011f0a] 2f05                      move.l     d5,-(a7)
-[00011f0c] 4eb9 0001 0f24            jsr        $00010F24
+[00011f0c] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00011f12] 5c8f                      addq.l     #6,a7
 [00011f14] 4a39 0003 5650            tst.b      AppBase.xfer
 [00011f1a] 6758                      beq.s      $00011F74
@@ -2913,13 +2939,13 @@ M2Option.init:
 [0001282a] 3f3c 0101                 move.w     #$0101,-(a7)
 [0001282e] 7aff                      moveq.l    #-1,d5
 [00012830] 2f05                      move.l     d5,-(a7)
-[00012832] 4eb9 0001 0f24            jsr        $00010F24
+[00012832] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00012838] 5c8f                      addq.l     #6,a7
 [0001283a] 4efa 0012                 jmp        $0001284E(pc)
 [0001283e] 3f3c 0100                 move.w     #$0100,-(a7)
 [00012842] 7aff                      moveq.l    #-1,d5
 [00012844] 2f05                      move.l     d5,-(a7)
-[00012846] 4eb9 0001 0f24            jsr        $00010F24
+[00012846] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [0001284c] 5c8f                      addq.l     #6,a7
 [0001284e] 4e5e                      unlk       a6
 [00012850] 4e75                      rts
@@ -3380,12 +3406,12 @@ M2Option.init:
 [00012fee] 3f3c 0002                 move.w     #$0002,-(a7)
 [00012ff2] 7aff                      moveq.l    #-1,d5
 [00012ff4] 2f05                      move.l     d5,-(a7)
-[00012ff6] 4eb9 0001 0f24            jsr        $00010F24
+[00012ff6] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00012ffc] 5c8f                      addq.l     #6,a7
 [00012ffe] 4eb9 0001 2c3c            jsr        $00012C3C
-[00013004] 23fc 0001 2eec 0003 55f4  move.l     #$00012EEC,$000355F4
+[00013004] 23fc 0001 2eec 0003 55f4  move.l     #$00012EEC,AppBase.doUpdateWindow
 [0001300e] 4e5e                      unlk       a6
-[00013010] 4ef9 0001 4522            jmp        $00014522
+[00013010] 4ef9 0001 4522            jmp        NewStreams.init+6
 [00013016] 204d                      movea.l    a5,a0
 [00013018] 6f64                      ble.s      $0001307E
 [0001301a] 756c                      ???
@@ -3399,11 +3425,17 @@ M2Option.init:
 [0001302c] 7365                      ???
 [0001302e] 2033 2e30                 move.l     48(a3,d2.l*8),d0 ; 68020+ only
 [00013032] 3161 2000                 move.w     -(a1),8192(a0)
+
+***
+* MODULE NewStreams
+***
+
+NewStreams.FileError:
 [00013036] 4e56 fe6e                 link       a6,#-402
 [0001303a] 4267                      clr.w      -(a7)
 [0001303c] 7aff                      moveq.l    #-1,d5
 [0001303e] 2f05                      move.l     d5,-(a7)
-[00013040] 4eb9 0001 0f24            jsr        $00010F24
+[00013040] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00013046] 5c8f                      addq.l     #6,a7
 [00013048] 0c6e ffdf 0008            cmpi.w     #$FFDF,8(a6)
 [0001304e] 6602                      bne.s      $00013052
@@ -3453,11 +3485,13 @@ M2Option.init:
 [000130f2] 1d7c 0001 0010            move.b     #$01,16(a6)
 [000130f8] 4e5e                      unlk       a6
 [000130fa] 4e75                      rts
+
+NewStreams.Error:
 [000130fc] 4e56 fe6e                 link       a6,#-402
 [00013100] 4267                      clr.w      -(a7)
 [00013102] 7aff                      moveq.l    #-1,d5
 [00013104] 2f05                      move.l     d5,-(a7)
-[00013106] 4eb9 0001 0f24            jsr        $00010F24
+[00013106] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [0001310c] 5c8f                      addq.l     #6,a7
 [0001310e] 49f9 0001 4642            lea.l      $00014642,a4
 [00013114] 47ee ff36                 lea.l      -202(a6),a3
@@ -3504,11 +3538,13 @@ M2Option.init:
 [000131be] 588f                      addq.l     #4,a7
 [000131c0] 4e5e                      unlk       a6
 [000131c2] 4e75                      rts
+
+NewStreams.Enospace:
 [000131c4] 4e56 ffae                 link       a6,#-82
 [000131c8] 4267                      clr.w      -(a7)
 [000131ca] 7aff                      moveq.l    #-1,d5
 [000131cc] 2f05                      move.l     d5,-(a7)
-[000131ce] 4eb9 0001 0f24            jsr        $00010F24
+[000131ce] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [000131d4] 5c8f                      addq.l     #6,a7
 [000131d6] 49f9 0001 4686            lea.l      $00014686,a4
 [000131dc] 47ee ffae                 lea.l      -82(a6),a3
@@ -3528,11 +3564,13 @@ M2Option.init:
 [00013210] 588f                      addq.l     #4,a7
 [00013212] 4e5e                      unlk       a6
 [00013214] 4e75                      rts
+
+NewStreams.Enomem:
 [00013216] 4e56 ffae                 link       a6,#-82
 [0001321a] 4267                      clr.w      -(a7)
 [0001321c] 7aff                      moveq.l    #-1,d5
 [0001321e] 2f05                      move.l     d5,-(a7)
-[00013220] 4eb9 0001 0f24            jsr        $00010F24
+[00013220] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00013226] 5c8f                      addq.l     #6,a7
 [00013228] 49f9 0001 46d2            lea.l      $000146D2,a4
 [0001322e] 47ee ffae                 lea.l      -82(a6),a3
@@ -3552,6 +3590,8 @@ M2Option.init:
 [00013262] 588f                      addq.l     #4,a7
 [00013264] 4e5e                      unlk       a6
 [00013266] 4e75                      rts
+
+NewStreams.setExtension:
 [00013268] 4e56 fff8                 link       a6,#-8
 [0001326c] 286e 0008                 movea.l    8(a6),a4
 [00013270] 2d54 fffc                 move.l     (a4),-4(a6)
@@ -3636,6 +3676,8 @@ M2Option.init:
 [00013394] 4234 5000                 clr.b      0(a4,d5.w)
 [00013398] 4e5e                      unlk       a6
 [0001339a] 4e75                      rts
+
+NewStreams.SetFileExtension:
 [0001339c] 4e56 0000                 link       a6,#0
 [000133a0] 2f2d fffc                 move.l     -4(a5),-(a7)
 [000133a4] 2b4e fffc                 move.l     a6,-4(a5)
@@ -3648,67 +3690,67 @@ M2Option.init:
 [000133be] 0000 0114                 ori.b      #$14,d0
 [000133c2] 4efa 0138                 jmp        $000134FC(pc)
 [000133c6] 4879 0001 4702            pea.l      $00014702
-[000133cc] 6100 fe9a                 bsr        $00013268
+[000133cc] 6100 fe9a                 bsr        NewStreams.setExtension
 [000133d0] 588f                      addq.l     #4,a7
 [000133d2] 4efa 0128                 jmp        $000134FC(pc)
 [000133d6] 4879 0001 4706            pea.l      $00014706
-[000133dc] 6100 fe8a                 bsr        $00013268
+[000133dc] 6100 fe8a                 bsr        NewStreams.setExtension
 [000133e0] 588f                      addq.l     #4,a7
 [000133e2] 4efa 0118                 jmp        $000134FC(pc)
 [000133e6] 4879 0001 470a            pea.l      $0001470A
-[000133ec] 6100 fe7a                 bsr        $00013268
+[000133ec] 6100 fe7a                 bsr        NewStreams.setExtension
 [000133f0] 588f                      addq.l     #4,a7
 [000133f2] 4efa 0108                 jmp        $000134FC(pc)
 [000133f6] 4879 0001 470e            pea.l      $0001470E
-[000133fc] 6100 fe6a                 bsr        $00013268
+[000133fc] 6100 fe6a                 bsr        NewStreams.setExtension
 [00013400] 588f                      addq.l     #4,a7
 [00013402] 4efa 00f8                 jmp        $000134FC(pc)
 [00013406] 4879 0001 4712            pea.l      $00014712
-[0001340c] 6100 fe5a                 bsr        $00013268
+[0001340c] 6100 fe5a                 bsr        NewStreams.setExtension
 [00013410] 588f                      addq.l     #4,a7
 [00013412] 4efa 00e8                 jmp        $000134FC(pc)
 [00013416] 4879 0001 4716            pea.l      $00014716
-[0001341c] 6100 fe4a                 bsr        $00013268
+[0001341c] 6100 fe4a                 bsr        NewStreams.setExtension
 [00013420] 588f                      addq.l     #4,a7
 [00013422] 4efa 00d8                 jmp        $000134FC(pc)
 [00013426] 4879 0001 471a            pea.l      $0001471A
-[0001342c] 6100 fe3a                 bsr        $00013268
+[0001342c] 6100 fe3a                 bsr        NewStreams.setExtension
 [00013430] 588f                      addq.l     #4,a7
 [00013432] 4efa 00c8                 jmp        $000134FC(pc)
 [00013436] 4879 0001 471e            pea.l      $0001471E
-[0001343c] 6100 fe2a                 bsr        $00013268
+[0001343c] 6100 fe2a                 bsr        NewStreams.setExtension
 [00013440] 588f                      addq.l     #4,a7
 [00013442] 4efa 00b8                 jmp        $000134FC(pc)
 [00013446] 4879 0001 4722            pea.l      $00014722
-[0001344c] 6100 fe1a                 bsr        $00013268
+[0001344c] 6100 fe1a                 bsr        NewStreams.setExtension
 [00013450] 588f                      addq.l     #4,a7
 [00013452] 4efa 00a8                 jmp        $000134FC(pc)
 [00013456] 4879 0001 4726            pea.l      $00014726
-[0001345c] 6100 fe0a                 bsr        $00013268
+[0001345c] 6100 fe0a                 bsr        NewStreams.setExtension
 [00013460] 588f                      addq.l     #4,a7
 [00013462] 4efa 0098                 jmp        $000134FC(pc)
 [00013466] 4879 0001 472a            pea.l      $0001472A
-[0001346c] 6100 fdfa                 bsr        $00013268
+[0001346c] 6100 fdfa                 bsr        NewStreams.setExtension
 [00013470] 588f                      addq.l     #4,a7
 [00013472] 4efa 0088                 jmp        $000134FC(pc)
 [00013476] 4879 0001 472e            pea.l      $0001472E
-[0001347c] 6100 fdea                 bsr        $00013268
+[0001347c] 6100 fdea                 bsr        NewStreams.setExtension
 [00013480] 588f                      addq.l     #4,a7
 [00013482] 4efa 0078                 jmp        $000134FC(pc)
 [00013486] 4879 0001 4732            pea.l      $00014732
-[0001348c] 6100 fdda                 bsr        $00013268
+[0001348c] 6100 fdda                 bsr        NewStreams.setExtension
 [00013490] 588f                      addq.l     #4,a7
 [00013492] 4efa 0068                 jmp        $000134FC(pc)
 [00013496] 4879 0001 4736            pea.l      $00014736
-[0001349c] 6100 fdca                 bsr        $00013268
+[0001349c] 6100 fdca                 bsr        NewStreams.setExtension
 [000134a0] 588f                      addq.l     #4,a7
 [000134a2] 4efa 0058                 jmp        $000134FC(pc)
 [000134a6] 4879 0001 473a            pea.l      $0001473A
-[000134ac] 6100 fdba                 bsr        $00013268
+[000134ac] 6100 fdba                 bsr        NewStreams.setExtension
 [000134b0] 588f                      addq.l     #4,a7
 [000134b2] 4efa 0048                 jmp        $000134FC(pc)
 [000134b6] 4879 0001 473e            pea.l      $0001473E
-[000134bc] 6100 fdaa                 bsr        $00013268
+[000134bc] 6100 fdaa                 bsr        NewStreams.setExtension
 [000134c0] 588f                      addq.l     #4,a7
 [000134c2] 4efa 0038                 jmp        $000134FC(pc)
 [000134c6] 4efa 0028                 jmp        $000134F0(pc)
@@ -3721,11 +3763,13 @@ M2Option.init:
 [000134e8] 00d0 00e0     
 [000134ec] 00f0 0100
 [000134f0] 4879 0001 4742            pea.l      $00014742
-[000134f6] 6100 fd70                 bsr        $00013268
+[000134f6] 6100 fd70                 bsr        NewStreams.setExtension
 [000134fa] 588f                      addq.l     #4,a7
 [000134fc] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [00013500] 4e5e                      unlk       a6
 [00013502] 4e75                      rts
+
+NewStreams.max:
 [00013504] 4e56 0000                 link       a6,#0
 [00013508] 3a2e 000a                 move.w     10(a6),d5
 [0001350c] ba6e 0008                 cmp.w      8(a6),d5
@@ -3737,16 +3781,18 @@ M2Option.init:
 [00013520] 3d6e 0008 000c            move.w     8(a6),12(a6)
 [00013526] 4e5e                      unlk       a6
 [00013528] 4e75                      rts
+
+NewStreams.allocfile:
 [0001352a] 4e56 fffe                 link       a6,#-2
 [0001352e] 4878 023c                 pea.l      ($0000023C).w
 [00013532] 286e 000e                 movea.l    14(a6),a4
 [00013536] 4854                      pea.l      (a4)
-[00013538] 4eb9 0001 1958            jsr        $00011958
+[00013538] 4eb9 0001 1958            jsr        GEMDOS.Alloc
 [0001353e] 508f                      addq.l     #8,a7
 [00013540] 286e 000e                 movea.l    14(a6),a4
 [00013544] 4a94                      tst.l      (a4)
 [00013546] 6604                      bne.s      $0001354C
-[00013548] 6100 fccc                 bsr        $00013216
+[00013548] 6100 fccc                 bsr        NewStreams.Enomem
 [0001354c] 266e 000e                 movea.l    14(a6),a3
 [00013550] 2853                      movea.l    (a3),a4
 [00013552] 38bc ffff                 move.w     #$FFFF,(a4)
@@ -3782,6 +3828,8 @@ M2Option.init:
 [000135c4] 422c 0038                 clr.b      56(a4)
 [000135c8] 4e5e                      unlk       a6
 [000135ca] 4e75                      rts
+
+NewStreams.flush(VAR s: STREAM):
 [000135cc] 4e56 fffc                 link       a6,#-4
 [000135d0] 266e 0008                 movea.l    8(a6),a3
 [000135d4] 2853                      movea.l    (a3),a4
@@ -3798,14 +3846,14 @@ M2Option.init:
 [000135f4] 47ec 003a                 lea.l      58(a4),a3
 [000135f8] 2a0b                      move.l     a3,d5
 [000135fa] 2f05                      move.l     d5,-(a7)
-[000135fc] 4eb9 0001 18b8            jsr        $000118B8
+[000135fc] 4eb9 0001 18b8            jsr        GEMDOS.Write
 [00013602] 4fef 000a                 lea.l      10(a7),a7
 [00013606] 285f                      movea.l    (a7)+,a4
 [00013608] 4aae fffc                 tst.l      -4(a6)
 [0001360c] 6412                      bcc.s      $00013620
 [0001360e] 2f0c                      move.l     a4,-(a7)
 [00013610] 1f3c 0001                 move.b     #$01,-(a7)
-[00013614] 6100 fae6                 bsr        $000130FC
+[00013614] 6100 fae6                 bsr        NewStreams.Error
 [00013618] 548f                      addq.l     #2,a7
 [0001361a] 285f                      movea.l    (a7)+,a4
 [0001361c] 4efa 0016                 jmp        $00013634(pc)
@@ -3814,7 +3862,7 @@ M2Option.init:
 [00013626] baae fffc                 cmp.l      -4(a6),d5
 [0001362a] 6708                      beq.s      $00013634
 [0001362c] 2f0c                      move.l     a4,-(a7)
-[0001362e] 6100 fb94                 bsr        $000131C4
+[0001362e] 6100 fb94                 bsr        NewStreams.Enospac
 [00013632] 285f                      movea.l    (a7)+,a4
 [00013634] 2a2c 0034                 move.l     52(a4),d5
 [00013638] baac 002a                 cmp.l      42(a4),d5
@@ -3826,6 +3874,8 @@ M2Option.init:
 [0001364e] 422c 0038                 clr.b      56(a4)
 [00013652] 4e5e                      unlk       a6
 [00013654] 4e75                      rts
+
+NewStreams.readbyte:
 [00013656] 4e56 fff8                 link       a6,#-8
 [0001365a] 286e 000c                 movea.l    12(a6),a4
 [0001365e] 2a2c 0034                 move.l     52(a4),d5
@@ -3839,7 +3889,7 @@ M2Option.init:
 [00013672] 4efa 007e                 jmp        $000136F2(pc)
 [00013676] 2f0c                      move.l     a4,-(a7)
 [00013678] 486e 000c                 pea.l      12(a6)
-[0001367c] 6100 ff4e                 bsr        $000135CC
+[0001367c] 6100 ff4e                 bsr        NewStreams.flush
 [00013680] 588f                      addq.l     #4,a7
 [00013682] 285f                      movea.l    (a7)+,a4
 [00013684] 2a2c 0034                 move.l     52(a4),d5
@@ -3855,7 +3905,7 @@ M2Option.init:
 [000136a4] 3f13                      move.w     (a3),-(a7)
 [000136a6] 4227                      clr.b      -(a7)
 [000136a8] 486e fffc                 pea.l      -4(a6)
-[000136ac] 4eb9 0001 1908            jsr        $00011908
+[000136ac] 4eb9 0001 1908            jsr        GEMDOS.Seek
 [000136b2] 4fef 000c                 lea.l      12(a7),a7
 [000136b6] 285f                      movea.l    (a7)+,a4
 [000136b8] 2d7c 0000 0200 fff8       move.l     #$00000200,-8(a6)
@@ -3866,14 +3916,14 @@ M2Option.init:
 [000136cc] 47ec 003a                 lea.l      58(a4),a3
 [000136d0] 2a0b                      move.l     a3,d5
 [000136d2] 2f05                      move.l     d5,-(a7)
-[000136d4] 4eb9 0001 188e            jsr        $0001188E
+[000136d4] 4eb9 0001 188e            jsr        GEMDOS.Read
 [000136da] 4fef 000a                 lea.l      10(a7),a7
 [000136de] 285f                      movea.l    (a7)+,a4
 [000136e0] 4aae fff8                 tst.l      -8(a6)
 [000136e4] 640c                      bcc.s      $000136F2
 [000136e6] 2f0c                      move.l     a4,-(a7)
 [000136e8] 4227                      clr.b      -(a7)
-[000136ea] 6100 fa10                 bsr        $000130FC
+[000136ea] 6100 fa10                 bsr        NewStreams.Error
 [000136ee] 548f                      addq.l     #2,a7
 [000136f0] 285f                      movea.l    (a7)+,a4
 [000136f2] 2f0c                      move.l     a4,-(a7)
@@ -3883,7 +3933,7 @@ M2Option.init:
 [00013700] 5245                      addq.w     #1,d5
 [00013702] 3f05                      move.w     d5,-(a7)
 [00013704] 3f2c 0032                 move.w     50(a4),-(a7)
-[00013708] 6100 fdfa                 bsr        $00013504
+[00013708] 6100 fdfa                 bsr        NewStreams.max
 [0001370c] 588f                      addq.l     #4,a7
 [0001370e] 3a1f                      move.w     (a7)+,d5
 [00013710] 285f                      movea.l    (a7)+,a4
@@ -3897,14 +3947,15 @@ M2Option.init:
 [00013730] 4e5e                      unlk       a6
 [00013732] 4e75                      rts
 
+NewStreams.read16bit:
 [00013734] 4e56 fffe                 link       a6,#-2
 [00013738] 2f2e 000c                 move.l     12(a6),-(a7)
 [0001373c] 486e ffff                 pea.l      -1(a6)
-[00013740] 6100 ff14                 bsr        $00013656
+[00013740] 6100 ff14                 bsr        NewStreams.readbyte
 [00013744] 508f                      addq.l     #8,a7
 [00013746] 2f2e 000c                 move.l     12(a6),-(a7)
 [0001374a] 486e fffe                 pea.l      -2(a6)
-[0001374e] 6100 ff06                 bsr        $00013656
+[0001374e] 6100 ff06                 bsr        NewStreams.readbyte
 [00013752] 508f                      addq.l     #8,a7
 [00013754] 7a00                      moveq.l    #0,d5
 [00013756] 1a2e ffff                 move.b     -1(a6),d5
@@ -3917,6 +3968,7 @@ M2Option.init:
 [0001376a] 4e5e                      unlk       a6
 [0001376c] 4e75                      rts
 
+NewStreams.writebyte:
 [0001376e] 4e56 fff8                 link       a6,#-8
 [00013772] 286e 000c                 movea.l    12(a6),a4
 [00013776] 2a2c 0034                 move.l     52(a4),d5
@@ -3930,7 +3982,7 @@ M2Option.init:
 [0001378a] 4efa 0090                 jmp        $0001381C(pc)
 [0001378e] 2f0c                      move.l     a4,-(a7)
 [00013790] 486e 000c                 pea.l      12(a6)
-[00013794] 6100 fe36                 bsr        $000135CC
+[00013794] 6100 fe36                 bsr        NewStreams.flush
 [00013798] 588f                      addq.l     #4,a7
 [0001379a] 285f                      movea.l    (a7)+,a4
 [0001379c] 2a2c 0034                 move.l     52(a4),d5
@@ -3946,7 +3998,7 @@ M2Option.init:
 [000137bc] 3f13                      move.w     (a3),-(a7)
 [000137be] 4227                      clr.b      -(a7)
 [000137c0] 486e fffc                 pea.l      -4(a6)
-[000137c4] 4eb9 0001 1908            jsr        $00011908
+[000137c4] 4eb9 0001 1908            jsr        GEMDOS.Seek
 [000137ca] 4fef 000c                 lea.l      12(a7),a7
 [000137ce] 285f                      movea.l    (a7)+,a4
 [000137d0] 2d7c 0000 0200 fff8       move.l     #$00000200,-8(a6)
@@ -3957,7 +4009,7 @@ M2Option.init:
 [000137e4] 47ec 003a                 lea.l      58(a4),a3
 [000137e8] 2a0b                      move.l     a3,d5
 [000137ea] 2f05                      move.l     d5,-(a7)
-[000137ec] 4eb9 0001 188e            jsr        $0001188E
+[000137ec] 4eb9 0001 188e            jsr        GEMDOS.Read
 [000137f2] 4fef 000a                 lea.l      10(a7),a7
 [000137f6] 285f                      movea.l    (a7)+,a4
 [000137f8] 2d6c 002e fffc            move.l     46(a4),-4(a6)
@@ -3967,7 +4019,7 @@ M2Option.init:
 [00013808] 3f13                      move.w     (a3),-(a7)
 [0001380a] 4227                      clr.b      -(a7)
 [0001380c] 486e fffc                 pea.l      -4(a6)
-[00013810] 4eb9 0001 1908            jsr        $00011908
+[00013810] 4eb9 0001 1908            jsr        GEMDOS.Seek
 [00013816] 4fef 000c                 lea.l      12(a7),a7
 [0001381a] 285f                      movea.l    (a7)+,a4
 [0001381c] 2f0c                      move.l     a4,-(a7)
@@ -3977,7 +4029,7 @@ M2Option.init:
 [0001382a] 5245                      addq.w     #1,d5
 [0001382c] 3f05                      move.w     d5,-(a7)
 [0001382e] 3f2c 0032                 move.w     50(a4),-(a7)
-[00013832] 6100 fcd0                 bsr        $00013504
+[00013832] 6100 fcd0                 bsr        NewStreams.max
 [00013836] 588f                      addq.l     #4,a7
 [00013838] 3a1f                      move.w     (a7)+,d5
 [0001383a] 285f                      movea.l    (a7)+,a4
@@ -3997,13 +4049,14 @@ M2Option.init:
 [00013876] 6614                      bne.s      $0001388C
 [00013878] 2f0c                      move.l     a4,-(a7)
 [0001387a] 486e 000c                 pea.l      12(a6)
-[0001387e] 6100 fd4c                 bsr        $000135CC
+[0001387e] 6100 fd4c                 bsr        NewStreams.flush
 [00013882] 588f                      addq.l     #4,a7
 [00013884] 285f                      movea.l    (a7)+,a4
 [00013886] 296c 0034 002e            move.l     52(a4),46(a4)
 [0001388c] 4e5e                      unlk       a6
 [0001388e] 4e75                      rts
 
+NewStreams.writeword:
 [00013890] 4e56 fffe                 link       a6,#-2
 [00013894] 3a2e 000a                 move.w     10(a6),d5
 [00013898] e04d                      lsr.w      #8,d5
@@ -4020,16 +4073,17 @@ M2Option.init:
 [000138b6] 2f2e 000c                 move.l     12(a6),-(a7)
 [000138ba] 1f2e ffff                 move.b     -1(a6),-(a7)
 [000138be] 1f2e 0008                 move.b     8(a6),-(a7)
-[000138c2] 6100 feaa                 bsr        $0001376E
+[000138c2] 6100 feaa                 bsr        NewStreams.writebyte
 [000138c6] 508f                      addq.l     #8,a7
 [000138c8] 2f2e 000c                 move.l     12(a6),-(a7)
 [000138cc] 1f2e fffe                 move.b     -2(a6),-(a7)
 [000138d0] 1f2e 0008                 move.b     8(a6),-(a7)
-[000138d4] 6100 fe98                 bsr        $0001376E
+[000138d4] 6100 fe98                 bsr        NewStreams.writebyte
 [000138d8] 508f                      addq.l     #8,a7
 [000138da] 4e5e                      unlk       a6
 [000138dc] 4e75                      rts
 
+NewStreams.strupr:
 [000138de] 4e56 fffe                 link       a6,#-2
 [000138e2] 426e fffe                 clr.w      -2(a6)
 [000138e6] 3a2e fffe                 move.w     -2(a6),d5
@@ -4054,17 +4108,19 @@ M2Option.init:
 [0001392a] 60ba                      bra.s      $000138E6
 [0001392c] 4e5e                      unlk       a6
 [0001392e] 4e75                      rts
+
+NewStreams.FileLookup:
 [00013930] 4e56 ff0e                 link       a6,#-242
 [00013934] 422e ff33                 clr.b      -205(a6)
-[00013938] 4a39 0003 5e72            tst.b      $00035E72
+[00013938] 4a39 0003 5e72            tst.b      NewStreams.needfile
 [0001393e] 6702                      beq.s      $00013942
 [00013940] 6004                      bra.s      $00013946
 [00013942] 4efa 00ae                 jmp        $000139F2(pc)
-[00013946] 4a39 0003 5e74            tst.b      $00035E74
+[00013946] 4a39 0003 5e74            tst.b      NewStreams.mainfilename
 [0001394c] 6602                      bne.s      $00013950
 [0001394e] 6004                      bra.s      $00013954
 [00013950] 4efa 007e                 jmp        $000139D0(pc)
-[00013954] 4a39 0003 5f3c            tst.b      $00035F3C
+[00013954] 4a39 0003 5f3c            tst.b      NewStreams.outfilename
 [0001395a] 56c5                      sne        d5
 [0001395c] 4405                      neg.b      d5
 [0001395e] 1d45 ff33                 move.b     d5,-205(a6)
@@ -4074,15 +4130,15 @@ M2Option.init:
 [0001396e] 0c6e 00c7 ff40            cmpi.w     #$00C7,-192(a6)
 [00013974] 6242                      bhi.s      $000139B8
 [00013976] 3a2e ff40                 move.w     -192(a6),d5
-[0001397a] 49f9 0003 5f3c            lea.l      $00035F3C,a4
+[0001397a] 49f9 0003 5f3c            lea.l      NewStreams.outfilename,a4
 [00013980] 0c34 000d 5000            cmpi.b     #$0D,0(a4,d5.w)
 [00013986] 6730                      beq.s      $000139B8
 [00013988] 3a2e ff40                 move.w     -192(a6),d5
-[0001398c] 49f9 0003 5f3c            lea.l      $00035F3C,a4
+[0001398c] 49f9 0003 5f3c            lea.l      NewStreams.outfilename,a4
 [00013992] 4a34 5000                 tst.b      0(a4,d5.w)
 [00013996] 6720                      beq.s      $000139B8
 [00013998] 3a2e ff40                 move.w     -192(a6),d5
-[0001399c] 49f9 0003 5f3c            lea.l      $00035F3C,a4
+[0001399c] 49f9 0003 5f3c            lea.l      NewStreams.outfilename,a4
 [000139a2] 382e ff40                 move.w     -192(a6),d4
 [000139a6] 5344                      subq.w     #1,d4
 [000139a8] 47ee ff42                 lea.l      -190(a6),a3
@@ -4098,8 +4154,8 @@ M2Option.init:
 [000139d0] 3f3c 003c                 move.w     #$003C,-(a7)
 [000139d4] 486e ff42                 pea.l      -190(a6)
 [000139d8] 3f3c 00c7                 move.w     #$00C7,-(a7)
-[000139dc] 4879 0003 5e74            pea.l      $00035E74
-[000139e2] 4eb9 0001 13da            jsr        $000113DA
+[000139dc] 4879 0003 5e74            pea.l      NewStreams.mainfilename
+[000139e2] 4eb9 0001 13da            jsr        Strings.Assign
 [000139e8] 4fef 000c                 lea.l      12(a7),a7
 [000139ec] 1d7c 0001 ff33            move.b     #$01,-205(a6)
 [000139f2] 286e 0022                 movea.l    34(a6),a4
@@ -4136,13 +4192,13 @@ M2Option.init:
 [00013a58] 4267                      clr.w      -(a7)
 [00013a5a] 7aff                      moveq.l    #-1,d5
 [00013a5c] 2f05                      move.l     d5,-(a7)
-[00013a5e] 4eb9 0001 0f24            jsr        $00010F24
+[00013a5e] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00013a64] 5c8f                      addq.l     #6,a7
 [00013a66] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013a6a] 486e ffbe                 pea.l      -66(a6)
 [00013a6e] 3f3c 0031                 move.w     #$0031,-(a7)
-[00013a72] 4879 0003 5d14            pea.l      M2Option.searchpaths
-[00013a78] 4eb9 0001 13da            jsr        $000113DA
+[00013a72] 4879 0003 5d14            pea.l      NewStreams.searchpaths
+[00013a78] 4eb9 0001 13da            jsr        Strings.Assign
 [00013a7e] 4fef 000c                 lea.l      12(a7),a7
 [00013a82] 558f                      subq.l     #2,a7
 [00013a84] 3f3c 003c                 move.w     #$003C,-(a7)
@@ -4160,25 +4216,25 @@ M2Option.init:
 [00013ab4] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013ab8] 486e ffbe                 pea.l      -66(a6)
 [00013abc] 1f2e 001a                 move.b     26(a6),-(a7)
-[00013ac0] 6100 f8da                 bsr        $0001339C
+[00013ac0] 6100 f8da                 bsr        NewStreams.SetFileExtension
 [00013ac4] 508f                      addq.l     #8,a7
 [00013ac6] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013aca] 486e ff80                 pea.l      -128(a6)
 [00013ace] 3f2e 0020                 move.w     32(a6),-(a7)
 [00013ad2] 286e 001c                 movea.l    28(a6),a4
 [00013ad6] 4854                      pea.l      (a4)
-[00013ad8] 4eb9 0001 13da            jsr        $000113DA
+[00013ad8] 4eb9 0001 13da            jsr        Strings.Assign
 [00013ade] 4fef 000c                 lea.l      12(a7),a7
 [00013ae2] 4a2e ff80                 tst.b      -128(a6)
 [00013ae6] 6712                      beq.s      $00013AFA
 [00013ae8] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013aec] 486e ff80                 pea.l      -128(a6)
 [00013af0] 1f2e 001a                 move.b     26(a6),-(a7)
-[00013af4] 6100 f8a6                 bsr        $0001339C
+[00013af4] 6100 f8a6                 bsr        NewStreams.SetFileExtension
 [00013af8] 508f                      addq.l     #8,a7
 [00013afa] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013afe] 486e ff80                 pea.l      -128(a6)
-[00013b02] 6100 fdda                 bsr        $000138DE
+[00013b02] 6100 fdda                 bsr        NewStreams.strupr
 [00013b06] 5c8f                      addq.l     #6,a7
 [00013b08] 49ee ffbe                 lea.l      -66(a6),a4
 [00013b0c] 2a0c                      move.l     a4,d5
@@ -4192,10 +4248,10 @@ M2Option.init:
 [00013b26] 3f3c 0002                 move.w     #$0002,-(a7)
 [00013b2a] 7aff                      moveq.l    #-1,d5
 [00013b2c] 2f05                      move.l     d5,-(a7)
-[00013b2e] 4eb9 0001 0f24            jsr        $00010F24
+[00013b2e] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00013b34] 5c8f                      addq.l     #6,a7
 [00013b36] 3d79 0003 51a2 fffe       move.w     $000351A2,-2(a6)
-[00013b3e] 2879 0003 55f4            movea.l    $000355F4,a4
+[00013b3e] 2879 0003 55f4            movea.l    AppBase.doUpdateWindow,a4
 [00013b44] 4e94                      jsr        (a4)
 [00013b46] 4a6e fffe                 tst.w      -2(a6)
 [00013b4a] 6706                      beq.s      $00013B52
@@ -4242,7 +4298,7 @@ M2Option.init:
 [00013be0] 676e                      beq.s      $00013C50
 [00013be2] 3a2e ff34                 move.w     -204(a6),d5
 [00013be6] cafc 0032                 mulu.w     #$0032,d5
-[00013bea] 49f9 0003 5d14            lea.l      M2Option.searchpaths,a4
+[00013bea] 49f9 0003 5d14            lea.l      NewStreams.searchpaths,a4
 [00013bf0] 3f3c 0031                 move.w     #$0031,-(a7)
 [00013bf4] 4874 5000                 pea.l      0(a4,d5.w)
 [00013bf8] 3f2e 0020                 move.w     32(a6),-(a7)
@@ -4266,7 +4322,7 @@ M2Option.init:
 [00013c3a] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013c3e] 486e ff42                 pea.l      -190(a6)
 [00013c42] 1f2e 001a                 move.b     26(a6),-(a7)
-[00013c46] 6100 f754                 bsr        $0001339C
+[00013c46] 6100 f754                 bsr        NewStreams.SetFileExtension
 [00013c4a] 508f                      addq.l     #8,a7
 [00013c4c] 4efa 001e                 jmp        $00013C6C(pc)
 [00013c50] 3f3c 003c                 move.w     #$003C,-(a7)
@@ -4274,24 +4330,24 @@ M2Option.init:
 [00013c58] 3f2e 0020                 move.w     32(a6),-(a7)
 [00013c5c] 286e 001c                 movea.l    28(a6),a4
 [00013c60] 4854                      pea.l      (a4)
-[00013c62] 4eb9 0001 13da            jsr        $000113DA
+[00013c62] 4eb9 0001 13da            jsr        Strings.Assign
 [00013c68] 4fef 000c                 lea.l      12(a7),a7
 [00013c6c] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013c70] 486e ff42                 pea.l      -190(a6)
-[00013c74] 6100 fc68                 bsr        $000138DE
+[00013c74] 6100 fc68                 bsr        NewStreams.strupr
 [00013c78] 5c8f                      addq.l     #6,a7
 [00013c7a] 3f2e 0010                 move.w     16(a6),-(a7)
 [00013c7e] 286e 000c                 movea.l    12(a6),a4
 [00013c82] 4854                      pea.l      (a4)
 [00013c84] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013c88] 486e ff42                 pea.l      -190(a6)
-[00013c8c] 4eb9 0001 13da            jsr        $000113DA
+[00013c8c] 4eb9 0001 13da            jsr        Strings.Assign
 [00013c92] 4fef 000c                 lea.l      12(a7),a7
 [00013c96] 286e 0016                 movea.l    22(a6),a4
 [00013c9a] 4854                      pea.l      (a4)
 [00013c9c] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013ca0] 486e ff42                 pea.l      -190(a6)
-[00013ca4] 6100 f884                 bsr        $0001352A
+[00013ca4] 6100 f884                 bsr        NewStreams.allocfile
 [00013ca8] 4fef 000a                 lea.l      10(a7),a7
 [00013cac] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013cb0] 486e ff42                 pea.l      -190(a6)
@@ -4310,7 +4366,7 @@ M2Option.init:
 [00013cd8] 558f                      subq.l     #2,a7
 [00013cda] 286e 0016                 movea.l    22(a6),a4
 [00013cde] 2f14                      move.l     (a4),-(a7)
-[00013ce0] 4eb9 0001 1976            jsr        $00011976
+[00013ce0] 4eb9 0001 1976            jsr        GEMDOS.Free
 [00013ce6] 588f                      addq.l     #4,a7
 [00013ce8] 4a1f                      tst.b      (a7)+
 [00013cea] 6708                      beq.s      $00013CF4
@@ -4335,7 +4391,7 @@ M2Option.init:
 [00013d28] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013d2c] 486e ff42                 pea.l      -190(a6)
 [00013d30] 3f3c ffdf                 move.w     #$FFDF,-(a7)
-[00013d34] 6100 f300                 bsr        $00013036
+[00013d34] 6100 f300                 bsr        NewStreams.FileError
 [00013d38] 508f                      addq.l     #8,a7
 [00013d3a] 4a1f                      tst.b      (a7)+
 [00013d3c] 6704                      beq.s      $00013D42
@@ -4352,7 +4408,7 @@ M2Option.init:
 [00013d64] 3f14                      move.w     (a4),-(a7)
 [00013d66] 1f3c 0002                 move.b     #$02,-(a7)
 [00013d6a] 486c 002a                 pea.l      42(a4)
-[00013d6e] 4eb9 0001 1908            jsr        $00011908
+[00013d6e] 4eb9 0001 1908            jsr        GEMDOS.Seek
 [00013d74] 4fef 000c                 lea.l      12(a7),a7
 [00013d78] 285f                      movea.l    (a7)+,a4
 [00013d7a] 2f0c                      move.l     a4,-(a7)
@@ -4360,7 +4416,7 @@ M2Option.init:
 [00013d80] 3f14                      move.w     (a4),-(a7)
 [00013d82] 4227                      clr.b      -(a7)
 [00013d84] 486c 0034                 pea.l      52(a4)
-[00013d88] 4eb9 0001 1908            jsr        $00011908
+[00013d88] 4eb9 0001 1908            jsr        GEMDOS.Seek
 [00013d8e] 4fef 000c                 lea.l      12(a7),a7
 [00013d92] 285f                      movea.l    (a7)+,a4
 [00013d94] 4a2e ff37                 tst.b      -201(a6)
@@ -4372,38 +4428,40 @@ M2Option.init:
 [00013daa] 4eb9 0001 29e2            jsr        $000129E2
 [00013db0] 4efa 0006                 jmp        $00013DB8(pc)
 [00013db4] 6000 fc90                 bra        $00013A46
-[00013db8] 4a39 0003 5e72            tst.b      $00035E72
+[00013db8] 4a39 0003 5e72            tst.b      NewStreams.needfile
 [00013dbe] 671c                      beq.s      $00013DDC
 [00013dc0] 3f3c 004f                 move.w     #$004F,-(a7)
-[00013dc4] 4879 0003 5600            pea.l      $00035600
+[00013dc4] 4879 0003 5600            pea.l      AppBase.shellTail
 [00013dca] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013dce] 486e ff42                 pea.l      -190(a6)
-[00013dd2] 4eb9 0001 13da            jsr        $000113DA
+[00013dd2] 4eb9 0001 13da            jsr        Strings.Assign
 [00013dd8] 4fef 000c                 lea.l      12(a7),a7
-[00013ddc] 4239 0003 5e72            clr.b      $00035E72
+[00013ddc] 4239 0003 5e72            clr.b      NewStreams.needfile
 [00013de2] 7a00                      moveq.l    #0,d5
 [00013de4] 1a2e 001a                 move.b     26(a6),d5
 [00013de8] 7000                      moveq.l    #0,d0
 [00013dea] 0bc0                      bset       d5,d0
-[00013dec] 81b9 0003 55f8            or.l       d0,$000355F8
+[00013dec] 81b9 0003 55f8            or.l       d0,AppBase.openFiles
 [00013df2] 4e5e                      unlk       a6
 [00013df4] 4e75                      rts
+
+NewStreams.FileLookupOutput:
 [00013df6] 4e56 ff3e                 link       a6,#-194
 [00013dfa] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013dfe] 486e ffba                 pea.l      -70(a6)
 [00013e02] 3f2e 0020                 move.w     32(a6),-(a7)
 [00013e06] 286e 001c                 movea.l    28(a6),a4
 [00013e0a] 4854                      pea.l      (a4)
-[00013e0c] 4eb9 0001 13da            jsr        $000113DA
+[00013e0c] 4eb9 0001 13da            jsr        Strings.Assign
 [00013e12] 4fef 000c                 lea.l      12(a7),a7
 [00013e16] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013e1a] 486e ffba                 pea.l      -70(a6)
 [00013e1e] 1f2e 001a                 move.b     26(a6),-(a7)
-[00013e22] 6100 f578                 bsr        $0001339C
+[00013e22] 6100 f578                 bsr        NewStreams.SetFileExtension
 [00013e26] 508f                      addq.l     #8,a7
 [00013e28] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013e2c] 486e ffba                 pea.l      -70(a6)
-[00013e30] 6100 faac                 bsr        $000138DE
+[00013e30] 6100 faac                 bsr        NewStreams.strupr
 [00013e34] 5c8f                      addq.l     #6,a7
 [00013e36] 4a2e 0014                 tst.b      20(a6)
 [00013e3a] 6702                      beq.s      $00013E3E
@@ -4412,24 +4470,24 @@ M2Option.init:
 [00013e42] 4267                      clr.w      -(a7)
 [00013e44] 7aff                      moveq.l    #-1,d5
 [00013e46] 2f05                      move.l     d5,-(a7)
-[00013e48] 4eb9 0001 0f24            jsr        $00010F24
+[00013e48] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00013e4e] 5c8f                      addq.l     #6,a7
 [00013e50] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013e54] 486e ff3e                 pea.l      -194(a6)
 [00013e58] 3f3c 0031                 move.w     #$0031,-(a7)
-[00013e5c] 4879 0003 5d14            pea.l      M2Option.searchpaths
-[00013e62] 4eb9 0001 13da            jsr        $000113DA
+[00013e5c] 4879 0003 5d14            pea.l      NewStreams.searchpaths
+[00013e62] 4eb9 0001 13da            jsr        Strings.Assign
 [00013e68] 4fef 000c                 lea.l      12(a7),a7
 [00013e6c] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013e70] 486e ff3e                 pea.l      -194(a6)
 [00013e74] 1f2e 001a                 move.b     26(a6),-(a7)
-[00013e78] 6100 f522                 bsr        $0001339C
+[00013e78] 6100 f522                 bsr        NewStreams.SetFileExtension
 [00013e7c] 508f                      addq.l     #8,a7
 [00013e7e] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013e82] 486e ff7c                 pea.l      -132(a6)
 [00013e86] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013e8a] 486e ffba                 pea.l      -70(a6)
-[00013e8e] 4eb9 0001 13da            jsr        $000113DA
+[00013e8e] 4eb9 0001 13da            jsr        Strings.Assign
 [00013e94] 4fef 000c                 lea.l      12(a7),a7
 [00013e98] 49ee ff3e                 lea.l      -194(a6),a4
 [00013e9c] 2a0c                      move.l     a4,d5
@@ -4443,10 +4501,10 @@ M2Option.init:
 [00013eb6] 3f3c 0002                 move.w     #$0002,-(a7)
 [00013eba] 7aff                      moveq.l    #-1,d5
 [00013ebc] 2f05                      move.l     d5,-(a7)
-[00013ebe] 4eb9 0001 0f24            jsr        $00010F24
+[00013ebe] 4eb9 0001 0f24            jsr        AESGraphics.GrafMouse
 [00013ec4] 5c8f                      addq.l     #6,a7
 [00013ec6] 3d79 0003 51a2 fffe       move.w     $000351A2,-2(a6)
-[00013ece] 2879 0003 55f4            movea.l    $000355F4,a4
+[00013ece] 2879 0003 55f4            movea.l    AppBase.doUpdateWindow,a4
 [00013ed4] 4e94                      jsr        (a4)
 [00013ed6] 4a6e fffe                 tst.w      -2(a6)
 [00013eda] 6706                      beq.s      $00013EE2
@@ -4490,13 +4548,13 @@ M2Option.init:
 [00013f68] 4854                      pea.l      (a4)
 [00013f6a] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013f6e] 486e ffba                 pea.l      -70(a6)
-[00013f72] 4eb9 0001 13da            jsr        $000113DA
+[00013f72] 4eb9 0001 13da            jsr        Strings.Assign
 [00013f78] 4fef 000c                 lea.l      12(a7),a7
 [00013f7c] 286e 0016                 movea.l    22(a6),a4
 [00013f80] 4854                      pea.l      (a4)
 [00013f82] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013f86] 486e ffba                 pea.l      -70(a6)
-[00013f8a] 6100 f59e                 bsr        $0001352A
+[00013f8a] 6100 f59e                 bsr        NewStreams.allocfile
 [00013f8e] 4fef 000a                 lea.l      10(a7),a7
 [00013f92] 3f3c 003c                 move.w     #$003C,-(a7)
 [00013f96] 486e ffba                 pea.l      -70(a6)
@@ -4513,7 +4571,7 @@ M2Option.init:
 [00013fb8] 558f                      subq.l     #2,a7
 [00013fba] 286e 0016                 movea.l    22(a6),a4
 [00013fbe] 2f14                      move.l     (a4),-(a7)
-[00013fc0] 4eb9 0001 1976            jsr        $00011976
+[00013fc0] 4eb9 0001 1976            jsr        GEMDOS.Free
 [00013fc6] 588f                      addq.l     #4,a7
 [00013fc8] 4a1f                      tst.b      (a7)+
 [00013fca] 6708                      beq.s      $00013FD4
@@ -4552,9 +4610,11 @@ M2Option.init:
 [0001403e] 1a2e 001a                 move.b     26(a6),d5
 [00014042] 7000                      moveq.l    #0,d0
 [00014044] 0bc0                      bset       d5,d0
-[00014046] 81b9 0003 55fc            or.l       d0,$000355FC
+[00014046] 81b9 0003 55fc            or.l       d0,AppBase.openStreams
 [0001404c] 4e5e                      unlk       a6
 [0001404e] 4e75                      rts
+
+NewStreams.formatLong:
 [00014050] 4e56 fff8                 link       a6,#-8
 [00014054] 2d7c 1000 0000 fffc       move.l     #$10000000,-4(a6)
 [0001405c] 426e fff8                 clr.w      -8(a6)
@@ -4564,7 +4624,7 @@ M2Option.init:
 [00014068] 4efa 0086                 jmp        $000140F0(pc)
 [0001406c] 2f2e 0008                 move.l     8(a6),-(a7)
 [00014070] 2f2e fffc                 move.l     -4(a6),-(a7)
-[00014074] 4eb9 0001 0450            jsr        $00010450
+[00014074] 4eb9 0001 0450            jsr        DIVU32
 [0001407a] 588f                      addq.l     #4,a7
 [0001407c] 2a1f                      move.l     (a7)+,d5
 [0001407e] 3d45 fffa                 move.w     d5,-6(a6)
@@ -4588,7 +4648,7 @@ M2Option.init:
 [000140c6] 1985 4000                 move.b     d5,0(a4,d4.w)
 [000140ca] 2f2e 0008                 move.l     8(a6),-(a7)
 [000140ce] 2f2e fffc                 move.l     -4(a6),-(a7)
-[000140d2] 4eb9 0001 0450            jsr        $00010450
+[000140d2] 4eb9 0001 0450            jsr        DIVU32
 [000140d8] 2e9f                      move.l     (a7)+,(a7)
 [000140da] 2d5f 0008                 move.l     (a7)+,8(a6)
 [000140de] 2a2e fffc                 move.l     -4(a6),d5
@@ -4610,6 +4670,7 @@ M2Option.init:
 [0001411c] 4e5e                      unlk       a6
 [0001411e] 4e75                      rts
 
+NewStreams.GetOptionInfo:
 [00014120] 4e56 0000                 link       a6,#0
 [00014124] 2f2d fffc                 move.l     -4(a5),-(a7)
 [00014128] 2b4e fffc                 move.l     a6,-4(a5)
@@ -4622,13 +4683,13 @@ M2Option.init:
 [00014144] 14db                      move.b     (a3)+,(a2)+
 [00014146] 57cd fffc                 dbeq       d5,$00014144
 [0001414a] 7a00                      moveq.l    #0,d5
-[0001414c] 1a39 0003 6004            move.b     $00036004,d5
+[0001414c] 1a39 0003 6004            move.b     NewStreams.currInfoType,d5
 [00014152] 2005                      move.l     d5,d0
 [00014154] 4eb9 0001 000a            jsr        CASEX
 [0001415a] 0000 0000
 [0001415e] 0000 0008
 [00014162] 0000 0146
-[00014166] 4a79 0003 6010            tst.w      BufferedIO.heapsize
+[00014166] 4a79 0003 6010            tst.w      NewStreams.heapsize
 [0001416c] 6728                      beq.s      $00014196
 [0001416e] 47f9 0001 4752            lea.l      $00014752,a3
 [00014174] 45d4                      lea.l      (a4),a2
@@ -4637,14 +4698,14 @@ M2Option.init:
 [0001417a] 57cd fffc                 dbeq       d5,$00014178
 [0001417e] 2f0c                      move.l     a4,-(a7)
 [00014180] 7a00                      moveq.l    #0,d5
-[00014182] 3a39 0003 6010            move.w     BufferedIO.heapsize,d5
+[00014182] 3a39 0003 6010            move.w     NewStreams.heapsize,d5
 [00014188] 2f05                      move.l     d5,-(a7)
 [0001418a] 6100 fec4                 bsr        $00014050
 [0001418e] 588f                      addq.l     #4,a7
 [00014190] 285f                      movea.l    (a7)+,a4
 [00014192] 4efa 0128                 jmp        $000142BC(pc)
 [00014196] 4efa 011a                 jmp        $000142B2(pc)
-[0001419a] 4a39 0003 6006            tst.b      BufferedIO.query
+[0001419a] 4a39 0003 6006            tst.b      NewStreams.query
 [000141a0] 6714                      beq.s      $000141B6
 [000141a2] 47f9 0001 4758            lea.l      $00014758,a3
 [000141a8] 45d4                      lea.l      (a4),a2
@@ -4653,7 +4714,7 @@ M2Option.init:
 [000141ae] 57cd fffc                 dbeq       d5,$000141AC
 [000141b2] 4efa 0108                 jmp        $000142BC(pc)
 [000141b6] 4efa 00fa                 jmp        $000142B2(pc)
-[000141ba] 4a39 0003 6007            tst.b      BufferedIO.reffiles
+[000141ba] 4a39 0003 6007            tst.b      NewStreams.reffiles
 [000141c0] 6714                      beq.s      $000141D6
 [000141c2] 47f9 0001 475e            lea.l      $0001475E,a3
 [000141c8] 45d4                      lea.l      (a4),a2
@@ -4662,7 +4723,7 @@ M2Option.init:
 [000141ce] 57cd fffc                 dbeq       d5,$000141CC
 [000141d2] 4efa 00e8                 jmp        $000142BC(pc)
 [000141d6] 4efa 00da                 jmp        $000142B2(pc)
-[000141da] 4a39 0003 6008            tst.b      BufferedIO.listing
+[000141da] 4a39 0003 6008            tst.b      NewStreams.listing
 [000141e0] 6714                      beq.s      $000141F6
 [000141e2] 47f9 0001 4762            lea.l      $00014762,a3
 [000141e8] 45d4                      lea.l      (a4),a2
@@ -4671,7 +4732,7 @@ M2Option.init:
 [000141ee] 57cd fffc                 dbeq       d5,$000141EC
 [000141f2] 4efa 00c8                 jmp        $000142BC(pc)
 [000141f6] 4efa 00ba                 jmp        $000142B2(pc)
-[000141fa] 4ab9 0003 600c            tst.l      BufferedIO.stacksize
+[000141fa] 4ab9 0003 600c            tst.l      NewStreams.stacksize
 [00014200] 6724                      beq.s      $00014226
 [00014202] 47f9 0001 4768            lea.l      $00014768,a3
 [00014208] 45d4                      lea.l      (a4),a2
@@ -4679,13 +4740,13 @@ M2Option.init:
 [0001420c] 14db                      move.b     (a3)+,(a2)+
 [0001420e] 57cd fffc                 dbeq       d5,$0001420C
 [00014212] 2f0c                      move.l     a4,-(a7)
-[00014214] 2f39 0003 600c            move.l     BufferedIO.stacksize,-(a7)
+[00014214] 2f39 0003 600c            move.l     NewStreams.stacksize,-(a7)
 [0001421a] 6100 fe34                 bsr        $00014050
 [0001421e] 588f                      addq.l     #4,a7
 [00014220] 285f                      movea.l    (a7)+,a4
 [00014222] 4efa 0098                 jmp        $000142BC(pc)
 [00014226] 4efa 008a                 jmp        $000142B2(pc)
-[0001422a] 4a39 0003 6009            tst.b      BufferedIO.linkmap
+[0001422a] 4a39 0003 6009            tst.b      NewStreams.linkmap
 [00014230] 6714                      beq.s      $00014246
 [00014232] 47f9 0001 476e            lea.l      $0001476E,a3
 [00014238] 45d4                      lea.l      (a4),a2
@@ -4694,7 +4755,7 @@ M2Option.init:
 [0001423e] 57cd fffc                 dbeq       d5,$0001423C
 [00014242] 4efa 0078                 jmp        $000142BC(pc)
 [00014246] 4efa 006a                 jmp        $000142B2(pc)
-[0001424a] 4a39 0003 600b            tst.b      BufferedIO.debugtable
+[0001424a] 4a39 0003 600b            tst.b      NewStreams.debugtable
 [00014250] 6714                      beq.s      $00014266
 [00014252] 47f9 0001 4772            lea.l      $00014772,a3
 [00014258] 45d4                      lea.l      (a4),a2
@@ -4703,7 +4764,7 @@ M2Option.init:
 [0001425e] 57cd fffc                 dbeq       d5,$0001425C
 [00014262] 4efa 0058                 jmp        $000142BC(pc)
 [00014266] 4efa 004a                 jmp        $000142B2(pc)
-[0001426a] 4a39 0003 600a            tst.b      BufferedIO.linkopt
+[0001426a] 4a39 0003 600a            tst.b      NewStreams.linkopt
 [00014270] 6714                      beq.s      $00014286
 [00014272] 47f9 0001 477a            lea.l      $0001477A,a3
 [00014278] 45d4                      lea.l      (a4),a2
@@ -4723,13 +4784,15 @@ M2Option.init:
 [000142a4] 0060 0080     
 [000142a8] 00a0 00d0 00f0
 [000142ae] 0110          
-[000142b0] 0130 5239                 btst       d0,57(a0,d5.w*2) ; 68020+ only
-[000142b4] 0003 6004                 ori.b      #$04,d3
+[000142b0] 0130
+[000142b2] 5239 0003 6004            addq.b     #1,NewStreams.currInfoType
 [000142b8] 6000 fe90                 bra        $0001414A
-[000142bc] 5239 0003 6004            addq.b     #1,$00036004
+[000142bc] 5239 0003 6004            addq.b     #1,NewStreams.currInfoType
 [000142c2] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [000142c6] 4e5e                      unlk       a6
 [000142c8] 4e75                      rts
+
+NewStreams.Close:
 [000142ca] 4e56 fffe                 link       a6,#-2
 [000142ce] 7aff                      moveq.l    #-1,d5
 [000142d0] 286e 000c                 movea.l    12(a6),a4
@@ -4737,20 +4800,20 @@ M2Option.init:
 [000142d6] 6744                      beq.s      $0001431C
 [000142d8] 286e 000c                 movea.l    12(a6),a4
 [000142dc] 4854                      pea.l      (a4)
-[000142de] 6100 f2ec                 bsr        $000135CC
+[000142de] 6100 f2ec                 bsr        NewStreams.flush
 [000142e2] 588f                      addq.l     #4,a7
 [000142e4] 558f                      subq.l     #2,a7
 [000142e6] 266e 000c                 movea.l    12(a6),a3
 [000142ea] 2853                      movea.l    (a3),a4
 [000142ec] 3f14                      move.w     (a4),-(a7)
-[000142ee] 4eb9 0001 186c            jsr        $0001186C
+[000142ee] 4eb9 0001 186c            jsr        GEMDOS.Close
 [000142f4] 548f                      addq.l     #2,a7
 [000142f6] 286e 0008                 movea.l    8(a6),a4
 [000142fa] 189f                      move.b     (a7)+,(a4)
 [000142fc] 558f                      subq.l     #2,a7
 [000142fe] 286e 000c                 movea.l    12(a6),a4
 [00014302] 2f14                      move.l     (a4),-(a7)
-[00014304] 4eb9 0001 1976            jsr        $00011976
+[00014304] 4eb9 0001 1976            jsr        GEMDOS.Free
 [0001430a] 588f                      addq.l     #4,a7
 [0001430c] 4a1f                      tst.b      (a7)+
 [0001430e] 6708                      beq.s      $00014318
@@ -4762,6 +4825,8 @@ M2Option.init:
 [00014320] 18bc 0001                 move.b     #$01,(a4)
 [00014324] 4e5e                      unlk       a6
 [00014326] 4e75                      rts
+
+NewStreams.Delete:
 [00014328] 4e56 fffe                 link       a6,#-2
 [0001432c] 7aff                      moveq.l    #-1,d5
 [0001432e] 286e 000c                 movea.l    12(a6),a4
@@ -4771,7 +4836,7 @@ M2Option.init:
 [00014338] 266e 000c                 movea.l    12(a6),a3
 [0001433c] 2853                      movea.l    (a3),a4
 [0001433e] 3f14                      move.w     (a4),-(a7)
-[00014340] 4eb9 0001 186c            jsr        $0001186C
+[00014340] 4eb9 0001 186c            jsr        GEMDOS.Close
 [00014346] 548f                      addq.l     #2,a7
 [00014348] 4a1f                      tst.b      (a7)+
 [0001434a] 6720                      beq.s      $0001436C
@@ -4780,7 +4845,7 @@ M2Option.init:
 [00014352] 2853                      movea.l    (a3),a4
 [00014354] 3f3c 0027                 move.w     #$0027,-(a7)
 [00014358] 486c 0002                 pea.l      2(a4)
-[0001435c] 4eb9 0001 18e2            jsr        $000118E2
+[0001435c] 4eb9 0001 18e2            jsr        GEMDOS.Delete
 [00014362] 5c8f                      addq.l     #6,a7
 [00014364] 4a1f                      tst.b      (a7)+
 [00014366] 6704                      beq.s      $0001436C
@@ -4792,7 +4857,7 @@ M2Option.init:
 [00014374] 558f                      subq.l     #2,a7
 [00014376] 286e 000c                 movea.l    12(a6),a4
 [0001437a] 2f14                      move.l     (a4),-(a7)
-[0001437c] 4eb9 0001 1976            jsr        $00011976
+[0001437c] 4eb9 0001 1976            jsr        GEMDOS.Free
 [00014382] 588f                      addq.l     #4,a7
 [00014384] 4a1f                      tst.b      (a7)+
 [00014386] 6708                      beq.s      $00014390
@@ -4804,6 +4869,8 @@ M2Option.init:
 [00014398] 18bc 0001                 move.b     #$01,(a4)
 [0001439c] 4e5e                      unlk       a6
 [0001439e] 4e75                      rts
+
+NewStreams.GetPos:
 [000143a0] 4e56 fffc                 link       a6,#-4
 [000143a4] 266e 000c                 movea.l    12(a6),a3
 [000143a8] 2853                      movea.l    (a3),a4
@@ -4811,6 +4878,8 @@ M2Option.init:
 [000143ae] 26ac 0034                 move.l     52(a4),(a3)
 [000143b2] 4e5e                      unlk       a6
 [000143b4] 4e75                      rts
+
+NewStreams.SetPos:
 [000143b6] 4e56 fffc                 link       a6,#-4
 [000143ba] 2a2e 0008                 move.l     8(a6),d5
 [000143be] e28d                      lsr.l      #1,d5
@@ -4825,7 +4894,7 @@ M2Option.init:
 [000143d8] 670c                      beq.s      $000143E6
 [000143da] 286e 000c                 movea.l    12(a6),a4
 [000143de] 4854                      pea.l      (a4)
-[000143e0] 6100 f1ea                 bsr        $000135CC
+[000143e0] 6100 f1ea                 bsr        NewStreams.flush
 [000143e4] 588f                      addq.l     #4,a7
 [000143e6] 2f2e fffc                 move.l     -4(a6),-(a7)
 [000143ea] 266e 000c                 movea.l    12(a6),a3
@@ -4833,7 +4902,7 @@ M2Option.init:
 [000143f0] 3f14                      move.w     (a4),-(a7)
 [000143f2] 4227                      clr.b      -(a7)
 [000143f4] 486e fffc                 pea.l      -4(a6)
-[000143f8] 4eb9 0001 1908            jsr        $00011908
+[000143f8] 4eb9 0001 1908            jsr        GEMDOS.Seek
 [000143fe] 4fef 000c                 lea.l      12(a7),a7
 [00014402] 266e 000c                 movea.l    12(a6),a3
 [00014406] 2853                      movea.l    (a3),a4
@@ -4848,7 +4917,7 @@ NewStreams.EndWrite:
 [0001441c] 2f0c                      move.l     a4,-(a7)
 [0001441e] 266e 0008                 movea.l    8(a6),a3
 [00014422] 4853                      pea.l      (a3)
-[00014424] 6100 f1a6                 bsr        $000135CC
+[00014424] 6100 f1a6                 bsr        NewStreams.flush
 [00014428] 588f                      addq.l     #4,a7
 [0001442a] 285f                      movea.l    (a7)+,a4
 [0001442c] 42ac 0034                 clr.l      52(a4)
@@ -4857,17 +4926,19 @@ NewStreams.EndWrite:
 [00014434] 3f14                      move.w     (a4),-(a7)
 [00014436] 4227                      clr.b      -(a7)
 [00014438] 486e fffc                 pea.l      -4(a6)
-[0001443c] 4eb9 0001 1908            jsr        $00011908
+[0001443c] 4eb9 0001 1908            jsr        GEMDOS.Seek
 [00014442] 4fef 000c                 lea.l      12(a7),a7
 [00014446] 285f                      movea.l    (a7)+,a4
 [00014448] 4e5e                      unlk       a6
 [0001444a] 4e75                      rts
+
+NewStreams.ReadChar:
 [0001444c] 4e56 0000                 link       a6,#0
 [00014450] 286e 000c                 movea.l    12(a6),a4
 [00014454] 2f14                      move.l     (a4),-(a7)
 [00014456] 286e 0008                 movea.l    8(a6),a4
 [0001445a] 4854                      pea.l      (a4)
-[0001445c] 6100 f1f8                 bsr        $00013656
+[0001445c] 6100 f1f8                 bsr        NewStreams.readbyte
 [00014460] 508f                      addq.l     #8,a7
 [00014462] 286e 0008                 movea.l    8(a6),a4
 [00014466] 0c14 000d                 cmpi.b     #$0D,(a4)
@@ -4880,6 +4951,8 @@ NewStreams.EndWrite:
 [0001447c] 18bc 000a                 move.b     #$0A,(a4)
 [00014480] 4e5e                      unlk       a6
 [00014482] 4e75                      rts
+
+NewStreams.WriteChar:
 [00014484] 4e56 0000                 link       a6,#0
 [00014488] 0c2e 000a 0008            cmpi.b     #$0A,8(a6)
 [0001448e] 661e                      bne.s      $000144AE
@@ -4888,14 +4961,14 @@ NewStreams.EndWrite:
 [0001449a] 2f14                      move.l     (a4),-(a7)
 [0001449c] 1f2e 0008                 move.b     8(a6),-(a7)
 [000144a0] 4227                      clr.b      -(a7)
-[000144a2] 6100 f2ca                 bsr        $0001376E
+[000144a2] 6100 f2ca                 bsr        NewStreams.writebyte
 [000144a6] 508f                      addq.l     #8,a7
 [000144a8] 1d7c 000a 0008            move.b     #$0A,8(a6)
 [000144ae] 286e 000a                 movea.l    10(a6),a4
 [000144b2] 2f14                      move.l     (a4),-(a7)
 [000144b4] 1f2e 0008                 move.b     8(a6),-(a7)
 [000144b8] 4227                      clr.b      -(a7)
-[000144ba] 6100 f2b2                 bsr        $0001376E
+[000144ba] 6100 f2b2                 bsr        NewStreams.writebyte
 [000144be] 508f                      addq.l     #8,a7
 [000144c0] 4e5e                      unlk       a6
 [000144c2] 4e75                      rts
@@ -4906,7 +4979,7 @@ NewStreams.ReadWord:
 [000144cc] 2f14                      move.l     (a4),-(a7)
 [000144ce] 286e 0008                 movea.l    8(a6),a4
 [000144d2] 4854                      pea.l      (a4)
-[000144d4] 6100 f25e                 bsr        $00013734
+[000144d4] 6100 f25e                 bsr        NewStreams.read16bit
 [000144d8] 508f                      addq.l     #8,a7
 [000144da] 4e5e                      unlk       a6
 [000144dc] 4e75                      rts
@@ -4917,11 +4990,12 @@ NewStreams.WriteWord:
 [000144e6] 2f14                      move.l     (a4),-(a7)
 [000144e8] 3f2e 0008                 move.w     8(a6),-(a7)
 [000144ec] 4227                      clr.b      -(a7)
-[000144ee] 6100 f3a0                 bsr        $00013890
+[000144ee] 6100 f3a0                 bsr        NewStreams.writeword
 [000144f2] 508f                      addq.l     #8,a7
 [000144f4] 4e5e                      unlk       a6
 [000144f6] 4e75                      rts
 
+NewStreams.EOS:
 [000144f8] 4e56 0000                 link       a6,#0
 [000144fc] 266e 0008                 movea.l    8(a6),a3
 [00014500] 2853                      movea.l    (a3),a4
@@ -4934,214 +5008,96 @@ NewStreams.WriteWord:
 [00014514] 1d45 000c                 move.b     d5,12(a6)
 [00014518] 4e5e                      unlk       a6
 [0001451a] 4e75                      rts
+
+NewStreams.init:
 [0001451c] 4ef9 0001 2fe4            jmp        $00012FE4
+
 [00014522] 4e56 0000                 link       a6,#0
-[00014526] 42b9 0003 55fc            clr.l      $000355FC
-[0001452c] 42b9 0003 55f8            clr.l      $000355F8
-[00014532] 4879 0003 6005            pea.l      BufferedIO.dump
-[00014538] 4879 0003 6006            pea.l      BufferedIO.query
+[00014526] 42b9 0003 55fc            clr.l      AppBase.openStreams
+[0001452c] 42b9 0003 55f8            clr.l      AppBase.openFiles
+[00014532] 4879 0003 6005            pea.l      NewStreams.dump
+[00014538] 4879 0003 6006            pea.l      NewStreams.query
 [0001453e] 4879 0003 5650            pea.l      AppBase.xfer
-[00014544] 4879 0003 5d14            pea.l      M2Option.searchpaths
+[00014544] 4879 0003 5d14            pea.l      NewStreams.searchpaths
 [0001454a] 4eb9 0001 225c            jsr        M2Option.GetSystemOptions
 [00014550] 4fef 0010                 lea.l      16(a7),a7
-[00014554] 4879 0003 6007            pea.l      BufferedIO.reffiles
-[0001455a] 4879 0003 6008            pea.l      BufferedIO.listing
-[00014560] 4879 0003 6010            pea.l      BufferedIO.heapsize
+[00014554] 4879 0003 6007            pea.l      NewStreams.reffiles
+[0001455a] 4879 0003 6008            pea.l      NewStreams.listing
+[00014560] 4879 0003 6010            pea.l      NewStreams.heapsize
 [00014566] 4eb9 0001 250a            jsr        M2Option.GetCompilerOptions
 [0001456c] 4fef 000c                 lea.l      12(a7),a7
-[00014570] 4879 0003 6009            pea.l      BufferedIO.linkmap
-[00014576] 4879 0003 600a            pea.l      BufferedIO.linkopt
-[0001457c] 4879 0003 600b            pea.l      BufferedIO.debugtable
-[00014582] 4879 0003 600c            pea.l      BufferedIO.stacksize
+[00014570] 4879 0003 6009            pea.l      NewStreams.linkmap
+[00014576] 4879 0003 600a            pea.l      NewStreams.linkopt
+[0001457c] 4879 0003 600b            pea.l      NewStreams.debugtable
+[00014582] 4879 0003 600c            pea.l      NewStreams.stacksize
 [00014588] 4eb9 0001 2562            jsr        $00012562
 [0001458e] 4fef 0010                 lea.l      16(a7),a7
-[00014592] 13fc 0001 0003 5e72       move.b     #$01,$00035E72
-[0001459a] 4239 0003 6004            clr.b      $00036004
-[000145a0] 4239 0003 5e74            clr.b      $00035E74
-[000145a6] 4239 0003 5f3c            clr.b      $00035F3C
-[000145ac] 49f9 0003 5f3c            lea.l      $00035F3C,a4
+[00014592] 13fc 0001 0003 5e72       move.b     #$01,NewStreams.needfile
+[0001459a] 4239 0003 6004            clr.b      NewStreams.currInfoType
+[000145a0] 4239 0003 5e74            clr.b      NewStreams.mainfilename
+[000145a6] 4239 0003 5f3c            clr.b      NewStreams.outfilename
+[000145ac] 49f9 0003 5f3c            lea.l      NewStreams.outfilename,a4
 [000145b2] 2a0c                      move.l     a4,d5
 [000145b4] 2f05                      move.l     d5,-(a7)
-[000145b6] 49f9 0003 5e74            lea.l      $00035E74,a4
+[000145b6] 49f9 0003 5e74            lea.l      NewStreams.mainfilename,a4
 [000145bc] 2a0c                      move.l     a4,d5
 [000145be] 2f05                      move.l     d5,-(a7)
-[000145c0] 4eb9 0001 1136            jsr        $00011136
+[000145c0] 4eb9 0001 1136            jsr        AESShells.ShellRead
 [000145c6] 508f                      addq.l     #8,a7
-[000145c8] 2879 0003 5068            movea.l    $00035068,a4
-[000145ce] 23ec 0020 0003 6012       move.l     32(a4),$00036012
+[000145c8] 2879 0003 5068            movea.l    BasePageAddress,a4
+[000145ce] 23ec 0020 0003 6012       move.l     32(a4),NewStreams.DtaPtr
 [000145d6] 3f3c 00c7                 move.w     #$00C7,-(a7)
-[000145da] 4879 0003 5f3c            pea.l      $00035F3C
-[000145e0] 2879 0003 6012            movea.l    $00036012,a4
+[000145da] 4879 0003 5f3c            pea.l      NewStreams.outfilename
+[000145e0] 2879 0003 6012            movea.l    NewStreams.DtaPtr,a4
 [000145e6] 3f3c 0027                 move.w     #$0027,-(a7)
 [000145ea] 4854                      pea.l      (a4)
-[000145ec] 4eb9 0001 13da            jsr        $000113DA
+[000145ec] 4eb9 0001 13da            jsr        Strings.Assign
 [000145f2] 4fef 000c                 lea.l      12(a7),a7
 [000145f6] 4e5e                      unlk       a6
 [000145f8] 4ef9 0001 483a            jmp        $0001483A
-[000145fe] 5b31 5d5b 5468 6520       subq.b     #5,([a1,zd5.l*4],$54686520) ; 68020+ only
-[00014606] 666f                      bne.s      $00014677
-[00014608] 6c6c                      bge.s      $00014676
-[0001460a] 6f77                      ble.s      $00014683
-[0001460c] 696e                      bvs.s      $0001467C
-[0001460e] 6720                      beq.s      $00014630
-[00014610] 6669                      bne.s      $0001467B
-[00014612] 6c65                      bge.s      $00014679
-[00014614] 2063                      movea.l    -(a3),a0
-[00014616] 6f75                      ble.s      $0001468D
-[00014618] 6c64                      bge.s      $0001467E
-[0001461a] 7c6e                      moveq.l    #110,d6
-[0001461c] 6f74                      ble.s      $00014692
-[0001461e] 2062                      movea.l    -(a2),a0
-[00014620] 6520                      bcs.s      $00014642
-[00014622] 666f                      bne.s      $00014693
-[00014624] 756e                      ???
-[00014626] 643a                      bcc.s      $00014662
-[00014628] 7c00                      moveq.l    #0,d6
-[0001462a] 5d5b                      subq.w     #6,(a3)+
-[0001462c] 454e                      lea.l      (b6),b2 ; apollo only
-[0001462e] 5445                      addq.w     #2,d5
-[00014630] 5220                      addq.b     #1,-(a0)
-[00014632] 4e41                      trap       #1
-[00014634] 4d45                      lea.l      d5,b6 ; apollo only
-[00014636] 7c43                      moveq.l    #67,d6
-[00014638] 4f4e                      lea.l      (b6),b7 ; apollo only
-[0001463a] 5449                      addq.w     #2,a1
-[0001463c] 4e55 455d                 link       a5,#17757
-[00014640] 0000 5b33                 ori.b      #$33,d0
-[00014644] 5d5b                      subq.w     #6,(a3)+
-[00014646] 416e 2049                 lea.l      8265(a6),b0 ; apollo only
-[0001464a] 4f20                      chk.l      -(a0),d7 ; 68020+ only
-[0001464c] 6572                      bcs.s      $000146C0
-[0001464e] 726f                      moveq.l    #111,d1
-[00014650] 7220                      moveq.l    #32,d1
-[00014652] 6861                      bvc.s      $000146B5
-[00014654] 7320                      ???
-[00014656] 6f63                      ble.s      $000146BB
-[00014658] 6375                      bls.s      $000146CF
-[0001465a] 7265                      moveq.l    #101,d1
-[0001465c] 647c                      bcc.s      $000146DA
-[0001465e] 7768                      ???
-[00014660] 696c                      bvs.s      $000146CE
-[00014662] 7374                      ???
-[00014664] 2000                      move.l     d0,d0
-[00014666] 7772                      ???
-[00014668] 6974                      bvs.s      $000146DE
-[0001466a] 696e                      bvs.s      $000146DA
-[0001466c] 6700 7265                 beq        $0001B8D3
-[00014670] 6164                      bsr.s      $000146D6
-[00014672] 696e                      bvs.s      $000146E2
-[00014674] 6700 2074                 beq        $000166EA
-[00014678] 6865                      bvc.s      $000146DF
-[0001467a] 2064                      movea.l    -(a4),a0
-[0001467c] 6973                      bvs.s      $000146F1
-[0001467e] 6b2e                      bmi.s      $000146AE
-[00014680] 5d5b                      subq.w     #6,(a3)+
-[00014682] 4f4b                      lea.l      (b3),b7 ; apollo only
-[00014684] 5d00                      subq.b     #6,d0
-[00014686] 5b33 5d5b 5468 6520       subq.b     #5,([a3,zd5.l*4],$54686520) ; 68020+ only
-[0001468e] 6469                      bcc.s      $000146F9
-[00014690] 736b                      ???
-[00014692] 2064                      movea.l    -(a4),a0
-[00014694] 6f65                      ble.s      $000146FB
-[00014696] 7320                      ???
-[00014698] 6e6f                      bgt.s      $00014709
-[0001469a] 7420                      moveq.l    #32,d2
-[0001469c] 6861                      bvc.s      $000146FF
-[0001469e] 7665                      moveq.l    #101,d3
-[000146a0] 7c65                      moveq.l    #101,d6
-[000146a2] 6e6f                      bgt.s      $00014713
-[000146a4] 7567                      ???
-[000146a6] 6820                      bvc.s      $000146C8
-[000146a8] 726f                      moveq.l    #111,d1
-[000146aa] 6f6d                      ble.s      $00014719
-[000146ac] 2074 6f20 7772            movea.l    ($7772,a4,d6.l*8),a0 ; 68020+ only
-[000146b2] 6974                      bvs.s      $00014728
-[000146b4] 657c                      bcs.s      $00014732
-[000146b6] 616e                      bsr.s      $00014726
-[000146b8] 7920                      ???
-[000146ba] 6d6f                      blt.s      $0001472B
-[000146bc] 7265                      moveq.l    #101,d1
-[000146be] 2069 6e66                 movea.l    28262(a1),a0
-[000146c2] 6f72                      ble.s      $00014736
-[000146c4] 6d61                      blt.s      $00014727
-[000146c6] 7469                      moveq.l    #105,d2
-[000146c8] 6f6e                      ble.s      $00014738
-[000146ca] 2e5d                      movea.l    (a5)+,a7
-[000146cc] 5b4f                      subq.w     #5,a7
-[000146ce] 4b5d                      lea.l      (a5)+,b5 ; apollo only
-[000146d0] 2000                      move.l     d0,d0
-[000146d2] 5b33 5d5b 4865 6170       subq.b     #5,([a3,zd5.l*4],$48656170) ; 68020+ only
-[000146da] 206f 7665                 movea.l    30309(a7),a0
-[000146de] 7266                      moveq.l    #102,d1
-[000146e0] 6c6f                      bge.s      $00014751
-[000146e2] 7721                      ???
-[000146e4] 7c4e                      moveq.l    #78,d6
-[000146e6] 6f20                      ble.s      $00014708
-[000146e8] 6d65                      blt.s      $0001474F
-[000146ea] 6d6f                      blt.s      $0001475B
-[000146ec] 7279                      moveq.l    #121,d1
-[000146ee] 2074 6f20 6f70            movea.l    ($6F70,a4,d6.l*8),a0 ; 68020+ only
-[000146f4] 656e                      bcs.s      $00014764
-[000146f6] 2066                      movea.l    -(a6),a0
-[000146f8] 696c                      bvs.s      $00014766
-[000146fa] 655d                      bcs.s      $00014759
-[000146fc] 5b4f                      subq.w     #5,a7
-[000146fe] 4b5d                      lea.l      (a5)+,b5 ; apollo only
-[00014700] 0000 544d                 ori.b      #$4D,d0
-[00014704] 5000                      addq.b     #8,d0
-[00014706] 4d4f                      lea.l      (b7),b6 ; apollo only
-[00014708] 4400                      neg.b      d0
-[0001470a] 5245                      addq.w     #1,d5
-[0001470c] 4600                      not.b      d0
-[0001470e] 5359                      subq.w     #1,(a1)+
-[00014710] 4d00                      chk.l      d0,d6 ; 68020+ only
-[00014712] 4c4e 4b00                 divsl.l    a6,d0:d4 ; rems.l for ColdFire
-[00014716] 4c53 5400                 divu.l     (a3),d0:d5 ; 68020+ only
-[0001471a] 5052                      addq.w     #8,(a2)
-[0001471c] 4700                      chk.l      d0,d3 ; 68020+ only
-[0001471e] 4d41                      lea.l      d1,b6 ; apollo only
-[00014720] 5000                      addq.b     #8,d0
-[00014722] 434f                      lea.l      (b7),b1 ; apollo only
-[00014724] 5200                      addq.b     #1,d0
-[00014726] 4552                      lea.l      (a2),b2 ; apollo only
-[00014728] 4400                      neg.b      d0
-[0001472a] 4552                      lea.l      (a2),b2 ; apollo only
-[0001472c] 4d00                      chk.l      d0,d6 ; 68020+ only
-[0001472e] 5852                      addq.w     #4,(a2)
-[00014730] 4600                      not.b      d0
-[00014732] 4445                      neg.w      d5
-[00014734] 4300                      chk.l      d0,d1 ; 68020+ only
-[00014736] 5052                      addq.w     #8,(a2)
-[00014738] 5400                      addq.b     #2,d0
-[0001473a] 494e                      lea.l      (b6),b4 ; apollo only
-[0001473c] 4400                      neg.b      d0
-[0001473e] 5253                      addq.w     #1,(a3)
-[00014740] 4300                      chk.l      d0,d1 ; 68020+ only
-[00014742] 2020                      move.l     -(a0),d0
-[00014744] 2000                      move.l     d0,d0
-[00014746] 203a 2000                 move.l     $00016748(pc),d0
-[0001474a] 2e00                      move.l     d0,d7
-[0001474c] 203a 2000                 move.l     $0001674E(pc),d0
-[00014750] 0000 4845                 ori.b      #$45,d0
-[00014754] 4150                      lea.l      (a0),b0 ; apollo only
-[00014756] 0000
+
+[000145fe] 5b31 5d5b 5468 6520       .asciiz '[1][The following file could|not be found:|'
+[0001462a] 5d5b                      .asciiz '][ENTER NAME|CONTINUE]'
+[00014642] 5b33                      .asciiz '[3][An IO error has occured|whilst '
+[00014666] 7772                      .asciiz 'writing'
+[0001466e] 7265                      .asciiz 'reading'
+[00014676] 2074                      .asciiz ' the disk.][OK]'
+[00014686] 5b33 5d5b 5468 6520       .asciiz '[3][The disk does not have|enough room to write|any more information.][OK] '
+[000146d2] 5b33 5d5b 4865 6170       .asciiz '[3][Heap overflow!|No memory to open file][OK]'
+[00014702] 544d                      .asciiz 'TMP'
+[00014706] 4d4f                      .asciiz 'MOD'
+[0001470a] 5245                      .asciiz 'REF'
+[0001470e] 5359                      .asciiz 'SYM'
+[00014712] 4c4e 4b00                 .asciiz 'LNK'
+[00014716] 4c53 5400                 .asciiz 'LST'
+[0001471a] 5052                      .asciiz 'PRG'
+[0001471e] 4d41                      .asciiz 'MAP'
+[00014722] 434f                      .asciiz 'COR'
+[00014726] 4552                      .asciiz 'ERD'
+[0001472a] 4552                      .asciiz 'ERM'
+[0001472e] 5852                      .asciiz 'XRF'
+[00014732] 4445                      .asciiz 'DEC'
+[00014736] 5052                      .asciiz 'PRT'
+[0001473a] 494e                      .asciiz 'IND'
+[0001473e] 5253                      .asciiz 'RSC'
+[00014742] 2020                      .asciiz '   '
+[00014746] 203a 2000                 .asciiz ' : '
+[0001474a] 2e00                      .asciiz '.'
+[0001474c] 203a 2000                 .asciiz ' : '
+[00014750] 0000                      .asciiz ''
+[00014752] 4845                      .asciiz 'HEAP'
 [00014758] 5155                      .asciiz 'QUERY'
-[0001475e] 5245                      addq.w     #1,d5
-[00014760] 4600                      not.b      d0
-[00014762] 4c49 5354                 divul.l    a1,d4:d5 ; remu.l for ColdFire
-[00014766] 0000 5354                 ori.b      #$54,d0
-[0001476a] 4143                      lea.l      d3,b0 ; apollo only
-[0001476c] 4b00                      chk.l      d0,d5 ; 68020+ only
-[0001476e] 4d41                      lea.l      d1,b6 ; apollo only
-[00014770] 5000                      addq.b     #8,d0
-[00014772] 4454                      neg.w      (a4)
-[00014774] 4142                      lea.l      d2,b0 ; apollo only
-[00014776] 4c45 0000                 divul.l    d5,d0:d0 ; 68020+ only
-[0001477a] 4f50                      lea.l      (a0),b7 ; apollo only
-[0001477c] 5449                      addq.w     #2,a1
-[0001477e] 4d49                      lea.l      (b1),b6 ; apollo only
-[00014780] 5345                      subq.w     #1,d5
-[00014782] 0000
+[0001475e] 5245                      .asciiz 'REF'
+[00014762] 4c49 5354                 .asciiz 'LIST'
+[00014768] 5354                      .asciiz 'STACK'
+[0001476e] 4d41                      .asciiz 'MAP'
+[00014772] 4454                      .asciiz 'DTABLE'
+[0001477a] 4f50                      .asciiz 'OPTIMISE'
+
+***
+* MODULE
+***
+
 [00014784] 4e56                      link       a6,#0
 [00014786] 3f3c 0011                 move.w     #$0011,-(a7) ; Random
 [0001478a] 4e4e                      trap       #14
@@ -5193,7 +5149,8 @@ NewStreams.WriteWord:
 [00014828] 3979 0003 6016 0004       move.w     $00036016,4(a4)
 [00014830] 4e5e                      unlk       a6
 [00014832] 4e75                      rts
-[00014834] 4ef9 0001 451c            jmp        $0001451C
+
+[00014834] 4ef9 0001 451c            jmp        NewStreams.init
 [0001483a] 4e56 0000                 link       a6,#0
 [0001483e] 598f                      subq.l     #4,a7
 [00014840] 4eb9 0001 4784            jsr        $00014784
@@ -5209,10 +5166,10 @@ NewStreams.WriteWord:
 [0001486c] 6314                      bls.s      $00014882
 [0001486e] 2a2e 0008                 move.l     8(a6),d5
 [00014872] 0685 0000 0400            addi.l     #$00000400,d5
-[00014878] 23c5 0003 6018            move.l     d5,BufferedIO.lheapsize
+[00014878] 23c5 0003 6018            move.l     d5,NewStreams.lheapsize
 [0001487e] 4efa 000c                 jmp        $0001488C(pc)
-[00014882] 23fc 0000 a000 0003 6018  move.l     #$0000A000,BufferedIO.lheapsize
-[0001488c] 2f39 0003 6018            move.l     BufferedIO.lheapsize,-(a7)
+[00014882] 23fc 0000 a000 0003 6018  move.l     #$0000A000,NewStreams.lheapsize
+[0001488c] 2f39 0003 6018            move.l     NewStreams.lheapsize,-(a7)
 [00014892] 6100 01c8                 bsr        $00014A5C
 [00014896] 588f                      addq.l     #4,a7
 [00014898] 2879 0003 565e            movea.l    $0003565E,a4
@@ -5407,10 +5364,10 @@ DEALLOCATE:
 [00014b38] 4fef 000c                 lea.l      12(a7),a7
 [00014b3c] 7a00                      moveq.l    #0,d5
 [00014b3e] 3a39 0003 601e            move.w     $0003601E,d5
-[00014b44] 23c5 0003 6018            move.l     d5,BufferedIO.lheapsize
-[00014b4a] 4ab9 0003 6018            tst.l      BufferedIO.lheapsize
+[00014b44] 23c5 0003 6018            move.l     d5,NewStreams.lheapsize
+[00014b4a] 4ab9 0003 6018            tst.l      NewStreams.lheapsize
 [00014b50] 660a                      bne.s      $00014B5C
-[00014b52] 23fc 0000 a000 0003 6018  move.l     #$0000A000,BufferedIO.lheapsize
+[00014b52] 23fc 0000 a000 0003 6018  move.l     #$0000A000,NewStreams.lheapsize
 [00014b5c] 4e5e                      unlk       a6
 [00014b5e] 4ef9 0003 4eb2            jmp        $00034EB2
 [00014b64] 5b33 5d5b 4865 6170       subq.b     #5,([a3,zd5.l*4],$48656170) ; 68020+ only
@@ -5447,7 +5404,7 @@ DEALLOCATE:
 [00014bba] 0000 4e56                 ori.b      #$56,d0
 [00014bbe] 0000 558f                 ori.b      #$8F,d0
 [00014bc2] 4879 0004 4cda            pea.l      $00044CDA
-[00014bc8] 4eb9 0001 44f8            jsr        $000144F8
+[00014bc8] 4eb9 0001 44f8            jsr        NewStreams.EOS
 [00014bce] 588f                      addq.l     #4,a7
 [00014bd0] 13df 0003 d8cb            move.b     (a7)+,$0003D8CB
 [00014bd6] 4a39 0003 d8cb            tst.b      $0003D8CB
@@ -5631,7 +5588,7 @@ DEALLOCATE:
 [00014e56] 4efa 0012                 jmp        $00014E6A(pc)
 [00014e5a] 486e ff60                 pea.l      -160(a6)
 [00014e5e] 486e ff5e                 pea.l      -162(a6)
-[00014e62] 4eb9 0001 4120            jsr        $00014120
+[00014e62] 4eb9 0001 4120            jsr        NewStreams.GetOptionInfo
 [00014e68] 508f                      addq.l     #8,a7
 [00014e6a] 4a2e ff5e                 tst.b      -162(a6)
 [00014e6e] 6604                      bne.s      $00014E74
@@ -5733,7 +5690,7 @@ default:
 [00014ff2] 3f3c 004f                 move.w     #$004F,-(a7)
 [00014ff6] 4879 0003 d87a            pea.l      $0003D87A
 [00014ffc] 486e fffe                 pea.l      -2(a6)
-[00015000] 4eb9 0001 3df6            jsr        $00013DF6
+[00015000] 4eb9 0001 3df6            jsr        NewStreams.FileLookupOutput
 [00015006] 4fef 0020                 lea.l      32(a7),a7
 [0001500a] 4267                      clr.w      -(a7)
 [0001500c] 4879 0001 532c            pea.l      $0001532C
@@ -5746,7 +5703,7 @@ default:
 [0001502a] 3f3c 004f                 move.w     #$004F,-(a7)
 [0001502e] 4879 0003 d87a            pea.l      $0003D87A
 [00015034] 486e fffe                 pea.l      -2(a6)
-[00015038] 4eb9 0001 3df6            jsr        $00013DF6
+[00015038] 4eb9 0001 3df6            jsr        NewStreams.FileLookupOutput
 [0001503e] 4fef 0020                 lea.l      32(a7),a7
 [00015042] 4879 0003 d838            pea.l      $0003D838
 [00015048] 4eb9 0001 4798            jsr        $00014798
@@ -5768,7 +5725,7 @@ default:
 [00015090] 4a2e ffae                 tst.b      -82(a6)
 [00015094] 674a                      beq.s      $000150E0
 [00015096] 3f3c 000a                 move.w     #$000A,-(a7)
-[0001509a] 4879 0001 532e            pea.l      $0001532E
+[0001509a] 4879 0001 532e            pea.l      $0001532E 'source file'
 [000150a0] 3f3c 004f                 move.w     #$004F,-(a7)
 [000150a4] 486e ffae                 pea.l      -82(a6)
 [000150a8] 1f3c 0002                 move.b     #$02,-(a7)
@@ -5778,7 +5735,7 @@ default:
 [000150b6] 3f3c 004f                 move.w     #$004F,-(a7)
 [000150ba] 4879 0004 4d7e            pea.l      $00044D7E
 [000150c0] 4879 0003 d836            pea.l      $0003D836
-[000150c6] 4eb9 0001 3930            jsr        $00013930
+[000150c6] 4eb9 0001 3930            jsr        NewStreams.FileLookup
 [000150cc] 4fef 0020                 lea.l      32(a7),a7
 [000150d0] 4a39 0003 d836            tst.b      $0003D836
 [000150d6] 6704                      beq.s      $000150DC
@@ -5792,15 +5749,16 @@ default:
 [000150f8] 08b9 0001 0004 4e20       bclr       #1,$00044E20
 [00015100] 4879 0004 4cda            pea.l      $00044CDA
 [00015106] 486e fffe                 pea.l      -2(a6)
-[0001510a] 4eb9 0001 42ca            jsr        $000142CA
+[0001510a] 4eb9 0001 42ca            jsr        NewStreams.Close
 [00015110] 508f                      addq.l     #8,a7
 [00015112] 4239 0003 d836            clr.b      $0003D836
 [00015118] 4efa 0154                 jmp        $0001526E(pc)
 [0001511c] 4efa 014c                 jmp        $0001526A(pc)
 [00015120] 3f3c 000a                 move.w     #$000A,-(a7)
-[00015124] 4879 0001 532e            pea.l      $0001532E
+
+[00015124] 4879 0001 532e            pea.l      $0001532E 'source file'
 [0001512a] 4267                      clr.w      -(a7)
-[0001512c] 4879 0001 535a            pea.l      $0001535A
+[0001512c] 4879 0001 535a            pea.l      $0001535A ''
 [00015132] 1f3c 0002                 move.b     #$02,-(a7)
 [00015136] 4879 0004 4cc2            pea.l      $00044CC2
 [0001513c] 1f3c 0001                 move.b     #$01,-(a7)
@@ -5808,7 +5766,7 @@ default:
 [00015144] 3f3c 004f                 move.w     #$004F,-(a7)
 [00015148] 4879 0004 4d7e            pea.l      $00044D7E
 [0001514e] 4879 0003 d836            pea.l      $0003D836
-[00015154] 4eb9 0001 3930            jsr        $00013930
+[00015154] 4eb9 0001 3930            jsr        NewStreams.FileLookup
 [0001515a] 4fef 0020                 lea.l      32(a7),a7
 [0001515e] 4a39 0003 d836            tst.b      $0003D836
 [00015164] 6702                      beq.s      $00015168
@@ -5930,12 +5888,9 @@ default:
 [00015326] 4e75                      rts
 [00015328] 0000                      dc.w       $0000
 [0001532a] 0000                      dc.w       $0000
-[0001532c] 0000 736f                 ori.b      #$6F,d0
-[00015330] 7572                      ???
-[00015332] 6365                      bls.s      $00015399
-[00015334] 2066                      movea.l    -(a6),a0
-[00015336] 696c                      bvs.s      $000153A4
-[00015338] 6500 4261                 bcs        $0001959B
+[0001532c] 0000
+[0001532e] 736f                      .asciiz 'source file'
+[0001533a] 4261                 bcs        $0001959B
 [0001533c] 7463                      moveq.l    #99,d2
 [0001533e] 6820                      bvc.s      $00015360
 [00015340] 6669                      bne.s      $000153AB
@@ -5950,7 +5905,8 @@ default:
 [00015354] 6c65                      bge.s      $000153BB
 [00015356] 7465                      moveq.l    #101,d2
 [00015358] 0000                      dc.w       $0000
-[0001535a] 0000 4261                 ori.b      #$61,d0
+[0001535a] 0000                      .asciiz ''
+[0001535c] 4261                      .asciiz '
 [0001535e] 7463                      moveq.l    #99,d2
 [00015360] 6820                      bvc.s      $00015382
 [00015362] 4669 6c65                 not.w      27749(a1)
@@ -6044,7 +6000,7 @@ default:
 [000154b0] 0028 526e fff2            ori.b      #$6E,-14(a0)
 [000154b6] 2f2e 0016                 move.l     22(a6),-(a7)
 [000154ba] 2f2e ffea                 move.l     -22(a6),-(a7)
-[000154be] 4eb9 0001 0450            jsr        $00010450
+[000154be] 4eb9 0001 0450            jsr        DIVU32
 [000154c4] 2e9f                      move.l     (a7)+,(a7)
 [000154c6] 2d5f ffe6                 move.l     (a7)+,-26(a6)
 [000154ca] 7a0a                      moveq.l    #10,d5
@@ -6063,7 +6019,7 @@ default:
 [000154f6] 1985 4000                 move.b     d5,0(a4,d4.w)
 [000154fa] 2f2e 0016                 move.l     22(a6),-(a7)
 [000154fe] 2f2e ffea                 move.l     -22(a6),-(a7)
-[00015502] 4eb9 0001 0450            jsr        $00010450
+[00015502] 4eb9 0001 0450            jsr        DIVU32
 [00015508] 588f                      addq.l     #4,a7
 [0001550a] 2d5f 0016                 move.l     (a7)+,22(a6)
 [0001550e] 4aae 0016                 tst.l      22(a6)
@@ -6480,7 +6436,7 @@ MCP1IO.IdentSystem.EnterId:
 [00015a98] 13fc 0047 0003 d8d2       move.b     #$47,MCP1IO.sy
 [00015aa0] 2f39 0003 d900            move.l     $0003D900,-(a7)
 [00015aa6] 4878 0dab                 pea.l      ($00000DAB).w
-[00015aaa] 4eb9 0001 0450            jsr        $00010450
+[00015aaa] 4eb9 0001 0450            jsr        DIVU32
 [00015ab0] 2e9f                      move.l     (a7)+,(a7)
 [00015ab2] 2a1f                      move.l     (a7)+,d5
 [00015ab4] 3d45 fffe                 move.w     d5,-2(a6)
@@ -7140,7 +7096,7 @@ MCP1IO.SymFileInput.GetSeparateModule:
 [00016402] 3f3c 0001                 move.w     #$0001,-(a7)
 [00016406] 486e ffae                 pea.l      -82(a6)
 [0001640a] 486e ffa6                 pea.l      -90(a6)
-[0001640e] 4eb9 0001 3930            jsr        $00013930
+[0001640e] 4eb9 0001 3930            jsr        NewStreams.FileLookup
 [00016414] 4fef 0020                 lea.l      32(a7),a7
 [00016418] 4a2e ffa6                 tst.b      -90(a6)
 [0001641c] 6702                      beq.s      $00016420
@@ -7194,7 +7150,7 @@ MCP1IO.SymFileInput.GetSeparateModule:
 [000164e0] 08f9 0002 0004 4e21       bset       #2,M2Public.compstat
 [000164e8] 4879 0004 4cca            pea.l      $00044CCA
 [000164ee] 486e ffa7                 pea.l      -89(a6)
-[000164f2] 4eb9 0001 42ca            jsr        $000142CA
+[000164f2] 4eb9 0001 42ca            jsr        NewStreams.Close
 [000164f8] 508f                      addq.l     #8,a7
 [000164fa] 4efa 000a                 jmp        $00016506(pc)
 [000164fe] 08f9 0002 0004 4e21       bset       #2,M2Public.compstat
@@ -7220,7 +7176,7 @@ MCP1IO.Scanner.NextCh:
 [0001654e] 4e56 0000                 link       a6,#0
 [00016552] 558f                      subq.l     #2,a7
 [00016554] 4879 0004 4cc2            pea.l      $00044CC2
-[0001655a] 4eb9 0001 44f8            jsr        $000144F8
+[0001655a] 4eb9 0001 44f8            jsr        NewStreams.EOS
 [00016560] 588f                      addq.l     #4,a7
 [00016562] 4a1f                      tst.b      (a7)+
 [00016564] 670c                      beq.s      $00016572
@@ -7727,7 +7683,7 @@ MCP1IO.Scanner.GetIntConst:
 [00016d14] 9aae fff0                 sub.l      -16(a6),d5
 [00016d18] 2f05                      move.l     d5,-(a7)
 [00016d1a] 2f2e fff4                 move.l     -12(a6),-(a7)
-[00016d1e] 4eb9 0001 0450            jsr        $00010450
+[00016d1e] 4eb9 0001 0450            jsr        DIVU32
 [00016d24] 588f                      addq.l     #4,a7
 [00016d26] 2a1f                      move.l     (a7)+,d5
 [00016d28] baae ffec                 cmp.l      -20(a6),d5
@@ -12026,7 +11982,7 @@ MCP2IO.WriteLong:
 [0001ad2e] 2f0c                      move.l     a4,-(a7)
 [0001ad30] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001ad36] 486e fffc                 pea.l      -4(a6)
-[0001ad3a] 4eb9 0001 43a0            jsr        $000143A0
+[0001ad3a] 4eb9 0001 43a0            jsr        NewStreams.GetPos
 [0001ad40] 508f                      addq.l     #8,a7
 [0001ad42] 285f                      movea.l    (a7)+,a4
 [0001ad44] 296e fffc 0008            move.l     -4(a6),8(a4)
@@ -12078,7 +12034,7 @@ MCP2IO.WriteLong:
 [0001addc] 2f0c                      move.l     a4,-(a7)
 [0001adde] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001ade4] 486e fff2                 pea.l      -14(a6)
-[0001ade8] 4eb9 0001 43a0            jsr        $000143A0
+[0001ade8] 4eb9 0001 43a0            jsr        NewStreams.GetPos
 [0001adee] 508f                      addq.l     #8,a7
 [0001adf0] 285f                      movea.l    (a7)+,a4
 [0001adf2] 296e fff2 0008            move.l     -14(a6),8(a4)
@@ -12119,7 +12075,7 @@ MCP2IO.WriteLong:
 [0001ae7a] 4279 0003 d9fa            clr.w      $0003D9FA
 [0001ae80] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001ae86] 486e fffc                 pea.l      -4(a6)
-[0001ae8a] 4eb9 0001 43a0            jsr        $000143A0
+[0001ae8a] 4eb9 0001 43a0            jsr        NewStreams.GetPos
 [0001ae90] 508f                      addq.l     #8,a7
 [0001ae92] 286e 0008                 movea.l    8(a6),a4
 [0001ae96] 28ae fffc                 move.l     -4(a6),(a4)
@@ -12130,7 +12086,7 @@ MCP2IO.WriteLong:
 [0001aea2] 2d6e 0008 fffc            move.l     8(a6),-4(a6)
 [0001aea8] 4879 0003 d9e6            pea.l      MCP2IO.il2
 [0001aeae] 2f2e fffc                 move.l     -4(a6),-(a7)
-[0001aeb2] 4eb9 0001 43b6            jsr        $000143B6
+[0001aeb2] 4eb9 0001 43b6            jsr        NewStreams.SetPos
 [0001aeb8] 508f                      addq.l     #8,a7
 [0001aeba] 2f2e 0008                 move.l     8(a6),-(a7)
 [0001aebe] 6100 fed6                 bsr        $0001AD96
@@ -14326,7 +14282,7 @@ MCP2IO.TermInOut:
 [0001ccf6] 4485                      neg.l      d5
 [0001ccf8] 2f3c 7fff ffff            move.l     #$7FFFFFFF,-(a7)
 [0001ccfe] 2f05                      move.l     d5,-(a7)
-[0001cd00] 4eb9 0001 0450            jsr        $00010450
+[0001cd00] 4eb9 0001 0450            jsr        DIVU32
 [0001cd06] 588f                      addq.l     #4,a7
 [0001cd08] 2a2e ffce                 move.l     -50(a6),d5
 [0001cd0c] ba9f                      cmp.l      (a7)+,d5
@@ -14421,7 +14377,7 @@ MCP2IO.TermInOut:
 [0001ce56] 6718                      beq.s      $0001CE70
 [0001ce58] 4878 ffff                 pea.l      ($FFFFFFFF).w
 [0001ce5c] 2f2e ffd2                 move.l     -46(a6),-(a7)
-[0001ce60] 4eb9 0001 0450            jsr        $00010450
+[0001ce60] 4eb9 0001 0450            jsr        DIVU32
 [0001ce66] 588f                      addq.l     #4,a7
 [0001ce68] 2a2e ffce                 move.l     -50(a6),d5
 [0001ce6c] ba9f                      cmp.l      (a7)+,d5
@@ -14460,7 +14416,7 @@ MCP2IO.TermInOut:
 [0001ceec] 6620                      bne.s      $0001CF0E
 [0001ceee] 2f2e ffd2                 move.l     -46(a6),-(a7)
 [0001cef2] 2f2e ffce                 move.l     -50(a6),-(a7)
-[0001cef6] 4eb9 0001 0450            jsr        $00010450
+[0001cef6] 4eb9 0001 0450            jsr        DIVU32
 [0001cefc] 588f                      addq.l     #4,a7
 [0001cefe] 295f 0006                 move.l     (a7)+,6(a4)
 [0001cf02] 2979 0003 6030 0002       move.l     MCP1Ident.intcarptr,2(a4)
@@ -14515,7 +14471,7 @@ MCP2IO.TermInOut:
 [0001cfba] 4efa 0026                 jmp        $0001CFE2(pc)
 [0001cfbe] 2f2e ffd2                 move.l     -46(a6),-(a7)
 [0001cfc2] 2f2e ffce                 move.l     -50(a6),-(a7)
-[0001cfc6] 4eb9 0001 0450            jsr        $00010450
+[0001cfc6] 4eb9 0001 0450            jsr        DIVU32
 [0001cfcc] 2e9f                      move.l     (a7)+,(a7)
 [0001cfce] 286e 0012                 movea.l    18(a6),a4
 [0001cfd2] 295f 0006                 move.l     (a7)+,6(a4)
@@ -19459,6 +19415,7 @@ MCP2IO.TermInOut:
 [000213dc] 548f                      addq.l     #2,a7
 [000213de] 4e5e                      unlk       a6
 [000213e0] 4e75                      rts
+
 [000213e2] 4e56 ffae                 link       a6,#-82
 [000213e6] 3a39 0004 4e20            move.w     $00044E20,d5
 [000213ec] 0805 0007                 btst       #7,d5
@@ -19475,7 +19432,7 @@ MCP2IO.TermInOut:
 [0002141a] 3f3c 004f                 move.w     #$004F,-(a7)
 [0002141e] 486e ffae                 pea.l      -82(a6)
 [00021422] 4879 0003 dc72            pea.l      $0003DC72
-[00021428] 4eb9 0001 3df6            jsr        $00013DF6
+[00021428] 4eb9 0001 3df6            jsr        NewStreams.FileLookupOutput
 [0002142e] 4fef 0020                 lea.l      32(a7),a7
 [00021432] 13fc 0001 0003 db6c       move.b     #$01,$0003DB6C
 [0002143a] 13fc 0001 0003 db70       move.b     #$01,$0003DB70
@@ -19507,7 +19464,7 @@ MCP2IO.TermInOut:
 [00021496] 548f                      addq.l     #2,a7
 [00021498] 4879 0004 4cce            pea.l      $00044CCE
 [0002149e] 4879 0003 dc72            pea.l      $0003DC72
-[000214a4] 4eb9 0001 42ca            jsr        $000142CA
+[000214a4] 4eb9 0001 42ca            jsr        NewStreams.Close
 [000214aa] 508f                      addq.l     #8,a7
 [000214ac] 4239 0003 db6c            clr.b      $0003DB6C
 [000214b2] 4e5e                      unlk       a6
@@ -20015,7 +19972,7 @@ MCPass2.InitModules:
 [00021b7e] 6718                      beq.s      $00021B98
 [00021b80] 4878 fffe                 pea.l      ($FFFFFFFE).w
 [00021b84] 2f2e fff0                 move.l     -16(a6),-(a7)
-[00021b88] 4eb9 0001 0450            jsr        $00010450
+[00021b88] 4eb9 0001 0450            jsr        DIVU32
 [00021b8e] 588f                      addq.l     #4,a7
 [00021b90] 2a2e fff4                 move.l     -12(a6),d5
 [00021b94] ba9f                      cmp.l      (a7)+,d5
@@ -24848,7 +24805,7 @@ MCP4CodeSys.Emit:
 [000262b2] 3f3c 004f                 move.w     #$004F,-(a7)
 [000262b6] 486e ffb0                 pea.l      -80(a6)
 [000262ba] 4879 0004 4454            pea.l      $00044454
-[000262c0] 4eb9 0001 3df6            jsr        $00013DF6
+[000262c0] 4eb9 0001 3df6            jsr        NewStreams.FileLookupOutput
 [000262c6] 4fef 0020                 lea.l      32(a7),a7
 [000262ca] 4279 0004 4452            clr.w      $00044452
 [000262d0] 4e5e                      unlk       a6
@@ -24900,7 +24857,7 @@ MCP4CodeSys.Emit:
 [00026368] 6100 fb22                 bsr        $00025E8C
 [0002636c] 4879 0004 4cd2            pea.l      $00044CD2
 [00026372] 4879 0004 4454            pea.l      $00044454
-[00026378] 4eb9 0001 42ca            jsr        $000142CA
+[00026378] 4eb9 0001 42ca            jsr        NewStreams.Close
 [0002637e] 508f                      addq.l     #8,a7
 [00026380] 4e5e                      unlk       a6
 [00026382] 4e75                      rts
@@ -24943,7 +24900,7 @@ MCP4CodeSys.Emit:
 [00026402] 4e56 0000                 link       a6,#0
 [00026406] 4879 0004 4cc6            pea.l      $00044CC6
 [0002640c] 1f3c 000a                 move.b     #$0A,-(a7)
-[00026410] 4eb9 0001 4484            jsr        $00014484
+[00026410] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [00026416] 5c8f                      addq.l     #6,a7
 [00026418] 4e5e                      unlk       a6
 [0002641a] 4e75                      rts
@@ -24960,7 +24917,7 @@ MCP4CodeSys.Emit:
 [00026442] 3a2e fffe                 move.w     -2(a6),d5
 [00026446] 286e 0008                 movea.l    8(a6),a4
 [0002644a] 1f34 5000                 move.b     0(a4,d5.w),-(a7)
-[0002644e] 4eb9 0001 4484            jsr        $00014484
+[0002644e] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [00026454] 5c8f                      addq.l     #6,a7
 [00026456] 526e fffe                 addq.w     #1,-2(a6)
 [0002645a] 60c8                      bra.s      $00026424
@@ -25010,12 +24967,12 @@ MCP4CodeSys.Emit:
 [000264fc] 526e fffc                 addq.w     #1,-4(a6)
 [00026500] 4879 0004 4cc6            pea.l      $00044CC6
 [00026506] 1f3c 0020                 move.b     #$20,-(a7)
-[0002650a] 4eb9 0001 4484            jsr        $00014484
+[0002650a] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [00026510] 5c8f                      addq.l     #6,a7
 [00026512] 60d2                      bra.s      $000264E6
 [00026514] 4879 0004 4cc6            pea.l      $00044CC6
 [0002651a] 1f3c 005e                 move.b     #$5E,-(a7)
-[0002651e] 4eb9 0001 4484            jsr        $00014484
+[0002651e] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [00026524] 5c8f                      addq.l     #6,a7
 [00026526] 4879 0004 4cc6            pea.l      $00044CC6
 [0002652c] 3a2e fffe                 move.w     -2(a6),d5
@@ -25064,7 +25021,7 @@ MCP4CodeSys.Emit:
 [000265d0] 508f                      addq.l     #8,a7
 [000265d2] 4879 0004 4cc6            pea.l      $00044CC6
 [000265d8] 1f3c 003a                 move.b     #$3A,-(a7)
-[000265dc] 4eb9 0001 4484            jsr        $00014484
+[000265dc] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [000265e2] 5c8f                      addq.l     #6,a7
 [000265e4] 4879 0004 4cc6            pea.l      $00044CC6
 [000265ea] 3a39 0003 dd34            move.w     $0003DD34,d5
@@ -25080,7 +25037,7 @@ MCP4CodeSys.Emit:
 [00026610] 5c8f                      addq.l     #6,a7
 [00026612] 4879 0004 4cc6            pea.l      $00044CC6
 [00026618] 1f3c 0020                 move.b     #$20,-(a7)
-[0002661c] 4eb9 0001 4484            jsr        $00014484
+[0002661c] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [00026622] 5c8f                      addq.l     #6,a7
 [00026624] 4879 0004 4cc2            pea.l      $00044CC2
 [0002662a] 486e ffff                 pea.l      -1(a6)
@@ -25088,14 +25045,14 @@ MCP4CodeSys.Emit:
 [00026634] 508f                      addq.l     #8,a7
 [00026636] 558f                      subq.l     #2,a7
 [00026638] 4879 0004 4cc2            pea.l      $00044CC2
-[0002663e] 4eb9 0001 44f8            jsr        $000144F8
+[0002663e] 4eb9 0001 44f8            jsr        NewStreams.EOS
 [00026644] 588f                      addq.l     #4,a7
 [00026646] 4a1f                      tst.b      (a7)+
 [00026648] 6704                      beq.s      $0002664E
 [0002664a] 4efa 0022                 jmp        $0002666E(pc)
 [0002664e] 4879 0004 4cc6            pea.l      $00044CC6
 [00026654] 1f2e ffff                 move.b     -1(a6),-(a7)
-[00026658] 4eb9 0001 4484            jsr        $00014484
+[00026658] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [0002665e] 5c8f                      addq.l     #6,a7
 [00026660] 0c2e 000a ffff            cmpi.b     #$0A,-1(a6)
 [00026666] 6604                      bne.s      $0002666C
@@ -25130,7 +25087,7 @@ MCP4CodeSys.Emit:
 [000266d8] 548f                      addq.l     #2,a7
 [000266da] 4879 0004 4cc6            pea.l      $00044CC6
 [000266e0] 486e ffff                 pea.l      -1(a6)
-[000266e4] 4eb9 0001 42ca            jsr        $000142CA
+[000266e4] 4eb9 0001 42ca            jsr        NewStreams.Close
 [000266ea] 508f                      addq.l     #8,a7
 [000266ec] 4e5e                      unlk       a6
 [000266ee] 4e75                      rts
@@ -25151,7 +25108,7 @@ MCP4CodeSys.Emit:
 [00026730] 3f3c 004f                 move.w     #$004F,-(a7)
 [00026734] 486e ffb0                 pea.l      -80(a6)
 [00026738] 486e ffaf                 pea.l      -81(a6)
-[0002673c] 4eb9 0001 3df6            jsr        $00013DF6
+[0002673c] 4eb9 0001 3df6            jsr        NewStreams.FileLookupOutput
 [00026742] 4fef 0020                 lea.l      32(a7),a7
 [00026746] 4879 0004 4cc2            pea.l      $00044CC2
 [0002674c] 4eb9 0001 4412            jsr        NewStreams.EndWrite
@@ -25519,8 +25476,6 @@ MCP3IO.ReadWord:
 [00026c98] 4e75                      rts
 
 [00026c9a] 4765                      .asciiz 'GETSY'
-[00026c9c] 7453                      moveq.l    #83,d2
-[00026c9e] 7900                      ???
 
 [00026ca0] 4e56 fffe                 link       a6,#-2
 [00026ca4] 286e 000a                 movea.l    10(a6),a4
@@ -33222,7 +33177,7 @@ MCP3IO.ReadWord:
 [0002d378] 2f0c                      move.l     a4,-(a7)
 [0002d37a] 2f2e ffe0                 move.l     -32(a6),-(a7)
 [0002d37e] 2f2e ffe4                 move.l     -28(a6),-(a7)
-[0002d382] 4eb9 0001 0450            jsr        $00010450
+[0002d382] 4eb9 0001 0450            jsr        DIVU32
 [0002d388] 588f                      addq.l     #4,a7
 [0002d38a] 2a1f                      move.l     (a7)+,d5
 [0002d38c] e28d                      lsr.l      #1,d5
@@ -33248,7 +33203,7 @@ MCP3IO.ReadWord:
 [0002d3ce] 486e ffc4                 pea.l      -60(a6)
 [0002d3d2] 2f2e ffe4                 move.l     -28(a6),-(a7)
 [0002d3d6] 2f2e ffe0                 move.l     -32(a6),-(a7)
-[0002d3da] 4eb9 0001 0450            jsr        $00010450
+[0002d3da] 4eb9 0001 0450            jsr        DIVU32
 [0002d3e0] 588f                      addq.l     #4,a7
 [0002d3e2] 4227                      clr.b      -(a7)
 [0002d3e4] 4eb9 0002 7dd6            jsr        $00027DD6
@@ -33258,7 +33213,7 @@ MCP3IO.ReadWord:
 [0002d3f2] 486e ffac                 pea.l      -84(a6)
 [0002d3f6] 2f2e ffe4                 move.l     -28(a6),-(a7)
 [0002d3fa] 2f2e ffe0                 move.l     -32(a6),-(a7)
-[0002d3fe] 4eb9 0001 0450            jsr        $00010450
+[0002d3fe] 4eb9 0001 0450            jsr        DIVU32
 [0002d404] 588f                      addq.l     #4,a7
 [0002d406] 2a1f                      move.l     (a7)+,d5
 [0002d408] 5385                      subq.l     #1,d5
@@ -33357,7 +33312,7 @@ MCP3IO.ReadWord:
 [0002d546] 5385                      subq.l     #1,d5
 [0002d548] 2f05                      move.l     d5,-(a7)
 [0002d54a] 2f2e ffe0                 move.l     -32(a6),-(a7)
-[0002d54e] 4eb9 0001 0450            jsr        $00010450
+[0002d54e] 4eb9 0001 0450            jsr        DIVU32
 [0002d554] 588f                      addq.l     #4,a7
 [0002d556] 3f3c 0001                 move.w     #$0001,-(a7)
 [0002d55a] 4eb9 0002 b07a            jsr        $0002B07A
@@ -37130,6 +37085,7 @@ MCP3IO.ReadWord:
 [00030978] 60d6                      bra.s      $00030950
 [0003097a] 4e5e                      unlk       a6
 [0003097c] 4e75                      rts
+
 [0003097e] 4e56 ffcc                 link       a6,#-52
 [00030982] 4a39 0004 449a            tst.b      NoEntryCode
 [00030988] 6602                      bne.s      $0003098C
@@ -37191,7 +37147,7 @@ MCP3IO.ReadWord:
 [00030a5c] 285f                      movea.l    (a7)+,a4
 [00030a5e] 4efa 0026                 jmp        $00030A86(pc)
 [00030a62] 2f0c                      move.l     a4,-(a7)
-[00030a64] 3f3c 4e56                 move.w     #$4E56,-(a7)
+[00030a64] 3f3c 4e56                 move.w     #$4E56,-(a7) ; link
 [00030a68] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030a6e] 548f                      addq.l     #2,a7
 [00030a70] 285f                      movea.l    (a7)+,a4
@@ -37366,13 +37322,13 @@ MCP3IO.ReadWord:
 [00030c8a] 508f                      addq.l     #8,a7
 [00030c8c] 285f                      movea.l    (a7)+,a4
 [00030c8e] 2f0c                      move.l     a4,-(a7)
-[00030c90] 3f3c 4e5e                 move.w     #$4E5E,-(a7)
+[00030c90] 3f3c 4e5e                 move.w     #$4E5E,-(a7) ; unlk
 [00030c94] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030c9a] 548f                      addq.l     #2,a7
 [00030c9c] 285f                      movea.l    (a7)+,a4
 [00030c9e] 4a2e 0008                 tst.b      8(a6)
 [00030ca2] 660c                      bne.s      $00030CB0
-[00030ca4] 3f3c 4e75                 move.w     #$4E75,-(a7)
+[00030ca4] 3f3c 4e75                 move.w     #$4E75,-(a7) ; rts
 [00030ca8] 4eb9 0002 5bc0            jsr        MCP4CodeSys.Emit
 [00030cae] 548f                      addq.l     #2,a7
 [00030cb0] 4239 0004 449a            clr.b      NoEntryCode
@@ -39734,7 +39690,7 @@ MCP3IO.ReadWord:
 [00032f4c] 508f                      addq.l     #8,a7
 [00032f4e] 558f                      subq.l     #2,a7
 [00032f50] 4879 0004 4bf4            pea.l      $00044BF4
-[00032f56] 4eb9 0001 44f8            jsr        $000144F8
+[00032f56] 4eb9 0001 44f8            jsr        NewStreams.EOS
 [00032f5c] 588f                      addq.l     #4,a7
 [00032f5e] 4a1f                      tst.b      (a7)+
 [00032f60] 6704                      beq.s      $00032F66
@@ -39938,7 +39894,7 @@ MCP3IO.ReadWord:
 [0003324a] 2f0c                      move.l     a4,-(a7)
 [0003324c] 4879 0004 4cc6            pea.l      $00044CC6
 [00033252] 1f3c 002c                 move.b     #$2C,-(a7)
-[00033256] 4eb9 0001 4484            jsr        $00014484
+[00033256] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [0003325c] 5c8f                      addq.l     #6,a7
 [0003325e] 285f                      movea.l    (a7)+,a4
 [00033260] 4efa 0044                 jmp        $000332A6(pc)
@@ -39948,7 +39904,7 @@ MCP3IO.ReadWord:
 [0003326e] 2f0c                      move.l     a4,-(a7)
 [00033270] 4879 0004 4cc6            pea.l      $00044CC6
 [00033276] 1f3c 0020                 move.b     #$20,-(a7)
-[0003327a] 4eb9 0001 4484            jsr        $00014484
+[0003327a] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [00033280] 5c8f                      addq.l     #6,a7
 [00033282] 285f                      movea.l    (a7)+,a4
 [00033284] 526e fffc                 addq.w     #1,-4(a6)
@@ -39956,7 +39912,7 @@ MCP3IO.ReadWord:
 [0003328a] 2f0c                      move.l     a4,-(a7)
 [0003328c] 4879 0004 4cc6            pea.l      $00044CC6
 [00033292] 1f3c 005e                 move.b     #$5E,-(a7)
-[00033296] 4eb9 0001 4484            jsr        $00014484
+[00033296] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [0003329c] 5c8f                      addq.l     #6,a7
 [0003329e] 285f                      movea.l    (a7)+,a4
 [000332a0] 3d6c 0002 fffe            move.w     2(a4),-2(a6)
@@ -40031,7 +39987,7 @@ MCP3IO.ReadWord:
 [000333aa] 2f0c                      move.l     a4,-(a7)
 [000333ac] 4879 0004 4cd6            pea.l      $00044CD6
 [000333b2] 1f3c 0020                 move.b     #$20,-(a7)
-[000333b6] 4eb9 0001 4484            jsr        $00014484
+[000333b6] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [000333bc] 5c8f                      addq.l     #6,a7
 [000333be] 285f                      movea.l    (a7)+,a4
 [000333c0] 2f0c                      move.l     a4,-(a7)
@@ -40050,7 +40006,7 @@ MCP3IO.ReadWord:
 [000333ec] 2f0c                      move.l     a4,-(a7)
 [000333ee] 4879 0004 4cd6            pea.l      $00044CD6
 [000333f4] 1f3c 0020                 move.b     #$20,-(a7)
-[000333f8] 4eb9 0001 4484            jsr        $00014484
+[000333f8] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [000333fe] 5c8f                      addq.l     #6,a7
 [00033400] 285f                      movea.l    (a7)+,a4
 [00033402] 2f0c                      move.l     a4,-(a7)
@@ -40100,7 +40056,7 @@ MCP3IO.ReadWord:
 [00033498] 3a2e fff4                 move.w     -12(a6),d5
 [0003349c] 49ee fff6                 lea.l      -10(a6),a4
 [000334a0] 1f34 5000                 move.b     0(a4,d5.w),-(a7)
-[000334a4] 4eb9 0001 4484            jsr        $00014484
+[000334a4] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [000334aa] 5c8f                      addq.l     #6,a7
 [000334ac] 526e fff4                 addq.w     #1,-12(a6)
 [000334b0] 60ca                      bra.s      $0003347C
@@ -40109,7 +40065,7 @@ MCP3IO.ReadWord:
 [000334b6] 4e56 0000                 link       a6,#0
 [000334ba] 4879 0004 4cd6            pea.l      $00044CD6
 [000334c0] 1f3c 000a                 move.b     #$0A,-(a7)
-[000334c4] 4eb9 0001 4484            jsr        $00014484
+[000334c4] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [000334ca] 5c8f                      addq.l     #6,a7
 [000334cc] 4e5e                      unlk       a6
 [000334ce] 4e75                      rts
@@ -40131,7 +40087,7 @@ MCP3IO.ReadWord:
 [00033506] 4efa 001a                 jmp        $00033522(pc)
 [0003350a] 4879 0004 4cc6            pea.l      $00044CC6
 [00033510] 1f2e fff3                 move.b     -13(a6),-(a7)
-[00033514] 4eb9 0001 4484            jsr        $00014484
+[00033514] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [0003351a] 5c8f                      addq.l     #6,a7
 [0003351c] 526e fff4                 addq.w     #1,-12(a6)
 [00033520] 60c4                      bra.s      $000334E6
@@ -40140,7 +40096,7 @@ MCP3IO.ReadWord:
 [00033526] 4e56 0000                 link       a6,#0
 [0003352a] 4879 0004 4cc6            pea.l      $00044CC6
 [00033530] 1f3c 000a                 move.b     #$0A,-(a7)
-[00033534] 4eb9 0001 4484            jsr        $00014484
+[00033534] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [0003353a] 5c8f                      addq.l     #6,a7
 [0003353c] 4e5e                      unlk       a6
 [0003353e] 4e75                      rts
@@ -40153,7 +40109,7 @@ MCP3IO.ReadWord:
 [0003355e] 508f                      addq.l     #8,a7
 [00033560] 558f                      subq.l     #2,a7
 [00033562] 4879 0004 4cc2            pea.l      $00044CC2
-[00033568] 4eb9 0001 44f8            jsr        $000144F8
+[00033568] 4eb9 0001 44f8            jsr        NewStreams.EOS
 [0003356e] 588f                      addq.l     #4,a7
 [00033570] 4a1f                      tst.b      (a7)+
 [00033572] 6602                      bne.s      $00033576
@@ -40171,14 +40127,14 @@ MCP3IO.ReadWord:
 [000335a4] 588f                      addq.l     #4,a7
 [000335a6] 4879 0004 4cc6            pea.l      $00044CC6
 [000335ac] 1f3c 0020                 move.b     #$20,-(a7)
-[000335b0] 4eb9 0001 4484            jsr        $00014484
+[000335b0] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [000335b6] 5c8f                      addq.l     #6,a7
 [000335b8] 422e ffff                 clr.b      -1(a6)
 [000335bc] 4a2e ffff                 tst.b      -1(a6)
 [000335c0] 664c                      bne.s      $0003360E
 [000335c2] 558f                      subq.l     #2,a7
 [000335c4] 4879 0004 4cc2            pea.l      $00044CC2
-[000335ca] 4eb9 0001 44f8            jsr        $000144F8
+[000335ca] 4eb9 0001 44f8            jsr        NewStreams.EOS
 [000335d0] 588f                      addq.l     #4,a7
 [000335d2] 4a1f                      tst.b      (a7)+
 [000335d4] 6638                      bne.s      $0003360E
@@ -40188,7 +40144,7 @@ MCP3IO.ReadWord:
 [000335e4] 4efa 0014                 jmp        $000335FA(pc)
 [000335e8] 4879 0004 4cc6            pea.l      $00044CC6
 [000335ee] 1f2e fffe                 move.b     -2(a6),-(a7)
-[000335f2] 4eb9 0001 4484            jsr        $00014484
+[000335f2] 4eb9 0001 4484            jsr        NewStreams.WriteChar
 [000335f8] 5c8f                      addq.l     #6,a7
 [000335fa] 4879 0004 4cc2            pea.l      $00044CC2
 [00033600] 486e fffe                 pea.l      -2(a6)
@@ -40224,14 +40180,14 @@ MCP3IO.ReadWord:
 [0003367a] 6714                      beq.s      $00033690
 [0003367c] 4879 0004 4cc6            pea.l      $00044CC6
 [00033682] 4879 0004 4cae            pea.l      $00044CAE
-[00033688] 4eb9 0001 42ca            jsr        $000142CA
+[00033688] 4eb9 0001 42ca            jsr        NewStreams.Close
 [0003368e] 508f                      addq.l     #8,a7
 [00033690] 3a39 0004 4e20            move.w     $00044E20,d5
 [00033696] 0805 0000                 btst       #0,d5
 [0003369a] 6714                      beq.s      $000336B0
 [0003369c] 4879 0004 4cd6            pea.l      $00044CD6
 [000336a2] 4879 0004 4cae            pea.l      $00044CAE
-[000336a8] 4eb9 0001 42ca            jsr        $000142CA
+[000336a8] 4eb9 0001 42ca            jsr        NewStreams.Close
 [000336ae] 508f                      addq.l     #8,a7
 [000336b0] 4e5e                      unlk       a6
 [000336b2] 4e75                      rts
@@ -40250,7 +40206,7 @@ MCP3IO.ReadWord:
 [000336e6] 3f3c 004f                 move.w     #$004F,-(a7)
 [000336ea] 486e ffb0                 pea.l      -80(a6)
 [000336ee] 4879 0004 4cae            pea.l      $00044CAE
-[000336f4] 4eb9 0001 3df6            jsr        $00013DF6
+[000336f4] 4eb9 0001 3df6            jsr        NewStreams.FileLookupOutput
 [000336fa] 4fef 0020                 lea.l      32(a7),a7
 [000336fe] 3a39 0004 4e20            move.w     $00044E20,d5
 [00033704] 0805 0000                 btst       #0,d5
@@ -40271,7 +40227,7 @@ MCP3IO.ReadWord:
 [0003373e] 3f3c 004f                 move.w     #$004F,-(a7)
 [00033742] 486e ffb0                 pea.l      -80(a6)
 [00033746] 4879 0004 4cae            pea.l      $00044CAE
-[0003374c] 4eb9 0001 3df6            jsr        $00013DF6
+[0003374c] 4eb9 0001 3df6            jsr        NewStreams.FileLookupOutput
 [00033752] 4fef 0020                 lea.l      32(a7),a7
 [00033756] 4efa 003c                 jmp        $00033794(pc)
 [0003375a] 3f3c 0009                 move.w     #$0009,-(a7)
@@ -40285,7 +40241,7 @@ MCP3IO.ReadWord:
 [0003377c] 3f3c 004f                 move.w     #$004F,-(a7)
 [00033780] 486e ffb0                 pea.l      -80(a6)
 [00033784] 4879 0004 4cae            pea.l      $00044CAE
-[0003378a] 4eb9 0001 3df6            jsr        $00013DF6
+[0003378a] 4eb9 0001 3df6            jsr        NewStreams.FileLookupOutput
 [00033790] 4fef 0020                 lea.l      32(a7),a7
 [00033794] 4879 0004 4cc2            pea.l      $00044CC2
 [0003379a] 4eb9 0001 4412            jsr        NewStreams.EndWrite
@@ -40516,7 +40472,7 @@ MCP3IO.ReadWord:
 [00033a7e] 3f3c 004f                 move.w     #$004F,-(a7)
 [00033a82] 486e ffb0                 pea.l      -80(a6)
 [00033a86] 4879 0004 4cb3            pea.l      $00044CB3
-[00033a8c] 4eb9 0001 3df6            jsr        $00013DF6
+[00033a8c] 4eb9 0001 3df6            jsr        NewStreams.FileLookupOutput
 [00033a92] 4fef 0020                 lea.l      32(a7),a7
 [00033a96] 08f9 0004 0004 4e21       bset       #4,M2Public.compstat
 [00033a9e] 13fc 0001 0004 4cb2       move.b     #$01,$00044CB2
@@ -40533,7 +40489,7 @@ MCP3IO.ReadWord:
 [00033ac4] 548f                      addq.l     #2,a7
 [00033ac6] 4879 0004 4cca            pea.l      $00044CCA
 [00033acc] 4879 0004 4cb3            pea.l      $00044CB3
-[00033ad2] 4eb9 0001 42ca            jsr        $000142CA
+[00033ad2] 4eb9 0001 42ca            jsr        NewStreams.Close
 [00033ad8] 508f                      addq.l     #8,a7
 [00033ada] 4e5e                      unlk       a6
 [00033adc] 4e75                      rts
@@ -42017,15 +41973,15 @@ MCP3IO.ReadWord:
 [00034e42] 6000 fcec                 bra        $00034B30
 [00034e46] 4879 0004 4cba            pea.l      $00044CBA
 [00034e4c] 4879 0004 4e29            pea.l      $00044E29
-[00034e52] 4eb9 0001 4328            jsr        $00014328
+[00034e52] 4eb9 0001 4328            jsr        NewStreams.Delete
 [00034e58] 508f                      addq.l     #8,a7
 [00034e5a] 4879 0004 4cbe            pea.l      $00044CBE
 [00034e60] 4879 0004 4e29            pea.l      $00044E29
-[00034e66] 4eb9 0001 4328            jsr        $00014328
+[00034e66] 4eb9 0001 4328            jsr        NewStreams.Delete
 [00034e6c] 508f                      addq.l     #8,a7
 [00034e6e] 4879 0004 4cc2            pea.l      $00044CC2
 [00034e74] 4879 0004 4e29            pea.l      $00044E29
-[00034e7a] 4eb9 0001 42ca            jsr        $000142CA
+[00034e7a] 4eb9 0001 42ca            jsr        NewStreams.Close
 [00034e80] 508f                      addq.l     #8,a7
 [00034e82] 3f3c 0011                 move.w     #$0011,-(a7)
 [00034e86] 4879 0003 5054            pea.l      $00035054
@@ -42126,7 +42082,8 @@ MCP3IO.ReadWord:
 [00034fd8] 416e 616c                 lea.l      24940(a6),b0 ; apollo only
 [00034fdc] 7973                      ???
 [00034fde] 6973                      bvs.s      $00035053
-[00034fe0] 0000 2a2a                 ori.b      #$2A,d0
+[00034fe0] 0000
+[00034fe2] 2a2a                      ori.b      #$2A,d0
 [00034fe4] 2043                      movea.l    d3,a0
 [00034fe6] 6f6d                      ble.s      $00035055
 [00034fe8] 7069                      moveq.l    #105,d0
@@ -48008,22 +47965,33 @@ MCP3IO.ReadWord:
 355ee: AppBase.apId
 355f0: AppBase.wdwHandle
 355f2: AppBase.vdiHandle
+355f4: AppBase.doUpdateWindow
+355f8: AppBase.openFiles
+355fc: AppBase.openStreams
+35600: AppBase.shellTail
+35650: AppBase.xfer
 35696: ExecUtil.terminated
 35698: M2Option.accId
 3569a: M2Option.msgbuf
 356ba: M2Option.replybuf
 356da: M2Option.options
-35d14: M2Option.searchpaths
-36005: BufferedIO.dump
-36006: BufferedIO.query
-36007: BufferedIO.reffiles
-36008: BufferedIO.listing
-36009: BufferedIO.linkmap
-3600a: BufferedIO.linkopt
-3600b: BufferedIO.debugtable
-3600c: BufferedIO.stacksize
-36010: BufferedIO.heapsize
-36018: BufferedIO.lheapsize
+35d14: NewStreams.searchpaths
+35e72: NewStreams.needfile
+35e74-35f3c: NewStreams.mainfilename
+35f3c-36004: NewStreams.outfilename
+36004: NewStreams.currInfoType
+36005: NewStreams.dump
+36006: NewStreams.query
+36007: NewStreams.reffiles
+36008: NewStreams.listing
+36009: NewStreams.linkmap
+3600a: NewStreams.linkopt
+3600b: NewStreams.debugtable
+3600c: NewStreams.stacksize
+36010: NewStreams.heapsize
+36012: NewStreams.DtaPtr
+36016: NewStreams.
+36018: NewStreams.lheapsize
 36020: MCP1Ident.boolptr
 36024: MCP1Ident.charptr
 36028: MCP1Ident.intptr

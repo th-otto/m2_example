@@ -1,0 +1,8 @@
+DEFINITION MODULE Symfile;
+
+FROM NewStreams IMPORT STREAM;
+
+VAR symFile: STREAM;
+VAR decFile: STREAM;
+
+END Symfile.

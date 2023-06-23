@@ -89,7 +89,7 @@ PROCEDURE OpenStream();
 VAR where: CARDINAL;
     handle: INTEGER;
 BEGIN
-  IF (xrf IN openStreams) OR (erm IN openStreams) THEN
+  IF (ORD(erm) IN openStreams) OR (ORD(erd) IN openStreams) THEN
     RunCmd(EDITOR, shellTail);
   ELSE
     IF Strings.Pos(shellTail, '.MOD', 0, where) THEN
@@ -120,7 +120,7 @@ TYPE frame = RECORD call: PROC; END;
     
   PROCEDURE RunProgram();
   BEGIN
-    IF (ttp IN openStreams) AND (NOT error) THEN
+    IF (ORD(ttp) IN openStreams) AND (NOT error) THEN
       ReplaceExtension(shellTail, 'PRG');
       RunCmd('EXEC.PRG', shellTail);
     ELSE

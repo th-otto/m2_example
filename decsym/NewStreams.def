@@ -1,56 +1,69 @@
-DEFINITION MODULE NewStreams;        (* AG / LG 27.06.80 *)
+DEFINITION MODULE NewStreams;
 
-  (* representation of module Streams with a modified *)
-  (* definition module independent from a file system *)
+FROM SYSTEM IMPORT ADDRESS, BYTE;
 
-  (* conventions for character streams :              *)
-  (*    end of line is marked by one character (eoln) *)
-  (*    end of stream is marked by a 0C character     *)
+CONST BUFSIZE = LONGCARD(512);
 
-  FROM SYSTEM IMPORT WORD;
+CONST eolc = 015C; (* "end of line" character *)
 
-  EXPORT QUALIFIED
-    STREAM, eolc,
-    Connect, Disconnect, Reset,
-    WriteWord, WriteChar, EndWrite,
-    ReadWord, ReadChar, EOS,
-    GetPos, SetPos;
+TYPE FileNameBuf = ARRAY[0..39] OF CHAR; (* FIXME: way too short *)
 
-  TYPE STREAM;
+TYPE File = RECORD
+  handle: INTEGER;
+  filename: FileNameBuf;
+  filesize: LONGCARD;
+  buffoffset: LONGCARD;
+  bufffill: CARDINAL;
+  filepos: LONGCARD;
+  dirty: BOOLEAN;
+  buffer: ARRAY[0..BUFSIZE-1] OF CHAR;
+  reserved: INTEGER;
+  (* 572 *)
+END;
 
-  VAR eolc : CHAR; (* "end of line" character    *)
-                   (* its value is less than 40C *)
+TYPE FilePointer = POINTER TO File;
 
-  PROCEDURE Connect(VAR s: STREAM; filenum: CARDINAL; ws: BOOLEAN);
-    (* connect a stream with a file referenced by filenum *)
-    (* ws means: "s is a word, not a character stream *)
+TYPE STREAM = RECORD
+  f: FilePointer;
+END;
 
-  PROCEDURE Disconnect(VAR s: STREAM; closefile: BOOLEAN);
+TYPE OptionInfoRec = RECORD
+  type: ARRAY[0..79] OF CHAR;
+  info: ARRAY[0..79] OF CHAR;
+END;
 
-  PROCEDURE Reset(s: STREAM);
-    (* reset the stream s *)
+PROCEDURE FileLookup(
+  VAR (* REF *) title: ARRAY OF CHAR;
+  VAR (* REF *) defaultname: ARRAY OF CHAR;
+  type: CARDINAL;
+  VAR s: STREAM;
+  query: BOOLEAN;
+  acceptdefault: BOOLEAN; (* unused *)
+  VAR acceptedfilename: ARRAY OF CHAR;
+  VAR goodfile: BOOLEAN
+  );
 
-  PROCEDURE WriteWord(s: STREAM; w: WORD);
+PROCEDURE FileLookupOutput(
+  VAR (* REF *) title: ARRAY OF CHAR;
+  VAR (* REF *) defaultname: ARRAY OF CHAR;
+  type: CARDINAL;
+  VAR s: STREAM;
+  query: BOOLEAN;
+  acceptdefault: BOOLEAN; (* unused *)
+  VAR acceptedfilename: ARRAY OF CHAR;
+  VAR goodfile: BOOLEAN
+  );
 
-  PROCEDURE WriteChar(s: STREAM; ch: CHAR);
+PROCEDURE GetOptionInfo(VAR info: OptionInfoRec; VAR success: BOOLEAN);
 
-  PROCEDURE EndWrite(s: STREAM);
-    (* terminate writing on stream s *)
+PROCEDURE Close(VAR s: STREAM; VAR success: BOOLEAN);
 
-  PROCEDURE ReadWord(s: STREAM; VAR w: WORD);
+PROCEDURE ReadChar(VAR s: STREAM; VAR ch: CHAR);
 
-  PROCEDURE ReadChar(s: STREAM; VAR ch: CHAR);
+PROCEDURE ReadByte(VAR s: STREAM; VAR b: BYTE);
 
-  PROCEDURE EOS(s: STREAM): BOOLEAN;
-    (* end of stream test *)
+PROCEDURE WriteChar(VAR s: STREAM; ch: CHAR);
 
-  PROCEDURE GetPos(s: STREAM; VAR highpos, lowpos: CARDINAL);
-    (* get current position on the stream s *)
-    (* highpos and lowpos build a long integer *)
-
-  PROCEDURE SetPos(s: STREAM; highpos, lowpos: CARDINAL);
-    (* set stream s to indicated position *)
-    (* highpos and lowpos build a long integer *)
-    (* use this procedure with GetPos *)
+PROCEDURE Read16Bit(VAR s: STREAM; VAR w: CARDINAL);
 
 END NewStreams.
