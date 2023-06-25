@@ -402,6 +402,7 @@ MODULE SymFileInput;
       loadsym : ARRAY [1 .. maxload] OF CARDINAL;
                 (* list of symbolfiles already loaded *)
       maxindex, index : CARDINAL;
+      oldSymFormat: BOOLEAN;
 
   PROCEDURE ReadSym(VAR b: CARDINAL);
   BEGIN
@@ -465,10 +466,10 @@ MODULE SymFileInput;
         sy := cardcon;
         val.wvalue[0] := 0;
         readword(val.wvalue[1]);
-    | intconstSS :
+    | realconstSS :
         sy := intcarcon;
         readlong(val.lvalue);
-    | realconstSS :
+    | longrealconstSS :
         sy := realcon;
         NEW(val.rvalue);
         readlongreal(val.rvalue^.ra);
@@ -514,10 +515,11 @@ MODULE SymFileInput;
         key : CARDINAL;
   BEGIN
     ReadSym(b);
-    IF b = ORD(normalconstSS) THEN
+    IF b = ORD(shortconstSS) THEN
       ReadSym(b); key := b;
       ReadSym(b); key := key * 400B + b;
-      RETURN key = symFileKey;
+      oldSymFormat := (key < symFileKey) AND (key = 3);
+      RETURN (key = symFileKey) OR oldSymFormat;
     ELSE
       RETURN FALSE;
     END;

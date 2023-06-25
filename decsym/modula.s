@@ -2314,8 +2314,8 @@ GEMDOS.Free:
 [00011f22] 2005                      move.l     d5,d0
 [00011f24] 4eb9 0001 000a            jsr        CASEX
 [00011f2a] 0000 0000
-[00011f2e] 0000 0003                 ori.b      #$03,d0
-[00011f32] 0000 0028                 ori.b      #$28,d0
+[00011f2e] 0000 0003
+[00011f32] 0000 0028
 [00011f36] 6100 fdd6                 bsr        $00011D0E
 [00011f3a] 4efa 0038                 jmp        $00011F74(pc)
 [00011f3e] 6100 ff1e                 bsr        $00011E5E
@@ -2323,8 +2323,10 @@ GEMDOS.Free:
 [00011f46] 6100 ff76                 bsr        $00011EBE
 [00011f4a] 4efa 0028                 jmp        $00011F74(pc)
 [00011f4e] 4efa 000a                 jmp        $00011F5A(pc)
-[00011f52] 000c 0014                 ori.b      #$14,a4 ; apollo only
-[00011f56] 0024 001c                 ori.b      #$1C,-(a4)
+[00011f52] 000c
+           0014
+[00011f56] 0024
+           001c
 [00011f5a] 3f3c 0009                 move.w     #$0009,-(a7)
 [00011f5e] 4879 0001 214c            pea.l      $0001214C
 [00011f64] 4267                      clr.w      -(a7)
@@ -2341,9 +2343,9 @@ GEMDOS.Free:
 [00011f8a] 3a2e 000a                 move.w     10(a6),d5
 [00011f8e] 2005                      move.l     d5,d0
 [00011f90] 4eb9 0001 000a            jsr        CASEX
-[00011f96] 0000 0000                      dc.w       $0000
-[00011f9a] 0000 0004                 ori.b      #$04,d0
-[00011f9e] 0000 007e                 ori.b      #$7E,d0
+[00011f96] 0000 0000
+[00011f9a] 0000 0004
+[00011f9e] 0000 007e
 [00011fa2] 49f9 0001 215a            lea.l      $0001215A,a4
 [00011fa8] 47ee ffae                 lea.l      -82(a6),a3
 [00011fac] 7a0b                      moveq.l    #11,d5
@@ -3685,9 +3687,9 @@ NewStreams.SetFileExtension:
 [000133aa] 1a2e 0008                 move.b     8(a6),d5
 [000133ae] 2005                      move.l     d5,d0
 [000133b0] 4eb9 0001 000a            jsr        CASEX
-[000133b6] 0000 0000                      dc.w       $0000
-[000133ba] 0000 0012                 ori.b      #$12,d0
-[000133be] 0000 0114                 ori.b      #$14,d0
+[000133b6] 0000 0000
+[000133ba] 0000 0012
+[000133be] 0000 0114
 [000133c2] 4efa 0138                 jmp        $000134FC(pc)
 [000133c6] 4879 0001 4702            pea.l      $00014702
 [000133cc] 6100 fe9a                 bsr        NewStreams.setExtension
@@ -5969,6 +5971,7 @@ default:
 [0001543c] 4fef 0012                 lea.l      18(a7),a7
 [00015440] 4e5e                      unlk       a6
 [00015442] 4e75                      rts
+
 [00015444] 4e56 ffe6                 link       a6,#-26
 [00015448] 426e fff2                 clr.w      -14(a6)
 [0001544c] 7a00                      moveq.l    #0,d5
@@ -6187,7 +6190,7 @@ case eol:
 [0001571e] 548f                      addq.l     #2,a7
 [00015720] 4efa 001c                 jmp        $0001573E(pc)
 case inlinesy:
-case realcon:
+case longrealcon:
 case option:
 case errorsy:
 default:
@@ -6785,12 +6788,12 @@ MCP1IO.SymFileInput.ReadLongReal:
 [00015fa2] 4e5e                      unlk       a6
 [00015fa4] 4e75                      rts
 
-MCP1IO.SymFileInout.SymGetSy:
+MCP1IO.SymFileInput.SymGetSy:
 [00015fa6] 4e56 fffa                 link       a6,#-6
 [00015faa] 486e fffe                 pea.l      -2(a6)
 [00015fae] 6100 fecc                 bsr        MCP1IO.SymFileInput.ReadSym
 [00015fb2] 588f                      addq.l     #4,a7
-[00015fb4] 4a39 0003 d930            tst.b      $0003D930
+[00015fb4] 4a39 0003 d930            tst.b      MCP1IO.SymFileInput.oldSymFormat
 [00015fba] 670c                      beq.s      $00015FC8
 [00015fbc] 0c6e 0009 fffe            cmpi.w     #$0009,-2(a6)
 [00015fc2] 6504                      bcs.s      $00015FC8
@@ -6826,20 +6829,20 @@ case 6: normalconstSS
 [0001603a] 6100 fec2                 bsr        MCP1IO.SymFileInput.ReadLong
 [0001603e] 588f                      addq.l     #4,a7
 [00016040] 4efa 0240                 jmp        $00016282(pc)
-case 7:
+case 7: shortconstSS
 [00016044] 13fc 004a 0003 d8d2       move.b     #$4A,MCP1IO.sy cardcon
 [0001604c] 4279 0003 d8d4            clr.w      MCP1IO.val
 [00016052] 4879 0003 d8d6            pea.l      $0003D8D6
 [00016058] 6100 fe78                 bsr        MCP1IO.SymFileInput.ReadWord
 [0001605c] 588f                      addq.l     #4,a7
 [0001605e] 4efa 0222                 jmp        $00016282(pc)
-case 8:
+case 8: realconstSS
 [00016062] 13fc 004b 0003 d8d2       move.b     #$4B,MCP1IO.sy intcarcon
 [0001606a] 4879 0003 d8d4            pea.l      MCP1IO.val
 [00016070] 6100 fe8c                 bsr        MCP1IO.SymFileInput.ReadLong
 [00016074] 588f                      addq.l     #4,a7
 [00016076] 4efa 020a                 jmp        $00016282(pc)
-case 9:
+case 9: longrealconstSS
 [0001607a] 13fc 004c 0003 d8d2       move.b     #$4C,MCP1IO.sy realcon
 [00016082] 4879 0003 d8d4            pea.l      MCP1IO.val
 [00016088] 7a08                      moveq.l    #8,d5
@@ -6852,7 +6855,7 @@ case 9:
 [000160a0] 6100 fec0                 bsr        MCP1IO.SymFileInput.ReadLongReal
 [000160a4] 5c8f                      addq.l     #6,a7
 [000160a6] 4efa 01da                 jmp        $00016282(pc)
-case 10:
+case 10: stringconstSS
 [000160aa] 13fc 004e 0003 d8d2       move.b     #$4E,MCP1IO.sy stringcon
 [000160b2] 6100 fcda                 bsr        MCP1IO.StringSystem.InitString
 [000160b6] 486e fffe                 pea.l      -2(a6)
@@ -6999,6 +7002,7 @@ default:
 [00016282] 4e5e                      unlk       a6
 [00016284] 4e75                      rts
 
+MCP1IO.SymFileOK:
 [00016286] 4e56 fffc                 link       a6,#-4
 [0001628a] 486e fffe                 pea.l      -2(a6)
 [0001628e] 6100 fbec                 bsr        MCP1IO.SymFileInput.ReadSym
@@ -7022,10 +7026,10 @@ default:
 [000162ce] 7a01                      moveq.l    #1,d5
 [000162d0] 6002                      bra.s      $000162D4
 [000162d2] 7a00                      moveq.l    #0,d5
-[000162d4] 13c5 0003 d930            move.b     d5,$0003D930
+[000162d4] 13c5 0003 d930            move.b     d5,MCP1IO.SymFileInput.oldSymFormat
 [000162da] 0c6e 0004 fffc            cmpi.w     #$0004,-4(a6)
 [000162e0] 6708                      beq.s      $000162EA
-[000162e2] 4a39 0003 d930            tst.b      $0003D930
+[000162e2] 4a39 0003 d930            tst.b      MCP1IO.SymFileInput.oldSymFormat
 [000162e8] 6704                      beq.s      $000162EE
 [000162ea] 7a01                      moveq.l    #1,d5
 [000162ec] 6002                      bra.s      $000162F0
@@ -7109,10 +7113,10 @@ MCP1IO.SymFileInput.GetSeparateModule:
 [00016434] 6702                      beq.s      $00016438
 [00016436] 6004                      bra.s      $0001643C
 [00016438] 4efa 007e                 jmp        $000164B8(pc)
-[0001643c] 6100 fb68                 bsr        MCP1IO.SymFileInout.SymGetSy
-[00016440] 6100 fb64                 bsr        MCP1IO.SymFileInout.SymGetSy
-[00016444] 6100 fb60                 bsr        MCP1IO.SymFileInout.SymGetSy
-[00016448] 6100 fb5c                 bsr        MCP1IO.SymFileInout.SymGetSy
+[0001643c] 6100 fb68                 bsr        MCP1IO.SymFileInput.SymGetSy
+[00016440] 6100 fb64                 bsr        MCP1IO.SymFileInput.SymGetSy
+[00016444] 6100 fb60                 bsr        MCP1IO.SymFileInput.SymGetSy
+[00016448] 6100 fb5c                 bsr        MCP1IO.SymFileInput.SymGetSy
 [0001644c] 0c39 0047 0003 d8d2       cmpi.b     #$47,MCP1IO.sy
 [00016454] 662e                      bne.s      $00016484
 [00016456] 3a39 0003 d8da            move.w     MCP1IO.spix,d5
@@ -16651,6 +16655,7 @@ MCP2IO.TermInOut:
 [0001ed4c] 548f                      addq.l     #2,a7
 [0001ed4e] 4e5e                      unlk       a6
 [0001ed50] 4e75                      rts
+
 [0001ed52] 4e56 dfba                 link       a6,#-8262
 [0001ed56] 42ae ffd0                 clr.l      -48(a6)
 [0001ed5a] 2d7c 0000 ffff ffcc       move.l     #$0000FFFF,-52(a6)
@@ -24078,6 +24083,7 @@ MCPass2.InitModules:
 [00025896] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
 [0002589c] 4e5e                      unlk       a6
 [0002589e] 4e75                      rts
+
 [000258a0] 4e56 fffe                 link       a6,#-2
 [000258a4] 1d79 0003 d9ca ffff       move.b     MCP2IO.sy,-1(a6)
 [000258ac] 4eb9 0001 b286            jsr        MCP2IO.Scanner.PutGetSy
@@ -24085,9 +24091,9 @@ MCPass2.InitModules:
 [000258b4] 1a2e ffff                 move.b     -1(a6),d5
 [000258b8] 2005                      move.l     d5,d0
 [000258ba] 4eb9 0001 000a            jsr        CASEX
-[000258c0] 0000 002c                 ori.b      #$2C,d0
-[000258c4] 0000 0014                 ori.b      #$14,d0
-[000258c8] 0000 0070                 ori.b      #$70,d0
+[000258c0] 0000 002c
+[000258c4] 0000 0014
+[000258c8] 0000 0070
 [000258cc] 6100 f7d4                 bsr        $000250A2
 [000258d0] 4efa 0088                 jmp        $0002595A(pc)
 [000258d4] 6100 f88c                 bsr        $00025162
@@ -24671,6 +24677,7 @@ MCP4CodeSys.Emit:
 [000260dc] 2b5f fffc                 move.l     (a7)+,-4(a5)
 [000260e0] 4e5e                      unlk       a6
 [000260e2] 4e75                      rts
+
 [000260e4] 4e56 fffc                 link       a6,#-4
 [000260e8] 426e fffe                 clr.w      -2(a6)
 [000260ec] 3a2e fffe                 move.w     -2(a6),d5
@@ -24687,7 +24694,7 @@ MCP4CodeSys.Emit:
 [00026114] 6100 fd60                 bsr        $00025E76
 [00026118] 548f                      addq.l     #2,a7
 [0002611a] 285f                      movea.l    (a7)+,a4
-[0002611c] 0c2c 001b 0002            cmpi.b     #$1B,2(a4)
+[0002611c] 0c2c 001b 0002            cmpi.b     #$1B,2(a4) range
 [00026122] 6710                      beq.s      $00026134
 [00026124] 2f0c                      move.l     a4,-(a7)
 [00026126] 7a02                      moveq.l    #2,d5
@@ -24700,9 +24707,9 @@ MCP4CodeSys.Emit:
 [00026136] 1a2c 0002                 move.b     2(a4),d5
 [0002613a] 2005                      move.l     d5,d0
 [0002613c] 4eb9 0001 000a            jsr        CASEX
-[00026142] 0000 0009                 ori.b      #$09,d0
-[00026146] 0000 001a                 ori.b      #$1A,d0
-[0002614a] 0000 0076                 ori.b      #$76,d0
+[00026142] 0000 0009
+[00026146] 0000 001a
+[0002614a] 0000 0076
 [0002614e] 2f0c                      move.l     a4,-(a7)
 [00026150] 266c 0004                 movea.l    4(a4),a3
 [00026154] 3f2b 0012                 move.w     18(a3),-(a7)
@@ -25122,6 +25129,7 @@ MCP4CodeSys.Emit:
 [0002676c] 2020                      .asciiz '           '
 [00026778] 6c69                      .asciiz 'list file '
 
+MCP3IO.OutputSystem.PutWord:
 [00026782] 4e56 0000                 link       a6,#0
 [00026784] 4879                      pea.l      $00044cbe
 [0002678c] 3f2e 0008                 move.w     8(a6),-(a7)
@@ -25130,13 +25138,14 @@ MCP4CodeSys.Emit:
 [00026798] 4e5e                      unlk       a6
 [0002679a] 4e75                      rts
 
+MCP3IO.OutputSystem.PutSy:
 [0002679c] 4e56 0000                 link       a6,#0
 [000267a0] 7a00                      moveq.l    #0,d5
 [000267a2] 1a2e 0008                 move.b     8(a6),d5
 [000267a6] e145                      asl.w      #8,d5
 [000267a8] da79 0004 449e            add.w      MCP3IO.pos,d5
 [000267ae] 3f05                      move.w     d5,-(a7)
-[000267b0] 6100 ffd0                 bsr.w      $00026782
+[000267b0] 6100 ffd0                 bsr.w      MCP3IO.OutputSystem.PutWord
 [000267b4] 548f                      addq.l     #2,a7
 [000267b6] 4e5e                      unlk       a6
 [000267b8] 4e75                      rts
@@ -25145,10 +25154,10 @@ MCP3IO.Error:
 [000267ba] 4e56 0000                 link       a6,#0
 [000267be] 08f9 0001 0004 4e21       bset       #1,M2Public.compstat
 [000267c6] 1f3c 0050                 move.b     #$50,-(a7)
-[000267ca] 6100 ffd0                 bsr.w      $0002679C
+[000267ca] 6100 ffd0                 bsr.w      MCP3IO.OutputSystem.PutSy
 [000267ce] 548f                      addq.l     #2,a7
 [000267d0] 3f2e 0008                 move.w     8(a6),-(a7)
-[000267d4] 6100 ffac                 bsr.w      $00026782
+[000267d4] 6100 ffac                 bsr.w      MCP3IO.OutputSystem.PutWord
 [000267d8] 548f                      addq.l     #2,a7
 [000267da] 3f2e 0008                 move.w     8(a6),-(a7)
 [000267de] 4eb9 0002 6478            jsr        $00026478
@@ -25168,23 +25177,24 @@ MCP3IO.ErrorLS:
 [00026816] 548f                      addq.l     #2,a7
 [00026818] 4efa 0038                 jmp        $00026852(pc)
 [0002681c] 1f3c 0051                 move.b     #$51,-(a7)
-[00026820] 6100 ff7a                 bsr        $0002679C
+[00026820] 6100 ff7a                 bsr        MCP3IO.OutputSystem.PutSy
 [00026824] 548f                      addq.l     #2,a7
 [00026826] 3f39 0004 44a4            move.w     MCP3IO.lline,-(a7)
-[0002682c] 6100 ff54                 bsr        $00026782
+[0002682c] 6100 ff54                 bsr        MCP3IO.OutputSystem.PutWord
 [00026830] 548f                      addq.l     #2,a7
 [00026832] 3f2e 0008                 move.w     8(a6),-(a7)
 [00026836] 6100 ff82                 bsr.w      MCP3IO.Error
 [0002683a] 548f                      addq.l     #2,a7
 [0002683c] 1f3c 0051                 move.b     #$51,-(a7)
-[00026840] 6100 ff5a                 bsr        $0002679C
+[00026840] 6100 ff5a                 bsr        MCP3IO.OutputSystem.PutSy
 [00026844] 548f                      addq.l     #2,a7
 [00026846] 3f39 0004 449c            move.w     MCP3IO.line,-(a7)
-[0002684c] 6100 ff34                 bsr        $00026782
+[0002684c] 6100 ff34                 bsr        MCP3IO.OutputSystem.PutWord
 [00026850] 548f                      addq.l     #2,a7
 [00026852] 33ee fffe 0004 449e       move.w     -2(a6),MCP3IO.pos
 [0002685a] 4e5e                      unlk       a6
 [0002685c] 4e75                      rts
+
 [0002685e] 4e56 0000                 link       a6,#0
 [00026862] 286e 000c                 movea.l    12(a6),a4
 [00026866] 7aff                      moveq.l    #-1,d5
@@ -25224,7 +25234,7 @@ CompilerOption:
 [000268ea] 1d45 fffe                 move.b     d5,-2(a6)
 [000268ee] 0c2e 0054 ffff            cmpi.b     #$54,-1(a6)
 [000268f4] 660c                      bne.s      $00026902
-[000268f6] 13ee fffe 0004 44a6       move.b     -2(a6),RangeChecking
+[000268f6] 13ee fffe 0004 44a6       move.b     -2(a6),controlRangeCheck
 [000268fe] 4efa 00a4                 jmp        $000269A4(pc)
 [00026902] 0c2e 0043 ffff            cmpi.b     #$43,-1(a6)
 [00026908] 660c                      bne.s      $00026916
@@ -25248,7 +25258,7 @@ CompilerOption:
 [00026962] 4efa 0040                 jmp        $000269A4(pc)
 [00026966] 0c2e 0052 ffff            cmpi.b     #$52,-1(a6)
 [0002696c] 660c                      bne.s      $0002697A
-[0002696e] 13ee fffe 0004 4498       move.b     -2(a6),SubrangeChecks
+[0002696e] 13ee fffe 0004 4498       move.b     -2(a6),arithmeticRangeCheck
 [00026976] 4efa 002c                 jmp        $000269A4(pc)
 [0002697a] 0c2e 0050 ffff            cmpi.b     #$50,-1(a6)
 [00026980] 6612                      bne.s      $00026994
@@ -25259,14 +25269,15 @@ CompilerOption:
 [00026990] 4efa 0012                 jmp        $000269A4(pc)
 [00026994] 0c2e 004e ffff            cmpi.b     #$4E,-1(a6)
 [0002699a] 6608                      bne.s      $000269A4
-[0002699c] 13ee fffe 0004 4499       move.b     -2(a6),$00044499
+[0002699c] 13ee fffe 0004 4499       move.b     -2(a6),OptionN
 [000269a4] 4e5e                      unlk       a6
 [000269a6] 4e75                      rts
+
 
 [000269a8] 4e56 fffc                 link       a6,#-4
 [000269ac] 33f9 0004 449e 0004 44a2  move.w     MCP3IO.pos,MCP3IO.lpos
 [000269b6] 33f9 0004 449c 0004 44a4  move.w     MCP3IO.line,MCP3IO.lline
-[000269c0] 13f9 0004 44a6 0004 4492  move.b     RangeChecking,$00044492
+[000269c0] 13f9 0004 44a6 0004 4492  move.b     controlRangeCheck,$00044492
 [000269ca] 13f9 0004 44a7 0004 4494  move.b     ClearInstructions,$00044494
 [000269d4] 1d7c 0001 ffff            move.b     #$01,-1(a6)
 [000269da] 486e fffc                 pea.l      -4(a6)
@@ -25365,10 +25376,10 @@ case eol:
 [00026b2c] 6100 0072                 bsr.w      MCP3IO.ReadWord
 [00026b30] 588f                      addq.l     #4,a7
 [00026b32] 1f3c 0051                 move.b     #$51,-(a7)
-[00026b36] 6100 fc64                 bsr        $0002679C
+[00026b36] 6100 fc64                 bsr        MCP3IO.OutputSystem.PutSy
 [00026b3a] 548f                      addq.l     #2,a7
 [00026b3c] 3f39 0004 449c            move.w     MCP3IO.line,-(a7)
-[00026b42] 6100 fc3e                 bsr        $00026782
+[00026b42] 6100 fc3e                 bsr        MCP3IO.OutputSystem.PutWord
 [00026b46] 548f                      addq.l     #2,a7
 [00026b48] 4227                      clr.b      -(a7)
 [00026b4a] 4eb9 0002 6568            jsr        $00026568
@@ -25378,7 +25389,7 @@ case ident:
 case intcon:
 case cardcon:
 case intcarcon:
-case realcon:
+case longrealcon:
 case charcon:
 case stringcon:
 [00026b56] 3f3c 0004                 move.w     #$0004,-(a7)
@@ -25440,7 +25451,7 @@ MCP3IO.ReadWord:
 [00026bec] 4e5e                      unlk       a6
 [00026bee] 4e75                      rts
 [00026bf0] 4e56 0000                 link       a6,#0
-[00026bf4] 13fc 0001 0004 44a6       move.b     #$01,RangeChecking
+[00026bf4] 13fc 0001 0004 44a6       move.b     #$01,controlRangeCheck
 [00026bfc] 13fc 0001 0004 44a7       move.b     #$01,ClearInstructions
 [00026c04] 7aff                      moveq.l    #-1,d5
 [00026c06] 23c5 0003 60d4            move.l     d5,$000360D4
@@ -25467,8 +25478,8 @@ MCP3IO.ReadWord:
 [00026c66] 4239 0004 4495            clr.b      QuickCalls
 [00026c6c] 4239 0004 4496            clr.b      AllQuickCalls
 [00026c72] 4239 0004 4497            clr.b      UseTrapv
-[00026c78] 4239 0004 4498            clr.b      SubrangeChecks
-[00026c7e] 4239 0004 4499            clr.b      $00044499
+[00026c78] 4239 0004 4498            clr.b      arithmeticRangeCheck
+[00026c7e] 4239 0004 4499            clr.b      OptionN
 [00026c84] 4279 0004 449e            clr.w      MCP3IO.pos
 [00026c8a] 4279 0004 449c            clr.w      MCP3IO.line
 [00026c90] 4239 0004 44a0            clr.b      $000444A0
@@ -25494,9 +25505,9 @@ MCP3IO.ReadWord:
 [00026cd2] 3a2e 0008                 move.w     8(a6),d5
 [00026cd6] 2005                      move.l     d5,d0
 [00026cd8] 4eb9 0001 000a            jsr        CASEX
-[00026cde] 0000 000c                 ori.b      #$0C,d0
-[00026ce2] 0000 000f                 ori.b      #$0F,d0
-[00026ce6] 0000 0036                 ori.b      #$36,d0
+[00026cde] 0000 000c
+[00026ce2] 0000 000f
+[00026ce6] 0000 0036
 [00026cea] 426e fffe                 clr.w      -2(a6)
 [00026cee] 4efa 0056                 jmp        $00026D46(pc)
 [00026cf2] 3d7c 0004 fffe            move.w     #$0004,-2(a6)
@@ -25662,7 +25673,7 @@ MCP3IO.ReadWord:
 [00026f1a] 4854                      pea.l      (a4)
 [00026f1c] 4eb9 0002 a43c            jsr        $0002A43C
 [00026f22] 588f                      addq.l     #4,a7
-[00026f24] 4a39 0004 4498            tst.b      SubrangeChecks
+[00026f24] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [00026f2a] 6714                      beq.s      $00026F40
 [00026f2c] 286e 0008                 movea.l    8(a6),a4
 [00026f30] 4854                      pea.l      (a4)
@@ -27074,7 +27085,7 @@ MCP3IO.ReadWord:
 [000281a2] 4e5e                      unlk       a6
 [000281a4] 4e75                      rts
 [000281a6] 4e56 0000                 link       a6,#0
-[000281aa] 4a39 0004 4498            tst.b      SubrangeChecks
+[000281aa] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [000281b0] 6764                      beq.s      $00028216
 [000281b2] 286e 0008                 movea.l    8(a6),a4
 [000281b6] 4854                      pea.l      (a4)
@@ -27239,7 +27250,7 @@ MCP3IO.ReadWord:
 [000283de] 4e5e                      unlk       a6
 [000283e0] 4e75                      rts
 [000283e2] 4e56 fffe                 link       a6,#-2
-[000283e6] 4a39 0004 4498            tst.b      SubrangeChecks
+[000283e6] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [000283ec] 6702                      beq.s      $000283F0
 [000283ee] 6004                      bra.s      $000283F4
 [000283f0] 4efa 010c                 jmp        $000284FE(pc)
@@ -27354,15 +27365,16 @@ MCP3IO.ReadWord:
 [00028566] 588f                      addq.l     #4,a7
 [00028568] 4e5e                      unlk       a6
 [0002856a] 4e75                      rts
+
 [0002856c] 4e56 0000                 link       a6,#0
 [00028570] 286e 000c                 movea.l    12(a6),a4
 [00028574] 7a00                      moveq.l    #0,d5
 [00028576] 1a2c 0004                 move.b     4(a4),d5
 [0002857a] 2005                      move.l     d5,d0
 [0002857c] 4eb9 0001 000a            jsr        CASEX
-[00028582] 0000 0003                 ori.b      #$03,d0
-[00028586] 0000 0009                 ori.b      #$09,d0
-[0002858a] 0000 0122                 ori.b      #$22,d0
+[00028582] 0000 0003
+[00028586] 0000 0009
+[0002858a] 0000 0122
 [0002858e] 2a2e 0008                 move.l     8(a6),d5
 [00028592] dbac 0006                 add.l      d5,6(a4)
 [00028596] 4efa 0120                 jmp        $000286B8(pc)
@@ -27530,6 +27542,7 @@ MCP3IO.ReadWord:
 [000287ba] 588f                      addq.l     #4,a7
 [000287bc] 4e5e                      unlk       a6
 [000287be] 4e75                      rts
+
 [000287c0] 4e56 fff0                 link       a6,#-16
 [000287c4] 286e 0008                 movea.l    8(a6),a4
 [000287c8] 2854                      movea.l    (a4),a4
@@ -27553,7 +27566,7 @@ MCP3IO.ReadWord:
 [0002880c] 2d6b 000e fff4            move.l     14(a3),-12(a6)
 [00028812] 2654                      movea.l    (a4),a3
 [00028814] 2d6b 0012 fff0            move.l     18(a3),-16(a6)
-[0002881a] 4a39 0004 4498            tst.b      SubrangeChecks
+[0002881a] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [00028820] 671a                      beq.s      $0002883C
 [00028822] 2f0c                      move.l     a4,-(a7)
 [00028824] 266e 0008                 movea.l    8(a6),a3
@@ -27573,9 +27586,9 @@ MCP3IO.ReadWord:
 [00028854] 1a2e ffff                 move.b     -1(a6),d5
 [00028858] 2005                      move.l     d5,d0
 [0002885a] 4eb9 0001 000a            jsr        CASEX
-[00028860] 0000 0005                 ori.b      #$05,d0
-[00028864] 0000 000a                 ori.b      #$0A,d0
-[00028868] 0000 024c                 ori.b      #$4C,d0
+[00028860] 0000 0005
+[00028864] 0000 000a
+[00028868] 0000 024c
 [0002886c] 0c2e 0006 fffe            cmpi.b     #$06,-2(a6)
 [00028872] 6702                      beq.s      $00028876
 [00028874] 6004                      bra.s      $0002887A
@@ -27584,7 +27597,7 @@ MCP3IO.ReadWord:
 [00028880] 662e                      bne.s      $000288B0
 [00028882] 0c2e 000c fffd            cmpi.b     #$0C,-3(a6)
 [00028888] 6722                      beq.s      $000288AC
-[0002888a] 4a39 0004 4498            tst.b      SubrangeChecks
+[0002888a] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [00028890] 671a                      beq.s      $000288AC
 [00028892] 0cae 0000 7fff fff0       cmpi.l     #$00007FFF,-16(a6)
 [0002889a] 6f10                      ble.s      $000288AC
@@ -27604,7 +27617,7 @@ MCP3IO.ReadWord:
 [000288c6] 1f05                      move.b     d5,-(a7)
 [000288c8] 4eb9 0002 5ae4            jsr        $00025AE4
 [000288ce] 548f                      addq.l     #2,a7
-[000288d0] 4a39 0004 4498            tst.b      SubrangeChecks
+[000288d0] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [000288d6] 6720                      beq.s      $000288F8
 [000288d8] 286e 0008                 movea.l    8(a6),a4
 [000288dc] 4854                      pea.l      (a4)
@@ -27628,7 +27641,7 @@ MCP3IO.ReadWord:
 [0002891a] 662e                      bne.s      $0002894A
 [0002891c] 0c2e 000c fffd            cmpi.b     #$0C,-3(a6)
 [00028922] 6722                      beq.s      $00028946
-[00028924] 4a39 0004 4498            tst.b      SubrangeChecks
+[00028924] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [0002892a] 671a                      beq.s      $00028946
 [0002892c] 0cae 0000 7fff fff0       cmpi.l     #$00007FFF,-16(a6)
 [00028934] 6f10                      ble.s      $00028946
@@ -27648,7 +27661,7 @@ MCP3IO.ReadWord:
 [00028960] 1f05                      move.b     d5,-(a7)
 [00028962] 4eb9 0002 5ae4            jsr        $00025AE4
 [00028968] 548f                      addq.l     #2,a7
-[0002896a] 4a39 0004 4498            tst.b      SubrangeChecks
+[0002896a] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [00028970] 6720                      beq.s      $00028992
 [00028972] 286e 0008                 movea.l    8(a6),a4
 [00028976] 4854                      pea.l      (a4)
@@ -27675,7 +27688,7 @@ MCP3IO.ReadWord:
 [000289bc] 4efa 003e                 jmp        $000289FC(pc)
 [000289c0] 0c2e 0005 fffe            cmpi.b     #$05,-2(a6)
 [000289c6] 6618                      bne.s      $000289E0
-[000289c8] 4a39 0004 4498            tst.b      SubrangeChecks
+[000289c8] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [000289ce] 6710                      beq.s      $000289E0
 [000289d0] 286e 0008                 movea.l    8(a6),a4
 [000289d4] 4854                      pea.l      (a4)
@@ -27702,7 +27715,7 @@ MCP3IO.ReadWord:
 [00028a1c] 4efa 003e                 jmp        $00028A5C(pc)
 [00028a20] 0c2e 0006 fffe            cmpi.b     #$06,-2(a6)
 [00028a26] 6618                      bne.s      $00028A40
-[00028a28] 4a39 0004 4498            tst.b      SubrangeChecks
+[00028a28] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [00028a2e] 6710                      beq.s      $00028A40
 [00028a30] 286e 0008                 movea.l    8(a6),a4
 [00028a34] 4854                      pea.l      (a4)
@@ -28121,15 +28134,16 @@ MCP3IO.ReadWord:
 [00028f70] 422c 000b                 clr.b      11(a4)
 [00028f74] 4e5e                      unlk       a6
 [00028f76] 4e75                      rts
+
 [00028f78] 4e56 0000                 link       a6,#0
 [00028f7c] 286e 000c                 movea.l    12(a6),a4
 [00028f80] 7a00                      moveq.l    #0,d5
 [00028f82] 1a2c 0004                 move.b     4(a4),d5
 [00028f86] 2005                      move.l     d5,d0
 [00028f88] 4eb9 0001 000a            jsr        CASEX
-[00028f8e] 0000 0000                      dc.w       $0000
-[00028f92] 0000 0010                 ori.b      #$10,d0
-[00028f96] 0000 015e                 ori.b      #$5E,d0
+[00028f8e] 0000 0000
+[00028f92] 0000 0010
+[00028f96] 0000 015e
 [00028f9a] 266e 0008                 movea.l    8(a6),a3
 [00028f9e] 36bc 003c                 move.w     #$003C,(a3)
 [00028fa2] 4efa 0180                 jmp        $00029124(pc)
@@ -28245,6 +28259,7 @@ MCP3IO.ReadWord:
 [00029122] 285f                      movea.l    (a7)+,a4
 [00029124] 4e5e                      unlk       a6
 [00029126] 4e75                      rts
+
 [00029128] 4e56 0000                 link       a6,#0
 [0002912c] 3a2e 0008                 move.w     8(a6),d5
 [00029130] 0245 0007                 andi.w     #$0007,d5
@@ -28255,15 +28270,16 @@ MCP3IO.ReadWord:
 [0002913e] 3d45 000a                 move.w     d5,10(a6)
 [00029142] 4e5e                      unlk       a6
 [00029144] 4e75                      rts
+
 [00029146] 4e56 fffe                 link       a6,#-2
 [0002914a] 286e 0008                 movea.l    8(a6),a4
 [0002914e] 7a00                      moveq.l    #0,d5
 [00029150] 1a2c 0004                 move.b     4(a4),d5
 [00029154] 2005                      move.l     d5,d0
 [00029156] 4eb9 0001 000a            jsr        CASEX
-[0002915c] 0000 0000                      dc.w       $0000
-[00029160] 0000 000d                 ori.b      #$0D,d0
-[00029164] 0000 0276                 ori.b      #$76,d0
+[0002915c] 0000 0000
+[00029160] 0000 000d
+[00029164] 0000 0276
 [00029168] 2f0c                      move.l     a4,-(a7)
 [0002916a] 2f0c                      move.l     a4,-(a7)
 [0002916c] 558f                      subq.l     #2,a7
@@ -29670,6 +29686,7 @@ MCP3IO.ReadWord:
 [0002a436] 508f                      addq.l     #8,a7
 [0002a438] 4e5e                      unlk       a6
 [0002a43a] 4e75                      rts
+
 [0002a43c] 4e56 ffe4                 link       a6,#-28
 [0002a440] 286e 0008                 movea.l    8(a6),a4
 [0002a444] 4854                      pea.l      (a4)
@@ -29681,9 +29698,9 @@ MCP3IO.ReadWord:
 [0002a456] 1a2c 0004                 move.b     4(a4),d5
 [0002a45a] 2005                      move.l     d5,d0
 [0002a45c] 4eb9 0001 000a            jsr        CASEX
-[0002a462] 0000 0000                      dc.w       $0000
-[0002a466] 0000 000d                 ori.b      #$0D,d0
-[0002a46a] 0000 0074                 ori.b      #$74,d0
+[0002a462] 0000 0000
+[0002a466] 0000 000d
+[0002a46a] 0000 0074
 [0002a46e] 2f0c                      move.l     a4,-(a7)
 [0002a470] 266e 0008                 movea.l    8(a6),a3
 [0002a474] 4853                      pea.l      (a3)
@@ -32126,7 +32143,7 @@ MCP3IO.ReadWord:
 [0002c412] 266d fffc                 movea.l    -4(a5),a3
 [0002c416] 2779 0003 602c ffd2       move.l     MCP1Ident.cardptr,-46(a3)
 [0002c41e] 2d7c 0000 ffff ffd2       move.l     #$0000FFFF,-46(a6)
-[0002c426] 4a39 0004 4498            tst.b      SubrangeChecks
+[0002c426] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [0002c42c] 671e                      beq.s      $0002C44C
 [0002c42e] 2f0c                      move.l     a4,-(a7)
 [0002c430] 266d fffc                 movea.l    -4(a5),a3
@@ -32208,7 +32225,7 @@ MCP3IO.ReadWord:
 [0002c540] 486c 0006                 pea.l      6(a4)
 [0002c544] 4eb9 0002 a43c            jsr        $0002A43C
 [0002c54a] 588f                      addq.l     #4,a7
-[0002c54c] 4a39 0004 4498            tst.b      SubrangeChecks
+[0002c54c] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [0002c552] 671a                      beq.s      $0002C56E
 [0002c554] 286d fffc                 movea.l    -4(a5),a4
 [0002c558] 286c 0008                 movea.l    8(a4),a4
@@ -32240,7 +32257,7 @@ MCP3IO.ReadWord:
 [0002c5b8] 588f                      addq.l     #4,a7
 [0002c5ba] 4a1f                      tst.b      (a7)+
 [0002c5bc] 6722                      beq.s      $0002C5E0
-[0002c5be] 4a39 0004 4498            tst.b      SubrangeChecks
+[0002c5be] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [0002c5c4] 671a                      beq.s      $0002C5E0
 [0002c5c6] 286d fffc                 movea.l    -4(a5),a4
 [0002c5ca] 286c 0008                 movea.l    8(a4),a4
@@ -32744,7 +32761,7 @@ MCP3IO.ReadWord:
 [0002cd3a] 3f3c 03d5                 move.w     #$03D5,-(a7)
 [0002cd3e] 4eb9 0002 67ea            jsr        MCP3IO.ErrorLS
 [0002cd44] 548f                      addq.l     #2,a7
-[0002cd46] 4a39 0004 4498            tst.b      SubrangeChecks
+[0002cd46] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [0002cd4c] 670c                      beq.s      $0002CD5A
 [0002cd4e] 486e ffe8                 pea.l      -24(a6)
 [0002cd52] 4eb9 0002 a43c            jsr        $0002A43C
@@ -32754,17 +32771,17 @@ MCP3IO.ReadWord:
 [0002cd62] 3f3c d000                 move.w     #$D000,-(a7)
 [0002cd66] 486e ffd0                 pea.l      -48(a6)
 [0002cd6a] 486e ffe8                 pea.l      -24(a6)
-[0002cd6e] 1f39 0004 4498            move.b     SubrangeChecks,-(a7)
+[0002cd6e] 1f39 0004 4498            move.b     arithmeticRangeCheck,-(a7)
 [0002cd74] 4eb9 0002 7328            jsr        $00027328
 [0002cd7a] 4fef 000c                 lea.l      12(a7),a7
 [0002cd7e] 4efa 001e                 jmp        $0002CD9E(pc)
 [0002cd82] 3f3c 9000                 move.w     #$9000,-(a7)
 [0002cd86] 486e ffd0                 pea.l      -48(a6)
 [0002cd8a] 486e ffe8                 pea.l      -24(a6)
-[0002cd8e] 1f39 0004 4498            move.b     SubrangeChecks,-(a7)
+[0002cd8e] 1f39 0004 4498            move.b     arithmeticRangeCheck,-(a7)
 [0002cd94] 4eb9 0002 7328            jsr        $00027328
 [0002cd9a] 4fef 000c                 lea.l      12(a7),a7
-[0002cd9e] 4a39 0004 4498            tst.b      SubrangeChecks
+[0002cd9e] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [0002cda4] 6710                      beq.s      $0002CDB6
 [0002cda6] 486e ffb8                 pea.l      -72(a6)
 [0002cdaa] 486e ffe8                 pea.l      -24(a6)
@@ -34416,7 +34433,7 @@ MCP3IO.ReadWord:
 [0002e4ac] 4eb9 0002 a932            jsr        $0002A932
 [0002e4b2] 588f                      addq.l     #4,a7
 [0002e4b4] 285f                      movea.l    (a7)+,a4
-[0002e4b6] 4a39 0004 4499            tst.b      $00044499
+[0002e4b6] 4a39 0004 4499            tst.b      OptionN
 [0002e4bc] 6710                      beq.s      $0002E4CE
 [0002e4be] 2f0c                      move.l     a4,-(a7)
 [0002e4c0] 486c 0006                 pea.l      6(a4)
@@ -39200,7 +39217,7 @@ MCP3IO.ReadWord:
 [000327d2] 3d6e ffe8 fffe            move.w     -24(a6),-2(a6)
 [000327d8] 4a39 0004 4492            tst.b      $00044492
 [000327de] 6608                      bne.s      $000327E8
-[000327e0] 4a39 0004 4498            tst.b      SubrangeChecks
+[000327e0] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [000327e6] 6710                      beq.s      $000327F8
 [000327e8] 486e ffdc                 pea.l      -36(a6)
 [000327ec] 4878 7fff                 pea.l      ($00007FFF).w
@@ -39217,7 +39234,7 @@ MCP3IO.ReadWord:
 [00032814] 2f2e 0008                 move.l     8(a6),-(a7)
 [00032818] 4a39 0004 4492            tst.b      $00044492
 [0003281e] 6608                      bne.s      $00032828
-[00032820] 4a39 0004 4498            tst.b      SubrangeChecks
+[00032820] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [00032826] 6704                      beq.s      $0003282C
 [00032828] 7a01                      moveq.l    #1,d5
 [0003282a] 6002                      bra.s      $0003282E
@@ -39251,7 +39268,7 @@ MCP3IO.ReadWord:
 [0003288e] 5c8f                      addq.l     #6,a7
 [00032890] 4a39 0004 4492            tst.b      $00044492
 [00032896] 6608                      bne.s      $000328A0
-[00032898] 4a39 0004 4498            tst.b      SubrangeChecks
+[00032898] 4a39 0004 4498            tst.b      arithmeticRangeCheck
 [0003289e] 6710                      beq.s      $000328B0
 [000328a0] 486e ffdc                 pea.l      -36(a6)
 [000328a4] 4878 7fff                 pea.l      ($00007FFF).w
@@ -48046,6 +48063,7 @@ MCP3IO.ReadWord:
 3d918: MCP1IO.SymFileInput.loadsym
 3d92c: MCP1IO.SymFileInput.maxindex
 3d92e: MCP1IO.SymFileInput.index
+3d930: MCP1IO.SymFileInput.oldSymFormat
 3d932: MCP1IO.scanner.optroot
 3d99b: MCP1IO.scanner.och
 3d99d: MCP1IO.scanner.allowUnderscores
@@ -48077,13 +48095,14 @@ MCP3IO.ReadWord:
 44495: QuickCalls
 44496: AllQuickCalls
 44497: UseTrapv
-44498: SubrangeChecks
+44498: arithmeticRangeCheck
+44499: OptionN
 4449A: NoEntryCode
 4449c: MCP3IO.line
 4449e: MCP3IO.pos
 444a2: MCP3IO.lpos
 444a4: MCP3IO.lline
-444a6: RangeChecking
+444a6: controlRangeCheck
 444a7: ClearInstructions
 44cba: MCP1IO.OutputSystem.Il1
 44E21: M2Public.compstat

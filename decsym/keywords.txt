@@ -39,8 +39,8 @@ $Q: short (bsr) calls for local functions
 
 $H: match identifiers case-insensitive 
 
-$V: trapv
+$V: overflow checking (explaind in changes.txt)
 
 $U: allow underscores in identifiers
 
-$N: ???
+$N: generate nil-checking code

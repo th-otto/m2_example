@@ -124,7 +124,7 @@ CASEX:
 [00010162] 2d45 ffde                 move.l     d5,-34(a6)
 [00010166] 3d7c 000a ffc0            move.w     #$000A,-64(a6) ; control.opcode := 10 appl_init
 [0001016c] 426e ffc2                 clr.w      -62(a6)        ; control.sizeIntIn := 0
-[00010170] 3d7c 0001 ffc4            move.w     #$0001,-60(a6) ; control.sizeIntOut := 0
+[00010170] 3d7c 0001 ffc4            move.w     #$0001,-60(a6) ; control.sizeIntOut := 1
 [00010176] 426e ffc6                 clr.w      -58(a6)        ; control.sizeAddrIn := 0
 [0001017a] 426e ffc8                 clr.w      -56(a6)        ; control.sizeAddrOut := 0
 [0001017e] 203c 0000 00c8            move.l     #$000000C8,d0  ; SETREG(0, ADDRESS(200))
@@ -580,7 +580,7 @@ GEMX.init
 [00010714] 4eb9 0001 051c            jsr        $0001051C
 [0001071a] 5c8f                      addq.l     #6,a7
 
-[0001071c] 2f3c 0001 036c            move.l     #$0001036C,-(a7)
+[0001071c] 2f3c 0001 036c            move.l     #trap5,-(a7)
 [00010722] 3f3c 0025                 move.w     #$0025,-(a7)
 [00010726] 4eb9 0001 051c            jsr        $0001051C
 [0001072c] 5c8f                      addq.l     #6,a7
@@ -4950,13 +4950,14 @@ casex5_tab:
 * MODULE Symfile
 ***
 
+decsym.OpenFiles:
 [000143f0] 4e56 fef6                 link       a6,#-266
 [000143f4] 3f3c 000a                 move.w     #$000A,-(a7)
 [000143f8] 4879 0001 59a6            pea.l      $000159A6 "Symbol file"
 [000143fe] 4267                      clr.w      -(a7)
 [00014400] 4879 0001 59b2            pea.l      $000159B2 ''
 [00014406] 3f3c 0004                 move.w     #$0004,-(a7)
-[0001440a] 4879 0001 6e40            pea.l      $00016E40
+[0001440a] 4879 0001 6e40            pea.l      decsym.symFile
 [00014410] 1f3c 0001                 move.b     #$01,-(a7)
 [00014414] 4227                      clr.b      -(a7)
 [00014416] 3f3c 0031                 move.w     #$0031,-(a7)
@@ -4980,7 +4981,7 @@ casex5_tab:
 [00014460] 3f3c 0031                 move.w     #$0031,-(a7)
 [00014464] 486e ffc8                 pea.l      -56(a6)
 [00014468] 3f3c 000e                 move.w     #$000E,-(a7)
-[0001446c] 4879 0001 6e44            pea.l      $00016E44
+[0001446c] 4879 0001 6e44            pea.l      decsym.decFile
 [00014472] 4227                      clr.b      -(a7)
 [00014474] 4227                      clr.b      -(a7)
 [00014476] 3f3c 0031                 move.w     #$0031,-(a7)
@@ -4991,23 +4992,24 @@ casex5_tab:
 [0001448c] 4a2e ffff                 tst.b      -1(a6)
 [00014490] 57c5                      seq        d5
 [00014492] 4405                      neg.b      d5
-[00014494] 13c5 0001 6e3e            move.b     d5,$00016E3E
+[00014494] 13c5 0001 6e3e            move.b     d5,Symfile.outputFailed
 [0001449a] 4e5e                      unlk       a6
 [0001449c] 4e75                      rts
 
+CloseFiles:
 [0001449e] 4e56 fffe                 link       a6,#-2
-[000144a2] 4879 0001 6e40            pea.l      $00016E40
+[000144a2] 4879 0001 6e40            pea.l      decsym.symFile
 [000144a8] 486e ffff                 pea.l      -1(a6)
 [000144ac] 4eb9 0001 3de2            jsr        NewStreams.Close
 [000144b2] 508f                      addq.l     #8,a7
-[000144b4] 4879 0001 6e44            pea.l      $00016E44
+[000144b4] 4879 0001 6e44            pea.l      decsym.decFile
 [000144ba] 486e ffff                 pea.l      -1(a6)
 [000144be] 4eb9 0001 3de2            jsr        NewStreams.Close
 [000144c4] 508f                      addq.l     #8,a7
 [000144c6] 4e5e                      unlk       a6
 [000144c8] 4e75                      rts
 
-(VAR s: ARRAY OF CHAR; 
+Symfile.Error(VAR s: ARRAY OF CHAR; 
 [000144ca] 4e56 0000                 link       a6,#0
 [000144ce] 3a2e 000c                 move.w     12(a6),d5
 [000144d2] 3f05                      move.w     d5,-(a7)
@@ -5021,7 +5023,7 @@ casex5_tab:
 [000144f2] 4eb9 0001 130e            jsr        AppWindow.WriteString
 [000144f8] 5c8f                      addq.l     #6,a7
 [000144fa] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
-[00014500] 4eb9 0001 449e            jsr        $0001449E
+[00014500] 4eb9 0001 449e            jsr        CloseFiles
 [00014506] 3f3c 0004                 move.w     #$0004,-(a7)
 [0001450a] 1f3c 0001                 move.b     #$01,-(a7)
 [0001450e] 4eb9 0001 245e            jsr        ExecUtil.IOError
@@ -5031,24 +5033,24 @@ casex5_tab:
 
 Symfile.WriteLn:
 [0001451a] 4e56 0000                 link       a6,#0
-[0001451e] 4879 0001 6e44            pea.l      $00016E44
+[0001451e] 4879 0001 6e44            pea.l      decsym.decFile
 [00014524] 1f3c 000d                 move.b     #$0D,-(a7)
 [00014528] 4eb9 0001 3e98            jsr        NewStreams.WriteChar
 [0001452e] 5c8f                      addq.l     #6,a7
-[00014530] 4279 0001 6e4a            clr.w      $00016E4A
+[00014530] 4279 0001 6e4a            clr.w      outputX
 [00014536] 4e5e                      unlk       a6
 [00014538] 4e75                      rts
 
 Symfile.Write:
 [0001453a] 4e56 0000                 link       a6,#0
-[0001453e] 0c79 004b 0001 6e4a       cmpi.w     #$004B,$00016E4A
+[0001453e] 0c79 004b 0001 6e4a       cmpi.w     #$004B,outputX
 [00014546] 6306                      bls.s      $0001454E
 [00014548] 4eb9 0001 451a            jsr        Symfile.WriteLn
-[0001454e] 4879 0001 6e44            pea.l      $00016E44
+[0001454e] 4879 0001 6e44            pea.l      decsym.decFile
 [00014554] 1f2e 0008                 move.b     8(a6),-(a7)
 [00014558] 4eb9 0001 3e98            jsr        NewStreams.WriteChar
 [0001455e] 5c8f                      addq.l     #6,a7
-[00014560] 5279 0001 6e4a            addq.w     #1,$00016E4A
+[00014560] 5279 0001 6e4a            addq.w     #1,outputX
 [00014566] 4e5e                      unlk       a6
 [00014568] 4e75                      rts
 
@@ -5119,7 +5121,7 @@ Symfile.WriteLong:
 
 Symfile.WriteSpaces(n: CARDINAL)
 [0001463e] 4e56 0000                 link       a6,#0
-[00014642] 4eb9 0001 451a            jsr        Symfile.WriteLn
+[00014642] 4eb9 0001 451a            jsr        Symfile.xWriteLn
 [00014648] 4a6e 0008                 tst.w      8(a6)
 [0001464c] 6312                      bls.s      $00014660
 [0001464e] 1f3c 0020                 move.b     #$20,-(a7)
@@ -5132,7 +5134,7 @@ Symfile.WriteSpaces(n: CARDINAL)
 
 Symfile.ReadByte():
 [00014664] 4e56 fffe                 link       a6,#-2
-[00014668] 4879 0001 6e40            pea.l      $00016E40
+[00014668] 4879 0001 6e40            pea.l      decsym.symFile
 [0001466e] 486e ffff                 pea.l      -1(a6)
 [00014672] 4eb9 0001 3e78            jsr        NewStreams.ReadByte
 [00014678] 508f                      addq.l     #8,a7
@@ -5142,11 +5144,12 @@ Symfile.ReadByte():
 [00014686] 4e5e                      unlk       a6
 [00014688] 4e75                      rts
 
+Symfile.ReadString():
 [0001468a] 4e56 fffc                 link       a6,#-4
 [0001468e] 426e fffc                 clr.w      -4(a6)
-[00014692] 4879 0001 6e40            pea.l      $00016E40
+[00014692] 4879 0001 6e40            pea.l      decsym.symFile
 [00014698] 486e ffff                 pea.l      -1(a6)
-[0001469c] 4eb9 0001 3e40            jsr        $00013E40
+[0001469c] 4eb9 0001 3e40            jsr        NewStreams.ReadChar
 [000146a2] 508f                      addq.l     #8,a7
 [000146a4] 3a2e fffc                 move.w     -4(a6),d5
 [000146a8] ba6e 000c                 cmp.w      12(a6),d5
@@ -5163,7 +5166,7 @@ Symfile.ReadByte():
 
 Symfile.Read16Bit(VAR v: WORD):
 [000146cc] 4e56 0000                 link       a6,#0
-[000146d0] 4879 0001 6e40            pea.l      $00016E40
+[000146d0] 4879 0001 6e40            pea.l      decsym.symFile
 [000146d6] 286e 0008                 movea.l    8(a6),a4
 [000146da] 4854                      pea.l      (a4)
 [000146dc] 4eb9 0001 3ed8            jsr        NewStreams.Read16Bit
@@ -5202,7 +5205,7 @@ Symfile.Expect(b: BYTE);
 [00014740] 5c8f                      addq.l     #6,a7
 [00014742] 4267                      clr.w      -(a7)
 [00014744] 4879 0001 59fc            pea.l      $000159FC ''
-[0001474a] 4eb9 0001 44ca            jsr        $000144CA
+[0001474a] 4eb9 0001 44ca            jsr        Symfile.Error
 [00014750] 5c8f                      addq.l     #6,a7
 [00014752] 4e5e                      unlk       a6
 [00014754] 4e75                      rts
@@ -5216,10 +5219,11 @@ Symfile.NextIf(b: BYTE);
 [0001476c] 4e5e                      unlk       a6
 [0001476e] 4e75                      rts
 
+IndentUp:
 [00014770] 4e56 0000                 link       a6,#0
-[00014774] 3a39 0001 6e4a            move.w     $00016E4A,d5
+[00014774] 3a39 0001 6e4a            move.w     outputX,d5
 [0001477a] 5445                      addq.w     #2,d5
-[0001477c] 33c5 0001 6e64            move.w     d5,$00016E64
+[0001477c] 33c5 0001 6e64            move.w     d5,indentLevel
 [00014782] 3a2e 000c                 move.w     12(a6),d5
 [00014786] 3f05                      move.w     d5,-(a7)
 [00014788] 286e 0008                 movea.l    8(a6),a4
@@ -5229,10 +5233,11 @@ Symfile.NextIf(b: BYTE);
 [00014796] 4e5e                      unlk       a6
 [00014798] 4e75                      rts
 
+IndentDown:
 [0001479a] 4e56 0000                 link       a6,#0
-[0001479e] 5579 0001 6e64            subq.w     #2,$00016E64
-[000147a4] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[000147aa] 4eb9 0001 463e            jsr        $0001463E
+[0001479e] 5579 0001 6e64            subq.w     #2,indentLevel
+[000147a4] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[000147aa] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [000147b0] 548f                      addq.l     #2,a7
 [000147b2] 3a2e 000c                 move.w     12(a6),d5
 [000147b6] 3f05                      move.w     d5,-(a7)
@@ -5243,6 +5248,7 @@ Symfile.NextIf(b: BYTE);
 [000147c6] 4e5e                      unlk       a6
 [000147c8] 4e75                      rts
 
+DecodeShortConst:
 [000147ca] 4e56 fffe                 link       a6,#-2
 [000147ce] 1f3c 0007                 move.b     #$07,-(a7)
 [000147d2] 4eb9 0001 4720            jsr        Symfile.Expect
@@ -5255,6 +5261,7 @@ Symfile.NextIf(b: BYTE);
 [000147f2] 4e5e                      unlk       a6
 [000147f4] 4e75                      rts
 
+DecodeLongConst:
 [000147f6] 4e56 fffc                 link       a6,#-4
 [000147fa] 1f3c 0006                 move.b     #$06,-(a7)
 [000147fe] 4eb9 0001 4720            jsr        Symfile.Expect
@@ -5267,13 +5274,14 @@ Symfile.NextIf(b: BYTE);
 [0001481e] 4e5e                      unlk       a6
 [00014820] 4e75                      rts
 
+DecodeIdent:
 [00014822] 4e56 ffae                 link       a6,#-82
 [00014826] 1f3c 0014                 move.b     #$14,-(a7)
 [0001482a] 4eb9 0001 4720            jsr        Symfile.Expect
 [00014830] 548f                      addq.l     #2,a7
 [00014832] 3f3c 0050                 move.w     #$0050,-(a7)
 [00014836] 486e ffae                 pea.l      -82(a6)
-[0001483a] 4eb9 0001 468a            jsr        $0001468A
+[0001483a] 4eb9 0001 468a            jsr        Symfile.ReadString
 [00014840] 5c8f                      addq.l     #6,a7
 [00014842] 3f3c 0050                 move.w     #$0050,-(a7)
 [00014846] 486e ffae                 pea.l      -82(a6)
@@ -5283,39 +5291,41 @@ Symfile.NextIf(b: BYTE);
 [00014858] 4e5e                      unlk       a6
 [0001485a] 4e75                      rts
 
+SkipIdent:
 [0001485c] 4e56 ffae                 link       a6,#-82
 [00014860] 1f3c 0014                 move.b     #$14,-(a7)
 [00014864] 4eb9 0001 4720            jsr        Symfile.Expect
 [0001486a] 548f                      addq.l     #2,a7
 [0001486c] 3f3c 0050                 move.w     #$0050,-(a7)
 [00014870] 486e ffae                 pea.l      -82(a6)
-[00014874] 4eb9 0001 468a            jsr        $0001468A
+[00014874] 4eb9 0001 468a            jsr        Symfile.ReadString
 [0001487a] 5c8f                      addq.l     #6,a7
 [0001487c] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [00014882] 4e5e                      unlk       a6
 [00014884] 4e75                      rts
 
+DecodeModuleKey:
 [00014886] 4e56 0000                 link       a6,#0
 [0001488a] 4eb9 0001 451a            jsr        Symfile.WriteLn
-[00014890] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[00014896] 4eb9 0001 463e            jsr        $0001463E
+[00014890] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[00014896] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [0001489c] 548f                      addq.l     #2,a7
 [0001489e] 3f3c 000e                 move.w     #$000E,-(a7)
 [000148a2] 4879 0001 59fe            pea.l      $000159FE '(*module key = '
 [000148a8] 4eb9 0001 456a            jsr        Symfile.WriteString
 [000148ae] 5c8f                      addq.l     #6,a7
 [000148b0] 558f                      subq.l     #2,a7
-[000148b2] 4eb9 0001 47ca            jsr        $000147CA
+[000148b2] 4eb9 0001 47ca            jsr        DecodeShortConst
 [000148b8] 3f3c 0005                 move.w     #$0005,-(a7)
 [000148bc] 4eb9 0001 45da            jsr        Symfile.WriteHexCard
 [000148c2] 588f                      addq.l     #4,a7
 [000148c4] 558f                      subq.l     #2,a7
-[000148c6] 4eb9 0001 47ca            jsr        $000147CA
+[000148c6] 4eb9 0001 47ca            jsr        DecodeShortConst
 [000148cc] 3f3c 0005                 move.w     #$0005,-(a7)
 [000148d0] 4eb9 0001 45da            jsr        Symfile.WriteHexCard
 [000148d6] 588f                      addq.l     #4,a7
 [000148d8] 558f                      subq.l     #2,a7
-[000148da] 4eb9 0001 47ca            jsr        $000147CA
+[000148da] 4eb9 0001 47ca            jsr        DecodeShortConst
 [000148e0] 3f3c 0005                 move.w     #$0005,-(a7)
 [000148e4] 4eb9 0001 45da            jsr        Symfile.WriteHexCard
 [000148ea] 588f                      addq.l     #4,a7
@@ -5326,9 +5336,10 @@ Symfile.NextIf(b: BYTE);
 [000148fe] 4e5e                      unlk       a6
 [00014900] 4e75                      rts
 
+DecodeFileKey:
 [00014902] 4e56 fffe                 link       a6,#-2
 [00014906] 558f                      subq.l     #2,a7
-[00014908] 4eb9 0001 47ca            jsr        $000147CA
+[00014908] 4eb9 0001 47ca            jsr        DecodeShortConst
 [0001490e] 3d5f fffe                 move.w     (a7)+,-2(a6)
 [00014912] 3f3c 0012                 move.w     #$0012,-(a7)
 [00014916] 4879 0001 5a12            pea.l      $00015A12 '(*syntax version = '
@@ -5355,18 +5366,19 @@ Symfile.NextIf(b: BYTE);
 [00014970] 4eb9 0001 451a            jsr        Symfile.WriteLn
 [00014976] 4267                      clr.w      -(a7)
 [00014978] 4879 0001 5a50            pea.l      $00015A50 ''
-[0001497e] 4eb9 0001 44ca            jsr        $000144CA
+[0001497e] 4eb9 0001 44ca            jsr        Symfile.Error
 [00014984] 5c8f                      addq.l     #6,a7
 [00014986] 4e5e                      unlk       a6
 [00014988] 4e75                      rts
 
+DecodeModuleIdent:
 [0001498a] 4e56 0000                 link       a6,#0
 [0001498e] 1f3c 0014                 move.b     #$14,-(a7)
 [00014992] 4eb9 0001 4720            jsr        Symfile.Expect
 [00014998] 548f                      addq.l     #2,a7
 [0001499a] 3f3c 0017                 move.w     #$0017,-(a7)
-[0001499e] 4879 0001 6e4c            pea.l      $00016E4C
-[000149a4] 4eb9 0001 468a            jsr        $0001468A
+[0001499e] 4879 0001 6e4c            pea.l      ident
+[000149a4] 4eb9 0001 468a            jsr        Symfile.ReadString
 [000149aa] 5c8f                      addq.l     #6,a7
 [000149ac] 4eb9 0001 451a            jsr        Symfile.WriteLn
 [000149b2] 3f3c 0011                 move.w     #$0011,-(a7)
@@ -5374,7 +5386,7 @@ Symfile.NextIf(b: BYTE);
 [000149bc] 4eb9 0001 456a            jsr        Symfile.WriteString
 [000149c2] 5c8f                      addq.l     #6,a7
 [000149c4] 3f3c 0017                 move.w     #$0017,-(a7)
-[000149c8] 4879 0001 6e4c            pea.l      $00016E4C
+[000149c8] 4879 0001 6e4c            pea.l      ident
 [000149ce] 4eb9 0001 456a            jsr        Symfile.WriteString
 [000149d4] 5c8f                      addq.l     #6,a7
 [000149d6] 1f3c 003b                 move.b     #$3B,-(a7)
@@ -5385,13 +5397,15 @@ Symfile.NextIf(b: BYTE);
 [000149ee] 4e5e                      unlk       a6
 [000149f0] 4e75                      rts
 
+DecodeModuleHeader:
 [000149f2] 4e56 0000                 link       a6,#0
-[000149f6] 4eb9 0001 4902            jsr        $00014902
-[000149fc] 4eb9 0001 4886            jsr        $00014886
-[00014a02] 4eb9 0001 498a            jsr        $0001498A
+[000149f6] 4eb9 0001 4902            jsr        DecodeFileKey
+[000149fc] 4eb9 0001 4886            jsr        DecodeModuleKey
+[00014a02] 4eb9 0001 498a            jsr        DecodeModuleIdent
 [00014a08] 4e5e                      unlk       a6
 [00014a0a] 4e75                      rts
 
+DecodeSubModuleIdent:
 [00014a0c] 4e56 0000                 link       a6,#0
 [00014a10] 1f3c 0014                 move.b     #$14,-(a7)
 [00014a14] 4eb9 0001 4720            jsr        Symfile.Expect
@@ -5400,10 +5414,10 @@ Symfile.NextIf(b: BYTE);
 [00014a20] 3f05                      move.w     d5,-(a7)
 [00014a22] 286e 0008                 movea.l    8(a6),a4
 [00014a26] 4854                      pea.l      (a4)
-[00014a28] 4eb9 0001 468a            jsr        $0001468A
+[00014a28] 4eb9 0001 468a            jsr        Symfile.ReadString
 [00014a2e] 5c8f                      addq.l     #6,a7
-[00014a30] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[00014a36] 4eb9 0001 463e            jsr        $0001463E
+[00014a30] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[00014a36] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [00014a3c] 548f                      addq.l     #2,a7
 [00014a3e] 3f3c 0006                 move.w     #$0006,-(a7)
 [00014a42] 4879 0001 5a66            pea.l      $00015A66 'MODULE '
@@ -5423,19 +5437,21 @@ Symfile.NextIf(b: BYTE);
 [00014a7c] 4e5e                      unlk       a6
 [00014a7e] 4e75                      rts
 
+DecodeMember:
 [00014a80] 4e56 0000                 link       a6,#0
-[00014a84] 4eb9 0001 4822            jsr        $00014822
+[00014a84] 4eb9 0001 4822            jsr        DecodeIdent
 [00014a8a] 0c39 0015 0001 6e48       cmpi.b     #$15,Symfile.lastByte
 [00014a92] 661a                      bne.s      $00014AAE
 [00014a94] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [00014a9a] 1f3c 002e                 move.b     #$2E,-(a7)
 [00014a9e] 4eb9 0001 453a            jsr        Symfile.Write
 [00014aa4] 548f                      addq.l     #2,a7
-[00014aa6] 4eb9 0001 4822            jsr        $00014822
+[00014aa6] 4eb9 0001 4822            jsr        DecodeIdent
 [00014aac] 60dc                      bra.s      $00014A8A
 [00014aae] 4e5e                      unlk       a6
 [00014ab0] 4e75                      rts
 
+DecodeRealHi:
 [00014ab2] 4e56 fffe                 link       a6,#-2
 [00014ab6] 486e fffe                 pea.l      -2(a6)
 [00014aba] 4eb9 0001 46cc            jsr        Symfile.Read16Bit
@@ -5447,6 +5463,7 @@ Symfile.NextIf(b: BYTE);
 [00014ad2] 4e5e                      unlk       a6
 [00014ad4] 4e75                      rts
 
+DecodeRealLo:
 [00014ad6] 4e56 fffe                 link       a6,#-2
 [00014ada] 486e fffe                 pea.l      -2(a6)
 [00014ade] 4eb9 0001 46cc            jsr        Symfile.Read16Bit
@@ -5458,6 +5475,7 @@ Symfile.NextIf(b: BYTE);
 [00014af6] 4e5e                      unlk       a6
 [00014af8] 4e75                      rts
 
+DecodeReal:
 [00014afa] 4e56 0000                 link       a6,#0
 [00014afe] 4eb9 0001 4ab2            jsr        $00014AB2
 [00014b04] 4eb9 0001 4ad6            jsr        $00014AD6
@@ -5469,10 +5487,11 @@ Symfile.NextIf(b: BYTE);
 [00014b22] 4e5e                      unlk       a6
 [00014b24] 4e75                      rts
 
+DecodeString:
 [00014b26] 4e56 ffae                 link       a6,#-82
 [00014b2a] 3f3c 0050                 move.w     #$0050,-(a7)
 [00014b2e] 486e ffae                 pea.l      -82(a6)
-[00014b32] 4eb9 0001 468a            jsr        $0001468A
+[00014b32] 4eb9 0001 468a            jsr        Symfile.ReadString
 [00014b38] 5c8f                      addq.l     #6,a7
 [00014b3a] 1f3c 0022                 move.b     #$22,-(a7)
 [00014b3e] 4eb9 0001 453a            jsr        Symfile.Write
@@ -5488,6 +5507,7 @@ Symfile.NextIf(b: BYTE);
 [00014b68] 4e5e                      unlk       a6
 [00014b6a] 4e75                      rts
 
+DecodeConst:
 [00014b6c] 4e56 0000                 link       a6,#0
 [00014b70] 7a00                      moveq.l    #0,d5
 [00014b72] 1a39 0001 6e48            move.b     Symfile.lastByte,d5
@@ -5499,7 +5519,7 @@ casex6:
 [00014b88] 0000 00a8                 dc.l casex6_tab-casex6
 case 7:
 [00014b8c] 558f                      subq.l     #2,a7
-[00014b8e] 4eb9 0001 47ca            jsr        $000147CA
+[00014b8e] 4eb9 0001 47ca            jsr        DecodeShortConst
 [00014b94] 3f3c 0001                 move.w     #$0001,-(a7)
 [00014b98] 4eb9 0001 45a8            jsr        Symfile.WriteCard
 [00014b9e] 588f                      addq.l     #4,a7
@@ -5507,7 +5527,7 @@ case 7:
 [00014ba4] 4879 0001 5a8c            pea.l      $00015A8C '(*'
 [00014baa] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014bb0] 5c8f                      addq.l     #6,a7
-[00014bb2] 4eb9 0001 4a80            jsr        $00014A80
+[00014bb2] 4eb9 0001 4a80            jsr        DecodeMember
 [00014bb8] 3f3c 0001                 move.w     #$0001,-(a7)
 [00014bbc] 4879 0001 5a90            pea.l      $00015A90 '*)'
 [00014bc2] 4eb9 0001 456a            jsr        Symfile.WriteString
@@ -5515,7 +5535,7 @@ case 7:
 [00014bca] 4efa 0078                 jmp        $00014C44(pc)
 case 6:
 [00014bce] 598f                      subq.l     #4,a7
-[00014bd0] 4eb9 0001 47f6            jsr        $000147F6
+[00014bd0] 4eb9 0001 47f6            jsr        DecodeLongConst
 [00014bd6] 3f3c 0001                 move.w     #$0001,-(a7)
 [00014bda] 4eb9 0001 460c            jsr        Symfile.WriteLong
 [00014be0] 5c8f                      addq.l     #6,a7
@@ -5523,17 +5543,17 @@ case 6:
 [00014be6] 4879 0001 5a94            pea.l      $00015A94 '(*'
 [00014bec] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014bf2] 5c8f                      addq.l     #6,a7
-[00014bf4] 4eb9 0001 4a80            jsr        $00014A80
+[00014bf4] 4eb9 0001 4a80            jsr        DecodeMember
 [00014bfa] 3f3c 0001                 move.w     #$0001,-(a7)
 [00014bfe] 4879 0001 5a98            pea.l      $00015A98 '*)'
 [00014c04] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014c0a] 5c8f                      addq.l     #6,a7
 [00014c0c] 4efa 0036                 jmp        $00014C44(pc)
 case 8:
-[00014c10] 4eb9 0001 4afa            jsr        $00014AFA
+[00014c10] 4eb9 0001 4afa            jsr        DecodeReal
 [00014c16] 4efa 002c                 jmp        $00014C44(pc)
 case 10:
-[00014c1a] 4eb9 0001 4b26            jsr        $00014B26
+[00014c1a] 4eb9 0001 4b26            jsr        DecodeString
 [00014c20] 4efa 0022                 jmp        $00014C44(pc)
 case 9:
 default:
@@ -5546,11 +5566,12 @@ casex6:
            009a
 [00014c32] 3f3c 0024                 move.w     #$0024,-(a7)
 [00014c36] 4879 0001 5a9c            pea.l      $00015A9C ' illegal symbol in CONST-Declaration '
-[00014c3c] 4eb9 0001 44ca            jsr        $000144CA
+[00014c3c] 4eb9 0001 44ca            jsr        Symfile.Error
 [00014c42] 5c8f                      addq.l     #6,a7
 [00014c44] 4e5e                      unlk       a6
 [00014c46] 4e75                      rts
 
+DecodeList:
 [00014c48] 4e56 fffe                 link       a6,#-2
 [00014c4c] 1f3c 0018                 move.b     #$18,-(a7)
 [00014c50] 4eb9 0001 4756            jsr        Symfile.NextIf
@@ -5558,16 +5579,16 @@ casex6:
 [00014c58] 1f3c 0028                 move.b     #$28,-(a7)
 [00014c5c] 4eb9 0001 453a            jsr        Symfile.Write
 [00014c62] 548f                      addq.l     #2,a7
-[00014c64] 3d79 0001 6e64 fffe       move.w     $00016E64,-2(a6)
+[00014c64] 3d79 0001 6e64 fffe       move.w     indentLevel,-2(a6)
 [00014c6c] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [00014c74] 6662                      bne.s      $00014CD8
-[00014c76] 4eb9 0001 4822            jsr        $00014822
+[00014c76] 4eb9 0001 4822            jsr        DecodeIdent
 [00014c7c] 3f3c 0001                 move.w     #$0001,-(a7)
 [00014c80] 4879 0001 5ac2            pea.l      $00015AC2 '(*'
 [00014c86] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014c8c] 5c8f                      addq.l     #6,a7
 [00014c8e] 558f                      subq.l     #2,a7
-[00014c90] 4eb9 0001 47ca            jsr        $000147CA
+[00014c90] 4eb9 0001 47ca            jsr        DecodeShortConst
 [00014c96] 3f3c 0001                 move.w     #$0001,-(a7)
 [00014c9a] 4eb9 0001 45a8            jsr        Symfile.WriteCard
 [00014ca0] 588f                      addq.l     #4,a7
@@ -5581,7 +5602,7 @@ casex6:
 [00014cc2] 4eb9 0001 453a            jsr        Symfile.Write
 [00014cc8] 548f                      addq.l     #2,a7
 [00014cca] 3f2e fffe                 move.w     -2(a6),-(a7)
-[00014cce] 4eb9 0001 463e            jsr        $0001463E
+[00014cce] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [00014cd4] 548f                      addq.l     #2,a7
 [00014cd6] 6094                      bra.s      $00014C6C
 [00014cd8] 1f3c 0019                 move.b     #$19,-(a7)
@@ -5593,6 +5614,7 @@ casex6:
 [00014cf0] 4e5e                      unlk       a6
 [00014cf2] 4e75                      rts
 
+DecodeRange:
 [00014cf4] 4e56 0000                 link       a6,#0
 [00014cf8] 1f3c 001a                 move.b     #$1A,-(a7)
 [00014cfc] 4eb9 0001 4756            jsr        Symfile.NextIf
@@ -5600,7 +5622,7 @@ casex6:
 [00014d04] 1f3c 005b                 move.b     #$5B,-(a7)
 [00014d08] 4eb9 0001 453a            jsr        Symfile.Write
 [00014d0e] 548f                      addq.l     #2,a7
-[00014d10] 4eb9 0001 4b6c            jsr        $00014B6C
+[00014d10] 4eb9 0001 4b6c            jsr        DecodeConst
 [00014d16] 1f3c 0017                 move.b     #$17,-(a7)
 [00014d1a] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014d20] 548f                      addq.l     #2,a7
@@ -5608,7 +5630,7 @@ casex6:
 [00014d26] 4879 0001 5aca            pea.l      $00015ACA '..'
 [00014d2c] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014d32] 5c8f                      addq.l     #6,a7
-[00014d34] 4eb9 0001 4b6c            jsr        $00014B6C
+[00014d34] 4eb9 0001 4b6c            jsr        DecodeConst
 [00014d3a] 1f3c 001b                 move.b     #$1B,-(a7)
 [00014d3e] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014d44] 548f                      addq.l     #2,a7
@@ -5618,6 +5640,7 @@ casex6:
 [00014d52] 4e5e                      unlk       a6
 [00014d54] 4e75                      rts
 
+DecodeSimpleType:
 [00014d56] 4e56 0000                 link       a6,#0
 [00014d5a] 7a00                      moveq.l    #0,d5
 [00014d5c] 1a39 0001 6e48            move.b     Symfile.lastByte,d5
@@ -5628,13 +5651,13 @@ casex7:
 [00014d6e] 0000 0006                 dc.l 6
 [00014d72] 0000 002e                 dc.l casex7_tab-casex7
 case 20:
-[00014d76] 4eb9 0001 4a80            jsr        $00014A80
+[00014d76] 4eb9 0001 4a80            jsr        DecodeMember
 [00014d7c] 4efa 003a                 jmp        $00014DB8(pc)
 case 24:
-[00014d80] 4eb9 0001 4c48            jsr        $00014C48
+[00014d80] 4eb9 0001 4c48            jsr        DecodeList
 [00014d86] 4efa 0030                 jmp        $00014DB8(pc)
 case 26:
-[00014d8a] 4eb9 0001 4cf4            jsr        $00014CF4
+[00014d8a] 4eb9 0001 4cf4            jsr        DecodeRange
 [00014d90] 4efa 0026                 jmp        $00014DB8(pc)
 case 21:
 case 22:
@@ -5652,11 +5675,12 @@ casex7_tab:
            0020
 [00014da6] 3f3c                      move.w     #$001e,-(a7)
 [00014da8] 4879 0001 5ace            pea.l      $00015ACE ' illegal symbol in Simple Type '
-[00014db0] 4eb9 0001 44ca            jsr        $000144CA
+[00014db0] 4eb9 0001 44ca            jsr        Symfile.Error
 [00014db6] 5c8f                      addq.l     #6,a7
 [00014db8] 4e5e                      unlk       a6
 [00014dba] 4e75                      rts
 
+DecodeArrayType:
 [00014dbc] 4e56 0000                 link       a6,#0
 [00014dc0] 1f3c 000c                 move.b     #$0C,-(a7)
 [00014dc4] 4eb9 0001 4756            jsr        Symfile.NextIf
@@ -5665,7 +5689,7 @@ casex7_tab:
 [00014dd0] 4879 0001 5aee            pea.l      $00015AEE 'ARRAY '
 [00014dd6] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014ddc] 5c8f                      addq.l     #6,a7
-[00014dde] 4eb9 0001 4d56            jsr        $00014D56
+[00014dde] 4eb9 0001 4d56            jsr        DecodeSimpleType
 [00014de4] 1f3c 001d                 move.b     #$1D,-(a7)
 [00014de8] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014dee] 548f                      addq.l     #2,a7
@@ -5673,17 +5697,18 @@ casex7_tab:
 [00014df4] 4879 0001 5af6            pea.l      $00015AF6 ' OF '
 [00014dfa] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014e00] 5c8f                      addq.l     #6,a7
-[00014e02] 4eb9 0001 5256            jsr        $00015256
+[00014e02] 4eb9 0001 5256            jsr        DeocdeType
 [00014e08] 4e5e                      unlk       a6
 [00014e0a] 4e75                      rts
 
+DecodeSize:
 [00014e0c] 4e56 0000                 link       a6,#0
 [00014e10] 3f3c 0007                 move.w     #$0007,-(a7)
 [00014e14] 4879 0001 5afc            pea.l      $00015AFC '(*size: '
 [00014e1a] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014e20] 5c8f                      addq.l     #6,a7
 [00014e22] 598f                      subq.l     #4,a7
-[00014e24] 4eb9 0001 47f6            jsr        $000147F6
+[00014e24] 4eb9 0001 47f6            jsr        DecodeLongConst
 [00014e2a] 3f3c 0001                 move.w     #$0001,-(a7)
 [00014e2e] 4eb9 0001 460c            jsr        Symfile.WriteLong
 [00014e34] 5c8f                      addq.l     #6,a7
@@ -5694,13 +5719,14 @@ casex7_tab:
 [00014e48] 4e5e                      unlk       a6
 [00014e4a] 4e75                      rts
 
+DecodeOffset:
 [00014e4c] 4e56 0000                 link       a6,#0
 [00014e50] 3f3c 0009                 move.w     #$0009,-(a7)
 [00014e54] 4879 0001 5b0a            pea.l      $00015B0A '(*offset: '
 [00014e5a] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014e60] 5c8f                      addq.l     #6,a7
 [00014e62] 598f                      subq.l     #4,a7
-[00014e64] 4eb9 0001 47f6            jsr        $000147F6
+[00014e64] 4eb9 0001 47f6            jsr        DecodeLongConst
 [00014e6a] 3f3c 0001                 move.w     #$0001,-(a7)
 [00014e6e] 4eb9 0001 460c            jsr        Symfile.WriteLong
 [00014e74] 5c8f                      addq.l     #6,a7
@@ -5711,12 +5737,13 @@ casex7_tab:
 [00014e88] 4e5e                      unlk       a6
 [00014e8a] 4e75                      rts
 
+DecodeRecordIdent:
 [00014e8c] 4e56 0000                 link       a6,#0
-[00014e90] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[00014e96] 4eb9 0001 463e            jsr        $0001463E
+[00014e90] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[00014e96] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [00014e9c] 548f                      addq.l     #2,a7
-[00014e9e] 4eb9 0001 4822            jsr        $00014822
-[00014ea4] 4eb9 0001 4e4c            jsr        $00014E4C
+[00014e9e] 4eb9 0001 4822            jsr        DecodeIdent
+[00014ea4] 4eb9 0001 4e4c            jsr        DecodeOffset
 [00014eaa] 1f3c 0016                 move.b     #$16,-(a7)
 [00014eae] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014eb4] 548f                      addq.l     #2,a7
@@ -5724,32 +5751,34 @@ casex7_tab:
 [00014eba] 4879 0001 5b1a            pea.l      $00015B1A ' : '
 [00014ec0] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014ec6] 5c8f                      addq.l     #6,a7
-[00014ec8] 4eb9 0001 5256            jsr        $00015256
+[00014ec8] 4eb9 0001 5256            jsr        DeocdeType
 [00014ece] 1f3c 003b                 move.b     #$3B,-(a7)
 [00014ed2] 4eb9 0001 453a            jsr        Symfile.Write
 [00014ed8] 548f                      addq.l     #2,a7
 [00014eda] 4e5e                      unlk       a6
 [00014edc] 4e75                      rts
 
+DecodeVariantVal:
 [00014ede] 4e56 0000                 link       a6,#0
 [00014ee2] 558f                      subq.l     #2,a7
-[00014ee4] 4eb9 0001 47ca            jsr        $000147CA
+[00014ee4] 4eb9 0001 47ca            jsr        DecodeShortConst
 [00014eea] 3f3c 0002                 move.w     #$0002,-(a7)
 [00014eee] 4eb9 0001 45a8            jsr        Symfile.WriteCard
 [00014ef4] 588f                      addq.l     #4,a7
 [00014ef6] 4e5e                      unlk       a6
 [00014ef8] 4e75                      rts
 
+DecodeVariant:
 [00014efa] 4e56 0000                 link       a6,#0
-[00014efe] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[00014f04] 4eb9 0001 463e            jsr        $0001463E
+[00014efe] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[00014f04] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [00014f0a] 548f                      addq.l     #2,a7
 [00014f0c] 1f3c 001c                 move.b     #$1C,-(a7)
 [00014f10] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00014f16] 548f                      addq.l     #2,a7
 [00014f18] 3f3c 0003                 move.w     #$0003,-(a7)
 [00014f1c] 4879 0001 5b1e            pea.l      $00015B1E 'CASE'
-[00014f22] 4eb9 0001 4770            jsr        $00014770
+[00014f22] 4eb9 0001 4770            jsr        IndentUp
 [00014f28] 5c8f                      addq.l     #6,a7
 [00014f2a] 1f3c 0016                 move.b     #$16,-(a7)
 [00014f2e] 4eb9 0001 4756            jsr        Symfile.NextIf
@@ -5758,13 +5787,13 @@ casex7_tab:
 [00014f3a] 4879 0001 5b24            pea.l      $00015B24 ' : '
 [00014f40] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014f46] 5c8f                      addq.l     #6,a7
-[00014f48] 4eb9 0001 4a80            jsr        $00014A80
+[00014f48] 4eb9 0001 4a80            jsr        DecodeMember
 [00014f4e] 3f3c 0003                 move.w     #$0003,-(a7)
 [00014f52] 4879 0001 5b28            pea.l      $00015B28 ' OF '
 [00014f58] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00014f5e] 5c8f                      addq.l     #6,a7
-[00014f60] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[00014f66] 4eb9 0001 463e            jsr        $0001463E
+[00014f60] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[00014f66] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [00014f6c] 548f                      addq.l     #2,a7
 [00014f6e] 0c39 001d 0001 6e48       cmpi.b     #$1D,Symfile.lastByte
 [00014f76] 6602                      bne.s      $00014F7A
@@ -5773,7 +5802,7 @@ casex7_tab:
 [00014f7e] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [00014f84] 0c39 0007 0001 6e48       cmpi.b     #$07,Symfile.lastByte
 [00014f8c] 6624                      bne.s      $00014FB2
-[00014f8e] 4eb9 0001 4ede            jsr        $00014EDE
+[00014f8e] 4eb9 0001 4ede            jsr        DecodeVariantVal
 [00014f94] 0c39 0007 0001 6e48       cmpi.b     #$07,Symfile.lastByte
 [00014f9c] 6612                      bne.s      $00014FB0
 [00014f9e] 3f3c 0001                 move.w     #$0001,-(a7)
@@ -5790,14 +5819,14 @@ casex7_tab:
 [00014fce] 5c8f                      addq.l     #6,a7
 [00014fd0] 0c39 001c 0001 6e48       cmpi.b     #$1C,Symfile.lastByte
 [00014fd8] 6606                      bne.s      $00014FE0
-[00014fda] 4eb9 0001 4efa            jsr        $00014EFA
-[00014fe0] 4eb9 0001 4e0c            jsr        $00014E0C
+[00014fda] 4eb9 0001 4efa            jsr        DecodeVariant
+[00014fe0] 4eb9 0001 4e0c            jsr        DecodeSize
 [00014fe6] 0c39 001d 0001 6e48       cmpi.b     #$1D,Symfile.lastByte
 [00014fee] 6624                      bne.s      $00015014
-[00014ff0] 3a39 0001 6e64            move.w     $00016E64,d5
+[00014ff0] 3a39 0001 6e64            move.w     indentLevel,d5
 [00014ff6] 5545                      subq.w     #2,d5
 [00014ff8] 3f05                      move.w     d5,-(a7)
-[00014ffa] 4eb9 0001 463e            jsr        $0001463E
+[00014ffa] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [00015000] 548f                      addq.l     #2,a7
 [00015002] 3f3c 0001                 move.w     #$0001,-(a7)
 [00015006] 4879 0001 5b36            pea.l      $00015B36 '| '
@@ -5809,8 +5838,8 @@ casex7_tab:
 [00015022] 1f3c 001e                 move.b     #$1E,-(a7)
 [00015026] 4eb9 0001 4756            jsr        Symfile.NextIf
 [0001502c] 548f                      addq.l     #2,a7
-[0001502e] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[00015034] 4eb9 0001 463e            jsr        $0001463E
+[0001502e] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[00015034] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [0001503a] 548f                      addq.l     #2,a7
 [0001503c] 3f3c 0004                 move.w     #$0004,-(a7)
 [00015040] 4879 0001 5b3a            pea.l      $00015B3A 'ELSE '
@@ -5818,44 +5847,46 @@ casex7_tab:
 [0001504c] 5c8f                      addq.l     #6,a7
 [0001504e] 0c39 001c 0001 6e48       cmpi.b     #$1C,Symfile.lastByte
 [00015056] 660c                      bne.s      $00015064
-[00015058] 4eb9 0001 4efa            jsr        $00014EFA
-[0001505e] 4eb9 0001 4e0c            jsr        $00014E0C
+[00015058] 4eb9 0001 4efa            jsr        DecodeVariant
+[0001505e] 4eb9 0001 4e0c            jsr        DecodeSize
 [00015064] 1f3c 001f                 move.b     #$1F,-(a7)
 [00015068] 4eb9 0001 4756            jsr        Symfile.NextIf
 [0001506e] 548f                      addq.l     #2,a7
 [00015070] 3f3c 0003                 move.w     #$0003,-(a7)
 [00015074] 4879 0001 5b40            pea.l      $00015B40 'END;'
-[0001507a] 4eb9 0001 479a            jsr        $0001479A
+[0001507a] 4eb9 0001 479a            jsr        IndentDown
 [00015080] 5c8f                      addq.l     #6,a7
 [00015082] 4e5e                      unlk       a6
 [00015084] 4e75                      rts
 
+DecodeRecord:
 [00015086] 4e56 0000                 link       a6,#0
 [0001508a] 1f3c 000d                 move.b     #$0D,-(a7)
 [0001508e] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00015094] 548f                      addq.l     #2,a7
 [00015096] 3f3c 0005                 move.w     #$0005,-(a7)
 [0001509a] 4879 0001 5b46            pea.l      $00015B46 'RECORD'
-[000150a0] 4eb9 0001 4770            jsr        $00014770
+[000150a0] 4eb9 0001 4770            jsr        IndentUp
 [000150a6] 5c8f                      addq.l     #6,a7
 [000150a8] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [000150b0] 6608                      bne.s      $000150BA
-[000150b2] 4eb9 0001 4e8c            jsr        $00014E8C
+[000150b2] 4eb9 0001 4e8c            jsr        DecodeRecordIdent
 [000150b8] 60ee                      bra.s      $000150A8
 [000150ba] 0c39 001c 0001 6e48       cmpi.b     #$1C,Symfile.lastByte
 [000150c2] 6606                      bne.s      $000150CA
-[000150c4] 4eb9 0001 4efa            jsr        $00014EFA
+[000150c4] 4eb9 0001 4efa            jsr        DecodeVariant
 [000150ca] 1f3c 001f                 move.b     #$1F,-(a7)
 [000150ce] 4eb9 0001 4756            jsr        Symfile.NextIf
 [000150d4] 548f                      addq.l     #2,a7
 [000150d6] 3f3c 0003                 move.w     #$0003,-(a7)
 [000150da] 4879 0001 5b4e            pea.l      $00015B4E 'END;'
-[000150e0] 4eb9 0001 479a            jsr        $0001479A
+[000150e0] 4eb9 0001 479a            jsr        IndentDown
 [000150e6] 5c8f                      addq.l     #6,a7
-[000150e8] 4eb9 0001 4e0c            jsr        $00014E0C
+[000150e8] 4eb9 0001 4e0c            jsr        DecodeSize
 [000150ee] 4e5e                      unlk       a6
 [000150f0] 4e75                      rts
 
+DecodeSetType:
 [000150f2] 4e56 0000                 link       a6,#0
 [000150f6] 1f3c 000e                 move.b     #$0E,-(a7)
 [000150fa] 4eb9 0001 4756            jsr        Symfile.NextIf
@@ -5864,10 +5895,11 @@ casex7_tab:
 [00015106] 4879 0001 5b54            pea.l      $00015B54 'SET OF '
 [0001510c] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00015112] 5c8f                      addq.l     #6,a7
-[00015114] 4eb9 0001 4d56            jsr        $00014D56
+[00015114] 4eb9 0001 4d56            jsr        DecodeSimpleType
 [0001511a] 4e5e                      unlk       a6
 [0001511c] 4e75                      rts
 
+DecodePointerType:
 [0001511e] 4e56 0000                 link       a6,#0
 [00015122] 1f3c 000f                 move.b     #$0F,-(a7)
 [00015126] 4eb9 0001 4756            jsr        Symfile.NextIf
@@ -5876,10 +5908,11 @@ casex7_tab:
 [00015132] 4879 0001 5b5c            pea.l      $00015B5C 'POINTER TO '
 [00015138] 4eb9 0001 456a            jsr        Symfile.WriteString
 [0001513e] 5c8f                      addq.l     #6,a7
-[00015140] 4eb9 0001 5256            jsr        $00015256
+[00015140] 4eb9 0001 5256            jsr        DeocdeType
 [00015146] 4e5e                      unlk       a6
 [00015148] 4e75                      rts
 
+DecodeProcedureType:
 [0001514a] 4e56 0000                 link       a6,#0
 [0001514e] 1f3c 0012                 move.b     #$12,-(a7)
 [00015152] 4eb9 0001 4756            jsr        Symfile.NextIf
@@ -5916,7 +5949,7 @@ casex7_tab:
 [000151de] 4eb9 0001 456a            jsr        Symfile.WriteString
 [000151e4] 5c8f                      addq.l     #6,a7
 [000151e6] 4eb9 0001 4664            jsr        Symfile.ReadByte
-[000151ec] 4eb9 0001 4a80            jsr        $00014A80
+[000151ec] 4eb9 0001 4a80            jsr        DecodeMember
 [000151f2] 0c39 0019 0001 6e48       cmpi.b     #$19,Symfile.lastByte
 [000151fa] 6712                      beq.s      $0001520E
 [000151fc] 3f3c 0001                 move.w     #$0001,-(a7)
@@ -5937,10 +5970,11 @@ casex7_tab:
 [0001523e] 4879 0001 5b86            pea.l      $00015B86 ' : '
 [00015244] 4eb9 0001 456a            jsr        Symfile.WriteString
 [0001524a] 5c8f                      addq.l     #6,a7
-[0001524c] 4eb9 0001 4a80            jsr        $00014A80
+[0001524c] 4eb9 0001 4a80            jsr        DecodeMember
 [00015252] 4e5e                      unlk       a6
 [00015254] 4e75                      rts
 
+DeocdeType:
 [00015256] 4e56 0000                 link       a6,#0
 [0001525a] 7a00                      moveq.l    #0,d5
 [0001525c] 1a39 0001 6e48            move.b     Symfile.lastByte,d5
@@ -5953,7 +5987,7 @@ casex8:
 case 20:
 case 24:
 case 26:
-[00015276] 4eb9 0001 4d56            jsr        $00014D56
+[00015276] 4eb9 0001 4d56            jsr        DecodeSimpleType
 [0001527c] 4efa 0084                 jmp        $00015302(pc)
 case 16:
 [00015280] 4eb9 0001 4664            jsr        Symfile.ReadByte
@@ -5963,19 +5997,19 @@ case 16:
 [00015296] 5c8f                      addq.l     #6,a7
 [00015298] 4efa 0068                 jmp        $00015302(pc)
 case 12:
-[0001529c] 4eb9 0001 4dbc            jsr        $00014DBC
+[0001529c] 4eb9 0001 4dbc            jsr        DecodeArrayType
 [000152a2] 4efa 005e                 jmp        $00015302(pc)
 case 13:
-[000152a6] 4eb9 0001 5086            jsr        $00015086
+[000152a6] 4eb9 0001 5086            jsr        DecodeRecordType
 [000152ac] 4efa 0054                 jmp        $00015302(pc)
 case 14:
-[000152b0] 4eb9 0001 50f2            jsr        $000150F2
+[000152b0] 4eb9 0001 50f2            jsr        DecodeSetType
 [000152b6] 4efa 004a                 jmp        $00015302(pc)
 case 15:
-[000152ba] 4eb9 0001 511e            jsr        $0001511E
+[000152ba] 4eb9 0001 511e            jsr        DecodePointerType
 [000152c0] 4efa 0040                 jmp        $00015302(pc)
 case 18:
-[000152c4] 4eb9 0001 514a            jsr        $0001514A
+[000152c4] 4eb9 0001 514a            jsr        DecodeProcedureType
 [000152ca] 4efa 0036                 jmp        $00015302(pc)
 case 17:
 case 19:
@@ -6003,50 +6037,53 @@ casex8_tab:
            000c
 [000152f0] 3f3c 0023                 move.w     #$0023,-(a7)
 [000152f4] 4879 0001 5b9c            pea.l      $00015B9C ' illegal symbol in TYPE-Declaration '
-[000152fa] 4eb9 0001 44ca            jsr        $000144CA
+[000152fa] 4eb9 0001 44ca            jsr        Symfile.Error
 [00015300] 5c8f                      addq.l     #6,a7
 [00015302] 4e5e                      unlk       a6
 [00015304] 4e75                      rts
 
+DecodeConstDecl:
 [00015306] 4e56 0000                 link       a6,#0
-[0001530a] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[00015310] 4eb9 0001 463e            jsr        $0001463E
+[0001530a] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[00015310] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [00015316] 548f                      addq.l     #2,a7
-[00015318] 4eb9 0001 4822            jsr        $00014822
+[00015318] 4eb9 0001 4822            jsr        DecodeIdent
 [0001531e] 3f3c 0002                 move.w     #$0002,-(a7)
 [00015322] 4879 0001 5bc2            pea.l      $00015BC2 ' = '
 [00015328] 4eb9 0001 456a            jsr        Symfile.WriteString
 [0001532e] 5c8f                      addq.l     #6,a7
-[00015330] 4eb9 0001 4b6c            jsr        $00014B6C
+[00015330] 4eb9 0001 4b6c            jsr        DecodeConst
 [00015336] 1f3c 003b                 move.b     #$3B,-(a7)
 [0001533a] 4eb9 0001 453a            jsr        Symfile.Write
 [00015340] 548f                      addq.l     #2,a7
 [00015342] 4e5e                      unlk       a6
 [00015344] 4e75                      rts
 
+DecodeTypeDecl:
 [00015346] 4e56 0000                 link       a6,#0
-[0001534a] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[00015350] 4eb9 0001 463e            jsr        $0001463E
+[0001534a] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[00015350] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [00015356] 548f                      addq.l     #2,a7
-[00015358] 4eb9 0001 4822            jsr        $00014822
+[00015358] 4eb9 0001 4822            jsr        DecodeIdent
 [0001535e] 3f3c 0002                 move.w     #$0002,-(a7)
 [00015362] 4879 0001 5bc6            pea.l      $00015BC6 ' = '
 [00015368] 4eb9 0001 456a            jsr        Symfile.WriteString
 [0001536e] 5c8f                      addq.l     #6,a7
-[00015370] 4eb9 0001 5256            jsr        $00015256
+[00015370] 4eb9 0001 5256            jsr        DeocdeType
 [00015376] 1f3c 003b                 move.b     #$3B,-(a7)
 [0001537a] 4eb9 0001 453a            jsr        Symfile.Write
 [00015380] 548f                      addq.l     #2,a7
 [00015382] 4e5e                      unlk       a6
 [00015384] 4e75                      rts
 
+DecodeProcnum:
 [00015386] 4e56 0000                 link       a6,#0
 [0001538a] 3f3c 000a                 move.w     #$000A,-(a7)
 [0001538e] 4879 0001 5bca            pea.l      $00015BCA '(* ProcNum:'
 [00015394] 4eb9 0001 456a            jsr        Symfile.WriteString
 [0001539a] 5c8f                      addq.l     #6,a7
 [0001539c] 558f                      subq.l     #2,a7
-[0001539e] 4eb9 0001 47ca            jsr        $000147CA
+[0001539e] 4eb9 0001 47ca            jsr        DecodeShortConst
 [000153a4] 3f3c 0001                 move.w     #$0001,-(a7)
 [000153a8] 4eb9 0001 45a8            jsr        Symfile.WriteCard
 [000153ae] 588f                      addq.l     #4,a7
@@ -6057,6 +6094,7 @@ casex8_tab:
 [000153c2] 4e5e                      unlk       a6
 [000153c4] 4e75                      rts
 
+DecodeProcParams:
 [000153c6] 4e56 0000                 link       a6,#0
 [000153ca] 1f3c 0012                 move.b     #$12,-(a7)
 [000153ce] 4eb9 0001 4756            jsr        Symfile.NextIf
@@ -6089,7 +6127,7 @@ casex8_tab:
 [00015448] 4eb9 0001 456a            jsr        Symfile.WriteString
 [0001544e] 5c8f                      addq.l     #6,a7
 [00015450] 4eb9 0001 4664            jsr        Symfile.ReadByte
-[00015456] 4eb9 0001 4a80            jsr        $00014A80
+[00015456] 4eb9 0001 4a80            jsr        DecodeMember
 [0001545c] 0c39 0019 0001 6e48       cmpi.b     #$19,Symfile.lastByte
 [00015464] 6712                      beq.s      $00015478
 [00015466] 3f3c 0001                 move.w     #$0001,-(a7)
@@ -6110,20 +6148,22 @@ casex8_tab:
 [000154a8] 4879 0001 5bec            pea.l      $00015BEC ' : '
 [000154ae] 4eb9 0001 456a            jsr        Symfile.WriteString
 [000154b4] 5c8f                      addq.l     #6,a7
-[000154b6] 4eb9 0001 4a80            jsr        $00014A80
+[000154b6] 4eb9 0001 4a80            jsr        DecodeMember
 [000154bc] 4e5e                      unlk       a6
 [000154be] 4e75                      rts
 
+DecodeProcDecl:
 [000154c0] 4e56 0000                 link       a6,#0
-[000154c4] 4eb9 0001 4822            jsr        $00014822
-[000154ca] 4eb9 0001 5386            jsr        $00015386
-[000154d0] 4eb9 0001 53c6            jsr        $000153C6
+[000154c4] 4eb9 0001 4822            jsr        DecodeIdent
+[000154ca] 4eb9 0001 5386            jsr        DecodeProcnum
+[000154d0] 4eb9 0001 53c6            jsr        DecodeProcParams
 [000154d6] 1f3c 003b                 move.b     #$3B,-(a7)
 [000154da] 4eb9 0001 453a            jsr        Symfile.Write
 [000154e0] 548f                      addq.l     #2,a7
 [000154e2] 4e5e                      unlk       a6
 [000154e4] 4e75                      rts
 
+DecodeVarAddr:
 [000154e6] 4e56 0000                 link       a6,#0
 [000154ea] 3f3c 0003                 move.w     #$0003,-(a7)
 [000154ee] 4879 0001 5bf0            pea.l      $00015BF0 ' (* '
@@ -6139,7 +6179,7 @@ casex8_tab:
 [0001551c] 4eb9 0001 4756            jsr        Symfile.NextIf
 [00015522] 548f                      addq.l     #2,a7
 [00015524] 598f                      subq.l     #4,a7
-[00015526] 4eb9 0001 47f6            jsr        $000147F6
+[00015526] 4eb9 0001 47f6            jsr        DecodeLongConst
 [0001552c] 3f3c 0001                 move.w     #$0001,-(a7)
 [00015530] 4eb9 0001 460c            jsr        Symfile.WriteLong
 [00015536] 5c8f                      addq.l     #6,a7
@@ -6152,7 +6192,7 @@ casex8_tab:
 [00015552] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00015558] 5c8f                      addq.l     #6,a7
 [0001555a] 598f                      subq.l     #4,a7
-[0001555c] 4eb9 0001 47f6            jsr        $000147F6
+[0001555c] 4eb9 0001 47f6            jsr        DecodeLongConst
 [00015562] 3f3c 0001                 move.w     #$0001,-(a7)
 [00015566] 4eb9 0001 460c            jsr        Symfile.WriteLong
 [0001556c] 5c8f                      addq.l     #6,a7
@@ -6163,12 +6203,13 @@ casex8_tab:
 [00015580] 4e5e                      unlk       a6
 [00015582] 4e75                      rts
 
+DecodeVarDecl:
 [00015584] 4e56 0000                 link       a6,#0
-[00015588] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[0001558e] 4eb9 0001 463e            jsr        $0001463E
+[00015588] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[0001558e] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [00015594] 548f                      addq.l     #2,a7
-[00015596] 4eb9 0001 4822            jsr        $00014822
-[0001559c] 4eb9 0001 54e6            jsr        $000154E6
+[00015596] 4eb9 0001 4822            jsr        DecodeIdent
+[0001559c] 4eb9 0001 54e6            jsr        DecodeVarAddr
 [000155a2] 1f3c 0016                 move.b     #$16,-(a7)
 [000155a6] 4eb9 0001 4756            jsr        Symfile.NextIf
 [000155ac] 548f                      addq.l     #2,a7
@@ -6176,17 +6217,18 @@ casex8_tab:
 [000155b2] 4879 0001 5c0e            pea.l      $00015C0E ' : '
 [000155b8] 4eb9 0001 456a            jsr        Symfile.WriteString
 [000155be] 5c8f                      addq.l     #6,a7
-[000155c0] 4eb9 0001 5256            jsr        $00015256
+[000155c0] 4eb9 0001 5256            jsr        DeocdeType
 [000155c6] 1f3c 003b                 move.b     #$3B,-(a7)
 [000155ca] 4eb9 0001 453a            jsr        Symfile.Write
 [000155d0] 548f                      addq.l     #2,a7
 [000155d2] 4e5e                      unlk       a6
 [000155d4] 4e75                      rts
 
+DecodeDecl:
 [000155d6] 4e56 0000                 link       a6,#0
-[000155da] 33fc 0004 0001 6e64       move.w     #$0004,$00016E64
-[000155e2] 3f39 0001 6e64            move.w     $00016E64,-(a7)
-[000155e8] 4eb9 0001 463e            jsr        $0001463E
+[000155da] 33fc 0004 0001 6e64       move.w     #$0004,indentLevel
+[000155e2] 3f39 0001 6e64            move.w     indentLevel,-(a7)
+[000155e8] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [000155ee] 548f                      addq.l     #2,a7
 [000155f0] 7a00                      moveq.l    #0,d5
 [000155f2] 1a39 0001 6e48            move.b     Symfile.lastByte,d5
@@ -6199,42 +6241,42 @@ casex9:
 case 5:
 [0001560c] 3f3c 0004                 move.w     #$0004,-(a7)
 [00015610] 4879 0001 5c12            pea.l      $00015C12 'CONST'
-[00015616] 4eb9 0001 4770            jsr        $00014770
+[00015616] 4eb9 0001 4770            jsr        IndentUp
 [0001561c] 5c8f                      addq.l     #6,a7
 [0001561e] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [00015624] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [0001562c] 6608                      bne.s      $00015636
-[0001562e] 4eb9 0001 5306            jsr        $00015306
+[0001562e] 4eb9 0001 5306            jsr        DecodeConstDecl
 [00015634] 60ee                      bra.s      $00015624
 [00015636] 4efa 00b2                 jmp        $000156EA(pc)
 case 11:
 [0001563a] 3f3c 0003                 move.w     #$0003,-(a7)
 [0001563e] 4879 0001 5c18            pea.l      $00015C18 'TYPE'
-[00015644] 4eb9 0001 4770            jsr        $00014770
+[00015644] 4eb9 0001 4770            jsr        IndentUp
 [0001564a] 5c8f                      addq.l     #6,a7
 [0001564c] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [00015652] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [0001565a] 6608                      bne.s      $00015664
-[0001565c] 4eb9 0001 5346            jsr        $00015346
+[0001565c] 4eb9 0001 5346            jsr        DecodeTypeDecl
 [00015662] 60ee                      bra.s      $00015652
 [00015664] 4efa 0084                 jmp        $000156EA(pc)
 case 18:
 [00015668] 3f3c 0009                 move.w     #$0009,-(a7)
 [0001566c] 4879 0001 5c1e            pea.l      $00015C1E 'PROCEDURE '
-[00015672] 4eb9 0001 4770            jsr        $00014770
+[00015672] 4eb9 0001 4770            jsr        IndentUp
 [00015678] 5c8f                      addq.l     #6,a7
 [0001567a] 4eb9 0001 4664            jsr        Symfile.ReadByte
-[00015680] 4eb9 0001 54c0            jsr        $000154C0
+[00015680] 4eb9 0001 54c0            jsr        DecodeProcDecl
 [00015686] 4efa 0062                 jmp        $000156EA(pc)
 case 17:
 [0001568a] 3f3c 0002                 move.w     #$0002,-(a7)
-[0001568e] 4879 0001 5c2a            pea.l      $00015C2A 'VAR '
-[00015694] 4eb9 0001 4770            jsr        $00014770
+[0001568e] 4879 0001 5c2a            pea.l      $00015C2A 'VAR'
+[00015694] 4eb9 0001 4770            jsr        IndentUp
 [0001569a] 5c8f                      addq.l     #6,a7
 [0001569c] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [000156a2] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [000156aa] 6608                      bne.s      $000156B4
-[000156ac] 4eb9 0001 5584            jsr        $00015584
+[000156ac] 4eb9 0001 5584            jsr        DecodeVarDecl
 [000156b2] 60ee                      bra.s      $000156A2
 [000156b4] 4efa 0034                 jmp        $000156EA(pc)
 case 6:
@@ -6266,30 +6308,31 @@ casex9_tab:
 [000156d6] 0068
 [000156d8] 3f3c 0016                 move.w     #$0016,-(a7)
 [000156dc] 4879 0001 5c2e            pea.l      $00015C2E ' illegal SymFileSymbol '
-[000156e2] 4eb9 0001 44ca            jsr        $000144CA
+[000156e2] 4eb9 0001 44ca            jsr        Symfile.Error
 [000156e8] 5c8f                      addq.l     #6,a7
 [000156ea] 4267                      clr.w      -(a7)
 [000156ec] 4879 0001 5c46            pea.l      $00015C46 ''
-[000156f2] 4eb9 0001 479a            jsr        $0001479A
+[000156f2] 4eb9 0001 479a            jsr        IndentDown
 [000156f8] 5c8f                      addq.l     #6,a7
 [000156fa] 4e5e                      unlk       a6
 [000156fc] 4e75                      rts
 
+DecodeUnit:
 [000156fe] 4e56 ffae                 link       a6,#-82
 [00015702] 1f3c 0001                 move.b     #$01,-(a7)
 [00015706] 4eb9 0001 4756            jsr        Symfile.NextIf
 [0001570c] 548f                      addq.l     #2,a7
-[0001570e] 33fc 0002 0001 6e64       move.w     #$0002,$00016E64
-[00015716] 4eb9 0001 4886            jsr        $00014886
+[0001570e] 33fc 0002 0001 6e64       move.w     #$0002,indentLevel
+[00015716] 4eb9 0001 4886            jsr        DecodeModuleKey
 [0001571c] 3f3c 0050                 move.w     #$0050,-(a7)
 [00015720] 486e ffae                 pea.l      -82(a6)
-[00015724] 4eb9 0001 4a0c            jsr        $00014A0C
+[00015724] 4eb9 0001 4a0c            jsr        DecodeSubModuleIdent
 [0001572a] 5c8f                      addq.l     #6,a7
 [0001572c] 0c39 0003 0001 6e48       cmpi.b     #$03,Symfile.lastByte
 [00015734] 6668                      bne.s      $0001579E
 [00015736] 4eb9 0001 4664            jsr        Symfile.ReadByte
 [0001573c] 3f3c 0004                 move.w     #$0004,-(a7)
-[00015740] 4eb9 0001 463e            jsr        $0001463E
+[00015740] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [00015746] 548f                      addq.l     #2,a7
 [00015748] 3f3c 0006                 move.w     #$0006,-(a7)
 [0001574c] 4879 0001 5c48            pea.l      $00015C48 'IMPORT '
@@ -6297,7 +6340,7 @@ casex9_tab:
 [00015758] 5c8f                      addq.l     #6,a7
 [0001575a] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [00015762] 663a                      bne.s      $0001579E
-[00015764] 4eb9 0001 4822            jsr        $00014822
+[00015764] 4eb9 0001 4822            jsr        DecodeIdent
 [0001576a] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [00015772] 6616                      bne.s      $0001578A
 [00015774] 3f3c 0001                 move.w     #$0001,-(a7)
@@ -6315,10 +6358,10 @@ casex9_tab:
 [000157a8] 6004                      bra.s      $000157AE
 [000157aa] 4efa 0088                 jmp        $00015834(pc)
 [000157ae] 4eb9 0001 4664            jsr        Symfile.ReadByte
-[000157b4] 4a39 0001 6e3f            tst.b      $00016E3F
+[000157b4] 4a39 0001 6e3f            tst.b      printExports
 [000157ba] 6766                      beq.s      $00015822
 [000157bc] 3f3c 0004                 move.w     #$0004,-(a7)
-[000157c0] 4eb9 0001 463e            jsr        $0001463E
+[000157c0] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [000157c6] 548f                      addq.l     #2,a7
 [000157c8] 3f3c 0010                 move.w     #$0010,-(a7)
 [000157cc] 4879 0001 5c54            pea.l      $00015C54 'EXPORT QUALIFIED '
@@ -6326,7 +6369,7 @@ casex9_tab:
 [000157d8] 5c8f                      addq.l     #6,a7
 [000157da] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [000157e2] 663a                      bne.s      $0001581E
-[000157e4] 4eb9 0001 4822            jsr        $00014822
+[000157e4] 4eb9 0001 4822            jsr        DecodeIdent
 [000157ea] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [000157f2] 6616                      bne.s      $0001580A
 [000157f4] 3f3c 0001                 move.w     #$0001,-(a7)
@@ -6342,7 +6385,7 @@ casex9_tab:
 [0001581e] 4efa 0014                 jmp        $00015834(pc)
 [00015822] 0c39 0014 0001 6e48       cmpi.b     #$14,Symfile.lastByte
 [0001582a] 6608                      bne.s      $00015834
-[0001582c] 4eb9 0001 485c            jsr        $0001485C
+[0001582c] 4eb9 0001 485c            jsr        SkipIdent
 [00015832] 60ee                      bra.s      $00015822
 [00015834] 0c39 0005 0001 6e48       cmpi.b     #$05,Symfile.lastByte
 [0001583c] 671e                      beq.s      $0001585C
@@ -6352,13 +6395,13 @@ casex9_tab:
 [00015850] 670a                      beq.s      $0001585C
 [00015852] 0c39 0011 0001 6e48       cmpi.b     #$11,Symfile.lastByte
 [0001585a] 6608                      bne.s      $00015864
-[0001585c] 4eb9 0001 55d6            jsr        $000155D6
+[0001585c] 4eb9 0001 55d6            jsr        DecodeDecl
 [00015862] 60d0                      bra.s      $00015834
 [00015864] 1f3c 0002                 move.b     #$02,-(a7)
 [00015868] 4eb9 0001 4756            jsr        Symfile.NextIf
 [0001586e] 548f                      addq.l     #2,a7
 [00015870] 3f3c 0002                 move.w     #$0002,-(a7)
-[00015874] 4eb9 0001 463e            jsr        $0001463E
+[00015874] 4eb9 0001 463e            jsr        Symfile.WriteSpaces
 [0001587a] 548f                      addq.l     #2,a7
 [0001587c] 3f3c 0003                 move.w     #$0003,-(a7)
 [00015880] 4879 0001 5c6a            pea.l      $00015C6A 'END '
@@ -6374,11 +6417,12 @@ casex9_tab:
 [000158aa] 4e5e                      unlk       a6
 [000158ac] 4e75                      rts
 
+Decode:
 [000158ae] 4e56 0000                 link       a6,#0
-[000158b2] 4eb9 0001 49f2            jsr        $000149F2
+[000158b2] 4eb9 0001 49f2            jsr        DecodeModuleHeader
 [000158b8] 0c39 0001 0001 6e48       cmpi.b     #$01,Symfile.lastByte
 [000158c0] 6608                      bne.s      $000158CA
-[000158c2] 4eb9 0001 56fe            jsr        $000156FE
+[000158c2] 4eb9 0001 56fe            jsr        DecodeUnit
 [000158c8] 60ee                      bra.s      $000158B8
 [000158ca] 4227                      clr.b      -(a7)
 [000158cc] 4eb9 0001 4720            jsr        Symfile.Expect
@@ -6390,7 +6434,7 @@ casex9_tab:
 [000158ea] 4eb9 0001 456a            jsr        Symfile.WriteString
 [000158f0] 5c8f                      addq.l     #6,a7
 [000158f2] 3f3c 0017                 move.w     #$0017,-(a7)
-[000158f6] 4879 0001 6e4c            pea.l      $00016E4C
+[000158f6] 4879 0001 6e4c            pea.l      ident
 [000158fc] 4eb9 0001 456a            jsr        Symfile.WriteString
 [00015902] 5c8f                      addq.l     #6,a7
 [00015904] 1f3c 002e                 move.b     #$2E,-(a7)
@@ -6400,6 +6444,10 @@ casex9_tab:
 [00015916] 4eb9 0001 451a            jsr        Symfile.WriteLn
 [0001591c] 4e5e                      unlk       a6
 [0001591e] 4e75                      rts
+
+***
+* MODULE DecSym
+***
 
 DecSym.init:
 [00015920] 4ef9 0001 41c6            jmp        Filepool.init
@@ -6411,14 +6459,14 @@ DecSym.init:
 [0001593a] 5c8f                      addq.l     #6,a7
 [0001593c] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [00015942] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
-[00015948] 4239 0001 6e3e            clr.b      $00016E3E
-[0001594e] 4eb9 0001 43f0            jsr        $000143F0
-[00015954] 4a39 0001 6e3e            tst.b      $00016E3E
+[00015948] 4239 0001 6e3e            clr.b      Symfile.outputFailed
+[0001594e] 4eb9 0001 43f0            jsr        decsym.OpenFiles
+[00015954] 4a39 0001 6e3e            tst.b      Symfile.outputFailed
 [0001595a] 6618                      bne.s      $00015974
-[0001595c] 4279 0001 6e64            clr.w      $00016E64
+[0001595c] 4279 0001 6e64            clr.w      indentLevel
 [00015962] 4eb9 0001 4664            jsr        Symfile.ReadByte
-[00015968] 4eb9 0001 58ae            jsr        $000158AE
-[0001596e] 4eb9 0001 449e            jsr        $0001449E
+[00015968] 4eb9 0001 58ae            jsr        Decode
+[0001596e] 4eb9 0001 449e            jsr        CloseFiles
 [00015974] 4eb9 0001 13d8            jsr        AppWindow.WriteLn
 [0001597a] 3f3c 000c                 move.w     #$000C,-(a7)
 [0001597e] 4879 0001 5c9c            pea.l      $00015C9C 'End of decode'
@@ -6502,7 +6550,7 @@ DecSym.init:
 [00015c12] 434f                      .asciiz 'CONST'
 [00015c18] 5459                      .asciiz 'TYPE'
 [00015c1e] 5052                      .asciiz 'PROCEDURE '
-[00015c2a] 5641                      .asciiz 'VAR '
+[00015c2a] 5641                      .asciiz 'VAR'
 [00015c2e] 2069 6c6c                 .asciiz ' illegal SymFileSymbol '
 [00015c46] 0000                      .asciiz ''
 [00015c48] 494d                      .asciiz 'IMPORT '
@@ -6572,7 +6620,11 @@ DecSym.init:
 16b18: FilePool.fileid
 16b1a: FilePool.names
 16e3a: StrUtil.conv
-16e3e: Symfile.
+16e3e: Symfile.outputFailed
+16e3f: Symfile.printExports
 16e40: Symfile.symFile
 16e44: Symfile.decFile
 16e48: Symfile.lastByte
+16e4a: outputX
+16e4c: ident
+16e64: indentLevel

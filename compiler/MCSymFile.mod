@@ -351,7 +351,7 @@ MODULE SymbolDump;
           IF form = arrays THEN (* string constant *)
             SymPutStr(val.svalue^.valentry,ixp^.max + 1); (* addr,length *)
           ELSIF form = reals THEN
-            SymPutS(realconstSS);
+            SymPutS(longrealconstSS);
             rconv.rc := val.rvalue^.rc;
             FOR ix := 1 TO rwordnum DO
               SymPutNumber(rconv.ra[ix]);

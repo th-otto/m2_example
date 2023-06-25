@@ -14,7 +14,6 @@ FROM SYSTEM IMPORT ADR, NULL, BYTE, CODE;
 FROM GEMX IMPORT BasePageAddress, BasePageType;
 FROM AppBase IMPORT StreamType, xfer, doUpdateWindow, shellTail, openFiles, openStreams, StreamSet, FileSet;
 FROM GEMAESbase IMPORT Arrow, HourGlass, AESIntOut;
-FROM Symfile IMPORT symFile, decFile;
 IMPORT M2Option;
 
 CONST ENOENT = GEMDOS.EFilNF;

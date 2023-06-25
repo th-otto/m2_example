@@ -1,4 +1,7 @@
 IMPLEMENTATION MODULE AppBase;
+(*$S-*) (* no stack check *)
+(*$T-*) (* no range check *)
+
 
 PROCEDURE updateWindow();
 BEGIN

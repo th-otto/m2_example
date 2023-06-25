@@ -8,61 +8,60 @@ TYPE ErrorCause = (XError, XRaise, XPropagate);
 (* Run time errors *)
 
 TYPE ErrorType = (
-  EM1111TRAP(*0*),
-  EM1010TRAP(*1*),
-  PrivilegeViolationTRAP(*2*),
-  ArithOverflowTRAP(*3*),
-  OutOfRangeTRAP(*4*),
-  ZeroDivideTRAP(*5*),
-  IllegalInstrTRAP(*6*),
-  AdrErrorTRAP(*7*),
-  BusErrorTRAP(*8*),
-  ProgramHalt(*9*),
-  NoFunctionReturn(*10*),
-  CaseIndexRange(*11*),
-  StackOverflow(*12*),
-  OutOfRange(*13*),
-  ArithOverflow(*14*),
-  NewprocessWorkspace(*15*),
-  ProcessTerminated(*16*),
-  UnimlpementedRoutine(*17*),
-  NormalReturn(*18*),
-  User1(*19*),
-  User2(*20*),
-  User3(*21*),
-  User4(*22*));
+  EM1111TRAP (*0*),
+  EM1010TRAP (*1*),
+  PrivilegeViolationTRAP (*2*),
+  ArithOverflowTRAP (*3*),
+  OutOfRangeTRAP (*4*),
+  ZeroDivideTRAP (*5*),
+  IllegalInstrTRAP (*6*),
+  AdrErrorTRAP (*7*),
+  BusErrorTRAP (*8*),
+  ProgramHalt (*9*),
+  NoFunctionReturn (*10*),
+  CaseIndexRange (*11*),
+  StackOverflow (*12*),
+  OutOfRange (*13*),
+  ArithOverflow (*14*),
+  NewprocessWorkspace (*15*),
+  ProcessTerminated (*16*),
+  UnimlpementedRoutine (*17*),
+  NormalReturn (*18*),
+  User1 (*19*),
+  User2 (*20*),
+  User3 (*21*),
+  User4 (*22*));
 
-TYPE
-  ErrorContextType = RECORD
-                       Error(*offset: 0H*)  : INTEGER;
-                       CameFrom(*offset: 2H*)  : ErrorCause;
-                       PC(*offset: 4H*)  : ADDRESS;
-                       SR(*offset: 8H*)  : CARDINAL;
-                       A5(*offset: AH*)  : ADDRESS;
-                       A6(*offset: EH*)  : ADDRESS;
-                       A7(*offset: 12H*)  : ADDRESS;
-                       LastMP(*offset: 16H*)  : ADDRESS;
-                       DumpToDo(*offset: 1AH*)  : BOOLEAN;
-                       FileToDump(*offset: 1CH*)  : ARRAY [0..22] OF CHAR;
+TYPE ErrorContextType = RECORD
+                       Error  : INTEGER;
+                       CameFrom  : ErrorCause;
+                       PC  : ADDRESS;
+                       SR  : CARDINAL;
+                       A5  : ADDRESS;
+                       A6  : ADDRESS;
+                       A7  : ADDRESS;
+                       LastMP  : ADDRESS;
+                       DumpToDo: BOOLEAN;
+                       FileToDump: ARRAY [0..22] OF CHAR;
                      END;
                    
-TYPE ErrorProcessorType = PROCEDURE ();
+TYPE ErrorProcessorType = PROCEDURE();
 
 TYPE BasePageType = RECORD
-   LowTPA(*offset: 0H*)  : ADDRESS;
-   HiTPA(*offset: 4H*)  : ADDRESS;
-   CodeBase(*offset: 8H*)  : ADDRESS;
-   CodeLen(*offset: CH*)  : LONGCARD;
-   DataBase(*offset: 10H*)  : ADDRESS;
-   DataLen(*offset: 14H*)  : LONGCARD;
-   BssBase(*offset: 18H*)  : ADDRESS;
-   BssLen(*offset: 1CH*)  : LONGCARD;
-   DtaPtr(*offset: 20H*)  : ADDRESS;
-   ParentBasePage(*offset: 24H*)  : ADDRESS;
-   resvd1(*offset: 28H*)  : LONGCARD;
-   EnvPtr(*offset: 2CH*)  : POINTER TO ARRAY [0..79] OF CHAR;
-   resvd2(*offset: 30H*)  : ARRAY [48..127] OF CHAR;
-   CmdLine(*offset: 80H*)  : ARRAY [0..79] OF CHAR;
+   LowTPA   : ADDRESS;
+   HiTPA    : ADDRESS;
+   CodeBase : ADDRESS;
+   CodeLen  : LONGCARD;
+   DataBase : ADDRESS;
+   DataLen  : LONGCARD;
+   BssBase  : ADDRESS;
+   BssLen   : LONGCARD;
+   DtaPtr   : ADDRESS;
+   ParentBasePage: ADDRESS;
+   resvd1   : LONGCARD;
+   EnvPtr   : POINTER TO ARRAY [0..79] OF CHAR;
+   resvd2   : ARRAY [48..127] OF CHAR;
+   CmdLine  : ARRAY [0..79] OF CHAR;
 END;
                
 VAR BasePageAddress: POINTER TO BasePageType;
@@ -75,7 +74,7 @@ VAR ErrorContext: ErrorContextType;
 
 (* 3 *) PROCEDURE STACKTEST();
 
-(* 4 *) PROCEDURE NEWPROCESS(p: PROC; a: ADDRESS; size: LONGCARD; VAR p1: PROCESS; stacksize: LONGCARD);
+(* 4 *) PROCEDURE NEWPROCESS(p: PROC; a: ADDRESS; stacksize: LONGCARD; VAR p1: PROCESS; irqlevel: LONGCARD);
 
 (* 5 *) PROCEDURE TRANSFER();
 

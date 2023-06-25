@@ -234,65 +234,65 @@ ref own data at   12EH  checksum: o.k.
 
 proc code, procnum = 33, entrypoint =     0H, number of bytes = 244
  DECODE --------                        INSTRUCTION
-     0H        4E56 FF88                LINK    A6,#FF88H
-     4H        2F2D FFFC                MOVE.L  FFFC(A5),-(A7)
-     8H        2B4E FFFC                MOVE.L  A6,FFFC(A5)
-     CH        49F9 0000 00AE           LEA     000000AEH,A4
-    12H        47EE FF9A                LEA     FF9A(A6),A3
+     0H        4E56 FF88                LINK    A6,#-120
+     4H        2F2D FFFC                MOVE.L  -4(A5),-(A7)
+     8H        2B4E FFFC                MOVE.L  A6,-4(A5)
+     CH        49F9 0000 00AE           LEA     000000AEH,A4 '[3][Modula-2 Run Time Error : | |         #'
+    12H        47EE FF9A                LEA     -102(A6),A3
     16H        7A2B                     MOVEQ   #2BH,D5
     18H        16DC                     MOVE.B  (A4)+,(A3)+
     1AH        57CD FFFC                DBEQ    D5,[FFFCH] = 00000018H
-    1EH        426E FF8C                CLR.W   FF8C(A6)
-    22H        3A2E FF8C                MOVE.W  FF8C(A6),D5
-    26H        49EE FF9A                LEA     FF9A(A6),A4
+    1EH        426E FF8C                CLR.W   -116(A6)
+    22H        3A2E FF8C                MOVE.W  -116(A6),D5
+    26H        49EE FF9A                LEA     -102(A6),A4
     2AH        4A34 5000                TST.B   00H(A4,D5.W)
     2EH        6706                     BEQ     [06H] = 00000036H
-    30H        526E FF8C                ADDQ.W  #1,FF8C(A6)
+    30H        526E FF8C                ADDQ.W  #1,-116(A6)
     34H        60EC                     BRA     [ECH] = 00000022H
-    36H        3D79 0000 0008 FF88      MOVE.W  ErrorContext.Error,FF88(A6)
-    3EH        0C6E 000A FF88           CMPI.W  #000AH,FF88(A6)
+    36H        3D79 0000 0008 FF88      MOVE.W  ErrorContext.Error,-120(A6)
+    3EH        0C6E 000A FF88           CMPI.W  #10,-120(A6)
     44H        6412                     BCC     [12H] = 00000058H
-    46H        3A2E FF8C                MOVE.W  FF8C(A6),D5
-    4AH        49EE FF9A                LEA     FF9A(A6),A4
+    46H        3A2E FF8C                MOVE.W  -116(A6),D5
+    4AH        49EE FF9A                LEA     -102(A6),A4
     4EH        19BC 0030 5000           MOVE.B  #30H,00H(A4,D5.W)
     54H        4EFA 0028                JMP     [0028H] = 0000007EH
     58H        7A00                     MOVEQ   #00H,D5
-    5AH        3A2E FF88                MOVE.W  FF88(A6),D5
-    5EH        8AFC 000A                DIVU    #000AH,D5
+    5AH        3A2E FF88                MOVE.W  -120(A6),D5
+    5EH        8AFC 000A                DIVU    #10,D5
     62H        4845                     SWAP    D5
     64H        4245                     CLR.W   D5
     66H        4845                     SWAP    D5
-    68H        8AFC 000A                DIVU    #000AH,D5
+    68H        8AFC 000A                DIVU    #10,D5
     6CH        4845                     SWAP    D5
     6EH        0645 0030                ADDI.W  #0030H,D5
-    72H        382E FF8C                MOVE.W  FF8C(A6),D4
-    76H        49EE FF9A                LEA     FF9A(A6),A4
+    72H        382E FF8C                MOVE.W  -116(A6),D4
+    76H        49EE FF9A                LEA     -102(A6),A4
     7AH        1985 4000                MOVE.B  D5,00H(A4,D4.W)
-    7EH        526E FF8C                ADDQ.W  #1,FF8C(A6)
+    7EH        526E FF8C                ADDQ.W  #1,-116(A6)
     82H        7A00                     MOVEQ   #00H,D5
-    84H        3A2E FF88                MOVE.W  FF88(A6),D5
+    84H        3A2E FF88                MOVE.W  -120(A6),D5
     88H        8AFC 000A                DIVU    #000AH,D5
     8CH        4845                     SWAP    D5
     8EH        0645 0030                ADDI.W  #0030H,D5
-    92H        382E FF8C                MOVE.W  FF8C(A6),D4
-    96H        49EE FF9A                LEA     FF9A(A6),A4
+    92H        382E FF8C                MOVE.W  -116(A6),D4
+    96H        49EE FF9A                LEA     -102(A6),A4
     9AH        1985 4000                MOVE.B  D5,00H(A4,D4.W)
-    9EH        526E FF8C                ADDQ.W  #1,FF8C(A6)
-    A2H        49F9 0000 00DA           LEA     000000DAH,A4
-    A8H        47EE FF8E                LEA     FF8E(A6),A3
+    9EH        526E FF8C                ADDQ.W  #1,-116(A6)
+    A2H        49F9 0000 00DA           LEA     000000DAH,A4 '][OK]'
+    A8H        47EE FF8E                LEA     -114(A6),A3
     ACH        7A05                     MOVEQ   #05H,D5
     AEH        16DC                     MOVE.B  (A4)+,(A3)+
     B0H        57CD FFFC                DBEQ    D5,[FFFCH] = 000000AEH
-    B4H        426E FF8A                CLR.W   FF8A(A6)
-    B8H        3A2E FF8A                MOVE.W  FF8A(A6),D5
-    BCH        49EE FF8E                LEA     FF8E(A6),A4
-    C0H        382E FF8C                MOVE.W  FF8C(A6),D4
-    C4H        D86E FF8A                ADD.W   FF8A(A6),D4
-    C8H        47EE FF9A                LEA     FF9A(A6),A3
+    B4H        426E FF8A                CLR.W   -118(A6)
+    B8H        3A2E FF8A                MOVE.W  -118(A6),D5
+    BCH        49EE FF8E                LEA     -114(A6),A4
+    C0H        382E FF8C                MOVE.W  -116(A6),D4
+    C4H        D86E FF8A                ADD.W   -118(A6),D4
+    C8H        47EE FF9A                LEA     -102(A6),A3
     CCH        17B4 5000 4000           MOVE.B  00H(A4,D5.W),00H(A3,D4.W)
-    D2H        526E FF8A                ADDQ.W  #1,FF8A(A6)
-    D6H        3A2E FF8A                MOVE.W  FF8A(A6),D5
-    DAH        49EE FF8E                LEA     FF8E(A6),A4
+    D2H        526E FF8A                ADDQ.W  #1,-118(A6)
+    D6H        3A2E FF8A                MOVE.W  -118(A6),D5
+    DAH        49EE FF8E                LEA     -114(A6),A4
     DEH        4A34 5000                TST.B   00H(A4,D5.W)
     E2H        6702                     BEQ     [02H] = 000000E6H
     E4H        60D2                     BRA     [D2H] = 000000B8H
@@ -1690,6 +1690,7 @@ ref own data at    2CH  checksum: o.k.
 ref own data at    46H  checksum: o.k.
 
 proc code, procnum = 47, entrypoint =     0H, number of bytes = 152
+RestoreExceptions
  DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        2F39 0000 0050           MOVE.L  00000050H,-(A7)
@@ -1790,18 +1791,22 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 278
     64H        DAAC 0014                ADD.L   0014(A4),D5
     68H        DAAC 001C                ADD.L   001C(A4),D5
     6CH        23C5 0000 0040           MOVE.L  D5,00000040H
+
     72H        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     78H        3F3C 0003                MOVE.W  #0003H,-(A7)
     7CH        4EB9 0000 0000           JSR     SetException
     82H        5C8F                     ADDQ.L  #6,A7
+
     84H        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     8AH        3F3C 0002                MOVE.W  #0002H,-(A7)
     8EH        4EB9 0000 0000           JSR     SetException
     94H        5C8F                     ADDQ.L  #6,A7
+
     96H        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     9CH        3F3C 0005                MOVE.W  #0005H,-(A7)
     A0H        4EB9 0000 0000           JSR     SetException
     A6H        5C8F                     ADDQ.L  #6,A7
+
     A8H        2F3C 0000 0000           MOVE.L  #00000000H,-(A7)
     AEH        3F3C 0006                MOVE.W  #0006H,-(A7)
     B2H        4EB9 0000 0000           JSR     SetException

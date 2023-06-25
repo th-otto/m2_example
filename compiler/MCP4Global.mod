@@ -135,14 +135,17 @@ MODULE Scanner;
         IF (sy=namesy) OR (sy=modulesy) OR (sy=proceduresy) THEN
           io.ReadInputWord(nptr)
         ELSIF sy = eol THEN
-          io.ReadInputWord(line); PutLineHeader
-        ELSIF sy = field THEN io.ReadInputWord(val)
+          io.ReadInputWord(line);
+          PutLineHeader();
+        ELSIF sy = field THEN
+          io.ReadInputWord(val)
         ELSIF sy = option THEN
           io.ReadInputWord(val);
           OptionCode
         ELSIF sy=anycon THEN
           io.ReadInputWord(cstPtr);
-          io.ReadInputWord(cString); val := VAL(INTEGER, cString); (* XXX *)
+          io.ReadInputWord(cString);
+          val := VAL(INTEGER, cString); (* XXX *)
         END;
       UNTIL sy<>eol
     END GetSymbol;

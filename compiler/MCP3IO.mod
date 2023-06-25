@@ -216,13 +216,9 @@ MODULE ErrorSystem;
 
   PROCEDURE Error(n : CARDINAL);
   BEGIN
-    INC(errcount);
     INCL(compstat,passerrs);
-    IF errcount < errmax THEN
-      OutputSystem.PutSy(errorsy); OutputSystem.PutWord(n);
-    ELSIF errcount = errmax THEN
-      OutputSystem.PutSy(errorsy); OutputSystem.PutWord(MCErrors.TooManyErrors); (* too many errors *)
-    END;
+    OutputSystem.PutSy(errorsy);
+    OutputSystem.PutWord(n);
   END Error;
 
   PROCEDURE ErrorLS(n : CARDINAL);
