@@ -13,7 +13,7 @@ IMPORT AppWindow;
 FROM SYSTEM IMPORT ADR, NULL, BYTE, CODE;
 FROM GEMX IMPORT BasePageAddress, BasePageType;
 FROM AppBase IMPORT StreamType, xfer, doUpdateWindow, shellTail, openFiles, openStreams, StreamSet, FileSet;
-FROM GEMAESbase IMPORT Arrow, HourGlass, AESIntOut;
+FROM GEMAESbase IMPORT Arrow, HourGlass, AESIntOut, AESCallResult;
 IMPORT M2Option;
 
 CONST ENOENT = GEMDOS.EFilNF;
@@ -56,6 +56,7 @@ BEGIN
     button := AESForms.FormAlert(1, strbuf);
     RETURN button <> 1;
   ELSE
+    (* BUG: error number must be converted to DOS number *)
     button := AESForms.FormError(error);
     RETURN TRUE;
   END;
@@ -362,7 +363,7 @@ BEGIN
       strupr(name);
       AESForms.FileSelectorInput(ADR(path), ADR(name), button);
       AESGraphics.GrafMouse(HourGlass, NIL);
-      aesret := AESIntOut[0]; (* nonsense; was clobbered by GrafMouse Call *)
+      aesret := AESCallResult; (* nonsense; was clobbered by GrafMouse Call *)
       doUpdateWindow();
       IF (aesret = 0) OR (button = 0) THEN
         (* canceled *)
@@ -472,7 +473,7 @@ BEGIN
     Strings.Assign(name, filename);
     AESForms.FileSelectorInput(ADR(path), ADR(name), button);
     AESGraphics.GrafMouse(HourGlass, NIL);
-    aesret := AESIntOut[0]; (* nonsense; was clobbered by GrafMouse Call *)
+    aesret := AESCallResult; (* nonsense; was clobbered by GrafMouse Call *)
     doUpdateWindow();
     IF (aesret = 0) OR (button = 0) THEN
       (* canceled *)
@@ -527,12 +528,12 @@ PROCEDURE GetOptionInfo(VAR info: OptionInfoRec; VAR success: BOOLEAN);
   BEGIN
     max := 010000000H;
     i := 0;
-    WHILE v > 0 DO
+    WHILE max > 0 DO
       val := CARDINAL(v DIV max);
       IF val < 10 THEN
         (* XXX:
          info.info[i] := CHR(val + ORD('0')); *)
-        CODE(07A30H, 0DA6EH, 0FFFAH, 0286DH, 0FFFCH, 0286CH, 0000CH, 0382EH, 0FFF8H, 049ECH, 00050H, 01985H, 04000);
+        CODE(07A30H, 0DA6EH, 0FFFAH, 0286DH, 0FFFCH, 0286CH, 0000CH, 0382EH, 0FFF8H, 049ECH, 00050H, 01985H, 04000H);
       ELSE
         info.info[i] := CHR(val - 10 + ORD('A'));
       END;
@@ -604,6 +605,7 @@ END GetOptionInfo;
 
 
 PROCEDURE Close(VAR s: STREAM; VAR success: BOOLEAN);
+VAR unused: INTEGER;
 BEGIN
   IF s.f <> NIL THEN
     flush(s.f);

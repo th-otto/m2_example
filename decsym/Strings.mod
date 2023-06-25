@@ -3,9 +3,11 @@ IMPLEMENTATION MODULE Strings;
 (*$T-*) (* no range check *)
 (*$A+*) (* short calls *)
 
-FROM SYSTEM IMPORT ADR;
+FROM SYSTEM IMPORT ADR, CODE;
 
 VAR terminator: CHAR;
+
+CONST nop = 04E71H;
 
 
 PROCEDURE InitStringModule();
@@ -14,54 +16,40 @@ BEGIN
 END InitStringModule;
 
 
-PROCEDURE Length(VAR Str: ARRAY OF CHAR): CARDINAL;
-VAR i: CARDINAL;
-BEGIN
-  i := 0;
-  WHILE (i <= HIGH(Str)) AND (Str[i] <> terminator) DO
-    INC(i);
-  END;
-  RETURN i;
-END Length;
-
-
 PROCEDURE Assign(VAR Dest: ARRAY OF CHAR; VAR Source: ARRAY OF CHAR);
-VAR i: CARDINAL;
+VAR len: CARDINAL;
+    i: INTEGER;
 BEGIN
-  i := 0;
-  WHILE (i <= HIGH(Source)) AND (i <= HIGH(Dest)) AND (Source[i] <> terminator) DO
-    Dest[i] := Source[i];
-    INC(i);
+  CODE(nop); (* XXX *)
+  len := Length(Source);
+  IF len > HIGH(Dest) + 1 THEN
+    len := HIGH(Dest) + 1;
   END;
-  IF i <= HIGH(Dest) THEN
-    Dest[i] := terminator;
+  FOR i := 0 TO len - 1 DO
+    Dest[i] := Source[i];
+  END;
+  IF len <= HIGH(Dest) THEN
+    Dest[len] := terminator;
   END;
 END Assign;
 
 
 PROCEDURE Insert(VAR SubStr: ARRAY OF CHAR; VAR Str: ARRAY OF CHAR; Index: CARDINAL);
-VAR destlen: CARDINAL;
-    sublen: CARDINAL;
+VAR sublen: CARDINAL;
+    destlen: CARDINAL;
     pos: CARDINAL;
 BEGIN
+  CODE(nop); (* XXX *)
   sublen := Length(SubStr);
+  CODE(nop); (* XXX *)
   destlen := Length(Str);
-  IF (sublen = 0) OR (Index > destlen) THEN
-    RETURN;
-  END;
-  pos := destlen + sublen;
-  IF pos > HIGH(Str) THEN
-    DEC(pos);
-    IF pos > HIGH(Str) THEN
-      RETURN;
+  IF (destlen + sublen < HIGH(Str)) AND (Index < destlen) THEN
+    FOR pos := destlen + sublen TO Index + sublen BY -1 DO
+      Str[pos] := Str[pos - sublen];
     END;
-  END;
-  WHILE Index + sublen <= pos DO
-    Str[pos] := Str[pos - sublen];
-    DEC(pos);
-  END;
-  FOR pos := 0 TO sublen - 1 DO
-    Str[pos + Index] := SubStr[pos];
+    FOR pos := 0 TO sublen - 1 DO
+      Str[pos + Index] := SubStr[pos];
+    END;
   END;
 END Insert;
 
@@ -100,29 +88,37 @@ PROCEDURE Concat(VAR S1: ARRAY OF CHAR; VAR S2: ARRAY OF CHAR; VAR Result: ARRAY
 VAR s1len: CARDINAL;
     s2len: CARDINAL;
     dest: CARDINAL;
-    src: CARDINAL;
 BEGIN
-  dest := 0;
+  CODE(nop); (* XXX *)
   s1len := Length(S1);
+  CODE(nop); (* XXX *)
   s2len := Length(S2);
-  IF ADR(S2) = ADR(Result) THEN
-    Insert(S1, S2, 0);
-    RETURN;
-  END;
-  WHILE (dest < s1len) AND (dest <= HIGH(Result)) DO
-    Result[dest] := S1[dest];
-    INC(dest);
-  END;
-  src := 0;
-  WHILE (dest <= HIGH(Result)) AND (src < s2len) DO
-    Result[dest] := S2[src];
-    INC(dest);
-    INC(src);
-  END;
-  IF dest <= HIGH(Result) THEN
-    Result[dest] := terminator;
+  IF s1len + s2len = 0 THEN
+    Result[0] := terminator;
+  ELSE
+    IF s1len + s2len < HIGH(Result) + 2 THEN
+      CODE(nop); (* XXX *)
+      CODE(nop); (* XXX *)
+      Assign(Result, S1);
+      FOR dest := s1len TO s1len + s2len - 1 DO
+        Result[dest] := S2[dest - s1len];
+      END;
+      Result[s1len + s2len] := terminator;
+    END;
   END;
 END Concat;
+
+
+PROCEDURE Length(VAR Str: ARRAY OF CHAR): CARDINAL;
+VAR i: CARDINAL;
+BEGIN
+  FOR i := 0 TO HIGH(Str) DO
+    IF Str[i] = terminator THEN
+      RETURN i;
+    END;
+  END;
+  RETURN HIGH(Str) + 1;
+END Length;
 
 
 PROCEDURE Compare(VAR s1: ARRAY OF CHAR; VAR s2: ARRAY OF CHAR): CompareResults;
@@ -165,26 +161,36 @@ END Compare;
 
 
 PROCEDURE Pos(VAR Source: ARRAY OF CHAR; VAR Match: ARRAY OF CHAR; Start: CARDINAL; VAR Where: CARDINAL): BOOLEAN;
-VAR i, len: CARDINAL;
+VAR len: CARDINAL;
+    patlen: CARDINAL;
+    i: CARDINAL;
+    end: CARDINAL;
 BEGIN
+  CODE(nop); (* XXX *)
   len := Length(Source);
-  Where := Start;
-  WHILE Where < len DO
+  CODE(nop); (* XXX *)
+  patlen := Length(Match);
+  IF (len = 0) OR (patlen = 0) OR (Start + patlen > len) THEN
+    Where := len;
+    RETURN FALSE;
+  END;
+  end := len - patlen;
+  LOOP
     i := 0;
     LOOP
-      IF (i > HIGH(Match)) OR (Match[i] = terminator) THEN
+      IF Match[i] <> Source[Start + i] THEN EXIT END;
+      INC(i);
+      IF i = patlen THEN
+        Where := Start;
         RETURN TRUE;
-      ELSE
-        IF (i + Where < len) AND (Source[i + Where] = Match[i]) THEN
-          INC(i);
-        ELSE
-          EXIT;
-        END;
       END;
     END;
-    INC(Where);
+    INC(Start);
+    IF Start > end THEN
+      Where := len;
+      RETURN FALSE;
+    END;
   END;
-  RETURN FALSE;
 END Pos;
 
 

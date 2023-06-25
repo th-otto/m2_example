@@ -3,6 +3,7 @@ IMPLEMENTATION MODULE AppBase;
 (*$T-*) (* no range check *)
 
 
+
 PROCEDURE updateWindow();
 BEGIN
 END updateWindow;

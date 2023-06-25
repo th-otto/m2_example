@@ -1713,7 +1713,7 @@ AppWindow.initWin:
 [0001177a] 48c5                      ext.l      d5
 [0001177c] 8bf9 0001 62b0            divs.w     AppWindow.hchar,d5
 [00011782] 33c5 0001 62c2            move.w     d5,winrows
-[00011788] 49f9 0001 1a0c            lea.l      $00011A0C,a4 ' Modula-2/ST     Release 3.00a'
+[00011788] 49f9 0001 1a0c            lea.l      $00011A0C,a4 ' Modula-2/ST     Release 3.00a '
 [0001178e] 47f9 0001 67a4            lea.l      $000167A4,a3
 [00011794] 7a1f                      moveq.l    #31,d5
 [00011796] 16dc                      move.b     (a4)+,(a3)+
@@ -1873,7 +1873,7 @@ AppWindow.updateWindow
 [00011a04] 4e5e                      unlk       a6
 [00011a06] 4ef9 0001 1fc6            jmp        Strings.init+6
 
-[00011a0c] 204d                      .asciiz ' Modula-2/ST     Release 3.00a'
+[00011a0c] 204d                      .asciiz ' Modula-2/ST     Release 3.00a '
 
 ***
 * MODULE AESApplications

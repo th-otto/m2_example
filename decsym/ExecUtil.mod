@@ -33,20 +33,21 @@ END FreeBuffers;
 PROCEDURE Terminate();
 VAR x, y, w, h: INTEGER;
 BEGIN
-  IF terminated THEN RETURN END;
-  AESGraphics.GrafMouse(MouseOff, NIL);
-  IF wdwHandle >= 0 THEN
-    AESWindows.WindowGet(wdwHandle, CurrXYWH, x, y, w, h);
-    AESGraphics.GrafShrinkBox(10, 25, 1, 1, x, y, w, h);
-    AESWindows.WindowClose(wdwHandle);
-    AESWindows.WindowDelete(wdwHandle);
+  IF NOT terminated THEN
+    AESGraphics.GrafMouse(MouseOff, NIL);
+    IF wdwHandle >= 0 THEN
+      AESWindows.WindowGet(wdwHandle, CurrXYWH, x, y, w, h);
+      AESGraphics.GrafShrinkBox(10, 25, 1, 1, x, y, w, h);
+      AESWindows.WindowClose(wdwHandle);
+      AESWindows.WindowDelete(wdwHandle);
+    END;
+    IF vdiHandle >= 0 THEN
+      VDIControls.CloseVirtualWorkstation(vdiHandle);
+    END;
+    AESGraphics.GrafMouse(MouseOn, NIL);
+    AESApplications.ApplExit();
+    terminated := TRUE;
   END;
-  IF vdiHandle >= 0 THEN
-    VDIControls.CloseVirtualWorkstation(vdiHandle);
-  END;
-  AESGraphics.GrafMouse(MouseOn, NIL);
-  AESApplications.ApplExit();
-  terminated := TRUE;
 END Terminate;
 
 
@@ -90,21 +91,21 @@ VAR where: CARDINAL;
     handle: INTEGER;
 BEGIN
   IF (ORD(erm) IN openStreams) OR (ORD(erd) IN openStreams) THEN
-    RunCmd(EDITOR, shellTail);
+    RunCmd('EDITOR.PRG', shellTail);
   ELSE
     IF Strings.Pos(shellTail, '.MOD', 0, where) THEN
       ReplaceExtension(shellTail, 'DEF');
       GEMDOS.Open(shellTail, 0, handle);
       IF handle < 0 THEN
         ReplaceExtension(shellTail, 'LNK');
-        RunCmd(LINKER, shellTail);
+        RunCmd('LINKER.PRG', shellTail);
       ELSE
         IF GEMDOS.Close(handle) THEN END;
-        RunCmd(EDITOR, '');
+        RunCmd('EDITOR.PRG', '');
       END;
     ELSE
       ReplaceExtension(shellTail, 'MOD');
-      RunCmd(EDITOR, shellTail);
+      RunCmd('EDITOR.PRG', shellTail);
     END;
   END;
 END OpenStream;
@@ -145,7 +146,7 @@ BEGIN
       0: OpenStream();
     | 1: RunProgram();
     | 3: RunCompiler();
-    | ELSE RunCmd(EDITOR, '');
+    | ELSE RunCmd('EDITOR.PRG', '');
     END;
   END;
   IF error AND (NOT xfer) THEN

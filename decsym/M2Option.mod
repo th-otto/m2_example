@@ -13,16 +13,19 @@ FROM AppBase IMPORT apId;
 CONST TDI_Question = 70;
       TDI_Answer = 71;
 
-TYPE OptSearchPath = ARRAY[0..37] OF CHAR;
+CONST OptSearchPathLen = 38;
+TYPE OptSearchPath = ARRAY[0..OptSearchPathLen-1] OF CHAR;
 TYPE Options = RECORD
   (* Note: ACC fill will only 0..MaxPaths-1 *)
-  paths: ARRAY[0..MaxPaths] OF OptSearchPath;
+  paths: ARRAY[0..(MaxPaths + 1) * OptSearchPathLen - 1] OF CHAR;
+  (* FIXME: should be ARRAY[0..MaxPaths] OF OptSearchPath; *)
 END;
 
 VAR accId: INTEGER;
 VAR msgbuf: ARRAY [0..15] OF INTEGER;
 VAR replybuf: ARRAY [0..15] OF INTEGER;
 VAR options: Options;
+VAR unused: INTEGER;
 (*
 VAR searchpaths: SearchPathArray;
 VAR dump: BOOLEAN;
@@ -65,8 +68,8 @@ BEGIN
     query := BOOLEAN(replybuf[4]);
     xfer := BOOLEAN(replybuf[5]);
     FOR i := 0 TO MaxPaths DO
-      FOR j := 0 TO HIGH(options.paths[0]) DO
-        paths[i][j] := options.paths[i][j];
+      FOR j := 0 TO OptSearchPathLen - 1 DO
+        paths[i][j] := options.paths[i * OptSearchPathLen + j];
       END;
     END;
   ELSE

@@ -3,12 +3,26 @@ MODULE decsym;
 (*$T-*) (* no range check *)
 
 FROM SYSTEM IMPORT ADDRESS, ADR, BYTE, CODE;
-IMPORT NewStreams;
-FROM MCSymFileDefs IMPORT SymFileSymbols, symFileKey;
+(* YYY to get link order correct *)
+IMPORT GEMDOS;
+IMPORT AESGraphics;
+IMPORT AESWindows;
+IMPORT GEMVDIbase;
+IMPORT VDIAttribs;
+IMPORT VDIOutputs;
+IMPORT VDIControls;
+IMPORT VDIRasters;
 IMPORT AppBase;
 IMPORT AppWindow;
-IMPORT Filepool;
+IMPORT AESApplications;
+IMPORT AESForms;
+IMPORT AESShells;
+IMPORT Strings;
 IMPORT ExecUtil;
+IMPORT AESEvents;
+IMPORT NewStreams;
+FROM MCSymFileDefs IMPORT SymFileSymbols, symFileKey;
+IMPORT Filepool;
 IMPORT StrUtil;
 
 CONST nop = 04E71H;
@@ -32,8 +46,8 @@ VAR success: BOOLEAN;
     ok: BOOLEAN;
     list: INTEGER;
     unused: INTEGER;
-    symfilename: ARRAY[0..49] OF CHAR; (* FIXME: too short *) (* 56 *)
-    decfilename: ARRAY[0..49] OF CHAR; (* FIXME: too short *) (* 106 *)
+    symfilename: ARRAY[0..49] OF CHAR; (* FIXME: too short *)
+    decfilename: ARRAY[0..49] OF CHAR; (* FIXME: too short *)
     info: NewStreams.OptionInfoRec;
 BEGIN
   NewStreams.FileLookup('Symbol file', '', ORD(AppBase.sym), symFile, TRUE, FALSE, symfilename, success);
@@ -334,6 +348,7 @@ BEGIN
   DecodeRealHi();
   DecodeRealLo();
   WriteString('(*Real-not yet implemented*)');
+  ReadByte();
 END DecodeReal;
 
 
@@ -366,7 +381,7 @@ BEGIN
   stringconstSS:
     DecodeString(); |
   ELSE
-    WriteString(' illegal symbol in CONST-Declaration ');
+    Error(' illegal symbol in CONST-Declaration ');
   END
 END DecodeConst;
 
@@ -563,6 +578,7 @@ BEGIN
   NextIf(rparentSS);
   Write(')');
   IF lastByte = colonSS THEN
+    ReadByte();
     WriteString(' : ');
     DecodeMember();
   END;

@@ -1,5 +1,0 @@
-DEFINITION MODULE Symfile;
-
-FROM NewStreams IMPORT STREAM;
-
-END Symfile.
