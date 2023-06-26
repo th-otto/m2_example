@@ -1,31 +1,20 @@
+(*
+ * decsym: utility to decode TDI modula *.sym files
+ *
+ * Reconstructed from original program by Thorsten Otto
+ *)
+
 MODULE decsym;
 (*$S-*) (* no stack check *)
 (*$T-*) (* no range check *)
 
-FROM SYSTEM IMPORT ADDRESS, ADR, BYTE, CODE;
-(* YYY to get link order correct *)
-IMPORT GEMDOS;
-IMPORT AESGraphics;
-IMPORT AESWindows;
-IMPORT GEMVDIbase;
-IMPORT VDIAttribs;
-IMPORT VDIOutputs;
-IMPORT VDIControls;
-IMPORT VDIRasters;
+FROM SYSTEM IMPORT ADDRESS, ADR, BYTE;
 IMPORT AppBase;
 IMPORT AppWindow;
-IMPORT AESApplications;
-IMPORT AESForms;
-IMPORT AESShells;
-IMPORT Strings;
 IMPORT ExecUtil;
-IMPORT AESEvents;
 IMPORT NewStreams;
 FROM MCSymFileDefs IMPORT SymFileSymbols, symFileKey;
-IMPORT Filepool;
 IMPORT StrUtil;
-
-CONST nop = 04E71H;
 
 VAR outputFailed: BOOLEAN;
 VAR printExports: BOOLEAN;
@@ -44,15 +33,12 @@ TYPE StrBuf = ARRAY[0..80] OF CHAR;
 PROCEDURE OpenFiles();
 VAR success: BOOLEAN;
     ok: BOOLEAN;
-    list: INTEGER;
-    unused: INTEGER;
     symfilename: ARRAY[0..49] OF CHAR; (* FIXME: too short *)
     decfilename: ARRAY[0..49] OF CHAR; (* FIXME: too short *)
     info: NewStreams.OptionInfoRec;
 BEGIN
   NewStreams.FileLookup('Symbol file', '', ORD(AppBase.sym), symFile, TRUE, FALSE, symfilename, success);
   IF success THEN
-    list := Filepool.PoolAlloc('List');
     NewStreams.GetOptionInfo(info, ok);
     NewStreams.FileLookupOutput('Decode file', symfilename, ORD(AppBase.dec), decFile, FALSE, FALSE, decfilename, success);
   END;
@@ -70,7 +56,6 @@ END CloseFiles;
 
 PROCEDURE Error(VAR str: ARRAY OF CHAR);
 BEGIN
-  CODE(nop); (* XXX *)
   AppWindow.WriteString(str);
   AppWindow.WriteLn();
   AppWindow.WriteString(' Error in SymbolFile');
@@ -199,7 +184,6 @@ END NextIf;
 PROCEDURE IndentUp(VAR s: ARRAY OF CHAR);
 BEGIN
   indentLevel := outputX + INDENT;
-  CODE(nop); (* XXX *)
   WriteString(s);
 END IndentUp;
 
@@ -208,7 +192,6 @@ PROCEDURE IndentDown(VAR s: ARRAY OF CHAR);
 BEGIN
   DEC(indentLevel, INDENT);
   WriteSpaces(indentLevel);
-  CODE(nop); (* XXX *)
   WriteString(s);
 END IndentDown;
 
@@ -304,11 +287,9 @@ END DecodeModuleHeader;
 PROCEDURE DecodeSubModuleIdent(VAR moduleIdent: ARRAY OF CHAR);
 BEGIN
   Expect(identSS);
-  CODE(nop); (* XXX *)
   ReadString(moduleIdent);
   WriteSpaces(indentLevel);
   WriteString('MODULE ');
-  CODE(nop); (* XXX *)
   WriteString(moduleIdent);
   Write(';');
   WriteLn();
@@ -567,7 +548,7 @@ BEGIN
       ReadByte();
     END;
     IF lastByte = arraytypSS THEN
-      WriteString('ARRAY '); (* BUG: missing OF *);
+      WriteString('ARRAY OF ');
       ReadByte();
     END;
     DecodeMember();
@@ -648,7 +629,7 @@ BEGIN
       ReadByte();
     END;
     IF lastByte = arraytypSS THEN
-      WriteString('ARRAY '); (* BUG: missing OF *);
+      WriteString('ARRAY OF ');
       ReadByte();
     END;
     DecodeMember();
