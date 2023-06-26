@@ -7,6 +7,7 @@
 MODULE decsym;
 (*$S-*) (* no stack check *)
 (*$T-*) (* no range check *)
+(*$A+*)
 
 FROM SYSTEM IMPORT ADDRESS, ADR, BYTE;
 IMPORT AppBase;
@@ -216,13 +217,20 @@ BEGIN
 END DecodeLongConst;
 
 
-PROCEDURE DecodeIdent();
+PROCEDURE DecodeIdent(first: BOOLEAN; force: BOOLEAN): BOOLEAN;
 VAR s: StrBuf;
 BEGIN
   Expect(identSS);
   ReadString(s);
-  WriteString(s);
   ReadByte();
+  IF force OR (NOT ((s[0] >= '0') AND (s[0] <= '9'))) THEN
+    IF NOT first THEN
+      WriteString(", ");
+    END;
+    WriteString(s);
+    RETURN TRUE;
+  END;
+  RETURN FALSE;
 END DecodeIdent;
 
 
@@ -297,15 +305,15 @@ BEGIN
 END DecodeSubModuleIdent;
 
 
-PROCEDURE DecodeMember();
+PROCEDURE DecodeBaseType();
 BEGIN
-  DecodeIdent();
+  IF DecodeIdent(TRUE, TRUE) THEN END;
   WHILE lastByte = periodSS DO
     ReadByte();
     Write('.');
-    DecodeIdent();
+    IF DecodeIdent(TRUE, TRUE) THEN END;
   END;
-END DecodeMember;
+END DecodeBaseType;
 
 
 PROCEDURE DecodeRealHi();
@@ -350,12 +358,12 @@ BEGIN
   shortconstSS:
     WriteCard(DecodeShortConst(), 1);
     WriteString('(*');
-    DecodeMember();
+    DecodeBaseType();
     WriteString('*)'); |
   normalconstSS:
     WriteLong(DecodeLongConst(), 1);
     WriteString('(*');
-    DecodeMember();
+    DecodeBaseType();
     WriteString('*)'); |
   realconstSS:
     DecodeReal(); |
@@ -374,7 +382,7 @@ BEGIN
   Write('(');
   oldindentLevel := indentLevel;
   WHILE lastByte = identSS DO
-    DecodeIdent();
+    IF DecodeIdent(TRUE, TRUE) THEN END;
     WriteString('(*');
     WriteCard(DecodeShortConst(), 1);
     WriteString('*)');
@@ -405,7 +413,7 @@ PROCEDURE DecodeSimpleType();
 BEGIN
   CASE lastByte OF
   identSS:
-    DecodeMember(); |
+    DecodeBaseType(); |
   lparentSS:
     DecodeList(); |
   lbracketSS:
@@ -446,7 +454,7 @@ END DecodeOffset;
 PROCEDURE DecodeRecordIdent();
 BEGIN
   WriteSpaces(indentLevel);
-  DecodeIdent();
+  IF DecodeIdent(TRUE, TRUE) THEN END;
   DecodeOffset();
   NextIf(colonSS);
   WriteString(' : ');
@@ -468,7 +476,7 @@ BEGIN
   IndentUp('CASE');
   NextIf(colonSS);
   WriteString(' : ');
-  DecodeMember();
+  DecodeBaseType();
   WriteString(' OF ');
   WriteSpaces(indentLevel);
   WHILE lastByte = ofSS DO
@@ -515,8 +523,9 @@ BEGIN
     DecodeVariant();
   END;
   NextIf(endSS);
-  IndentDown('END;');
+  WriteSpaces(indentLevel);
   DecodeSize();
+  IndentDown('END');
 END DecodeRecordType;
 
 
@@ -551,7 +560,7 @@ BEGIN
       WriteString('ARRAY OF ');
       ReadByte();
     END;
-    DecodeMember();
+    DecodeBaseType();
     IF lastByte <> rparentSS THEN
       WriteString('; ');
     END;
@@ -561,7 +570,7 @@ BEGIN
   IF lastByte = colonSS THEN
     ReadByte();
     WriteString(' : ');
-    DecodeMember();
+    DecodeBaseType();
   END;
 END DecodeProcedureType;
 
@@ -593,7 +602,7 @@ END DecodeType;
 PROCEDURE DecodeConstDecl();
 BEGIN
   WriteSpaces(indentLevel);
-  DecodeIdent();
+  IF DecodeIdent(TRUE, TRUE) THEN END;
   WriteString(' = ');
   DecodeConst();
   Write(';');
@@ -603,7 +612,7 @@ END DecodeConstDecl;
 PROCEDURE DecodeTypeDecl();
 BEGIN
   WriteSpaces(indentLevel);
-  DecodeIdent();
+  IF DecodeIdent(TRUE, TRUE) THEN END;
   WriteString(' = ');
   DecodeType();
   Write(';');
@@ -632,7 +641,7 @@ BEGIN
       WriteString('ARRAY OF ');
       ReadByte();
     END;
-    DecodeMember();
+    DecodeBaseType();
     IF lastByte <> rparentSS THEN
       WriteString('; ');
     END;
@@ -642,14 +651,14 @@ BEGIN
   IF lastByte = colonSS THEN
     ReadByte();
     WriteString(' : ');
-    DecodeMember();
+    DecodeBaseType();
   END;
 END DecodeProcParams;
 
 
 PROCEDURE DecodeProcDecl();
 BEGIN
-  DecodeIdent();
+  IF DecodeIdent(TRUE, TRUE) THEN END;
   DecodeProcnum();
   DecodeProcParams();
   Write(';');
@@ -675,7 +684,7 @@ END DecodeVarAddr;
 PROCEDURE DecodeVarDecl();
 BEGIN
   WriteSpaces(indentLevel);
-  DecodeIdent();
+  IF DecodeIdent(TRUE, TRUE) THEN END;
   DecodeVarAddr();
   NextIf(colonSS);
   WriteString(' : ');
@@ -720,6 +729,7 @@ END DecodeDecl;
 
 PROCEDURE DecodeUnit();
 VAR unitIdent: StrBuf;
+VAR first: BOOLEAN;
 BEGIN
   NextIf(unitSS);
   indentLevel := INDENT;
@@ -729,30 +739,28 @@ BEGIN
     ReadByte();
     WriteSpaces(2 * INDENT);
     WriteString('IMPORT ');
+    first := TRUE;
     WHILE lastByte = identSS DO
-      DecodeIdent();
-      IF lastByte = identSS THEN
-        WriteString(', ');
-      ELSE
-        Write(';');
-        WriteLn();
+      IF DecodeIdent(first, TRUE) THEN
+        first := FALSE;
       END;
     END;
+    Write(';');
+    WriteLn();
   END;
   IF lastByte = exportSS THEN
     ReadByte();
     IF printExports THEN
       WriteSpaces(2 * INDENT);
       WriteString('EXPORT QUALIFIED ');
+    first := TRUE;
       WHILE lastByte = identSS DO
-        DecodeIdent();
-        IF lastByte = identSS THEN
-          WriteString(', ');
-        ELSE
-          Write(';');
-          WriteLn();
+        IF DecodeIdent(first, FALSE) THEN
+          first := FALSE;
         END;
       END;
+      Write(';');
+      WriteLn();
     ELSE
       WHILE lastByte = identSS DO
         SkipIdent();
