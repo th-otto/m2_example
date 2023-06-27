@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <errno.h>
+#include <stdint.h>
 
 #include "symdefs.h"
 
@@ -154,18 +155,10 @@ static void WriteHexCard(unsigned int val, int len)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void WriteLong(unsigned long val)
+static void WriteLong(uint32_t val)
 {
 	checkLineLine();
 	outputX += fprintf(outfile, "%lu", (unsigned long)val);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
-static void WriteHexLong(unsigned long val)
-{
-	checkLineLine();
-	outputX += fprintf(outfile, "%lXH", (unsigned long)val);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -241,9 +234,9 @@ static unsigned int Read16Bit(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static unsigned long Read32Bit(void)
+static uint32_t Read32Bit(void)
 {
-	unsigned long hi, lo;
+	uint32_t hi, lo;
 	
 	hi = Read16Bit();
 	lo = Read16Bit();
@@ -287,9 +280,9 @@ static unsigned int DecodeShortConst(void)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static unsigned long DecodeLongConst(void)
+static uint32_t DecodeLongConst(void)
 {
-	unsigned long l;
+	uint32_t l;
 	
 	Expect(normalconstSS);
 	l = Read32Bit();
@@ -388,8 +381,15 @@ static void DecodeBaseType(void)
 
 static SymFileSymbols DecodeReal(void)
 {
-	WriteHexLong(Read32Bit());
-	WriteString(" (*Real-not yet implemented*)");
+	union {
+		uint32_t l;
+		float f;
+	} u;
+	char buf[80];
+	
+	u.l = Read32Bit();
+	sprintf(buf, "%e", u.f);
+	WriteString(buf);
 	return ReadByte();
 }
 

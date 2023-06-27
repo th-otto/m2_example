@@ -78,11 +78,16 @@ BEGIN
     HashIdent(str);
   END;
   WITH p^ DO
-    name := spix; klass := mods;
+    name := spix;
+    klass := mods;
     globmodp := mainmodp;
-    link := NIL; idtyp := NIL;
-    expp := NIL; impp := NIL; locp := NIL;
-    msp := NIL; isstandard := FALSE;
+    link := NIL;
+    idtyp := NIL;
+    expp := NIL;
+    impp := NIL;
+    locp := NIL;
+    msp := NIL;
+    isstandard := FALSE;
     priolev := noprio;
     externalaccess := FALSE;
     qualexp := sysmod; (* if TRUE then module SYSTEM *)

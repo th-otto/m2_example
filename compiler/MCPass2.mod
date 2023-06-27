@@ -35,7 +35,7 @@ FROM MCBase IMPORT
   Symbol;
 FROM MCP2IO IMPORT
   sy,
-  val,
+  val, line,
   PutSy, PutWord, StopOutput, RestartOutput,
   Error, ErrorLS,
   spix,
@@ -158,7 +158,9 @@ BEGIN (* sy = ident *)
     IF (ip <> NIL) AND (ip^.klass = mods) THEN
       GetSy;
       ExportSearch(ip^.expp,ip); (* new value for ip *)
-    ELSE ErrorLS(105); GetSy;
+    ELSE
+      ErrorLS(105);
+      GetSy;
     END;
   END;
   IF ip = NIL THEN
@@ -177,7 +179,9 @@ BEGIN
     name := spix; (* from MCP2IO *)
     globmodp := mainmodp;
     idtyp := NIL; (* = nxtidp *)
-    klass := cl; link := NIL;
+    lineno := line;
+    klass := cl;
+    link := NIL;
   END;
 END InitId;
 
@@ -653,7 +657,7 @@ MODULE TypeDefinition;
     RETURN sp;
   END ArrayStruct;
 
-  PROCEDURE ParamList(withid: BOOLEAN; VAR paraddr: CARDINAL;
+  PROCEDURE ParamList(withid: BOOLEAN; VAR paraddr: LONGCARD;
                       VAR procp: Stptr);
     VAR parh,part,parn : Idptr;
         ftp,sp : Stptr;
@@ -683,7 +687,8 @@ MODULE TypeDefinition;
 
   BEGIN
     paraddr := procmarkspace;
-    parh := NIL; part := NIL;
+    parh := NIL;
+    part := NIL;
     rk := pures;
     IF sy = lparent THEN GetSy;
       WHILE sy <> rparent DO
@@ -730,7 +735,8 @@ MODULE TypeDefinition;
         END;
       END; (* WHILE *)
       GetSy; (* rparent*)
-      IF sy = colon THEN GetSy;
+      IF sy = colon THEN
+        GetSy;
         rk := funcs;
         SimpleTyp(ftp);
         IF NOT FAmong(ftp,Stset{enums,bools,chars,ints,cards,words,reals,
@@ -743,8 +749,11 @@ MODULE TypeDefinition;
     ELSE NEW(sp,proctypes,funcs)
     END;
     WITH sp^ DO
-      size := oneword; stidp := NIL; inlist := FALSE;
-      form := proctypes; fstparam := parh;
+      size := oneword;
+      stidp := NIL;
+      inlist := FALSE;
+      form := proctypes;
+      fstparam := parh;
       rkind := rk;
       IF rk = funcs THEN funcp := ftp END;
     END;
@@ -1091,7 +1100,7 @@ MODULE TypeDefinition;
   END SetTyp;
 
   PROCEDURE ProcedureTyp(VAR trf: Stptr);
-    VAR dummysize : CARDINAL;
+    VAR dummysize : LONGCARD;
   BEGIN
     ParamList(FALSE,dummysize,trf);
   END ProcedureTyp;
@@ -1137,7 +1146,7 @@ END TypeDefinition;
 
 
 PROCEDURE Module(mp: Idptr; priority: CARDINAL;
-                 VAR alladdr: CARDINAL; VAR varp: Idptr);
+                 VAR alladdr: LONGCARD; VAR varp: Idptr);
   VAR initindex : Initrange;
       priotp : Stptr;
       prioval : Constval;
@@ -1148,7 +1157,8 @@ PROCEDURE Module(mp: Idptr; priority: CARDINAL;
   BEGIN
     qualif := sy = qualifiedsy;
     rf := mp^.expp;
-    IF qualif OR (sy = exportsy) THEN GetSy;
+    IF qualif OR (sy = exportsy) THEN
+      GetSy;
       WHILE sy = ident DO
         IF symmod THEN Locate(rf,x);
         ELSE x := NIL;
@@ -1243,7 +1253,7 @@ PROCEDURE Module(mp: Idptr; priority: CARDINAL;
     TermImpList(mp^.impp);
   END ImportList;
 
-  PROCEDURE Block(VAR alladdr: CARDINAL; VAR varp: Idptr;
+  PROCEDURE Block(VAR alladdr: LONGCARD; VAR varp: Idptr;
                   moduleblock: BOOLEAN);
 
     PROCEDURE DeleteOld(VAR ip: Idptr);
@@ -1433,7 +1443,7 @@ PROCEDURE Module(mp: Idptr; priority: CARDINAL;
     END VarDeclaration;
 
     PROCEDURE ProcFuncDecl;
-      VAR localaddr : CARDINAL;
+      VAR localaddr : LONGCARD;
           localvar : Idptr; (* list of local variables *)
           xb,oldp : Idptr;
 
@@ -1485,7 +1495,8 @@ PROCEDURE Module(mp: Idptr; priority: CARDINAL;
           (* implementation possible *)
           Locate(oldlist,oldp);
         END;
-        localaddr := 0; localvar := NIL;
+        localaddr := 0;
+        localvar := NIL;
         NEW(xb,pures,FALSE,pures); (* = NEW(xb,funcs,FALSE,funcs) *)
         InitId(xb,pures);
         EnterId(xb); GetSy;
@@ -1607,8 +1618,10 @@ BEGIN
   InitId(ip,mods);
   WITH ip^ DO
     isstandard := FALSE;
-    procnum := proccount; INC(proccount);
-    IF nestlevel < levmax THEN plev := nestlevel + 1;
+    procnum := proccount;
+    INC(proccount);
+    IF nestlevel < levmax THEN
+      plev := nestlevel + 1;
     ELSE
       IF nestlevel = levmax THEN ErrorLS(77) END;
       plev := levmax;
@@ -1616,15 +1629,19 @@ BEGIN
     varlength := procmarkspace; (* for module initialisation *)
     priolev := noprio;
     externalaccess := FALSE;
-    locp := NIL; msp := NIL; impp := NIL; expp := NIL;
-    qualexp := FALSE; globalmodule := FALSE;
+    locp := NIL;
+    msp := NIL;
+    impp := NIL;
+    expp := NIL;
+    qualexp := FALSE;
+    globalmodule := FALSE;
   END;
   EnterId(ip);
 END EnterMods;
 
 
 PROCEDURE ModuleDeclaration(oldprio : CARDINAL;
-                            VAR alladdr: CARDINAL; VAR varp: Idptr);
+                            VAR alladdr: LONGCARD; VAR varp: Idptr);
   (* declaration of local modules *)
   VAR ip : Idptr;
 BEGIN
@@ -1639,7 +1656,7 @@ END ModuleDeclaration;
 
 PROCEDURE StartDecl;
 
-  VAR globaladdr : CARDINAL;
+  VAR globaladdr : LONGCARD;
       ip : Idptr;
       modcount : CARDINAL;
       modkey : Keyarr;
@@ -1682,7 +1699,8 @@ PROCEDURE StartDecl;
         IF exp THEN (* replace by unknown identifier in exportlist *)
           NEW(ip1,unknown);
           WITH ip1^ DO
-            name := ndp^.name; klass := unknown;
+            name := ndp^.name;
+            klass := unknown;
             link := ndp^.link; (* nxtidp is set in procedure ExportList *)
             globmodp := mainmodp;
           END; (* with *)

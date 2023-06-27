@@ -191,21 +191,21 @@ proc code, procnum = 17, entrypoint =     0H, number of bytes = 1946
    700H        598F                     SUBQ.L  #4,A7
    702H        7A00                     MOVEQ   #00H,D5
    704H        2F05                     MOVE.L  D5,-(A7)
-   706H        4EB9 0000 0000           JSR     00000000H
+   706H        4EB9 0000 0000           JSR     LFLOATX
    70CH        49F9 0000 02E8           LEA     000002E8H,A4
    712H        28DF                     MOVE.L  (A7)+,(A4)+
    714H        28DF                     MOVE.L  (A7)+,(A4)+
    716H        598F                     SUBQ.L  #4,A7
    718H        7A01                     MOVEQ   #01H,D5
    71AH        2F05                     MOVE.L  D5,-(A7)
-   71CH        4EB9 0000 0000           JSR     00000000H
+   71CH        4EB9 0000 0000           JSR     LFLOATX
    722H        49F9 0000 02F0           LEA     000002F0H,A4
    728H        28DF                     MOVE.L  (A7)+,(A4)+
    72AH        28DF                     MOVE.L  (A7)+,(A4)+
    72CH        598F                     SUBQ.L  #4,A7
    72EH        7A02                     MOVEQ   #02H,D5
    730H        2F05                     MOVE.L  D5,-(A7)
-   732H        4EB9 0000 0000           JSR     00000000H
+   732H        4EB9 0000 0000           JSR     LFLOATX
    738H        49F9 0000 02F8           LEA     000002F8H,A4
    73EH        28DF                     MOVE.L  (A7)+,(A4)+
    740H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -213,7 +213,7 @@ proc code, procnum = 17, entrypoint =     0H, number of bytes = 1946
    748H        2F39 0000 0038           MOVE.L  00000038H,-(A7)
    74EH        2F39 0000 02FC           MOVE.L  000002FCH,-(A7)
    754H        2F39 0000 02F8           MOVE.L  000002F8H,-(A7)
-   75AH        4EB9 0000 0000           JSR     00000000H
+   75AH        4EB9 0000 0000           JSR     LFDIV
    760H        508F                     ADDQ.L  #8,A7
    762H        49F9 0000 0040           LEA     00000040H,A4
    768H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -222,7 +222,7 @@ proc code, procnum = 17, entrypoint =     0H, number of bytes = 1946
    772H        2F39 0000 02F0           MOVE.L  000002F0H,-(A7)
    778H        2F39 0000 02FC           MOVE.L  000002FCH,-(A7)
    77EH        2F39 0000 02F8           MOVE.L  000002F8H,-(A7)
-   784H        4EB9 0000 0000           JSR     00000000H
+   784H        4EB9 0000 0000           JSR     LFDIV
    78AH        508F                     ADDQ.L  #8,A7
    78CH        49F9 0000 0300           LEA     00000300H,A4
    792H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -632,7 +632,7 @@ proc code, procnum = 18, entrypoint =     0H, number of bytes = 134
      0H        4E56 FFF6                LINK    A6,#FFF6H
      4H        598F                     SUBQ.L  #4,A7
      6H        42A7                     CLR.L   -(A7)
-     8H        4EB9 0000 0000           JSR     00000000H
+     8H        4EB9 0000 0000           JSR     LENGTHEN
      EH        49EE FFF8                LEA     FFF8(A6),A4
     12H        28DF                     MOVE.L  (A7)+,(A4)+
     14H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -647,14 +647,14 @@ proc code, procnum = 18, entrypoint =     0H, number of bytes = 134
     30H        2F2E FFF8                MOVE.L  FFF8(A6),-(A7)
     34H        2F2E 0012                MOVE.L  0012(A6),-(A7)
     38H        2F2E 000E                MOVE.L  000E(A6),-(A7)
-    3CH        4EB9 0000 0000           JSR     00000000H
+    3CH        4EB9 0000 0000           JSR     LFMUL
     42H        508F                     ADDQ.L  #8,A7
     44H        3A2E FFF6                MOVE.W  FFF6(A6),D5
     48H        E745                     ASL.W   #3,D5
     4AH        286E 0008                MOVE.L  0008(A6),A4
     4EH        2F34 5004                MOVE.L  04H(A4,D5.W),-(A7)
     52H        2F34 5000                MOVE.L  00H(A4,D5.W),-(A7)
-    56H        4EB9 0000 0000           JSR     00000000H
+    56H        4EB9 0000 0000           JSR     LFADD
     5CH        508F                     ADDQ.L  #8,A7
     5EH        49EE FFF8                LEA     FFF8(A6),A4
     62H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -697,14 +697,14 @@ proc code, procnum = 19, entrypoint =     0H, number of bytes = 130
     2CH        2F2E FFF8                MOVE.L  FFF8(A6),-(A7)
     30H        2F2E 0012                MOVE.L  0012(A6),-(A7)
     34H        2F2E 000E                MOVE.L  000E(A6),-(A7)
-    38H        4EB9 0000 0000           JSR     00000000H
+    38H        4EB9 0000 0000           JSR     LFMUL
     3EH        508F                     ADDQ.L  #8,A7
     40H        3A2E FFF6                MOVE.W  FFF6(A6),D5
     44H        E745                     ASL.W   #3,D5
     46H        286E 0008                MOVE.L  0008(A6),A4
     4AH        2F34 5004                MOVE.L  04H(A4,D5.W),-(A7)
     4EH        2F34 5000                MOVE.L  00H(A4,D5.W),-(A7)
-    52H        4EB9 0000 0000           JSR     00000000H
+    52H        4EB9 0000 0000           JSR     LFADD
     58H        508F                     ADDQ.L  #8,A7
     5AH        49EE FFF8                LEA     FFF8(A6),A4
     5EH        28DF                     MOVE.L  (A7)+,(A4)+
@@ -741,7 +741,7 @@ PROCEDURE longreal (x : LONGINT) : LONGREAL;
     12H        4485                     NEG.L   D5
     14H        598F                     SUBQ.L  #4,A7
     16H        2F05                     MOVE.L  D5,-(A7)
-    18H        4EB9 0000 0000           JSR     00000000H
+    18H        4EB9 0000 0000           JSR     LFLOATX
     1EH        0A97 8000 0000           EORI.L  #80000000H,(A7)
     24H        49EE 000C                LEA     000C(A6),A4
     28H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -751,7 +751,7 @@ PROCEDURE longreal (x : LONGINT) : LONGREAL;
     30H        4EFA 001A                JMP     [001AH] = 0000004CH
     34H        598F                     SUBQ.L  #4,A7
     36H        2F2E 0008                MOVE.L  0008(A6),-(A7)
-    3AH        4EB9 0000 0000           JSR     00000000H
+    3AH        4EB9 0000 0000           JSR     LFLOATX
     40H        49EE 000C                LEA     000C(A6),A4
     44H        28DF                     MOVE.L  (A7)+,(A4)+
     46H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -777,7 +777,7 @@ PROCEDURE dentier (x : LONGREAL) : LONGINT;
     1AH        08AE 0007 FFF8           BCLR    #0007H,FFF8(A6)
     20H        2F2E FFFC                MOVE.L  FFFC(A6),-(A7)
     24H        2F2E FFF8                MOVE.L  FFF8(A6),-(A7)
-    28H        4EB9 0000 0000           JSR     00000000H
+    28H        4EB9 0000 0000           JSR     LTRUNCX
     2EH        588F                     ADDQ.L  #4,A7
     30H        2A1F                     MOVE.L  (A7)+,D5
     32H        4485                     NEG.L   D5
@@ -786,7 +786,7 @@ PROCEDURE dentier (x : LONGREAL) : LONGINT;
     3AH        4E75                     RTS
     3CH        2F2E FFFC                MOVE.L  FFFC(A6),-(A7)
     40H        2F2E FFF8                MOVE.L  FFF8(A6),-(A7)
-    44H        4EB9 0000 0000           JSR     00000000H
+    44H        4EB9 0000 0000           JSR     LTRUNCX
     4AH        588F                     ADDQ.L  #4,A7
     4CH        2D5F 0010                MOVE.L  (A7)+,0010(A6)
     50H        4E5E                     UNLK    A6
@@ -806,8 +806,8 @@ PROCEDURE dsin (x : LONGREAL) : LONGREAL;
      CH        598F                     SUBQ.L  #4,A7
      EH        7A00                     MOVEQ   #00H,D5
     10H        2F05                     MOVE.L  D5,-(A7)
-    12H        4EB9 0000 0000           JSR     00000000H
-    18H        4EB9 0000 0000           JSR     00000000H
+    12H        4EB9 0000 0000           JSR     LFLOATX
+    18H        4EB9 0000 0000           JSR     LFCMP
     1EH        4FEF 0010                LEA     0010(A7),A7
     22H        5DC5                     SLT     D5
     24H        4405                     NEG.B   D5
@@ -822,23 +822,23 @@ PROCEDURE dsin (x : LONGREAL) : LONGREAL;
     44H        2F2E 0008                MOVE.L  0008(A6),-(A7)
     48H        2F39 0000 0114           MOVE.L  00000114H,-(A7)
     4EH        2F39 0000 0110           MOVE.L  00000110H,-(A7)
-    54H        4EB9 0000 0000           JSR     00000000H
+    54H        4EB9 0000 0000           JSR     LFCMP
     5AH        4FEF 0010                LEA     0010(A7),A7
     5EH        6F08                     BLE     [08H] = 00000068H
     60H        7000                     MOVEQ   #00H,D0
-    62H        4EB9 0000 0000           JSR     00000000H
+    62H        4EB9 0000 0000           JSR     HALTX
     68H        2F2E 000C                MOVE.L  000C(A6),-(A7)
     6CH        2F2E 0008                MOVE.L  0008(A6),-(A7)
     70H        2F39 0000 0034           MOVE.L  00000034H,-(A7)
     76H        2F39 0000 0030           MOVE.L  00000030H,-(A7)
-    7CH        4EB9 0000 0000           JSR     00000000H
+    7CH        4EB9 0000 0000           JSR     LFDIV
     82H        508F                     ADDQ.L  #8,A7
     84H        49EE FFF8                LEA     FFF8(A6),A4
     88H        28DF                     MOVE.L  (A7)+,(A4)+
     8AH        28DF                     MOVE.L  (A7)+,(A4)+
     8CH        2F2E FFFC                MOVE.L  FFFC(A6),-(A7)
     90H        2F2E FFF8                MOVE.L  FFF8(A6),-(A7)
-    94H        4EB9 0000 0000           JSR     00000000H
+    94H        4EB9 0000 0000           JSR     LTRUNCX
     9AH        588F                     ADDQ.L  #4,A7
     9CH        2D5F FFE4                MOVE.L  (A7)+,FFE4(A6)
     A0H        2A2E FFE4                MOVE.L  FFE4(A6),D5
@@ -851,7 +851,7 @@ PROCEDURE dsin (x : LONGREAL) : LONGREAL;
     BAH        52AE FFE4                ADDQ.L  #1,FFE4(A6)
     BEH        598F                     SUBQ.L  #4,A7
     C0H        2F2E FFE4                MOVE.L  FFE4(A6),-(A7)
-    C4H        4EB9 0000 0000           JSR     00000000H
+    C4H        4EB9 0000 0000           JSR     LFLOATX
     CAH        49EE FFF0                LEA     FFF0(A6),A4
     CEH        28DF                     MOVE.L  (A7)+,(A4)+
     D0H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -861,29 +861,29 @@ PROCEDURE dsin (x : LONGREAL) : LONGREAL;
     DEH        2F2E FFF0                MOVE.L  FFF0(A6),-(A7)
     E2H        2F39 0000 00F4           MOVE.L  000000F4H,-(A7)
     E8H        2F39 0000 00F0           MOVE.L  000000F0H,-(A7)
-    EEH        4EB9 0000 0000           JSR     00000000H
+    EEH        4EB9 0000 0000           JSR     LFMUL
     F4H        508F                     ADDQ.L  #8,A7
-    F6H        4EB9 0000 0000           JSR     00000000H
+    F6H        4EB9 0000 0000           JSR     LFSUB
     FCH        508F                     ADDQ.L  #8,A7
     FEH        2F2E FFF4                MOVE.L  FFF4(A6),-(A7)
    102H        2F2E FFF0                MOVE.L  FFF0(A6),-(A7)
    106H        2F39 0000 00FC           MOVE.L  000000FCH,-(A7)
    10CH        2F39 0000 00F8           MOVE.L  000000F8H,-(A7)
-   112H        4EB9 0000 0000           JSR     00000000H
+   112H        4EB9 0000 0000           JSR     LFMUL
    118H        508F                     ADDQ.L  #8,A7
-   11AH        4EB9 0000 0000           JSR     00000000H
+   11AH        4EB9 0000 0000           JSR     LFSUB
    120H        508F                     ADDQ.L  #8,A7
    122H        2F2E FFF4                MOVE.L  FFF4(A6),-(A7)
    126H        2F2E FFF0                MOVE.L  FFF0(A6),-(A7)
    12AH        2F39 0000 0104           MOVE.L  00000104H,-(A7)
    130H        2F39 0000 0100           MOVE.L  00000100H,-(A7)
-   136H        4EB9 0000 0000           JSR     00000000H
+   136H        4EB9 0000 0000           JSR     LFMUL
    13CH        508F                     ADDQ.L  #8,A7
-   13EH        4EB9 0000 0000           JSR     00000000H
+   13EH        4EB9 0000 0000           JSR     LFSUB
    144H        508F                     ADDQ.L  #8,A7
    146H        2F39 0000 0034           MOVE.L  00000034H,-(A7)
    14CH        2F39 0000 0030           MOVE.L  00000030H,-(A7)
-   152H        4EB9 0000 0000           JSR     00000000H
+   152H        4EB9 0000 0000           JSR     LFDIV
    158H        508F                     ADDQ.L  #8,A7
    15AH        49EE FFF0                LEA     FFF0(A6),A4
    15EH        28DF                     MOVE.L  (A7)+,(A4)+
@@ -900,7 +900,7 @@ PROCEDURE dsin (x : LONGREAL) : LONGREAL;
    17EH        2F2E FFF0                MOVE.L  FFF0(A6),-(A7)
    182H        2F2E FFF4                MOVE.L  FFF4(A6),-(A7)
    186H        2F2E FFF0                MOVE.L  FFF0(A6),-(A7)
-   18AH        4EB9 0000 0000           JSR     00000000H
+   18AH        4EB9 0000 0000           JSR     LFMUL
    190H        508F                     ADDQ.L  #8,A7
    192H        49EE FFE8                LEA     FFE8(A6),A4
    196H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -937,7 +937,7 @@ PROCEDURE dsin (x : LONGREAL) : LONGREAL;
    1F0H        4879 0000 0078           PEA     00000078H
    1F6H        6100 0000                BSR     [0000H] = 000001F8H
    1FAH        4FEF 000E                LEA     000E(A7),A7
-   1FEH        4EB9 0000 0000           JSR     00000000H
+   1FEH        4EB9 0000 0000           JSR     LFMUL
    204H        508F                     ADDQ.L  #8,A7
    206H        49EE FFF8                LEA     FFF8(A6),A4
    20AH        28DF                     MOVE.L  (A7)+,(A4)+

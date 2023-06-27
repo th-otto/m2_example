@@ -1,0 +1,8 @@
+decsym.ttp
+.C[-P-]
+=
+cstartv.o
+decsym.c
+pcfltlib.lib
+pcstdlib.lib
+pctoslib.lib

@@ -754,7 +754,7 @@ MODULE BlockSystem;
             noparam:  CompilerError
           | varparam:
               IF TypeSystem.IsArrayType(idtyp) AND idtyp^.dyn THEN
-                CodeSys.Emit(SLD); CodeSys.Emit(vaddr)
+                CodeSys.Emit(SLD); CodeSys.Emit(VAL(CARDINAL, vaddr))
               ELSE
                 SimpleCode.EmitPacked(SLW, vaddr)
               END
@@ -762,12 +762,12 @@ MODULE BlockSystem;
               IF idtyp^.size=1 THEN SimpleCode.EmitPacked(SLW, vaddr)
               ELSE
                 Assert(idtyp^.size=2);
-                CodeSys.Emit(SLD); CodeSys.Emit(vaddr)
+                CodeSys.Emit(SLD); CodeSys.Emit(VAL(CARDINAL, vaddr))
               END
           | copyparam:
               IF TypeSystem.IsArrayType(idtyp) AND idtyp^.dyn THEN
-                CodeSys.Emit(SLD); CodeSys.Emit(vaddr);
-                CodeSys.Emit(LLD); CodeSys.Emit(vaddr);
+                CodeSys.Emit(SLD); CodeSys.Emit(VAL(CARDINAL, vaddr));
+                CodeSys.Emit(LLD); CodeSys.Emit(VAL(CARDINAL, vaddr));
                 IF TypeSystem.ByteSize(idtyp^.elp) THEN
                   SimpleCode.EmitLI(1); CodeSys.Emit(SHR); DEC(loadCount);
                   CodeSys.Emit(LSA); CodeSys.Emit(1)
@@ -778,7 +778,7 @@ MODULE BlockSystem;
                 Assert(indaccess);
                 SimpleCode.EmitLI(idtyp^.size); DEC(loadCount)
               END;
-              CodeSys.Emit(PCOP); CodeSys.Emit(vaddr)
+              CodeSys.Emit(PCOP); CodeSys.Emit(VAL(CARDINAL, vaddr))
           END
         END (*With*)
       END; (*FOR*)

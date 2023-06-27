@@ -712,7 +712,9 @@ MODULE Scanner;
 
     BEGIN
       sy := eol; (* eol is never returned from GetSy *)
-      REPEAT och := ch; NextCh;
+      REPEAT
+        och := ch;
+        NextCh;
         CASE och OF
           eofch: sy := eop |
           eolch: INC(line); pos := 0; OutputSystem.PutS |

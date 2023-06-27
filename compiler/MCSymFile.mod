@@ -77,7 +77,7 @@ MODULE SymbolFileHandling;
   FROM AsciiHandling IMPORT maxspix, AsciiSetPos, AsciiRead;
 
   EXPORT
-    SymPutS, SymPutNumber, SymPutCard, SymPutStr, SymPutIdent,
+    SymPutS, SymPutNumber, SymPutCard, SymPutLongCard, SymPutStr, SymPutIdent,
     InitSym, TermSym;
 
   TYPE Byte = [0..377B];
@@ -91,16 +91,19 @@ MODULE SymbolFileHandling;
     (* format to 0..377B *)
     b := b MOD 400B;
     IF highbyte THEN
-      INC(wordbuff,b*400B);
-      WriteWord(symf,wordbuff);
+      wordbuff := b*400B;
     ELSE
-      wordbuff := b;
+      INC(wordbuff, b);
+      WriteWord(symf,wordbuff);
     END;
     highbyte := NOT highbyte;
   END WriteSym;
 
   PROCEDURE SymPutS(s: SymFileSymbols);
   BEGIN
+    IF s = procSS THEN
+      (* x34afe(); *)
+    END;
     WriteSym(ORD(s));
   END SymPutS;
 
@@ -112,9 +115,16 @@ MODULE SymbolFileHandling;
 
   PROCEDURE SymPutCard(c: CARDINAL);
   BEGIN
-    SymPutS(normalconstSS);
+    SymPutS(shortconstSS);
     SymPutNumber(c);
   END SymPutCard;
+
+  PROCEDURE SymPutLongCard(c: LONGCARD);
+  BEGIN
+    SymPutS(normalconstSS);
+    SymPutNumber(c DIV 65536);
+    SymPutNumber(c MOD 65536);
+  END SymPutLongCard;
 
   PROCEDURE SymPutStr(addr: ADDRESS; length: CARDINAL);
     TYPE Bufptr = POINTER TO ARRAY [1 .. 100] OF CHAR;
@@ -149,7 +159,7 @@ MODULE SymbolFileHandling;
     INCL(compstat,syms); (* status: symbolfile is generated *)
     Connect(symf,symFile,TRUE);
     Reset(symf);
-    highbyte := FALSE;
+    highbyte := TRUE;
   END InitSym;
 
   PROCEDURE TermSym;
@@ -172,7 +182,7 @@ MODULE SymbolDump;
     Varkind, Kindvar, Recpart;
   FROM MCSymFileDefs IMPORT symFileKey, SymFileSymbols;
   FROM SymbolFileHandling IMPORT
-    SymPutS, SymPutNumber, SymPutCard, SymPutStr, SymPutIdent,
+    SymPutS, SymPutNumber, SymPutCard, SymPutLongCard, SymPutStr, SymPutIdent,
     InitSym, TermSym;
 
   TYPE Nlptr = POINTER TO Namelist;
@@ -301,7 +311,7 @@ MODULE SymbolDump;
          |consts:
             StructCheck(idtyp);
             EnterName(namp);
-         |vars:
+         |vars,inlines:
             IF idtyp^.stidp = NIL THEN GenDummyType(idtyp) END;
             StructCheck(idtyp);
             EnterName(namp);
@@ -320,7 +330,7 @@ MODULE SymbolDump;
     END; (* WHILE *)
   END EnterDumpList;
 
-  PROCEDURE DumpModule(mp: Mlptr);
+  PROCEDURE DumpModule(mp: Mlptr; isLast: BOOLEAN);
     (* dump symbolic module on symbol file *)
     VAR hmp : Mlptr;
         np1,np2 : Nlptr;
@@ -471,6 +481,7 @@ MODULE SymbolDump;
       END DumpType;
 
     BEGIN (* DumpDeclaration *)
+      IF isLast THEN END;
       WITH ip^ DO
         CASE klass OF
           consts:
@@ -486,17 +497,33 @@ MODULE SymbolDump;
             SymPutIdent(name);
             IF state = absolute THEN
               SymPutS(lbracketSS);
-              SymPutCard(vaddr);
+              SymPutLongCard(vaddr);
               SymPutS(rbracketSS);
-            ELSE SymPutCard(vaddr);
+            ELSE SymPutLongCard(vaddr);
             END;
             SymPutS(colonSS);
             DumpType(idtyp,FALSE);
+         |inlines:
+            SymPutS(codeSS);
+            SymPutIdent(name);
+            SymPutLongCard(cvalue.lvalue);
          |pures,funcs:
             SymPutS(procSS);
             SymPutIdent(name);
             SymPutCard(procnum);
             DumpType(idtyp,TRUE);
+            (*
+            IF o42 <> 0 THEN
+              SymPutS(inlineSS);
+              FOR i := 0 TO o42 - 1 DO
+                DumpConst(cardptr, val);
+                IF i <> o42 - 1 THEN
+                  SymPutS(commaSS);
+                END;
+              END;
+              SymPutS(endunitSS);
+            END;
+            *)
         END; (* case *)
       END; (* WITH *)
     END DumpDeclaration;
@@ -599,14 +626,16 @@ MODULE SymbolDump;
     (* dump modules *)
     mp := mlroot;
     WHILE mp <> NIL DO
-      DumpModule(mp);
+      DumpModule(mp, mp^.nxtmp = NIL);
       mp := mp^.nxtmp;
     END;
     TermSym;
     (* dispose module list *)
     mp := mlroot;
     WHILE mp <> NIL DO
-      dmp := mp; mp := mp^.nxtmp; DISPOSE(dmp);
+      dmp := mp;
+      mp := mp^.nxtmp;
+      DISPOSE(dmp);
     END;
   END StartDump;
 

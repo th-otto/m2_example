@@ -45,9 +45,9 @@ DEFINITION MODULE Conversions;
                                   VAR done: BOOLEAN);
   (*5*) PROCEDURE ConvertRealToStringOct(x: REAL; VAR s: ARRAY OF CHAR;
                                    VAR done: BOOLEAN);
-  (*6*) PROCEDURE ConvertLongRealToString(x : LONGREAL ; VAR s : ARRAY OF CHAR ;
-                                    n : CARDINAL ; VAR done : BOOLEAN) ;
-  (*7*) PROCEDURE ConvertLongRealFromString(VAR r : LONGREAL ; VAR s : ARRAY OF CHAR;
-                                      VAR done : BOOLEAN) ;
+  (*6*) PROCEDURE ConvertLongRealToString(x: LONGREAL; VAR s: ARRAY OF CHAR;
+                                    n: CARDINAL; VAR done: BOOLEAN);
+  (*7*) PROCEDURE ConvertLongRealFromString(VAR r: LONGREAL; VAR s: ARRAY OF CHAR;
+                                      VAR done: BOOLEAN);
 
 END Conversions.

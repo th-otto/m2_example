@@ -71,8 +71,7 @@ FROM SYSTEM IMPORT ADDRESS;
                   hides,      (* 22 *)
                   opens);     (* 23 *)
     Stset      = SET OF Structform;
-    Idclass    = (consts, types, vars, fields, pures, funcs,
-                  mods, unknown, indrct);
+    Idclass    = (consts, types, vars, fields, pures, funcs, mods, inlines, unknown, indrct);
     Idset      = SET OF Idclass;
     Recpart    = (fixedpart, tagfield, variantpart);
 
@@ -188,14 +187,15 @@ FROM SYSTEM IMPORT ADDRESS;
                   lfltf   (* 19 *)
                   );
     Identrec   = RECORD
-                   name: Spellix;
-                   link: Idptr;
-                   CASE :BOOLEAN OF
+                   (* 0 *) name: Spellix;
+                   (* 2 *) link: Idptr;
+                   (* 6 *) CASE :BOOLEAN OF
                      FALSE: nxtidp: Idptr
                     |TRUE : idtyp : Stptr
                    END (* case BOOLEAN *);
-                   globmodp: Idptr; (* pointer to global module *)
-                   CASE klass: Idclass OF
+                   (* 10 *) globmodp: Idptr; (* pointer to global module *)
+                   (* 14 *) lineno: CARDINAL;
+                   (* 16 *) CASE klass: Idclass OF
                      types: (* no further fields *)
                     |consts,unknown: (* unknown may convert to consts *)
                        cvalue: Constval;
@@ -204,7 +204,7 @@ FROM SYSTEM IMPORT ADDRESS;
                        state : Kindvar;
                        vkind : Varkind;
                        vlevel : Levrange;
-                       vaddr : CARDINAL; (* offset *)
+                       vaddr : LONGCARD; (* offset *)
                        vlink : Idptr;     (* variables or parameters *)
                     |fields: fldaddr: CARDINAL
                     |pures, funcs, mods:

@@ -15,6 +15,7 @@ IMPORT AppWindow;
 IMPORT ExecUtil;
 IMPORT NewStreams;
 FROM MCSymFileDefs IMPORT SymFileSymbols, symFileKey;
+FROM Conversions IMPORT ConvertRealToString;
 IMPORT StrUtil;
 
 VAR outputFailed: BOOLEAN;
@@ -316,27 +317,14 @@ BEGIN
 END DecodeBaseType;
 
 
-PROCEDURE DecodeRealHi();
-VAR w: CARDINAL;
-BEGIN
-  Read16Bit(w);
-  WriteHexCard(w, 4);
-END DecodeRealHi;
-
-
-PROCEDURE DecodeRealLo();
-VAR w: CARDINAL;
-BEGIN
-  Read16Bit(w);
-  WriteHexCard(w, 4);
-END DecodeRealLo;
-
-
 PROCEDURE DecodeReal();
+VAR l: LONGCARD;
+    s: ARRAY[0..79] OF CHAR;
+    done: BOOLEAN;
 BEGIN
-  DecodeRealHi();
-  DecodeRealLo();
-  WriteString('(*Real-not yet implemented*)');
+  Read32Bit(l);
+  ConvertRealToString(REAL(l), s, 20, done);
+  WriteString(s);
   ReadByte();
 END DecodeReal;
 

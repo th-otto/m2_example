@@ -48,11 +48,15 @@ MODULE SearchSystem;
     ip := NIL;
     WHILE list <> NIL DO
       WITH list^ DO
-        IF spix > name THEN list := link
-        ELSIF spix < name THEN list := NIL
+        IF spix > name THEN
+          list := link
+        ELSIF spix < name THEN
+          list := NIL
         ELSE (* spix = name *)
-          IF klass = indrct THEN ip := nxtidp; (* real entry *)
-          ELSE ip := list;
+          IF klass = indrct THEN
+            ip := nxtidp; (* real entry *)
+          ELSE
+            ip := list;
           END;
           list := link; (* find last entry with the same name *)
         END
@@ -441,7 +445,8 @@ MODULE Scope;
         displ[level].exportp := expp;
         displ[level].modulep := modp;
         displ[level].forwardp := NIL;
-    ELSE ErrorLS(79);
+    ELSE
+      ErrorLS(79);
     END;
   END NewLevel;
 
@@ -532,8 +537,10 @@ MODULE Scope;
               WITH ip^ DO
                 IF klass = unknown THEN
                   klass := indrct;
-                  IF fip^.klass = indrct THEN nxtidp := fip^.nxtidp;
-                  ELSE nxtidp := fip;
+                  IF fip^.klass = indrct THEN
+                    nxtidp := fip^.nxtidp;
+                  ELSE
+                    nxtidp := fip;
                   END
                 ELSE Error(72);
                 END;

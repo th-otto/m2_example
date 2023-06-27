@@ -433,7 +433,7 @@ END SYSCALL;
 (* public procedure 8 *)
 PROCEDURE MULU32(a, b: LONGCARD);
 BEGIN
-  (*   4 *) CODE(048E7H, 07C00H              ); (* MOVEM.L #7C00H,-(A7) *)
+  (*   4 *) CODE(048E7H, 07C00H              ); (* MOVEM.L d1-d5,-(A7) *)
   (*   8 *) CODE(0222EH, 00008H              ); (* MOVE.L  8(A6),D1 *)
   (*   C *) CODE(0242EH, 0000CH              ); (* MOVE.L  12(A6),D2 *)
   (*  10 *) CODE(02601H                      ); (* MOVE.L  D1,D3 *)
@@ -460,14 +460,14 @@ BEGIN
   (*  3A *) CODE(0D484H                      ); (* ADD.L   D4,D2 *)
   (*  3C *) CODE(02D41H, 0000CH              ); (* MOVE.L  D1,12(A6) *)
   (*  40 *) CODE(02D42H, 00008H              ); (* MOVE.L  D2,8(A6) *)
-  (*  44 *) CODE(04CDFH, 0003EH              ); (* MOVEM.L (A7)+,#003EH *)
+  (*  44 *) CODE(04CDFH, 0003EH              ); (* MOVEM.L (A7)+,d1-d5 *)
 END MULU32;
 
 
 (* public procedure 9 *)
 PROCEDURE DIVU32(a, b: LONGCARD);
 BEGIN
-  (*   4 *) CODE(048E7H, 07800H              ); (* MOVEM.L #7800H,-(A7) *)
+  (*   4 *) CODE(048E7H, 07800H              ); (* MOVEM.L d1-d4,-(A7) *)
   (*   8 *) CODE(0222EH, 0000CH              ); (* MOVE.L  12(A6),D1 *)
   (*   C *) CODE(0242EH, 00008H              ); (* MOVE.L  8(A6),D2 *)
   (*  10 *) CODE(0B4BCH, 00000H, 0FFFFH      ); (* CMP.L   #0000FFFFH,D2 *)
@@ -502,14 +502,14 @@ BEGIN
   (*  50 *) CODE(051CCH, 0FFF2H              ); (* DBRA    D4,[FFF2H] = 00000044H *)
   (*  54 *) CODE(02D43H, 0000CH              ); (* MOVE.L  D3,12(A6) *)
   (*  58 *) CODE(02D41H, 00008H              ); (* MOVE.L  D1,8(A6) *)
-  (*  5C *) CODE(04CDFH, 0001EH              ); (* MOVEM.L (A7)+,#001EH *)
+  (*  5C *) CODE(04CDFH, 0001EH              ); (* MOVEM.L (A7)+,d1-d4 *)
 END DIVU32;
 
 
 (* public procedure 10 *)
 PROCEDURE MULS32(a, b: LONGINT);
 BEGIN
-  (*   4 *) CODE(048E7H, 0FF00H              ); (* MOVEM.L #FF00H,-(A7) *)
+  (*   4 *) CODE(048E7H, 0FF00H              ); (* MOVEM.L d0-d7,-(A7) *)
   (*   8 *) CODE(0222EH, 00008H              ); (* MOVE.L  8(A6),D1 *)
   (*   C *) CODE(0242EH, 0000CH              ); (* MOVE.L  12(A6),D2 *)
   (*  10 *) CODE(02601H                      ); (* MOVE.L  D1,D3 *)
@@ -544,7 +544,7 @@ BEGIN
   (*  4A *) CODE(09486H                      ); (* SUB.L   D6,D2 *)
   (*  4C *) CODE(02D41H, 0000CH              ); (* MOVE.L  D1,12(A6) *)
   (*  50 *) CODE(02D42H, 00008H              ); (* MOVE.L  D2,8(A6) *)
-  (*  54 *) CODE(04CDFH, 000FFH              ); (* MOVEM.L (A7)+,#00FFH *)
+  (*  54 *) CODE(04CDFH, 000FFH              ); (* MOVEM.L (A7)+,d0-d7 *)
 END MULS32;
 
 
@@ -580,7 +580,7 @@ END DIVS32;
 (* public procedure 12 *)
 PROCEDURE FADD(a, b: REAL);
 BEGIN
-  (*   4 *) CODE(048E7H, 09F00H              ); (* MOVEM.L #9F00H,-(A7) *)
+  (*   4 *) CODE(048E7H, 09F00H              ); (* MOVEM.L d0/d3-d7,-(A7) *)
   (*   8 *) CODE(0282EH, 0000CH              ); (* MOVE.L  12(A6),D4 *)
   (*   C *) CODE(02C2EH, 00008H              ); (* MOVE.L  8(A6),D6 *)
   (*  10 *) CODE(0E39CH                      ); (* ROL.L   #1,D4 *)
@@ -651,7 +651,7 @@ BEGIN
   (*  AC *) CODE(0E213H                      ); (* ROXR.B  #1,D3 *)
   (*  AE *) CODE(0E294H                      ); (* ROXR.L  #1,D4 *)
   (*  B0 *) CODE(02D44H, 0000CH              ); (* MOVE.L  D4,12(A6) *) (* RETURN d4 *) 
-  (*  B4 *) CODE(04CDFH, 000F9H              ); (* MOVEM.L (A7)+,#00F9H *)
+  (*  B4 *) CODE(04CDFH, 000F9H              ); (* MOVEM.L (A7)+,d0/d3-d7 *)
 END FADD;
 
 
@@ -668,7 +668,7 @@ END FSUB;
 (* public procedure 14 *)
 PROCEDURE FMUL(a, b: REAL);
 BEGIN
-  (*   4 *) CODE(048E7H, 0CF00H              ); (* MOVEM.L #CF00H,-(A7) *)
+  (*   4 *) CODE(048E7H, 0CF00H              ); (* MOVEM.L d0-d1/d4-d7,-(A7) *)
   (*   8 *) CODE(0282EH, 0000CH              ); (* MOVE.L  12(A6),D4 *)
   (*   C *) CODE(02C2EH, 00008H              ); (* MOVE.L  8(A6),D6 *)
   (*  10 *) CODE(02E04H                      ); (* MOVE.L  D4,D7 *)
@@ -728,14 +728,14 @@ BEGIN
   (*  94 *) CODE(0E397H                      ); (* ROXL.L  #1,D7 *)
   (*  96 *) CODE(0E294H                      ); (* ROXR.L  #1,D4 *)
   (*  98 *) CODE(02D44H, 0000CH              ); (* MOVE.L  D4,12(A6) *)
-  (*  9C *) CODE(04CDFH, 000F3H              ); (* MOVEM.L (A7)+,#00F3H *)
+  (*  9C *) CODE(04CDFH, 000F3H              ); (* MOVEM.L (A7)+,d0-d1/d4-d7 *)
 END FMUL;
 
 
 (* public procedure 15 *)
 PROCEDURE FDIV(a, b: REAL);
 BEGIN
-  (*   4 *) CODE(048E7H, 08F00H              ); (* MOVEM.L #8F00H,-(A7) *)
+  (*   4 *) CODE(048E7H, 08F00H              ); (* MOVEM.L d0/d4-d7,-(A7) *)
   (*   8 *) CODE(0282EH, 0000CH              ); (* MOVE.L  12(A6),D4 *)
   (*   C *) CODE(02C2EH, 00008H              ); (* MOVE.L  8(A6),D6 *)
   (*  10 *) CODE(02E04H                      ); (* MOVE.L  D4,D7 *)
@@ -794,14 +794,14 @@ BEGIN
   (*  8E *) CODE(0E397H                      ); (* ROXL.L  #1,D7 *)
   (*  90 *) CODE(0E294H                      ); (* ROXR.L  #1,D4 *)
   (*  92 *) CODE(02D44H, 0000CH              ); (* MOVE.L  D4,12(A6) *)
-  (*  96 *) CODE(04CDFH, 000F1H              ); (* MOVEM.L (A7)+,#00F1H *)
+  (*  96 *) CODE(04CDFH, 000F1H              ); (* MOVEM.L (A7)+,d0/d4-d7 *)
 END FDIV;
 
 
 (* public procedure 16 *)
 PROCEDURE FCMP(a, b: REAL);
 BEGIN
-  (*   4 *) CODE(048E7H, 0E000H              ); (* MOVEM.L #E000H,-(A7) *)
+  (*   4 *) CODE(048E7H, 0E000H              ); (* MOVEM.L d0-d2,-(A7) *)
   (*   8 *) CODE(0202EH, 0000CH              ); (* MOVE.L  12(A6),D0 *)
   (*   C *) CODE(02400H                      ); (* MOVE.L  D0,D2 *)
   (*   E *) CODE(06A06H                      ); (* BPL     [06H] = 00000016H *)
@@ -817,28 +817,28 @@ BEGIN
   (*  34 *) CODE(06602H                      ); (* BNE     [02H] = 00000038H *)
   (*  36 *) CODE(04281H                      ); (* CLR.L   D1 *)
   (*  38 *) CODE(0B081H                      ); (* CMP.L   D1,D0 *)
-  (*  3A *) CODE(04CDFH, 00007H              ); (* MOVEM.L (A7)+,#0007H *)
+  (*  3A *) CODE(04CDFH, 00007H              ); (* MOVEM.L (A7)+,d0-d2 *)
 END FCMP;
 
 
 (* public procedure 17 *)
 PROCEDURE FTST(a: REAL);
 BEGIN
-  (*   4 *) CODE(048E7H, 0A000H              ); (* MOVEM.L #A000H,-(A7) *)
+  (*   4 *) CODE(048E7H, 0A000H              ); (* MOVEM.L d0/d2,-(A7) *)
   (*   8 *) CODE(0202EH, 00008H              ); (* MOVE.L  8(A6),D0 *)
   (*   C *) CODE(02400H                      ); (* MOVE.L  D0,D2 *)
   (*   E *) CODE(0C4BCH, 07F80H, 00000H      ); (* AND.L   #7F800000H,D2 *)
   (*  14 *) CODE(06602H                      ); (* BNE     [02H] = 00000018H *)
   (*  16 *) CODE(04280H                      ); (* CLR.L   D0 *)
   (*  18 *) CODE(04A80H                      ); (* TST.L   D0 *)
-  (*  1A *) CODE(04CDFH, 00005H              ); (* MOVEM.L (A7)+,#0005H *)
+  (*  1A *) CODE(04CDFH, 00005H              ); (* MOVEM.L (A7)+,d0/d2 *)
 END FTST;
 
 
 (* public procedure 18 *)
 PROCEDURE FLOATX(a: LONGWORD);
 BEGIN
-  (*   4 *) CODE(048E7H, 0C000H              ); (* MOVEM.L #C000H,-(A7) *)
+  (*   4 *) CODE(048E7H, 0C000H              ); (* MOVEM.L d0-d1,-(A7) *)
   (*   8 *) CODE(0202EH, 00008H              ); (* MOVE.L  8(A6),D0 *)
   (*   C *) CODE(0672AH                      ); (* BEQ     [2AH] = 00000038H *)
   (*   E *) CODE(0323CH, 0009EH              ); (* MOVE.W  #009EH,D1 *)
@@ -856,14 +856,14 @@ BEGIN
   (*  34 *) CODE(0E098H                      ); (* ROR.L   #8,D0 *)
   (*  36 *) CODE(0E288H                      ); (* LSR.L   #1,D0 *)
   (*  38 *) CODE(02D40H, 00008H              ); (* MOVE.L  D0,8(A6) *)
-  (*  3C *) CODE(04CDFH, 00003H              ); (* MOVEM.L (A7)+,#0003H *)
+  (*  3C *) CODE(04CDFH, 00003H              ); (* MOVEM.L (A7)+,d0-d1 *)
 END FLOATX;
 
 
 (* public procedure 19 *)
 PROCEDURE TRUNCX(a: REAL);
 BEGIN
-  (*   4 *) CODE(048E7H, 0C000H              ); (* MOVEM.L #C000H,-(A7) *)
+  (*   4 *) CODE(048E7H, 0C000H              ); (* MOVEM.L d0-d1,-(A7) *)
   (*   8 *) CODE(0202EH, 00008H              ); (* MOVE.L  8(A6),D0 *)
   (*   C *) CODE(06A0AH                      ); (* BPL     [0AH] = 00000018H *)
   (*   E *) CODE(0C0BCH, 07F80H, 00000H      ); (* AND.L   #7F800000H,D0 *)
@@ -886,7 +886,7 @@ BEGIN
   (*  3A *) HALTX();
   (*  40 *) CODE(0E2A8H                      ); (* LSR.L   D1,D0 *)
   (*  42 *) CODE(02D40H, 00008H              ); (* MOVE.L  D0,8(A6) *)
-  (*  46 *) CODE(04CDFH, 00003H              ); (* MOVEM.L (A7)+,#0003H *)
+  (*  46 *) CODE(04CDFH, 00003H              ); (* MOVEM.L (A7)+,d0-d1 *)
 END TRUNCX;
 
 
@@ -895,8 +895,8 @@ END TRUNCX;
 PROCEDURE LFADD(a, b: LONGREAL);
 BEGIN
   (*   0 *) CODE(04E56H, 00000H              ); (* LINK    A6,#0000H *)
-  (*   4 *) CODE(048E7H, 0FF00H              ); (* MOVEM.L #FF00H,-(A7) *)
-  (*   8 *) CODE(04CEEH, 000F0H, 00008H      ); (* MOVEM.L 8(A6),#00F0H *)
+  (*   4 *) CODE(048E7H, 0FF00H              ); (* MOVEM.L d0-d7,-(A7) *)
+  (*   8 *) CODE(04CEEH, 000F0H, 00008H      ); (* MOVEM.L 8(A6),d4-d7 *)
   (*   E *) CODE(07400H                      ); (* MOVEQ   #00H,D2 *)
   (*  10 *) CODE(0DA85H                      ); (* ADD.L   D5,D5 *)
   (*  12 *) CODE(0D984H                      ); (* ADDX.L  D4,D4 *)
@@ -933,8 +933,8 @@ BEGIN
   (*  52 *) CODE(06612H                      ); (* BNE     [12H] = 00000066H *)
   (*  54 *) CODE(02806H                      ); (* MOVE.L  D6,D4 *)
   (*  56 *) CODE(02A07H                      ); (* MOVE.L  D7,D5 *)
-  (*  58 *) CODE(048EEH, 00030H, 00010H      ); (* MOVEM.L #0030H,0010(A6) *)
-  (*  5E *) CODE(04CDFH, 000FFH              ); (* MOVEM.L (A7)+,#00FFH *)
+  (*  58 *) CODE(048EEH, 00030H, 00010H      ); (* MOVEM.L d4-d5,0010(A6) *)
+  (*  5E *) CODE(04CDFH, 000FFH              ); (* MOVEM.L (A7)+,d0-d7 *)
   (*  62 *) CODE(04E5EH                      ); (* UNLK    A6 *)
   (*  64 *) CODE(04E75H                      ); (* RTS *)
   (*  66 *) CODE(04844H                      ); (* SWAP    D4 *)
@@ -1044,8 +1044,8 @@ END LFSUB;
 PROCEDURE LFMUL(a, b: LONGREAL);
 BEGIN
   (*   0 *) CODE(04E56H, 00000H              ); (* LINK    A6,#0000H *)
-  (*   4 *) CODE(048E7H, 0FF00H              ); (* MOVEM.L #FF00H,-(A7) *)
-  (*   8 *) CODE(04CEEH, 000F0H, 00008H      ); (* MOVEM.L 8(A6),#00F0H *)
+  (*   4 *) CODE(048E7H, 0FF00H              ); (* MOVEM.L d0-d7,-(A7) *)
+  (*   8 *) CODE(04CEEH, 000F0H, 00008H      ); (* MOVEM.L 8(A6),d4-d7 *)
   (*   E *) CODE(04844H                      ); (* SWAP    D4 *)
   (*  10 *) CODE(03604H                      ); (* MOVE.W  D4,D3 *)
   (*  12 *) CODE(04846H                      ); (* SWAP    D6 *)
@@ -1172,8 +1172,8 @@ BEGIN
   (* 11A *) CODE(06704H                      ); (* BEQ     [04H] = 00000120H *)
   (* 11C *) CODE(0761FH                      ); (* MOVEQ   #1FH,D3 *)
   (* 11E *) CODE(007C0H                      ); (* BSET    D3,D0 *)
-  (* 120 *) CODE(048EEH, 00003H, 00010H      ); (* MOVEM.L #0003H,0010(A6) *)
-  (* 126 *) CODE(04CDFH, 000FFH              ); (* MOVEM.L (A7)+,#00FFH *)
+  (* 120 *) CODE(048EEH, 00003H, 00010H      ); (* MOVEM.L d0-d1,0010(A6) *)
+  (* 126 *) CODE(04CDFH, 000FFH              ); (* MOVEM.L (A7)+,d0-d7 *)
   (* 12A *) CODE(04E5EH                      ); (* UNLK    A6 *)
   (* 12C *) CODE(04E75H                      ); (* RTS *)
   (* 12E *) CODE(0544FH                      ); (* ADDQ.W  #2,A7 *)
@@ -1190,8 +1190,8 @@ END LFMUL;
 PROCEDURE LFDIV(a, b: LONGREAL);
 BEGIN
   (*   0 *) CODE(04E56H, 00000H              ); (* LINK    A6,#0000H *)
-  (*   4 *) CODE(048E7H, 0FF00H              ); (* MOVEM.L #FF00H,-(A7) *)
-  (*   8 *) CODE(04CEEH, 000F0H, 00008H      ); (* MOVEM.L 8(A6),#00F0H *)
+  (*   4 *) CODE(048E7H, 0FF00H              ); (* MOVEM.L d0-d7,-(A7) *)
+  (*   8 *) CODE(04CEEH, 000F0H, 00008H      ); (* MOVEM.L 8(A6),d4-d7 *)
   (*   E *) CODE(04844H                      ); (* SWAP    D4 *)
   (*  10 *) CODE(03204H                      ); (* MOVE.W  D4,D1 *)
   (*  12 *) CODE(00241H, 07FF0H              ); (* ANDI.W  #7FF0H,D1 *)
@@ -1246,8 +1246,8 @@ BEGIN
   (*  92 *) CODE(0548FH                      ); (* ADDQ.L  #2,A7 *)
   (*  94 *) CODE(07400H                      ); (* MOVEQ   #00H,D2 *)
   (*  96 *) CODE(07600H                      ); (* MOVEQ   #00H,D3 *)
-  (*  98 *) CODE(048EEH, 0000CH, 00010H      ); (* MOVEM.L #000CH,0010(A6) *)
-  (*  9E *) CODE(04CDFH, 000FFH              ); (* MOVEM.L (A7)+,#00FFH *)
+  (*  98 *) CODE(048EEH, 0000CH, 00010H      ); (* MOVEM.L d2-d3,0010(A6) *)
+  (*  9E *) CODE(04CDFH, 000FFH              ); (* MOVEM.L (A7)+,d0-d7 *)
   (*  A2 *) CODE(04E5EH                      ); (* UNLK    A6 *)
   (*  A4 *) CODE(04E75H                      ); (* RTS *)
   (*  A6 *) CODE(07005H                      ); (* MOVEQ   #05H,D0 *)
@@ -1283,8 +1283,8 @@ END LFDIV;
 (* public procedure 24 *)
 PROCEDURE LFCMP(a, b: LONGREAL);
 BEGIN
-  (*   4 *) CODE(048E7H, 0F800H              ); (* MOVEM.L #F800H,-(A7) *)
-  (*   8 *) CODE(04CEEH, 0000FH, 00008H      ); (* MOVEM.L 8(A6),#000FH *)
+  (*   4 *) CODE(048E7H, 0F800H              ); (* MOVEM.L d0-d4,-(A7) *)
+  (*   8 *) CODE(04CEEH, 0000FH, 00008H      ); (* MOVEM.L 8(A6),d0-d3 *)
   (*   E *) CODE(02800H                      ); (* MOVE.L  D0,D4 *)
   (*  10 *) CODE(06A08H                      ); (* BPL     [08H] = 0000001AH *)
   (*  12 *) CODE(00A80H, 07FFFH, 0FFFFH      ); (* EORI.L  #7FFFFFFFH,D0 *)
@@ -1304,21 +1304,21 @@ BEGIN
   (*  3E *) CODE(0B480H                      ); (* CMP.L   D0,D2 *)
   (*  40 *) CODE(06602H                      ); (* BNE     [02H] = 00000044H *)
   (*  42 *) CODE(0B681H                      ); (* CMP.L   D1,D3 *)
-  (*  44 *) CODE(04CDFH, 0001FH              ); (* MOVEM.L (A7)+,#001FH *)
+  (*  44 *) CODE(04CDFH, 0001FH              ); (* MOVEM.L (A7)+,d0-d4 *)
 END LFCMP;
 
 
 (* public procedure 25 *)
 PROCEDURE LFTST(a: LONGREAL);
 BEGIN
-  (*   4 *) CODE(048E7H, 0C000H              ); (* MOVEM.L #C000H,-(A7) *)
+  (*   4 *) CODE(048E7H, 0C000H              ); (* MOVEM.L d0-d1,-(A7) *)
   (*   8 *) CODE(0202EH, 00008H              ); (* MOVE.L  8(A6),D0 *)
   (*   C *) CODE(02200H                      ); (* MOVE.L  D0,D1 *)
   (*   E *) CODE(00281H, 07FF0H, 00000H      ); (* ANDI.L  #7FF00000H,D1 *)
   (*  14 *) CODE(06602H                      ); (* BNE     [02H] = 00000018H *)
   (*  16 *) CODE(07000H                      ); (* MOVEQ   #00H,D0 *)
   (*  18 *) CODE(04A80H                      ); (* TST.L   D0 *)
-  (*  1A *) CODE(04CDFH, 00003H              ); (* MOVEM.L (A7)+,#0003H *)
+  (*  1A *) CODE(04CDFH, 00003H              ); (* MOVEM.L (A7)+,d0-d1 *)
 END LFTST;
 
 
@@ -1327,7 +1327,7 @@ END LFTST;
 PROCEDURE LFLOATX(a: LONGWORD);
 BEGIN
   (*   0 *) CODE(04E56H, 00000H              ); (* LINK    A6,#0000H *)
-  (*   4 *) CODE(048E7H, 0E000H              ); (* MOVEM.L #E000H,-(A7) *)
+  (*   4 *) CODE(048E7H, 0E000H              ); (* MOVEM.L d0-d2,-(A7) *)
   (*   8 *) CODE(07000H                      ); (* MOVEQ   #00H,D0 *)
   (*   A *) CODE(0222EH, 00008H              ); (* MOVE.L  8(A6),D1 *)
   (*   E *) CODE(06748H                      ); (* BEQ     [48H] = 00000058H *)
@@ -1361,8 +1361,8 @@ BEGIN
   (*  50 *) CODE(00240H, 0000FH              ); (* ANDI.W  #000FH,D0 *)
   (*  54 *) CODE(08042H                      ); (* OR.W    D2,D0 *)
   (*  56 *) CODE(04840H                      ); (* SWAP    D0 *)
-  (*  58 *) CODE(048EEH, 00003H, 00008H      ); (* MOVEM.L #0003H,8(A6) *)
-  (*  5E *) CODE(04CDFH, 00007H              ); (* MOVEM.L (A7)+,#0007H *)
+  (*  58 *) CODE(048EEH, 00003H, 00008H      ); (* MOVEM.L d0-d1,8(A6) *)
+  (*  5E *) CODE(04CDFH, 00007H              ); (* MOVEM.L (A7)+,d0-d2 *)
   (*  62 *) CODE(04E5EH                      ); (* UNLK    A6 *)
   (*  64 *) CODE(04E75H                      ); (* RTS *)
   (*  66 *) CODE(04E75H                      ); (* RTS *)
@@ -1374,8 +1374,8 @@ END LFLOATX;
 PROCEDURE LTRUNCX(a: LONGREAL);
 BEGIN
   (*   0 *) CODE(04E56H, 00000H              ); (* LINK    A6,#0000H *)
-  (*   4 *) CODE(048E7H, 0E000H              ); (* MOVEM.L #E000H,-(A7) *)
-  (*   8 *) CODE(04CEEH, 00003H, 00008H      ); (* MOVEM.L 8(A6),#0003H *)
+  (*   4 *) CODE(048E7H, 0E000H              ); (* MOVEM.L d0-d2,-(A7) *)
+  (*   8 *) CODE(04CEEH, 00003H, 00008H      ); (* MOVEM.L 8(A6),d0-d1 *)
   (*   E *) CODE(04840H                      ); (* SWAP    D0 *)
   (*  10 *) CODE(07400H                      ); (* MOVEQ   #00H,D2 *)
   (*  12 *) CODE(03400H                      ); (* MOVE.W  D0,D2 *)
@@ -1398,7 +1398,7 @@ BEGIN
   (*  44 *) CODE(06D12H                      ); (* BLT     [12H] = 00000058H *)
   (*  46 *) CODE(0E4A8H                      ); (* LSR.L   D2,D0 *)
   (*  48 *) CODE(02D40H, 0000CH              ); (* MOVE.L  D0,12(A6) *)
-  (*  4C *) CODE(04CDFH, 00007H              ); (* MOVEM.L (A7)+,#0007H *)
+  (*  4C *) CODE(04CDFH, 00007H              ); (* MOVEM.L (A7)+,d0-d2 *)
   (*  50 *) CODE(04E5EH                      ); (* UNLK    A6 *)
   (*  52 *) CODE(04E75H                      ); (* RTS *)
   (*  54 *) CODE(07000H                      ); (* MOVEQ   #00H,D0 *)
@@ -1417,7 +1417,7 @@ END LTRUNCX;
 PROCEDURE LENGTHEN(a: REAL);
 BEGIN
   (*   0 *) CODE(04E56H, 00000H              ); (* LINK    A6,#0000H *)
-  (*   4 *) CODE(048E7H, 0E000H              ); (* MOVEM.L #E000H,-(A7) *)
+  (*   4 *) CODE(048E7H, 0E000H              ); (* MOVEM.L d0-d2,-(A7) *)
   (*   8 *) CODE(0202EH, 00008H              ); (* MOVE.L  8(A6),D0 *)
   (*   C *) CODE(0E398H                      ); (* ROL.L   #1,D0 *)
   (*   E *) CODE(02400H                      ); (* MOVE.L  D0,D2 *)
@@ -1426,8 +1426,8 @@ BEGIN
   (*  1C *) CODE(06612H                      ); (* BNE     [12H] = 00000030H *)
   (*  1E *) CODE(07000H                      ); (* MOVEQ   #00H,D0 *)
   (*  20 *) CODE(07200H                      ); (* MOVEQ   #00H,D1 *)
-  (*  22 *) CODE(048EEH, 00003H, 00008H      ); (* MOVEM.L #0003H,8(A6) *)
-  (*  28 *) CODE(04CDFH, 00007H              ); (* MOVEM.L (A7)+,#0007H *)
+  (*  22 *) CODE(048EEH, 00003H, 00008H      ); (* MOVEM.L d0-d1,8(A6) *)
+  (*  28 *) CODE(04CDFH, 00007H              ); (* MOVEM.L (A7)+,d0-d2 *)
   (*  2C *) CODE(04E5EH                      ); (* UNLK    A6 *)
   (*  2E *) CODE(04E75H                      ); (* RTS *)
   (*  30 *) CODE(0E68AH                      ); (* LSR.L   #3,D2 *)
@@ -1448,8 +1448,8 @@ END LENGTHEN;
 PROCEDURE SHORTEN(a: LONGREAL);
 BEGIN
   (*   0 *) CODE(04E56H, 00000H              ); (* LINK    A6,#0000H *)
-  (*   4 *) CODE(048E7H, 0F000H              ); (* MOVEM.L #F000H,-(A7) *)
-  (*   8 *) CODE(04CEEH, 00003H, 0008H       ); (* MOVEM.L 8(A6),#0003H *)
+  (*   4 *) CODE(048E7H, 0F000H              ); (* MOVEM.L d0-d3,-(A7) *)
+  (*   8 *) CODE(04CEEH, 00003H, 0008H       ); (* MOVEM.L 8(A6),d0-d1 *)
   (*   E *) CODE(04840H                      ); (* SWAP    D0 *)
   (*  10 *) CODE(03400H                      ); (* MOVE.W  D0,D2 *)
   (*  12 *) CODE(00242H, 07FF0H              ); (* ANDI.W  #7FF0H,D2 *)
@@ -1486,7 +1486,7 @@ BEGIN
   (*  6A *) CODE(08042H                      ); (* OR.W    D2,D0 *)
   (*  6C *) CODE(04840H                      ); (* SWAP    D0 *)
   (*  6E *) CODE(02D40H, 0000CH              ); (* MOVE.L  D0,12(A6) *)
-  (*  72 *) CODE(04CDFH, 0000FH              ); (* MOVEM.L (A7)+,#000FH *)
+  (*  72 *) CODE(04CDFH, 0000FH              ); (* MOVEM.L (A7)+,d0-d3 *)
   (*  76 *) CODE(04E5EH                      ); (* UNLK    A6 *)
   (*  78 *) CODE(04E75H                      ); (* RTS *)
   (*  7A *) CODE(07000H                      ); (* MOVEQ   #00H,D0 *)

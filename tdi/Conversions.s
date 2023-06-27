@@ -12,7 +12,7 @@ proc code, procnum =  8, entrypoint =     0H, number of bytes = 44
      8H        2A2E 0008                MOVE.L  0008(A6),D5
      CH        0685 0100 0000           ADDI.L  #01000000H,D5
     12H        2F05                     MOVE.L  D5,-(A7)
-    14H        4EB9 0000 0000           JSR     00000000H
+    14H        4EB9 0000 0000           JSR     FADD
     1AH        588F                     ADDQ.L  #4,A7
     1CH        2A1F                     MOVE.L  (A7)+,D5
     1EH        0685 0080 0000           ADDI.L  #00800000H,D5
@@ -72,7 +72,9 @@ ref own data at     6H  checksum: o.k.
 ref own data at    16H  checksum: o.k.
 
 proc code, procnum =  1, entrypoint =     0H, number of bytes = 268
- DECODE --------                        INSTRUCTION
+ConvertToString(n: LONGCARD; b: CARDINAL; neg: BOOLEAN;
+                            VAR s: ARRAY OF CHAR; VAR done: BOOLEAN);
+DECODE --------                        INSTRUCTION
      0H        4E56 FFE2                LINK    A6,#FFE2H
      4H        0C6E 0020 0010           CMPI.W  #0020H,0010(A6)
      AH        6514                     BCS     [14H] = 00000020H
@@ -154,6 +156,9 @@ ref util: at    4EH, procnum =  9  checksum: o.k.
 ref util: at    A0H, procnum =  9  checksum: o.k.
 
 proc code, procnum =  2, entrypoint =     0H, number of bytes = 504
+ConvertFromString(VAR s: ARRAY OF CHAR; base: CARDINAL;
+                              neg: BOOLEAN; max: LONGCARD;
+                              VAR result: LONGCARD; VAR done: BOOLEAN);
  DECODE --------                        INSTRUCTION
      0H        4E56 FFF0                LINK    A6,#FFF0H
      4H        0C6E 0002 0016           CMPI.W  #0002H,0016(A6)
@@ -320,6 +325,7 @@ ref util: at    56H, procnum =  9  checksum: o.k.
 ref util: at   1C4H, procnum =  8  checksum: o.k.
 
 proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
+ConvertRealToString(r: REAL; VAR s: ARRAY OF CHAR; n: CARDINAL; VAR done: BOOLEAN);
  DECODE --------                        INSTRUCTION
      0H        4E56 FFFC                LINK    A6,#FFFCH
      4H        3A2E 000C                MOVE.W  000C(A6),D5
@@ -335,14 +341,14 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
     20H        4EFA 037E                JMP     [037EH] = 000003A0H
     24H        4279 0000 0034           CLR.W   00000034H
     2AH        2F2E 0014                MOVE.L  0014(A6),-(A7)
-    2EH        4EB9 0000 0000           JSR     00000000H
+    2EH        4EB9 0000 0000           JSR     FTST
     34H        588F                     ADDQ.L  #4,A7
     36H        663A                     BNE     [3AH] = 00000072H
     38H        1F3C 0020                MOVE.B  #20H,-(A7)
     3CH        3F2E 0012                MOVE.W  0012(A6),-(A7)
     40H        286E 000E                MOVE.L  000E(A6),A4
     44H        4854                     PEA     (A4)
-    46H        6100 0000                BSR     [0000H] = 00000048H
+    46H        6100 0000                BSR     addch
     4AH        508F                     ADDQ.L  #8,A7
     4CH        536E 000C                SUBQ.W  #1,000C(A6)
     50H        0C6E 0001 000C           CMPI.W  #0001H,000C(A6)
@@ -352,7 +358,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
     5EH        3F2E 0012                MOVE.W  0012(A6),-(A7)
     62H        286E 000E                MOVE.L  000E(A6),A4
     66H        4854                     PEA     (A4)
-    68H        6100 0000                BSR     [0000H] = 0000006AH
+    68H        6100 0000                BSR     addch
     6CH        508F                     ADDQ.L  #8,A7
     6EH        4EFA 0322                JMP     [0322H] = 00000392H
     72H        0C6E 0009 000C           CMPI.W  #0009H,000C(A6)
@@ -364,21 +370,21 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
     8CH        3F2E 0012                MOVE.W  0012(A6),-(A7)
     90H        286E 000E                MOVE.L  000E(A6),A4
     94H        4854                     PEA     (A4)
-    96H        6100 0000                BSR     [0000H] = 00000098H
+    96H        6100 0000                BSR     addch
     9AH        508F                     ADDQ.L  #8,A7
     9CH        536E 000C                SUBQ.W  #1,000C(A6)
     A0H        0C6E 0008 000C           CMPI.W  #0008H,000C(A6)
     A6H        6302                     BLS     [02H] = 000000AAH
     A8H        60DE                     BRA     [DEH] = 00000088H
     AAH        2F2E 0014                MOVE.L  0014(A6),-(A7)
-    AEH        4EB9 0000 0000           JSR     00000000H
+    AEH        4EB9 0000 0000           JSR     FTST
     B4H        588F                     ADDQ.L  #4,A7
     B6H        6C24                     BGE     [24H] = 000000DCH
     B8H        1F3C 002D                MOVE.B  #2DH,-(A7)
     BCH        3F2E 0012                MOVE.W  0012(A6),-(A7)
     C0H        286E 000E                MOVE.L  000E(A6),A4
     C4H        4854                     PEA     (A4)
-    C6H        6100 0000                BSR     [0000H] = 000000C8H
+    C6H        6100 0000                BSR     addch
     CAH        508F                     ADDQ.L  #8,A7
     CCH        2A2E 0014                MOVE.L  0014(A6),D5
     D0H        0885 001F                BCLR    #001FH,D5
@@ -388,7 +394,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
     E0H        3F2E 0012                MOVE.W  0012(A6),-(A7)
     E4H        286E 000E                MOVE.L  000E(A6),A4
     E8H        4854                     PEA     (A4)
-    EAH        6100 0000                BSR     [0000H] = 000000ECH
+    EAH        6100 0000                BSR     addch
     EEH        508F                     ADDQ.L  #8,A7
     F0H        2A2E 0014                MOVE.L  0014(A6),D5
     F4H        7817                     MOVEQ   #17H,D4
@@ -404,20 +410,20 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
    116H        2F2E 0014                MOVE.L  0014(A6),-(A7)
    11AH        598F                     SUBQ.L  #4,A7
    11CH        3F2E FFFE                MOVE.W  FFFE(A6),-(A7)
-   120H        6100 0000                BSR     [0000H] = 00000122H
+   120H        6100 0000                BSR     proc9
    124H        548F                     ADDQ.L  #2,A7
-   126H        4EB9 0000 0000           JSR     00000000H
+   126H        4EB9 0000 0000           JSR     FDIV
    12CH        588F                     ADDQ.L  #4,A7
    12EH        2D5F 0014                MOVE.L  (A7)+,0014(A6)
    132H        3D6E FFFE FFFC           MOVE.W  FFFE(A6),FFFC(A6)
    138H        2F2E 0014                MOVE.L  0014(A6),-(A7)
    13CH        2F3C 3F80 0000           MOVE.L  #3F800000H,-(A7)
-   142H        4EB9 0000 0000           JSR     00000000H
+   142H        4EB9 0000 0000           JSR     FCMP
    148H        508F                     ADDQ.L  #8,A7
    14AH        6D1A                     BLT     [1AH] = 00000166H
    14CH        2F2E 0014                MOVE.L  0014(A6),-(A7)
    150H        2F3C 3DCC CCCD           MOVE.L  #3DCCCCCDH,-(A7)
-   156H        4EB9 0000 0000           JSR     00000000H
+   156H        4EB9 0000 0000           JSR     FMUL
    15CH        588F                     ADDQ.L  #4,A7
    15EH        2D5F 0014                MOVE.L  (A7)+,0014(A6)
    162H        526E FFFC                ADDQ.W  #1,FFFC(A6)
@@ -430,9 +436,9 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
    17AH        2F2E 0014                MOVE.L  0014(A6),-(A7)
    17EH        598F                     SUBQ.L  #4,A7
    180H        3F2E FFFE                MOVE.W  FFFE(A6),-(A7)
-   184H        6100 0000                BSR     [0000H] = 00000186H
+   184H        6100 0000                BSR     proc9
    188H        548F                     ADDQ.L  #2,A7
-   18AH        4EB9 0000 0000           JSR     00000000H
+   18AH        4EB9 0000 0000           JSR     FMUL
    190H        588F                     ADDQ.L  #4,A7
    192H        2D5F 0014                MOVE.L  (A7)+,0014(A6)
    196H        3A2E FFFE                MOVE.W  FFFE(A6),D5
@@ -440,93 +446,94 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
    19CH        3D45 FFFC                MOVE.W  D5,FFFC(A6)
    1A0H        2F2E 0014                MOVE.L  0014(A6),-(A7)
    1A4H        2F3C 3DCC CCCD           MOVE.L  #3DCCCCCDH,-(A7)
-   1AAH        4EB9 0000 0000           JSR     00000000H
+   1AAH        4EB9 0000 0000           JSR     FCMP
    1B0H        508F                     ADDQ.L  #8,A7
    1B2H        6C1A                     BGE     [1AH] = 000001CEH
    1B4H        2F2E 0014                MOVE.L  0014(A6),-(A7)
    1B8H        2F3C 4120 0000           MOVE.L  #41200000H,-(A7)
-   1BEH        4EB9 0000 0000           JSR     00000000H
+   1BEH        4EB9 0000 0000           JSR     FMUL
    1C4H        588F                     ADDQ.L  #4,A7
    1C6H        2D5F 0014                MOVE.L  (A7)+,0014(A6)
    1CAH        536E FFFC                SUBQ.W  #1,FFFC(A6)
+
    1CEH        2F2E 0014                MOVE.L  0014(A6),-(A7)
    1D2H        3A2E 000C                MOVE.W  000C(A6),D5
    1D6H        E545                     ASL.W   #2,D5
    1D8H        49F9 0000 0010           LEA     00000010H,A4
    1DEH        2F34 5000                MOVE.L  00H(A4,D5.W),-(A7)
-   1E2H        4EB9 0000 0000           JSR     00000000H
+   1E2H        4EB9 0000 0000           JSR     FADD
    1E8H        588F                     ADDQ.L  #4,A7
    1EAH        2D5F 0014                MOVE.L  (A7)+,0014(A6)
    1EEH        2F2E 0014                MOVE.L  0014(A6),-(A7)
    1F2H        2F3C 3F80 0000           MOVE.L  #3F800000H,-(A7)
-   1F8H        4EB9 0000 0000           JSR     00000000H
+   1F8H        4EB9 0000 0000           JSR     FCMP
    1FEH        508F                     ADDQ.L  #8,A7
    200H        6D1A                     BLT     [1AH] = 0000021CH
    202H        2F2E 0014                MOVE.L  0014(A6),-(A7)
    206H        2F3C 3DCC CCCD           MOVE.L  #3DCCCCCDH,-(A7)
-   20CH        4EB9 0000 0000           JSR     00000000H
+   20CH        4EB9 0000 0000           JSR     FMUL
    212H        588F                     ADDQ.L  #4,A7
    214H        2D5F 0014                MOVE.L  (A7)+,0014(A6)
    218H        526E FFFC                ADDQ.W  #1,FFFC(A6)
    21CH        598F                     SUBQ.L  #4,A7
    21EH        2F2E 0014                MOVE.L  0014(A6),-(A7)
-   222H        6100 0000                BSR     [0000H] = 00000224H
+   222H        6100 0000                BSR     proc8
    226H        588F                     ADDQ.L  #4,A7
    228H        2D5F 0014                MOVE.L  (A7)+,0014(A6)
    22CH        2F2E 0014                MOVE.L  0014(A6),-(A7)
-   230H        4EB9 0000 0000           JSR     00000000H
+   230H        4EB9 0000 0000           JSR     TRUNCX
    236H        2A1F                     MOVE.L  (A7)+,D5
    238H        0645 0030                ADDI.W  #0030H,D5
    23CH        1F05                     MOVE.B  D5,-(A7)
    23EH        3F2E 0012                MOVE.W  0012(A6),-(A7)
    242H        286E 000E                MOVE.L  000E(A6),A4
    246H        4854                     PEA     (A4)
-   248H        6100 0000                BSR     [0000H] = 0000024AH
+   248H        6100 0000                BSR     addch
    24CH        508F                     ADDQ.L  #8,A7
    24EH        2F2E 0014                MOVE.L  0014(A6),-(A7)
    252H        2F2E 0014                MOVE.L  0014(A6),-(A7)
-   256H        4EB9 0000 0000           JSR     00000000H
+   256H        4EB9 0000 0000           JSR     TRUNCX
    25CH        2A1F                     MOVE.L  (A7)+,D5
    25EH        4845                     SWAP    D5
    260H        4245                     CLR.W   D5
    262H        4845                     SWAP    D5
    264H        2F05                     MOVE.L  D5,-(A7)
-   266H        4EB9 0000 0000           JSR     00000000H
-   26CH        4EB9 0000 0000           JSR     00000000H
+   266H        4EB9 0000 0000           JSR     FLOATX
+   26CH        4EB9 0000 0000           JSR     FSUB
    272H        588F                     ADDQ.L  #4,A7
    274H        2D5F 0014                MOVE.L  (A7)+,0014(A6)
    278H        1F3C 002E                MOVE.B  #2EH,-(A7)
    27CH        3F2E 0012                MOVE.W  0012(A6),-(A7)
    280H        286E 000E                MOVE.L  000E(A6),A4
    284H        4854                     PEA     (A4)
-   286H        6100 0000                BSR     [0000H] = 00000288H
+   286H        6100 0000                BSR     addch
    28AH        508F                     ADDQ.L  #8,A7
    28CH        536E 000C                SUBQ.W  #1,000C(A6)
    290H        598F                     SUBQ.L  #4,A7
    292H        2F2E 0014                MOVE.L  0014(A6),-(A7)
-   296H        6100 0000                BSR     [0000H] = 00000298H
+   296H        6100 0000                BSR     proc8
    29AH        588F                     ADDQ.L  #4,A7
    29CH        2D5F 0014                MOVE.L  (A7)+,0014(A6)
    2A0H        2F2E 0014                MOVE.L  0014(A6),-(A7)
-   2A4H        4EB9 0000 0000           JSR     00000000H
+   2A4H        4EB9 0000 0000           JSR     TRUNCX
    2AAH        2A1F                     MOVE.L  (A7)+,D5
    2ACH        0645 0030                ADDI.W  #0030H,D5
    2B0H        1F05                     MOVE.B  D5,-(A7)
    2B2H        3F2E 0012                MOVE.W  0012(A6),-(A7)
    2B6H        286E 000E                MOVE.L  000E(A6),A4
    2BAH        4854                     PEA     (A4)
-   2BCH        6100 0000                BSR     [0000H] = 000002BEH
+   2BCH        6100 0000                BSR     addch
    2C0H        508F                     ADDQ.L  #8,A7
    2C2H        2F2E 0014                MOVE.L  0014(A6),-(A7)
    2C6H        2F2E 0014                MOVE.L  0014(A6),-(A7)
-   2CAH        4EB9 0000 0000           JSR     00000000H
+   2CAH        4EB9 0000 0000           JSR     TRUNCX
    2D0H        2A1F                     MOVE.L  (A7)+,D5
    2D2H        4845                     SWAP    D5
    2D4H        4245                     CLR.W   D5
    2D6H        4845                     SWAP    D5
    2D8H        2F05                     MOVE.L  D5,-(A7)
-   2DAH        4EB9 0000 0000           JSR     00000000H
-   2E0H        4EB9 0000 0000           JSR     00000000H
+   2DAH        4EB9 0000 0000           JSR     FLOATX
+   2E0H        4EB9 0000 0000           JSR     FSUB
    2E6H        588F                     ADDQ.L  #4,A7
    2E8H        2D5F 0014                MOVE.L  (A7)+,0014(A6)
    2ECH        536E 000C                SUBQ.W  #1,000C(A6)
@@ -537,7 +544,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
    2FCH        3F2E 0012                MOVE.W  0012(A6),-(A7)
    300H        286E 000E                MOVE.L  000E(A6),A4
    304H        4854                     PEA     (A4)
-   306H        6100 0000                BSR     [0000H] = 00000308H
+   306H        6100 0000                BSR     addch
    30AH        508F                     ADDQ.L  #8,A7
    30CH        536E FFFC                SUBQ.W  #1,FFFC(A6)
    310H        4A6E FFFC                TST.W   FFFC(A6)
@@ -546,7 +553,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
    31AH        3F2E 0012                MOVE.W  0012(A6),-(A7)
    31EH        286E 000E                MOVE.L  000E(A6),A4
    322H        4854                     PEA     (A4)
-   324H        6100 0000                BSR     [0000H] = 00000326H
+   324H        6100 0000                BSR     addch
    328H        508F                     ADDQ.L  #8,A7
    32AH        3A2E FFFC                MOVE.W  FFFC(A6),D5
    32EH        4445                     NEG.W   D5
@@ -556,7 +563,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
    33CH        3F2E 0012                MOVE.W  0012(A6),-(A7)
    340H        286E 000E                MOVE.L  000E(A6),A4
    344H        4854                     PEA     (A4)
-   346H        6100 0000                BSR     [0000H] = 00000348H
+   346H        6100 0000                BSR     addch
    34AH        508F                     ADDQ.L  #8,A7
    34CH        3A2E FFFC                MOVE.W  FFFC(A6),D5
    350H        48C5                     EXT.L   D5
@@ -567,7 +574,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
    35EH        3F2E 0012                MOVE.W  0012(A6),-(A7)
    362H        286E 000E                MOVE.L  000E(A6),A4
    366H        4854                     PEA     (A4)
-   368H        6100 0000                BSR     [0000H] = 0000036AH
+   368H        6100 0000                BSR     addch
    36CH        508F                     ADDQ.L  #8,A7
    36EH        3A2E FFFC                MOVE.W  FFFC(A6),D5
    372H        48C5                     EXT.L   D5
@@ -579,7 +586,7 @@ proc code, procnum =  3, entrypoint =     0H, number of bytes = 932
    382H        3F2E 0012                MOVE.W  0012(A6),-(A7)
    386H        286E 000E                MOVE.L  000E(A6),A4
    38AH        4854                     PEA     (A4)
-   38CH        6100 0000                BSR     [0000H] = 0000038EH
+   38CH        6100 0000                BSR     addch
    390H        508F                     ADDQ.L  #8,A7
    392H        3A39 0000 0034           MOVE.W  00000034H,D5
    398H        286E 000E                MOVE.L  000E(A6),A4
@@ -690,6 +697,7 @@ proc code, procnum = 11, entrypoint =     0H, number of bytes = 72
   checksum: o.k.
 
 proc code, procnum =  4, entrypoint =     0H, number of bytes = 646
+ConvertRealFromString(VAR r: REAL; VAR s: ARRAY OF CHAR; VAR done: BOOLEAN);
  DECODE --------                        INSTRUCTION
      0H        4E56 FFC8                LINK    A6,#FFC8H
      4H        2F2D FFFC                MOVE.L  FFFC(A5),-(A7)
@@ -961,7 +969,8 @@ proc code, procnum = 12, entrypoint =     0H, number of bytes = 112
 ref own quick call at    60H, procnum = 10  checksum: o.k.
 
 proc code, procnum =  5, entrypoint =     0H, number of bytes = 236
- DECODE --------                        INSTRUCTION
+ConvertRealToStringOct(x: REAL; VAR s: ARRAY OF CHAR; VAR done: BOOLEAN);
+DECODE --------                        INSTRUCTION
      0H        4E56 0000                LINK    A6,#0000H
      4H        2F2D FFFC                MOVE.L  FFFC(A5),-(A7)
      8H        2B4E FFFC                MOVE.L  A6,FFFC(A5)
@@ -977,7 +986,7 @@ proc code, procnum =  5, entrypoint =     0H, number of bytes = 236
     26H        4EFA 00BC                JMP     [00BCH] = 000000E4H
     2AH        4279 0000 0034           CLR.W   00000034H
     30H        2F2E 0012                MOVE.L  0012(A6),-(A7)
-    34H        4EB9 0000 0000           JSR     00000000H
+    34H        4EB9 0000 0000           JSR     FTST
     3AH        588F                     ADDQ.L  #4,A7
     3CH        6C24                     BGE     [24H] = 00000062H
     3EH        1F3C 002D                MOVE.B  #2DH,-(A7)
@@ -1058,15 +1067,15 @@ proc code, procnum = 13, entrypoint =     0H, number of bytes = 138
  DECODE --------                        INSTRUCTION
      0H        4E56 FFFE                LINK    A6,#FFFEH
      4H        4878 0005                PEA     0005H
-     8H        4EB9 0000 0000           JSR     00000000H
+     8H        4EB9 0000 0000           JSR     FLOATX
      EH        4878 03E8                PEA     03E8H
-    12H        4EB9 0000 0000           JSR     00000000H
-    18H        4EB9 0000 0000           JSR     00000000H
+    12H        4EB9 0000 0000           JSR     FLOATX
+    18H        4EB9 0000 0000           JSR     FDIV
     1EH        588F                     ADDQ.L  #4,A7
     20H        2A1F                     MOVE.L  (A7)+,D5
     22H        598F                     SUBQ.L  #4,A7
     24H        2F05                     MOVE.L  D5,-(A7)
-    26H        4EB9 0000 0000           JSR     00000000H
+    26H        4EB9 0000 0000           JSR     LENGTHEN
     2CH        49F9 0000 007E           LEA     0000007EH,A4
     32H        28DF                     MOVE.L  (A7)+,(A4)+
     34H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -1079,7 +1088,7 @@ proc code, procnum = 13, entrypoint =     0H, number of bytes = 138
     4EH        2F34 5000                MOVE.L  00H(A4,D5.W),-(A7)
     52H        2F39 0000 010A           MOVE.L  0000010AH,-(A7)
     58H        2F39 0000 0106           MOVE.L  00000106H,-(A7)
-    5EH        4EB9 0000 0000           JSR     00000000H
+    5EH        4EB9 0000 0000           JSR     LFDIV
     64H        508F                     ADDQ.L  #8,A7
     66H        3A2E FFFE                MOVE.W  FFFE(A6),D5
     6AH        E745                     ASL.W   #3,D5
@@ -1167,6 +1176,7 @@ ref own data at    40H  checksum: o.k.
 ref util: at    56H, procnum = 22  checksum: o.k.
 
 proc code, procnum =  6, entrypoint =     0H, number of bytes = 1274
+ConvertLongRealToString(x : LONGREAL ; VAR s : ARRAY OF CHAR ; n : CARDINAL ; VAR done : BOOLEAN) ;
  DECODE --------                        INSTRUCTION
      0H        4E56 FFF2                LINK    A6,#FFF2H
      4H        3A2E 000C                MOVE.W  000C(A6),D5
@@ -1679,6 +1689,7 @@ proc code, procnum = 15, entrypoint =     0H, number of bytes = 72
   checksum: o.k.
 
 proc code, procnum =  7, entrypoint =     0H, number of bytes = 736
+ConvertLongRealFromString(VAR r : LONGREAL ; VAR s : ARRAY OF CHAR; VAR done : BOOLEAN) ;
  DECODE --------                        INSTRUCTION
      0H        4E56 FFC4                LINK    A6,#FFC4H
      4H        2F2D FFFC                MOVE.L  FFFC(A5),-(A7)
@@ -1951,32 +1962,32 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 530
      6H        4E56 0000                LINK    A6,#0000H
      AH        598F                     SUBQ.L  #4,A7
      CH        42A7                     CLR.L   -(A7)
-     EH        4EB9 0000 0000           JSR     00000000H
+     EH        4EB9 0000 0000           JSR     LFLOATX
     14H        49F9 0000 00F6           LEA     000000F6H,A4
     1AH        28DF                     MOVE.L  (A7)+,(A4)+
     1CH        28DF                     MOVE.L  (A7)+,(A4)+
     1EH        598F                     SUBQ.L  #4,A7
     20H        4878 0001                PEA     0001H
-    24H        4EB9 0000 0000           JSR     00000000H
+    24H        4EB9 0000 0000           JSR     LFLOATX
     2AH        49F9 0000 00FE           LEA     000000FEH,A4
     30H        28DF                     MOVE.L  (A7)+,(A4)+
     32H        28DF                     MOVE.L  (A7)+,(A4)+
     34H        598F                     SUBQ.L  #4,A7
     36H        4878 000A                PEA     000AH
-    3AH        4EB9 0000 0000           JSR     00000000H
+    3AH        4EB9 0000 0000           JSR     LFLOATX
     40H        49F9 0000 0106           LEA     00000106H,A4
     46H        28DF                     MOVE.L  (A7)+,(A4)+
     48H        28DF                     MOVE.L  (A7)+,(A4)+
-    4AH        6100 0000                BSR     [0000H] = 0000004CH
+    4AH        6100 0000                BSR     proc13
     4EH        598F                     SUBQ.L  #4,A7
     50H        4878 000A                PEA     000AH
-    54H        4EB9 0000 0000           JSR     00000000H
+    54H        4EB9 0000 0000           JSR     LFLOATX
     5AH        49F9 0000 0036           LEA     00000036H,A4
     60H        28DF                     MOVE.L  (A7)+,(A4)+
     62H        28DF                     MOVE.L  (A7)+,(A4)+
     64H        598F                     SUBQ.L  #4,A7
     66H        4878 0064                PEA     0064H
-    6AH        4EB9 0000 0000           JSR     00000000H
+    6AH        4EB9 0000 0000           JSR     LFLOATX
     70H        49F9 0000 003E           LEA     0000003EH,A4
     76H        28DF                     MOVE.L  (A7)+,(A4)+
     78H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -1990,7 +2001,7 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 530
     96H        2F39 0000 0046           MOVE.L  00000046H,-(A7)
     9CH        2F39 0000 004A           MOVE.L  0000004AH,-(A7)
     A2H        2F39 0000 0046           MOVE.L  00000046H,-(A7)
-    A8H        4EB9 0000 0000           JSR     00000000H
+    A8H        4EB9 0000 0000           JSR     LFMUL
     AEH        508F                     ADDQ.L  #8,A7
     B0H        49F9 0000 004E           LEA     0000004EH,A4
     B6H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -1999,7 +2010,7 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 530
     C0H        2F39 0000 004E           MOVE.L  0000004EH,-(A7)
     C6H        2F39 0000 0052           MOVE.L  00000052H,-(A7)
     CCH        2F39 0000 004E           MOVE.L  0000004EH,-(A7)
-    D2H        4EB9 0000 0000           JSR     00000000H
+    D2H        4EB9 0000 0000           JSR     LFMUL
     D8H        508F                     ADDQ.L  #8,A7
     DAH        49F9 0000 0056           LEA     00000056H,A4
     E0H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -2008,7 +2019,7 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 530
     EAH        2F39 0000 0056           MOVE.L  00000056H,-(A7)
     F0H        2F39 0000 005A           MOVE.L  0000005AH,-(A7)
     F6H        2F39 0000 0056           MOVE.L  00000056H,-(A7)
-    FCH        4EB9 0000 0000           JSR     00000000H
+    FCH        4EB9 0000 0000           JSR     LFMUL
    102H        508F                     ADDQ.L  #8,A7
    104H        49F9 0000 005E           LEA     0000005EH,A4
    10AH        28DF                     MOVE.L  (A7)+,(A4)+
@@ -2017,7 +2028,7 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 530
    114H        2F39 0000 005E           MOVE.L  0000005EH,-(A7)
    11AH        2F39 0000 0062           MOVE.L  00000062H,-(A7)
    120H        2F39 0000 005E           MOVE.L  0000005EH,-(A7)
-   126H        4EB9 0000 0000           JSR     00000000H
+   126H        4EB9 0000 0000           JSR     LFMUL
    12CH        508F                     ADDQ.L  #8,A7
    12EH        49F9 0000 0066           LEA     00000066H,A4
    134H        28DF                     MOVE.L  (A7)+,(A4)+
@@ -2026,7 +2037,7 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 530
    13EH        2F39 0000 0066           MOVE.L  00000066H,-(A7)
    144H        2F39 0000 006A           MOVE.L  0000006AH,-(A7)
    14AH        2F39 0000 0066           MOVE.L  00000066H,-(A7)
-   150H        4EB9 0000 0000           JSR     00000000H
+   150H        4EB9 0000 0000           JSR     LFMUL
    156H        508F                     ADDQ.L  #8,A7
    158H        49F9 0000 006E           LEA     0000006EH,A4
    15EH        28DF                     MOVE.L  (A7)+,(A4)+
@@ -2035,7 +2046,7 @@ scmod init code, procnum =  0, entrypoint =     0H, number of bytes = 530
    168H        2F39 0000 006E           MOVE.L  0000006EH,-(A7)
    16EH        2F39 0000 0072           MOVE.L  00000072H,-(A7)
    174H        2F39 0000 006E           MOVE.L  0000006EH,-(A7)
-   17AH        4EB9 0000 0000           JSR     00000000H
+   17AH        4EB9 0000 0000           JSR     LFMUL
    180H        508F                     ADDQ.L  #8,A7
    182H        49F9 0000 0076           LEA     00000076H,A4
    188H        28DF                     MOVE.L  (A7)+,(A4)+
