@@ -29,6 +29,7 @@ CASEX:
 [00010024] 5988                      subq.l     #4,a0
 [00010026] 4ed0                      jmp        (a0)
 
+errorProc:
 [00010028] 4e56 ffe8                 link       a6,#-24
 [0001002c] 2a00                      move.l     d0,d5
 [0001002e] 7809                      moveq.l    #9,d4
@@ -96,6 +97,7 @@ CASEX:
 ; VAR intout: ARRAY[0..0] OF INTEGER -68
 ; VAR addrin: ARRAY[0..0] OF ADDRESS -72
 ; VAR i: INTEGER
+gemError:
 [0001010c] 4e56 ffb6                 link       a6,#-74
 [00010110] 426e ffb6                 clr.w      -74(a6) for i = 0 TO 14 global[i] := 0
 [00010114] 3a2e ffb6                 move.w     -74(a6),d5
@@ -178,6 +180,7 @@ CASEX:
 [00010240] 4e5e                      unlk       a6
 [00010242] 4e75                      rts
 
+defaultErrorProcessor:
 [00010244] 4e56 ff88                 link       a6,#-120
 [00010248] 2f2d fffc                 move.l     -4(a5),-(a7)
 [0001024c] 2b4e fffc                 move.l     a6,-4(a5)
@@ -336,7 +339,7 @@ trap7_func5:
 [00010418] 660a                      bne.s      $00010424
 trap7_func6:
 [0001041a] 2001                      move.l     d1,d0
-[0001041c] 4eb9 0001 0028            jsr        $00010028
+[0001041c] 4eb9 0001 0028            jsr        errorProc
 [00010422] 4e73                      rte
 trap7_func7:
 [00010424] 4e68                      move.l     usp,a0
@@ -405,37 +408,37 @@ DIVU32:
 bus_err:
 [000104c8] 46fc 2700                 move.w     #$2700,sr
 [000104cc] 70ff                      moveq.l    #-1,d0
-[000104ce] 4eb9 0001 0028            jsr        $00010028
+[000104ce] 4eb9 0001 0028            jsr        errorProc
 [000104d4] 4e73                      rte
 
 address_err:
 [000104d6] 46fc 2700                 move.w     #$2700,sr
 [000104da] 70fe                      moveq.l    #-2,d0
-[000104dc] 4eb9 0001 0028            jsr        $00010028
+[000104dc] 4eb9 0001 0028            jsr        errorProc
 [000104e2] 4e73                      rte
 
 division_zero:
 [000104e4] 46fc 2700                 move.w     #$2700,sr
 [000104e8] 70fc                      moveq.l    #-4,d0
-[000104ea] 4eb9 0001 0028            jsr        $00010028
+[000104ea] 4eb9 0001 0028            jsr        errorProc
 [000104f0] 4e73                      rte
 
 rangechk:
 [000104f2] 46fc 2700                 move.w     #$2700,sr
 [000104f6] 70fb                      moveq.l    #-5,d0
-[000104f8] 4eb9 0001 0028            jsr        $00010028
+[000104f8] 4eb9 0001 0028            jsr        errorProc
 [000104fe] 4e73                      rte
 
 trapv:
 [00010500] 46fc 2700                 move.w     #$2700,sr
 [00010504] 70fa                      moveq.l    #-6,d0
-[00010506] 4eb9 0001 0028            jsr        $00010028
+[00010506] 4eb9 0001 0028            jsr        errorProc
 [0001050c] 4e73                      rte
 
 privilege:
 [0001050e] 46fc 2700                 move.w     #$2700,sr
 [00010512] 70f9                      moveq.l    #-7,d0
-[00010514] 4eb9 0001 0028            jsr        $00010028
+[00010514] 4eb9 0001 0028            jsr        errorProc
 [0001051a] 4e73                      rte
 
 SetException:
@@ -463,6 +466,7 @@ SetException:
 [0001056c] 4e5e                      unlk       a6
 [0001056e] 4e75                      rts
 
+RestoreExceptions:
 [00010570] 4e56 0000                 link       a6,#0
 [00010574] 2f39 0001 5cfa            move.l     $00015CFA,-(a7)
 [0001057a] 3f3c 0003                 move.w     #$0003,-(a7)
@@ -517,11 +521,11 @@ GEMX.init
 [00010626] 2a08                      move.l     a0,d5
 [00010628] 23c5 0001 5caa            move.l     d5,BasePageAddress
 [0001062e] 2879 0001 5caa            movea.l    BasePageAddress,a4
-[00010634] 23ec 0008 0001 5ce6       move.l     8(a4),textbase
+[00010634] 23ec 0008 0001 5ce6       move.l     8(a4),CodeBase
 [0001063c] 2028 000c                 move.l     12(a0),d0
 [00010640] d0a8 0014                 add.l      20(a0),d0
 [00010644] d0a8 001c                 add.l      28(a0),d0
-[00010648] 2879 0001 5ce6            movea.l    textbase,a4
+[00010648] 2879 0001 5ce6            movea.l    CodeBase,a4
 [0001064e] 2a2c 0006                 move.l     6(a4),d5
 [00010652] d085                      add.l      d5,d0
 [00010654] 0680 0000 0100            addi.l     #$00000100,d0
@@ -816,14 +820,14 @@ GEMDOS.Free:
 
 GEMAESbase.GemCall:
 [00010a34] 4e56 0000                 link       a6,#0
-[00010a38] 49f9 0001 5da0            lea.l      $00015DA0,a4
+[00010a38] 49f9 0001 5da0            lea.l      AESControl,a4
 [00010a3e] 38ae 0010                 move.w     16(a6),(a4)
 [00010a42] 396e 000e 0002            move.w     14(a6),2(a4)
 [00010a48] 396e 000c 0004            move.w     12(a6),4(a4)
 [00010a4e] 396e 000a 0006            move.w     10(a6),6(a4)
 [00010a54] 396e 0008 0008            move.w     8(a6),8(a4)
 [00010a5a] 203c 0000 00c8            move.l     #$000000C8,d0
-[00010a60] 49f9 0001 5d6a            lea.l      $00015D6A,a4
+[00010a60] 49f9 0001 5d6a            lea.l      AESParameters,a4
 [00010a66] 2a0c                      move.l     a4,d5
 [00010a68] 2205                      move.l     d5,d1
 [00010a6a] 4e42                      trap       #2
@@ -884,8 +888,8 @@ GEMAESbase.init:
 [00010b52] 42ac 0012                 clr.l      18(a4)
 [00010b56] 42ac 0016                 clr.l      22(a4)
 [00010b5a] 42ac 001a                 clr.l      26(a4)
-[00010b5e] 49f9 0001 5d6a            lea.l      $00015D6A,a4
-[00010b64] 47f9 0001 5da0            lea.l      $00015DA0,a3
+[00010b5e] 49f9 0001 5d6a            lea.l      AESParameters,a4
+[00010b64] 47f9 0001 5da0            lea.l      AESControl,a3
 [00010b6a] 2a0b                      move.l     a3,d5
 [00010b6c] 2885                      move.l     d5,(a4)
 [00010b6e] 47f9 0001 5d82            lea.l      $00015D82,a3
@@ -1154,7 +1158,7 @@ GEMVDIbase.CallVDI:
 
 GEMVDIbase.SetContrl:
 [00010ecc] 4e56 0000                 link       a6,#0
-[00010ed0] 33ee 0010 0001 5df2       move.w     16(a6),$00015DF2
+[00010ed0] 33ee 0010 0001 5df2       move.w     16(a6),GEMVDIbase.contrl
 [00010ed8] 33ee 000e 0001 5df4       move.w     14(a6),$00015DF4
 [00010ee0] 33ee 000c 0001 5df8       move.w     12(a6),$00015DF8
 [00010ee8] 33ee 000a 0001 5dfc       move.w     10(a6),$00015DFC
@@ -1397,14 +1401,14 @@ VDIRasters.CopyRasterOpaque:
 [0001128c] 4e75                      rts
 
 ***
-* MODULE AppBase 
+* MODULE AppBase
 ***
 
 [0001128e] 4e56 0000                 link       a6,#0
 [00011292] 4e5e                      unlk       a6
 [00011294] 4e75                      rts
 
-.init
+AppBase.init
 [00011296] 4ef9 0001 0efc            jmp        GEMVDIbase.init
 
 [0001129c] 4e56 0000                 link       a6,#0
@@ -1416,7 +1420,7 @@ VDIRasters.CopyRasterOpaque:
 [000112c8] 42b9 0001 6258            clr.l      AppBase.openStreams
 [000112ce] 4239 0001 625c            clr.b      AppBase.shellTail
 [000112d4] 4e5e                      unlk       a6
-[000112d6] 4ef9 0001 19e0            jmp        $000119E0
+[000112d6] 4ef9 0001 19e0            jmp        AppWindow.init+6
 
 ***
 * MODULE AppWindow
@@ -1797,7 +1801,7 @@ AppWindow.Clear:
 [000118de] 4e5e                      unlk       a6
 [000118e0] 4e75                      rts
 
-AppWindow.updateWindow
+AppWindow.updateWindow:
 [000118e2] 4e56 fff4                 link       a6,#-12
 [000118e6] 4227                      clr.b      -(a7)
 [000118e8] 4eb9 0001 12dc            jsr        mouseOn
@@ -1859,7 +1863,7 @@ AppWindow.updateWindow
 [000119d6] 4e5e                      unlk       a6
 [000119d8] 4e75                      rts
 
-.init
+AppWindow.init
 [000119da] 4ef9 0001 1296            jmp        $00011296
 
 [000119e0] 4e56 0000                 link       a6,#0
@@ -2332,7 +2336,7 @@ Strings.Pos:
 [00011fbe] 6098                      bra.s      $00011F58
 
 Strings.init:
-[00011fc0] 4ef9 0001 19da            jmp        $000119DA
+[00011fc0] 4ef9 0001 19da            jmp        AppWindow.init
 
 [00011fc6] 4e56 0000                 link       a6,#0
 [00011fca] 6100 fc66                 bsr        Strings.InitStringModule
@@ -2386,7 +2390,7 @@ Buffers.init:
 * MODULE ExecUtil
 ***
 
-ExecUtil.FreeBuffers.
+ExecUtil.FreeBuffers:
 [0001205a] 4e56 0000                 link       a6,#0
 [0001205e] 4eb9 0001 1fd6            jsr        $00011FD6
 [00012064] 4e5e                      unlk       a6
@@ -4756,6 +4760,7 @@ NewStreams.init:
 * MODULE Filepool
 ***
 
+Filepool.PoolAlloc:
 [00014180] 4e56 ffb0                 link       a6,#-80
 [00014184] 286e 0008                 movea.l    8(a6),a4
 [00014188] 47ee ffb0                 lea.l      -80(a6),a3
@@ -4969,7 +4974,7 @@ decsym.OpenFiles:
 [00014430] 675a                      beq.s      $0001448C
 [00014432] 558f                      subq.l     #2,a7
 [00014434] 4879 0001 59b4            pea.l      $000159B4 "List"
-[0001443a] 4eb9 0001 4180            jsr        $00014180
+[0001443a] 4eb9 0001 4180            jsr        Filepool.PoolAlloc
 [00014440] 588f                      addq.l     #4,a7
 [00014442] 3d5f fffc                 move.w     (a7)+,-4(a6)
 [00014446] 486e fef6                 pea.l      -266(a6)
@@ -6564,10 +6569,14 @@ DecSym.init:
 
 15caa: BasePageAddress
 15cae: ErrorProcessor
-15ce6: textbase
+15ce6: CodeBase
 15cea: PgmSize
 15cee: ExceptionVecs1 ds.l 12
-15d1e: ExceptionVecs2 ds.l
+15d1e: ExceptionVecs2 ds.l 16
+15d5e: 
+15d6a: AESParameters
+15da0: AESControl
+15df2: GEMVDIbase.contrl
 1624a: AppBase.apId
 1624c: AppBase.wdwHandle
 1624e: AppBase.vdiHandle

@@ -164,7 +164,7 @@ BEGIN
   END;
   Terminate();
   
-  (* WTF? *)
+  (* WTF? This will jump to the exit code of the main module *)
   p := REGISTER(13) - 40;
   p^.call();
 END IOError;

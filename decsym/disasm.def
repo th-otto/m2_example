@@ -1,0 +1,9 @@
+DEFINITION MODULE disasm;
+
+TYPE OpCode = CARDINAL;
+     SignedWord = INTEGER;
+     OpCodePtr = POINTER TO OpCode;
+
+PROCEDURE disasm(addr: LONGCARD; pc: OpCodePtr; VAR numOpcodes: CARDINAL; VAR strbuf: ARRAY OF CHAR);
+
+END disasm.

@@ -44,6 +44,13 @@ BEGIN
 END FormatHexLong;
 
 
+PROCEDURE FormatLong(val: LONGCARD; len: CARDINAL; VAR result: ARRAY OF CHAR);
+BEGIN
+  CODE(nop); (* XXX *)
+  FormatVal(val, len, dec, ' ', FALSE, result);
+END FormatLong;
+
+
 PROCEDURE FormatVal(val: LONGCARD; len: CARDINAL; type: basetype; fill: CHAR; negativ: BOOLEAN; VAR result: ARRAY OF CHAR);
 VAR buf: ARRAY[1..12] OF CHAR;
     i: CARDINAL;
