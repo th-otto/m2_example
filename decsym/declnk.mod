@@ -36,11 +36,13 @@ IMPORT NewStreams;
 IMPORT StrUtil;
 IMPORT disasm;
 IMPORT Filepool;
+FROM MCLnkFileDefs IMPORT LnkFileSymbols;
 
 CONST nop = 04E71H;
 
 VAR crc: CARDINAL;
 VAR outputFailed: BOOLEAN;
+VAR printCrc: BOOLEAN;
 VAR lnkFile: NewStreams.STREAM;
 VAR decFile: NewStreams.STREAM;
 
@@ -166,11 +168,11 @@ BEGIN
 END resetCrc;
 
 
-PROCEDURE WriteRange(val: CARDINAL; size: CARDINAL);
+PROCEDURE WriteRange(val: CARDINAL; offset: CARDINAL);
 BEGIN
   WriteHexCard(val, 7);
-  IF size <> 0 THEN
-    WriteHexCard(size + val, 8);
+  IF offset <> 0 THEN
+    WriteHexCard(offset + val, 8);
   ELSE
     WriteSpaces(8);
   END;
@@ -270,43 +272,278 @@ BEGIN
 END DecodeInstructions;
 
 
-VAR b: BYTE;
+PROCEDURE DecodeSymbol(sy: LnkFileSymbols);
+BEGIN
+  CASE sy OF
+    scmodHeader: WriteString('scmod header');
+  | import: WriteString('import');
+  | dataSize: WriteString('data size');
+  | filledData: WriteString('filled data');
+  | procCode: WriteString('proc code');
+  | initCode: WriteString('init code');
+  | scmodInitCode: WriteString('scmod init code');
+  | excpCode: WriteString('excp code');
+  | refOwnData: WriteString('ref own data');
+  | refExtData: WriteString('ref ext data');
+  | refOwnCode: WriteString('ref own code');
+  | refOwnProcCall: WriteString('ref own proc call');
+  | refExtProcCall: WriteString('ref ext proc call');
+  | refOwnProcAss: WriteString('ref own proc ass');
+  | refExtProcAss: WriteString('ref ext proc ass');
+  | refOwnExcp: WriteString('ref own excp');
+  | refExtExcp: WriteString('ref ext excp');
+  | refExtInitCall: WriteString('ref ext init call');
+  | scmodEnd: WriteString('scmod end');
+  | linkCodeVersion: WriteString('link code version:');
+  | refAnyProcCall: WriteString('ref any proc call:');
+  | refAnyProcAss: WriteString('ref any proc ass:');
+  | stringData: WriteString('string data:');
+  | boundData: WriteString('bound data:');
+  | refOwnString: WriteString('ref own string:');
+  | refOwnBound: WriteString('ref own bound:');
+  | refUtil: WriteString('ref util:');
+  | loadUtil: WriteString('load util:');
+  | defAbsSymbol: WriteString('def abs symbol:');
+  | refAbsSymbol: WriteString('ref abs symbol:');
+  | refOwnQuickCall: WriteString('ref own quick call');
+  | refExtQuickCall: WriteString('ref ext quick call');
+  | refOwnQuickAss: WriteString('ref own quick ass');
+  | refExtQuickAss: WriteString('ref ext quick ass');
+  | ELSE WriteString('--- unknown Symbol ---');
+  END;
+END DecodeSymbol;
+
+
+PROCEDURE DecodeLinkCodeVersion();
 VAR w: CARDINAL;
-VAR pc: disasm.OpCodePtr;
-VAR addr: LONGCARD;
-VAR numOpcodes: CARDINAL;
-VAR strbuf: ARRAY [0..79] OF CHAR;
-VAR arr: ARRAY[0..0] OF CARDINAL;
+BEGIN
+  DecodeSymbol(linkCodeVersion);
+  Read16Bit(w);
+  Write(' ');
+  WriteHexCard(w DIV 256, 3);
+  Write(' ');
+  WriteHexCard(w MOD 256, 3);
+  WriteLn();
+END DecodeLinkCodeVersion;
+
+
+PROCEDURE DecodeModuleHeader();
+VAR header: RECORD CASE :BOOLEAN OF
+      FALSE: w: ARRAY [0..11] OF CARDINAL;
+     | TRUE: s: ARRAY[0..23] OF CHAR;
+    END; END;
+    i: CARDINAL;
+BEGIN
+  Write(' ');
+  FOR i := 0 TO HIGH(header.w) DO
+    Read16Bit(header.w[i]);
+  END;
+  WriteString(header.s);
+END DecodeModuleHeader;
+
+
+PROCEDURE DecodeWord();
+VAR w: CARDINAL;
+BEGIN
+  Read16Bit(w);
+  WriteHexCard(w, 7);
+END DecodeWord;
+
+
+PROCEDURE DecodeModuleKey();
+BEGIN
+  WriteString(', key =');
+  DecodeWord();
+  DecodeWord();
+  DecodeWord();
+END DecodeModuleKey;
+
+
+PROCEDURE DecodeModnum();
+VAR w: CARDINAL;
+BEGIN
+  Read16Bit(w);
+  WriteString(', modnum = ');
+  WriteCard(w, 2);
+END DecodeModnum;
+
+
+PROCEDURE DecodeSize(): CARDINAL;
+VAR w: CARDINAL;
+BEGIN
+  Read16Bit(w);
+  WriteString(', number of bytes = ');
+  WriteCard(w, 1);
+  RETURN w;
+END DecodeSize;
+
+
+PROCEDURE DecodeLongSize(): LONGCARD;
+VAR lo, hi: CARDINAL;
+    v: LONGCARD;
+BEGIN
+  Read16Bit(hi);
+  Read16Bit(lo);
+  v := LONGCARD(hi) * 65536 + LONGCARD(lo);
+  WriteString(', number of bytes = ');
+  WriteLong(v, 1);
+  RETURN v;
+END DecodeLongSize;
+
+
+PROCEDURE DecodeProcnum();
+VAR w: CARDINAL;
+BEGIN
+  Read16Bit(w);
+  WriteString(', procnum = ');
+  WriteCard(w, 2);
+END DecodeProcnum;
+
+
+PROCEDURE DecodeEntry(): CARDINAL;
+VAR w: CARDINAL;
+BEGIN
+  Read16Bit(w);
+  WriteString(', entrypoint =');
+  WriteHexCard(w, 7);
+  RETURN w;
+END DecodeEntry;
+
+
+PROCEDURE DecodeReference();
+VAR w: CARDINAL;
+BEGIN
+  Read16Bit(w);
+  WriteString(' at');
+  WriteHexCard(w, 7);
+END DecodeReference;
+
+
+PROCEDURE DecodeCrc();
+VAR w: CARDINAL;
+    calculatedcrc: CARDINAL;
+BEGIN
+  calculatedcrc := crc;
+  Read16Bit(w);
+  crc := calculatedcrc;
+  IF crc = w THEN
+    WriteString('  checksum:');
+    IF printCrc THEN
+      WriteHexCard(w, 7);
+    END;
+    WriteString(' o.k.');
+  ELSE
+    WriteString('  ---- checksum error: ');
+    WriteHexCard(w, 7);
+    WriteString(' should be ');
+    WriteHexCard(crc, 7);
+  END;
+  WriteLn();
+END DecodeCrc;
+
+
+PROCEDURE PrintDirective(VAR s: ARRAY OF CHAR; sy: CARDINAL);
+BEGIN
+  CODE(nop); (* XXX *)
+  AppWindow.WriteString(s);
+  AppWindow.WriteLn();
+END PrintDirective;
+
+
+PROCEDURE DecodeModule();
+VAR sy: LnkFileSymbols;
+    entry: CARDINAL;
+    size: CARDINAL;
+    w: CARDINAL;
+    datasize: LONGCARD;
+BEGIN
+  Read16Bit(w);
+  IF w = ORD(linkCodeVersion) THEN
+    DecodeLinkCodeVersion();
+    DecodeCrc();
+    REPEAT
+      WriteLn();
+      Read16Bit(w);
+      IF w <= ORD(MAX(LnkFileSymbols)) THEN
+        (* sy := LnkFileSymbols(w); *)
+        CODE(03A2EH, 0FFF8H, 01D45H, 0FFFFH); (* XXX *)
+        DecodeSymbol(sy);
+        CASE sy OF
+          scmodHeader:
+          WriteString(': MODULE ');
+          DecodeModuleHeader();
+          DecodeModuleKey();
+        | import:
+          DecodeModuleHeader();
+          DecodeModuleKey();
+          DecodeModnum();
+        | dataSize:
+          datasize := DecodeLongSize();
+        | filledData:
+          WriteString(', rel. start addr. =');
+          DecodeWord();
+          datasize := DecodeLongSize();
+          DecodeData(0, datasize);
+        | stringData, boundData:
+          datasize := DecodeLongSize();
+          DecodeData(0, datasize);
+        | procCode, initCode, scmodInitCode:
+          DecodeProcnum();
+          entry := DecodeEntry();
+          size := DecodeSize();
+          DecodeInstructions(entry, 0, size);
+        | excpCode, refOwnExcp:
+          (* NYI? *)
+        | refOwnData, refOwnCode, refExtInitCall, refOwnString, refOwnBound:
+          DecodeReference();
+        | refOwnProcCall, refOwnProcAss, refUtil, refOwnQuickCall, refOwnQuickAss:
+          DecodeReference();
+          DecodeProcnum();
+        | refExtData:
+          DecodeReference();
+          DecodeModnum();
+        | refExtProcCall, refExtProcAss, refExtExcp, refExtQuickCall, refExtQuickAss:
+          DecodeReference();
+          DecodeProcnum();
+          DecodeModnum();
+        | loadUtil:
+          DecodeProcnum();
+        | scmodEnd:
+          (* nothing to do *)
+        | ELSE (* linkCodeVersion, refAnyProcCall, refAnyProcAss, defAbsSymbol, refAbsSymbol *)
+          PrintDirective(' ---- illegal Directive', ORD(sy));
+          sy := scmodEnd;
+        END;
+        DecodeCrc();
+      ELSE
+        PrintDirective(' ---- unknown directive number', w);
+        sy := scmodEnd;
+      END;
+    UNTIL sy = scmodEnd;
+  ELSE
+    AppWindow.WriteString(' ---- no LinkCodeVersion found - halt ');
+    AppWindow.WriteLn();
+  END;
+END DecodeModule;
+
+
 
 BEGIN
+  resetCrc();
   AppWindow.WriteString('Link file decoder   Version  2.00a');
   AppWindow.WriteLn();
   AppWindow.WriteLn();
-  
-  disasm.disasm(addr, pc, numOpcodes, strbuf);
-  
-  StrUtil.FormatCard(0, 0, strbuf);
-  StrUtil.FormatHexCard(0, 0, strbuf);
-  StrUtil.FormatLong(0, 0, strbuf);
-  
+
+  outputFailed := FALSE;
+  printCrc := FALSE;  
   OpenFiles();
-  CloseFiles();
-  
-  NewStreams.WriteChar(decFile, NewStreams.eolc);
-  Read16Bit(w);
-  ParameterError('');
-  WriteLn();
-  Write(' ');
-  WriteString('');
-  WriteSpaces(0);
-  WriteHexCard(0, 0);
-  WriteHexZeroCard(0);
-  WriteCard(0, 0);
-  WriteLong(0, 0);
-  resetCrc();
-  WriteData(arr, 0);
-  DecodeData(0, 0);
-  DecodeInstructions(0, 0, 0);
+  IF NOT outputFailed THEN
+    DecodeModule();
+    CloseFiles();
+  END;
+  AppWindow.WriteLn();
+  AppWindow.WriteString('End of decode');
+  AppWindow.WriteLn();
   
   ExecUtil.IOError(0, FALSE);
 END declnk.

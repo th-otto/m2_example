@@ -7930,6 +7930,7 @@ declnk.DecodeData:
 [00016f54] 4e5e                      unlk       a6
 [00016f56] 4e75                      rts
 
+declnk.DecodeInstructions:
 [00016f58] 4e56 ff90                 link       a6,#-112
 [00016f5c] 426e fff8                 clr.w      -8(a6)
 [00016f60] 6100 fd54                 bsr        declnk.WriteLn
@@ -8069,6 +8070,7 @@ declnk.DecodeData:
 [00017128] 4e5e                      unlk       a6
 [0001712a] 4e75                      rts
 
+declnk.DecodeSymbol:
 [0001712c] 4e56 0000                 link       a6,#0
 [00017130] 7a00                      moveq.l    #0,d5
 [00017132] 1a2e 0008                 move.b     8(a6),d5
@@ -8077,171 +8079,205 @@ declnk.DecodeData:
 [0001713e] 0000 0000
 [00017142] 0000 0023
 [00017146] 0000 02b8
+0
 [0001714a] 3f3c 000b                 move.w     #$000B,-(a7)
 [0001714e] 4879 0001 7a64            pea.l      $00017A64 'scmod header'
 [00017154] 6100 fb7a                 bsr        declnk.WriteString
 [00017158] 5c8f                      addq.l     #6,a7
 [0001715a] 4efa 02f2                 jmp        $0001744E(pc)
+1
 [0001715e] 3f3c 0005                 move.w     #$0005,-(a7)
 [00017162] 4879 0001 7a72            pea.l      $00017A72 'import'
 [00017168] 6100 fb66                 bsr        declnk.WriteString
 [0001716c] 5c8f                      addq.l     #6,a7
 [0001716e] 4efa 02de                 jmp        $0001744E(pc)
+2
 [00017172] 3f3c 0008                 move.w     #$0008,-(a7)
 [00017176] 4879 0001 7a7a            pea.l      $00017A7A 'data size'
 [0001717c] 6100 fb52                 bsr        declnk.WriteString
 [00017180] 5c8f                      addq.l     #6,a7
 [00017182] 4efa 02ca                 jmp        $0001744E(pc)
+3
 [00017186] 3f3c 000a                 move.w     #$000A,-(a7)
 [0001718a] 4879 0001 7a84            pea.l      $00017A84 'filled data'
 [00017190] 6100 fb3e                 bsr        declnk.WriteString
 [00017194] 5c8f                      addq.l     #6,a7
 [00017196] 4efa 02b6                 jmp        $0001744E(pc)
+4
 [0001719a] 3f3c 0008                 move.w     #$0008,-(a7)
 [0001719e] 4879 0001 7a90            pea.l      $00017A90 'proc code'
 [000171a4] 6100 fb2a                 bsr        declnk.WriteString
 [000171a8] 5c8f                      addq.l     #6,a7
 [000171aa] 4efa 02a2                 jmp        $0001744E(pc)
+5
 [000171ae] 3f3c 0008                 move.w     #$0008,-(a7)
 [000171b2] 4879 0001 7a9a            pea.l      $00017A9A 'init code'
 [000171b8] 6100 fb16                 bsr        declnk.WriteString
 [000171bc] 5c8f                      addq.l     #6,a7
 [000171be] 4efa 028e                 jmp        $0001744E(pc)
+6
 [000171c2] 3f3c 000e                 move.w     #$000E,-(a7)
 [000171c6] 4879 0001 7aa4            pea.l      $00017AA4 'scmod init code'
 [000171cc] 6100 fb02                 bsr        declnk.WriteString
 [000171d0] 5c8f                      addq.l     #6,a7
 [000171d2] 4efa 027a                 jmp        $0001744E(pc)
+7
 [000171d6] 3f3c 0008                 move.w     #$0008,-(a7)
 [000171da] 4879 0001 7ab4            pea.l      $00017AB4 'excp code'
 [000171e0] 6100 faee                 bsr        declnk.WriteString
 [000171e4] 5c8f                      addq.l     #6,a7
 [000171e6] 4efa 0266                 jmp        $0001744E(pc)
+8
 [000171ea] 3f3c 000b                 move.w     #$000B,-(a7)
 [000171ee] 4879 0001 7abe            pea.l      $00017ABE 'ref own data'
 [000171f4] 6100 fada                 bsr        declnk.WriteString
 [000171f8] 5c8f                      addq.l     #6,a7
 [000171fa] 4efa 0252                 jmp        $0001744E(pc)
+9
 [000171fe] 3f3c 000b                 move.w     #$000B,-(a7)
 [00017202] 4879 0001 7acc            pea.l      $00017ACC 'ref ext data'
 [00017208] 6100 fac6                 bsr        declnk.WriteString
 [0001720c] 5c8f                      addq.l     #6,a7
 [0001720e] 4efa 023e                 jmp        $0001744E(pc)
+10
 [00017212] 3f3c 000b                 move.w     #$000B,-(a7)
 [00017216] 4879 0001 7ada            pea.l      $00017ADA 'ref own code'
 [0001721c] 6100 fab2                 bsr        declnk.WriteString
 [00017220] 5c8f                      addq.l     #6,a7
 [00017222] 4efa 022a                 jmp        $0001744E(pc)
+11
 [00017226] 3f3c 0010                 move.w     #$0010,-(a7)
 [0001722a] 4879 0001 7ae8            pea.l      $00017AE8 'ref own proc call'
 [00017230] 6100 fa9e                 bsr        declnk.WriteString
 [00017234] 5c8f                      addq.l     #6,a7
 [00017236] 4efa 0216                 jmp        $0001744E(pc)
+12
 [0001723a] 3f3c 0010                 move.w     #$0010,-(a7)
 [0001723e] 4879 0001 7afa            pea.l      $00017AFA 'ref ext proc call'
 [00017244] 6100 fa8a                 bsr        declnk.WriteString
 [00017248] 5c8f                      addq.l     #6,a7
 [0001724a] 4efa 0202                 jmp        $0001744E(pc)
+13
 [0001724e] 3f3c 000f                 move.w     #$000F,-(a7)
 [00017252] 4879 0001 7b0c            pea.l      $00017B0C 'ref own proc ass'
 [00017258] 6100 fa76                 bsr        declnk.WriteString
 [0001725c] 5c8f                      addq.l     #6,a7
 [0001725e] 4efa 01ee                 jmp        $0001744E(pc)
+14
 [00017262] 3f3c 000f                 move.w     #$000F,-(a7)
 [00017266] 4879 0001 7b1e            pea.l      $00017B1E 'ref ext proc ass'
 [0001726c] 6100 fa62                 bsr        declnk.WriteString
 [00017270] 5c8f                      addq.l     #6,a7
 [00017272] 4efa 01da                 jmp        $0001744E(pc)
+15
 [00017276] 3f3c 000b                 move.w     #$000B,-(a7)
 [0001727a] 4879 0001 7b30            pea.l      $00017B30 'ref own excp'
 [00017280] 6100 fa4e                 bsr        declnk.WriteString
 [00017284] 5c8f                      addq.l     #6,a7
 [00017286] 4efa 01c6                 jmp        $0001744E(pc)
+16:
 [0001728a] 3f3c 000b                 move.w     #$000B,-(a7)
 [0001728e] 4879 0001 7b3e            pea.l      $00017B3E 'ref ext excp'
 [00017294] 6100 fa3a                 bsr        declnk.WriteString
 [00017298] 5c8f                      addq.l     #6,a7
 [0001729a] 4efa 01b2                 jmp        $0001744E(pc)
+17
 [0001729e] 3f3c 0010                 move.w     #$0010,-(a7)
 [000172a2] 4879 0001 7b4c            pea.l      $00017B4C 'ref ext init call'
 [000172a8] 6100 fa26                 bsr        declnk.WriteString
 [000172ac] 5c8f                      addq.l     #6,a7
 [000172ae] 4efa 019e                 jmp        $0001744E(pc)
+18
 [000172b2] 3f3c 0008                 move.w     #$0008,-(a7)
 [000172b6] 4879 0001 7b5e            pea.l      $00017B5E 'scmod end'
 [000172bc] 6100 fa12                 bsr        declnk.WriteString
 [000172c0] 5c8f                      addq.l     #6,a7
 [000172c2] 4efa 018a                 jmp        $0001744E(pc)
+19:
 [000172c6] 3f3c 0011                 move.w     #$0011,-(a7)
 [000172ca] 4879 0001 7b68            pea.l      $00017B68 'link code version:'
 [000172d0] 6100 f9fe                 bsr        declnk.WriteString
 [000172d4] 5c8f                      addq.l     #6,a7
 [000172d6] 4efa 0176                 jmp        $0001744E(pc)
+20
 [000172da] 3f3c 0011                 move.w     #$0011,-(a7)
 [000172de] 4879 0001 7b7c            pea.l      $00017B7C 'ref any proc call:'
 [000172e4] 6100 f9ea                 bsr        declnk.WriteString
 [000172e8] 5c8f                      addq.l     #6,a7
 [000172ea] 4efa 0162                 jmp        $0001744E(pc)
+21
 [000172ee] 3f3c 0010                 move.w     #$0010,-(a7)
 [000172f2] 4879 0001 7b90            pea.l      $00017B90 'ref any proc ass:'
 [000172f8] 6100 f9d6                 bsr        declnk.WriteString
 [000172fc] 5c8f                      addq.l     #6,a7
 [000172fe] 4efa 014e                 jmp        $0001744E(pc)
+22
 [00017302] 3f3c 000b                 move.w     #$000B,-(a7)
 [00017306] 4879 0001 7ba2            pea.l      $00017BA2 'string data:'
 [0001730c] 6100 f9c2                 bsr        declnk.WriteString
 [00017310] 5c8f                      addq.l     #6,a7
 [00017312] 4efa 013a                 jmp        $0001744E(pc)
+23
 [00017316] 3f3c 000a                 move.w     #$000A,-(a7)
 [0001731a] 4879 0001 7bb0            pea.l      $00017BB0 'bound data:'
 [00017320] 6100 f9ae                 bsr        declnk.WriteString
 [00017324] 5c8f                      addq.l     #6,a7
 [00017326] 4efa 0126                 jmp        $0001744E(pc)
+24
 [0001732a] 3f3c 000e                 move.w     #$000E,-(a7)
 [0001732e] 4879 0001 7bbc            pea.l      $00017BBC 'ref own string:'
 [00017334] 6100 f99a                 bsr        declnk.WriteString
 [00017338] 5c8f                      addq.l     #6,a7
 [0001733a] 4efa 0112                 jmp        $0001744E(pc)
+25
 [0001733e] 3f3c 000d                 move.w     #$000D,-(a7)
 [00017342] 4879 0001 7bcc            pea.l      $00017BCC 'ref own bound:'
 [00017348] 6100 f986                 bsr        declnk.WriteString
 [0001734c] 5c8f                      addq.l     #6,a7
 [0001734e] 4efa 00fe                 jmp        $0001744E(pc)
+26
 [00017352] 3f3c 0008                 move.w     #$0008,-(a7)
 [00017356] 4879 0001 7bdc            pea.l      $00017BDC 'ref util:'
 [0001735c] 6100 f972                 bsr        declnk.WriteString
 [00017360] 5c8f                      addq.l     #6,a7
 [00017362] 4efa 00ea                 jmp        $0001744E(pc)
+27
 [00017366] 3f3c 0009                 move.w     #$0009,-(a7)
 [0001736a] 4879 0001 7be6            pea.l      $00017BE6 'load util:'
 [00017370] 6100 f95e                 bsr        declnk.WriteString
 [00017374] 5c8f                      addq.l     #6,a7
 [00017376] 4efa 00d6                 jmp        $0001744E(pc)
+28
 [0001737a] 3f3c 000e                 move.w     #$000E,-(a7)
 [0001737e] 4879 0001 7bf2            pea.l      $00017BF2 'def abs symbol:'
 [00017384] 6100 f94a                 bsr        declnk.WriteString
 [00017388] 5c8f                      addq.l     #6,a7
 [0001738a] 4efa 00c2                 jmp        $0001744E(pc)
+29
 [0001738e] 3f3c 000e                 move.w     #$000E,-(a7)
 [00017392] 4879 0001 7c02            pea.l      $00017C02 'ref abs symbol:'
 [00017398] 6100 f936                 bsr        declnk.WriteString
 [0001739c] 5c8f                      addq.l     #6,a7
 [0001739e] 4efa 00ae                 jmp        $0001744E(pc)
+32:
 [000173a2] 3f3c 0011                 move.w     #$0011,-(a7)
 [000173a6] 4879 0001 7c12            pea.l      $00017C12 'ref own quick call'
 [000173ac] 6100 f922                 bsr        declnk.WriteString
 [000173b0] 5c8f                      addq.l     #6,a7
 [000173b2] 4efa 009a                 jmp        $0001744E(pc)
+34:
 [000173b6] 3f3c 0011                 move.w     #$0011,-(a7)
 [000173ba] 4879 0001 7c26            pea.l      $00017C26 'ref ext quick call'
 [000173c0] 6100 f90e                 bsr        declnk.WriteString
 [000173c4] 5c8f                      addq.l     #6,a7
 [000173c6] 4efa 0086                 jmp        $0001744E(pc)
+33:
 [000173ca] 3f3c 0010                 move.w     #$0010,-(a7)
 [000173ce] 4879 0001 7c3a            pea.l      $00017C3A 'ref own quick ass'
 [000173d4] 6100 f8fa                 bsr        declnk.WriteString
 [000173d8] 5c8f                      addq.l     #6,a7
 [000173da] 4efa 0072                 jmp        $0001744E(pc)
+35:
 [000173de] 3f3c 0010                 move.w     #$0010,-(a7)
 [000173e2] 4879 0001 7c4c            pea.l      $00017C4C 'ref ext quick ass'
 [000173e8] 6100 f8e6                 bsr        declnk.WriteString
@@ -8278,12 +8314,12 @@ declnk.DecodeData:
            0228
 [0001742e] 023c
            0250
-[00017432] 02b4
-           02b4
-           0264
-           028c
-[0001743a] 0278
-           02a0
+[00017432] 02b4 30
+           02b4 31
+           0264 32
+           028c 33
+[0001743a] 0278 34
+           02a0 35
 [0001743e] 3f3c                      move.w     #$0015,-(a7)
 [00017440] 4879 0001 7c5e            pea.l      $00017C5E '--- unknown Symbol ---'
 [00017448] 6100 f886                 bsr        declnk.WriteString
@@ -8291,9 +8327,10 @@ declnk.DecodeData:
 [0001744e] 4e5e                      unlk       a6
 [00017450] 4e75                      rts
 
+declnk.DecodeLinkCodeVersion:
 [00017452] 4e56 fffe                 link       a6,#-2
 [00017456] 1f3c 0013                 move.b     #$13,-(a7)
-[0001745a] 6100 fcd0                 bsr        $0001712C
+[0001745a] 6100 fcd0                 bsr        declnk.DecodeSymbol
 [0001745e] 548f                      addq.l     #2,a7
 [00017460] 486e fffe                 pea.l      -2(a6)
 [00017464] 6100 f80e                 bsr        declnk.Read16Bit
@@ -8320,6 +8357,7 @@ declnk.DecodeData:
 [000174a8] 4e5e                      unlk       a6
 [000174aa] 4e75                      rts
 
+declnk.DecodeModuleHeader:
 [000174ac] 4e56 ffe6                 link       a6,#-26
 [000174b0] 1f3c 0020                 move.b     #$20,-(a7)
 [000174b4] 6100 f7e6                 bsr        declnk.Write
@@ -8341,6 +8379,7 @@ declnk.DecodeData:
 [000174ec] 4e5e                      unlk       a6
 [000174ee] 4e75                      rts
 
+declnk.DecodeWord:
 [000174f0] 4e56 fffe                 link       a6,#-2
 [000174f4] 486e fffe                 pea.l      -2(a6)
 [000174f8] 6100 f77a                 bsr        declnk.Read16Bit
@@ -8352,17 +8391,19 @@ declnk.DecodeData:
 [0001750c] 4e5e                      unlk       a6
 [0001750e] 4e75                      rts
 
+declnk.DecodeModuleKey:
 [00017510] 4e56 0000                 link       a6,#0
 [00017514] 3f3c 0006                 move.w     #$0006,-(a7)
 [00017518] 4879 0001 7c76            pea.l      $00017C76 ', key ='
 [0001751e] 6100 f7b0                 bsr        declnk.WriteString
 [00017522] 5c8f                      addq.l     #6,a7
-[00017524] 6100 ffca                 bsr.w      $000174F0
-[00017528] 6100 ffc6                 bsr.w      $000174F0
-[0001752c] 6100 ffc2                 bsr.w      $000174F0
+[00017524] 6100 ffca                 bsr.w      declnk.DecodeWord
+[00017528] 6100 ffc6                 bsr.w      declnk.DecodeWord
+[0001752c] 6100 ffc2                 bsr.w      declnk.DecodeWord
 [00017530] 4e5e                      unlk       a6
 [00017532] 4e75                      rts
 
+declnk.DecodeModnum:
 [00017534] 4e56 fffe                 link       a6,#-2
 [00017538] 486e fffe                 pea.l      -2(a6)
 [0001753c] 6100 f736                 bsr        declnk.Read16Bit
@@ -8378,6 +8419,7 @@ declnk.DecodeData:
 [00017560] 4e5e                      unlk       a6
 [00017562] 4e75                      rts
 
+declnk.DecodeSize:
 [00017564] 4e56 fffe                 link       a6,#-2
 [00017568] 486e fffe                 pea.l      -2(a6)
 [0001756c] 6100 f706                 bsr        declnk.Read16Bit
@@ -8394,6 +8436,7 @@ declnk.DecodeData:
 [00017596] 4e5e                      unlk       a6
 [00017598] 4e75                      rts
 
+declnk.DecodeLongSize:
 [0001759a] 4e56 fff8                 link       a6,#-8
 [0001759e] 486e fffc                 pea.l      -4(a6)
 [000175a2] 6100 f6d0                 bsr        declnk.Read16Bit
@@ -8421,6 +8464,7 @@ declnk.DecodeData:
 [000175ec] 4e5e                      unlk       a6
 [000175ee] 4e75                      rts
 
+DecodeProcnum:
 [000175f0] 4e56 fffe                 link       a6,#-2
 [000175f4] 486e fffe                 pea.l      -2(a6)
 [000175f8] 6100 f67a                 bsr        declnk.Read16Bit
@@ -8436,6 +8480,7 @@ declnk.DecodeData:
 [0001761c] 4e5e                      unlk       a6
 [0001761e] 4e75                      rts
 
+DecodeEntry:
 [00017620] 4e56 fffe                 link       a6,#-2
 [00017624] 486e fffe                 pea.l      -2(a6)
 [00017628] 6100 f64a                 bsr        declnk.Read16Bit
@@ -8452,6 +8497,7 @@ declnk.DecodeData:
 [00017652] 4e5e                      unlk       a6
 [00017654] 4e75                      rts
 
+DecodeReference;
 [00017656] 4e56 fffe                 link       a6,#-2
 [0001765a] 486e fffe                 pea.l      -2(a6)
 [0001765e] 6100 f614                 bsr        declnk.Read16Bit
@@ -8467,6 +8513,7 @@ declnk.DecodeData:
 [00017682] 4e5e                      unlk       a6
 [00017684] 4e75                      rts
 
+DecodeCrc;
 [00017686] 4e56 fffc                 link       a6,#-4
 [0001768a] 3d79 0001 8f5e fffc       move.w     declnk.crc,-4(a6)
 [00017692] 486e fffe                 pea.l      -2(a6)
@@ -8480,7 +8527,7 @@ declnk.DecodeData:
 [000176b4] 4879 0001 7cd8            pea.l      $00017CD8 '  checksum:'
 [000176ba] 6100 f614                 bsr        declnk.WriteString
 [000176be] 5c8f                      addq.l     #6,a7
-[000176c0] 4a39 0001 8f61            tst.b      $00018F61
+[000176c0] 4a39 0001 8f61            tst.b      printCrc
 [000176c6] 670e                      beq.s      $000176D6
 [000176c8] 3f2e fffe                 move.w     -2(a6),-(a7)
 [000176cc] 3f3c 0007                 move.w     #$0007,-(a7)
@@ -8511,6 +8558,7 @@ declnk.DecodeData:
 [0001772c] 4e5e                      unlk       a6
 [0001772e] 4e75                      rts
 
+PrintDirective:
 [00017730] 4e56 0000                 link       a6,#0
 [00017734] 3a2e 000e                 move.w     14(a6),d5
 [00017738] 3f05                      move.w     d5,-(a7)
@@ -8522,6 +8570,7 @@ declnk.DecodeData:
 [0001774e] 4e5e                      unlk       a6
 [00017750] 4e75                      rts
 
+DecodeModule:
 [00017752] 4e56 fff4                 link       a6,#-12
 [00017756] 486e fff8                 pea.l      -8(a6)
 [0001775a] 6100 f518                 bsr        declnk.Read16Bit
@@ -8531,8 +8580,9 @@ declnk.DecodeData:
 [00017766] 6602                      bne.s      $0001776A
 [00017768] 6004                      bra.s      $0001776E
 [0001776a] 4efa 01dc                 jmp        $00017948(pc)
-[0001776e] 6100 fce2                 bsr        $00017452
-[00017772] 6100 ff12                 bsr        $00017686
+[0001776e] 6100 fce2                 bsr        declnk.DecodeLinkCodeVersion
+[00017772] 6100 ff12                 bsr        DecodeCrc
+
 [00017776] 6100 f53e                 bsr        declnk.WriteLn
 [0001777a] 486e fff8                 pea.l      -8(a6)
 [0001777e] 6100 f4f4                 bsr        declnk.Read16Bit
@@ -8545,7 +8595,7 @@ declnk.DecodeData:
 [00017792] 3a2e fff8                 move.w     -8(a6),d5
 [00017796] 1d45 ffff                 move.b     d5,-1(a6)
 [0001779a] 1f2e ffff                 move.b     -1(a6),-(a7)
-[0001779e] 6100 f98c                 bsr        $0001712C
+[0001779e] 6100 f98c                 bsr        declnk.DecodeSymbol
 [000177a2] 548f                      addq.l     #2,a7
 [000177a4] 7a00                      moveq.l    #0,d5
 [000177a6] 1a2e ffff                 move.b     -1(a6),d5
@@ -8559,17 +8609,17 @@ case 0:
 [000177c2] 4879 0001 7d0e            pea.l      $00017D0E ': MODULE'
 [000177c8] 6100 f506                 bsr        declnk.WriteString
 [000177cc] 5c8f                      addq.l     #6,a7
-[000177ce] 6100 fcdc                 bsr        $000174AC
-[000177d2] 6100 fd3c                 bsr        $00017510
+[000177ce] 6100 fcdc                 bsr        declnk.DecodeModuleHeader
+[000177d2] 6100 fd3c                 bsr        declnk.DecodeModuleKey
 [000177d6] 4efa 013e                 jmp        $00017916(pc)
 case 1:
-[000177da] 6100 fcd0                 bsr        $000174AC
-[000177de] 6100 fd30                 bsr        $00017510
-[000177e2] 6100 fd50                 bsr        $00017534
+[000177da] 6100 fcd0                 bsr        declnk.DecodeModuleHeader
+[000177de] 6100 fd30                 bsr        declnk.DecodeModuleKey
+[000177e2] 6100 fd50                 bsr        declnk.DecodeModnum
 [000177e6] 4efa 012e                 jmp        $00017916(pc)
 case 2:
 [000177ea] 598f                      subq.l     #4,a7
-[000177ec] 6100 fdac                 bsr        $0001759A
+[000177ec] 6100 fdac                 bsr        declnk.DecodeLongSize
 [000177f0] 2d5f fff4                 move.l     (a7)+,-12(a6)
 [000177f4] 4efa 0120                 jmp        $00017916(pc)
 case 3:
@@ -8577,9 +8627,9 @@ case 3:
 [000177fc] 4879 0001 7d18            pea.l      $00017D18 ', rel. start addr. ='
 [00017802] 6100 f4cc                 bsr        declnk.WriteString
 [00017806] 5c8f                      addq.l     #6,a7
-[00017808] 6100 fce6                 bsr        $000174F0
+[00017808] 6100 fce6                 bsr        declnk.DecodeWord
 [0001780c] 598f                      subq.l     #4,a7
-[0001780e] 6100 fd8a                 bsr        $0001759A
+[0001780e] 6100 fd8a                 bsr        declnk.DecodeLongSize
 [00017812] 2d5f fff4                 move.l     (a7)+,-12(a6)
 [00017816] 4267                      clr.w      -(a7)
 [00017818] 2f2e fff4                 move.l     -12(a6),-(a7)
@@ -8589,7 +8639,7 @@ case 3:
 case 22:
 case 23:
 [00017826] 598f                      subq.l     #4,a7
-[00017828] 6100 fd70                 bsr        $0001759A
+[00017828] 6100 fd70                 bsr        declnk.DecodeLongSize
 [0001782c] 2d5f fff4                 move.l     (a7)+,-12(a6)
 [00017830] 4267                      clr.w      -(a7)
 [00017832] 2f2e fff4                 move.l     -12(a6),-(a7)
@@ -8597,17 +8647,17 @@ case 23:
 [0001783a] 5c8f                      addq.l     #6,a7
 [0001783c] 4efa 00d8                 jmp        $00017916(pc)
 case 4, 5, 6:
-[00017840] 6100 fdae                 bsr        $000175F0
+[00017840] 6100 fdae                 bsr        DecodeProcnum
 [00017844] 558f                      subq.l     #2,a7
-[00017846] 6100 fdd8                 bsr        $00017620
+[00017846] 6100 fdd8                 bsr        DecodeEntry
 [0001784a] 3d5f fffc                 move.w     (a7)+,-4(a6)
 [0001784e] 558f                      subq.l     #2,a7
-[00017850] 6100 fd12                 bsr        $00017564
+[00017850] 6100 fd12                 bsr        declnk.DecodeSize
 [00017854] 3d5f fffa                 move.w     (a7)+,-6(a6)
 [00017858] 3f2e fffc                 move.w     -4(a6),-(a7)
 [0001785c] 4267                      clr.w      -(a7)
 [0001785e] 3f2e fffa                 move.w     -6(a6),-(a7)
-[00017862] 6100 f6f4                 bsr        $00016F58
+[00017862] 6100 f6f4                 bsr        declnk.DecodeInstructions
 [00017866] 5c8f                      addq.l     #6,a7
 [00017868] 4efa 00ac                 jmp        $00017916(pc)
 case 7:
@@ -8618,31 +8668,31 @@ case 10:
 case 17:
 case 24:
 case 25:
-[00017870] 6100 fde4                 bsr        $00017656
+[00017870] 6100 fde4                 bsr        DecodeReference
 [00017874] 4efa 00a0                 jmp        $00017916(pc)
 case 11:
 case 13:
 case 26:
 case 32:
 case 33:
-[00017878] 6100 fddc                 bsr        $00017656
-[0001787c] 6100 fd72                 bsr        $000175F0
+[00017878] 6100 fddc                 bsr        DecodeReference
+[0001787c] 6100 fd72                 bsr        DecodeProcnum
 [00017880] 4efa 0094                 jmp        $00017916(pc)
 case 9:
-[00017884] 6100 fdd0                 bsr        $00017656
-[00017888] 6100 fcaa                 bsr        $00017534
+[00017884] 6100 fdd0                 bsr        DecodeReference
+[00017888] 6100 fcaa                 bsr        declnk.DecodeModnum
 [0001788c] 4efa 0088                 jmp        $00017916(pc)
 case 12:
 case 14:
 case 16:
 case 34:
 case 35:
-[00017890] 6100 fdc4                 bsr        $00017656
-[00017894] 6100 fd5a                 bsr        $000175F0
-[00017898] 6100 fc9a                 bsr        $00017534
+[00017890] 6100 fdc4                 bsr        DecodeReference
+[00017894] 6100 fd5a                 bsr        DecodeProcnum
+[00017898] 6100 fc9a                 bsr        declnk.DecodeModnum
 [0001789c] 4efa 0078                 jmp        $00017916(pc)
 case 27:
-[000178a0] 6100 fd4e                 bsr        $000175F0
+[000178a0] 6100 fd4e                 bsr        DecodeProcnum
 [000178a4] 4efa 0070                 jmp        $00017916(pc)
 case 18:
 [000178a8] 4efa 006c                 jmp        $00017916(pc)
@@ -8696,15 +8746,15 @@ default:
 [00017902] 7a00                      moveq.l    #0,d5
 [00017904] 1a2e ffff                 move.b     -1(a6),d5
 [00017908] 3f05                      move.w     d5,-(a7)
-[0001790a] 6100 fe24                 bsr        $00017730
+[0001790a] 6100 fe24                 bsr        PrintDirective
 [0001790e] 508f                      addq.l     #8,a7
 [00017910] 1d7c 0012 ffff            move.b     #$12,-1(a6)
-[00017916] 6100 fd6e                 bsr        $00017686
+[00017916] 6100 fd6e                 bsr        DecodeCrc
 [0001791a] 4efa 001c                 jmp        $00017938(pc)
 [0001791e] 3f3c 001d                 move.w     #$001D,-(a7)
 [00017922] 4879 0001 7d46            pea.l      $00017D46 ' ---- unknown directive number'
 [00017928] 3f2e fff8                 move.w     -8(a6),-(a7)
-[0001792c] 6100 fe02                 bsr        $00017730
+[0001792c] 6100 fe02                 bsr        PrintDirective
 [00017930] 508f                      addq.l     #8,a7
 [00017932] 1d7c 0012 ffff            move.b     #$12,-1(a6)
 [00017938] 0c2e 0012 ffff            cmpi.b     #$12,-1(a6)
@@ -8731,11 +8781,11 @@ DecLnk.init:
 [00017984] 4eb9 0001 13e0            jsr        AppWindow.WriteLn
 [0001798a] 4eb9 0001 13e0            jsr        AppWindow.WriteLn
 [00017990] 4239 0001 8f60            clr.b      declnk.outputFailed
-[00017996] 4239 0001 8f61            clr.b      $00018F61
+[00017996] 4239 0001 8f61            clr.b      printCrc
 [0001799c] 6100 f1fc                 bsr        OpenFiles
 [000179a0] 4a39 0001 8f60            tst.b      declnk.outputFailed
 [000179a6] 6608                      bne.s      $000179B0
-[000179a8] 6100 fda8                 bsr        $00017752
+[000179a8] 6100 fda8                 bsr        DecodeModule
 [000179ac] 6100 f29a                 bsr        CloseFiles
 [000179b0] 4eb9 0001 13e0            jsr        AppWindow.WriteLn
 [000179b6] 3f3c 000c                 move.w     #$000C,-(a7)

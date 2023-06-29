@@ -1,0 +1,3 @@
+IMPLEMENTATION MODULE MCLnkFileDefs;
+
+END MCLnkFileDefs.
