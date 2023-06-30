@@ -663,6 +663,9 @@ BEGIN
   cmd[0] := 0C;
   tail[0] := 0C;
   AESShells.ShellRead(ADR(cmd), ADR(tail));
+  IF tail[0] = CHR(127) THEN
+    Strings.Delete(tail, 0, 1);
+  END;
   Strings.Assign(mainfilename, tail);
 END initfilenames;
 

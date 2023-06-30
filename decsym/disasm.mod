@@ -1,26 +1,17 @@
 IMPLEMENTATION MODULE disasm;
 (*$S-*) (* no stack check *)
 (*$T-*) (* no range check *)
+(*$Q+*) (* quick calls *)
 
-FROM SYSTEM IMPORT SETREG, CODE;
+IMPORT StrUtil;
 
-CONST nop = 04E71H;
+PROCEDURE disasm(addr: LONGCARD; pc: OpCodePtr; VAR numOpcodes: CARDINAL; VAR strbuf: ARRAY OF CHAR);
 
 VAR opcode: CARDINAL;
 VAR strpos: CARDINAL;
 VAR opsize: CARDINAL;
 VAR subcode: CARDINAL;
 VAR disp: SignedWord;
-
-
-PROCEDURE x14342();
-BEGIN
-END x14342;
-
-
-PROCEDURE disasm(addr: LONGCARD; pc: OpCodePtr; VAR numOpcodes: CARDINAL; VAR strbuf: ARRAY OF CHAR);
-
-VAR unused: INTEGER;
 
   PROCEDURE addch(ch: CHAR);
   BEGIN
@@ -31,8 +22,10 @@ VAR unused: INTEGER;
   PROCEDURE addstr(VAR s: ARRAY OF CHAR);
   VAR i: CARDINAL;
   BEGIN
-    FOR i := 0 TO  HIGH(s) DO
+    i := 0;
+    WHILE (i <= HIGH(s)) AND (s[i] <> 0C) DO
       addch(s[i]);
+      INC(i);
     END;
   END addstr;
   
@@ -46,13 +39,9 @@ VAR unused: INTEGER;
   PROCEDURE printhexchar(v: CARDINAL);
   BEGIN
     IF v <= 9 THEN
-      (* XXX patched: addch(CHR(v + ORD('0'))) *)
-      SETREG(5, 48);
-      addch(CHR(v));
+      addch(CHR(v + ORD('0')))
     ELSIF v <= 15 THEN
-      (* XXX patched: addch(CHR(v + ORD('A') - 10)) *)
-      SETREG(5, 65);
-      addch(CHR(v - 10));
+      addch(CHR(v + ORD('A') - 10));
     ELSE
       HALT;
     END;
@@ -115,17 +104,39 @@ VAR unused: INTEGER;
     printhexchar(v MOD 16);
   END printhexword;
   
+  PROCEDURE printword(v: CARDINAL);
+  VAR s: ARRAY[0..9] OF CHAR;
+  BEGIN
+    StrUtil.FormatCard(v, 1, s);
+    addstr(s);
+  END printword;
+  
+  PROCEDURE printsignedword(v: INTEGER);
+  VAR s: ARRAY[0..9] OF CHAR;
+  BEGIN
+    IF v < 0 THEN
+      addch('-');
+      v := -v;
+    END;
+    StrUtil.FormatCard(v, 1, s);
+    addstr(s);
+  END printsignedword;
+  
   PROCEDURE incpc();
   BEGIN
     INC(pc, 2);
     INC(numOpcodes, 1);
   END incpc;
 
-  PROCEDURE fetchword();
+  PROCEDURE fetchword(format: CARDINAL);
   BEGIN
     disp := pc^;
-    printhexword(disp);
-    x14342();
+    CASE format OF
+      0: printhexword(disp); addch('H');
+    | 1: printword(disp);
+    | 2: printsignedword(disp);
+    | 3: printhexword(disp);
+    END;
     incpc();
   END fetchword;
   
@@ -170,12 +181,16 @@ VAR unused: INTEGER;
       printaddrreg(reg);
       addch(')');
     | 5: (* d16(An) *)
-      fetchword();
+      fetchword(2);
       addch('(');
       printaddrreg(reg);
       addch(')');
     | 6: (* d8(An,Xn.s) *)
-      printhexbyte(pc^ MOD 256);
+      disp := pc^ MOD 256;
+      IF disp >= 128 THEN
+        DEC(disp, 256);
+      END;
+      printsignedword(disp);
       addch('(');
       printaddrreg(reg);
       addch(',');
@@ -192,30 +207,28 @@ VAR unused: INTEGER;
         addch('L');
       END;
       addch(')');
-      x14342();
       incpc();
     | 7:
       CASE reg MOD 8 OF
         0: (* abs.w *)
-        fetchword();
-        addch('H');
+        fetchword(0);
       | 1: (* abs.l *)
-        fetchword();
-        fetchword();
+        fetchword(3);
+        fetchword(3);
         addch('H');
       | 2: (* d16(pc) *)
-        addch('['); (* FIXME: confusing notation *)
-        fetchword();
-        addstr('H] = ');
+        addch('[');
+        fetchword(2);
+        addstr('(PC)] = ');
         printtarget(2);
       | 3: (* d8(pc,Xn) *)
-        addch('['); (* FIXME: confusing notation *)
-        printhexbyte(pc^ MOD 256);
-        addstr('] = ');
+        addch('[');
         disp := pc^ MOD 256;
         IF disp >= 128 THEN
           DEC(disp, 256);
         END;
+        printsignedword(disp);
+        addstr('(PC)] = ');
         printtarget(2);
         addch('(');
         IF SignedWord(pc^) >= 0 THEN
@@ -231,21 +244,18 @@ VAR unused: INTEGER;
           addch('L');
         END;
         addch(')');
-        x14342();
         incpc();
       | 4: (* #imm *)
         addch('#');
         CASE opsize OF
           0:
           printhexbyte(pc^ MOD 256);
-          x14342();
           incpc();
         | 1:
-          fetchword();
-          addch('H');
+          fetchword(2);
         | 2:
-          fetchword();
-          fetchword();
+          fetchword(3);
+          fetchword(3);
           addch('H');
         | ELSE
           addstr('???');
@@ -335,19 +345,17 @@ VAR unused: INTEGER;
   
   PROCEDURE printimmedinst(VAR s: ARRAY OF CHAR);
   BEGIN
-    CODE(nop); (* XXX *)
     addstr(s);
     IF (opcode MOD 64) = 60 THEN
       addspaces();
       addch('#');
       IF ((opcode DIV 64) MOD 2) = 0 THEN
         printhexbyte(pc^ MOD 256);
-        x14342();
         incpc();
         addstr(',CCR');
       ELSE
-        fetchword();
-        addstr('H,SR');
+        fetchword(0);
+        addstr(',SR');
       END;
     ELSE
       printsize();
@@ -356,14 +364,12 @@ VAR unused: INTEGER;
       CASE ((opcode DIV 64) MOD 4) OF
         0:
         printhexbyte(pc^ MOD 256);
-        x14342();
         incpc();
       | 1:
-        fetchword();
-        addch('H');
+        fetchword(0);
       | 2:
-        fetchword();
-        fetchword();
+        fetchword(3);
+        fetchword(3);
         addch('H');
       | ELSE
         addstr('???');
@@ -375,7 +381,6 @@ VAR unused: INTEGER;
   
   PROCEDURE printmoveinst(VAR s: ARRAY OF CHAR);
   BEGIN
-    CODE(nop); (* XXX *)
     addstr(s);
     addspaces();
     printeamode((opcode DIV 8) MOD 8, opcode MOD 8);
@@ -385,7 +390,6 @@ VAR unused: INTEGER;
   
   PROCEDURE printmonadicinst(VAR s: ARRAY OF CHAR);
   BEGIN
-    CODE(nop); (* XXX *)
     addstr(s);
     printsize();
     addspaces();
@@ -394,7 +398,6 @@ VAR unused: INTEGER;
 
   PROCEDURE printdyadicinst(VAR s: ARRAY OF CHAR);
   BEGIN
-    CODE(nop); (* XXX *)
     addstr(s);
     IF ((opcode DIV 64) MOD 4) = 3 THEN
       addstr('A.');
@@ -436,16 +439,16 @@ VAR unused: INTEGER;
       END;
       addspaces();
       IF ((opcode DIV 128) MOD 2) = 0 THEN
-        fetchword();
-        addstr('H(');
+        fetchword(2);
+        addstr('(');
         printaddrreg(opcode MOD 8);
         addstr('),');
         printdatareg((opcode DIV 512) MOD 8);
       ELSE
         printdatareg((opcode DIV 512) MOD 8);
         addch(',');
-        fetchword();
-        addstr('H(');
+        fetchword(2);
+        addstr('(');
         printaddrreg(opcode MOD 8);
         addch(')');
       END;
@@ -472,8 +475,8 @@ VAR unused: INTEGER;
         END;
         addspaces();
         addch('#');
-        fetchword();
-        addstr('H,');
+        fetchword(1);
+        addstr(',');
         IF ((opcode DIV 8) MOD 8) = 0 THEN
           opsize := 0;
         ELSE
@@ -576,16 +579,16 @@ VAR unused: INTEGER;
           addspaces();
           (* FIXME: decode register list instead of writing constant *)
           addch('#');
-          fetchword();
-          addstr('H,');
+          fetchword(0);
+          addstr(',');
         | 3:
           addstr('MOVEM.L');
           opsize := 2;
           addspaces();
           (* FIXME: decode register list instead of writing constant *)
           addch('#');
-          fetchword();
-          addstr('H,');
+          fetchword(0);
+          addstr(',');
         END;
         printea();
       END;
@@ -634,15 +637,13 @@ VAR unused: INTEGER;
         addstr('TRAP');
         addspaces();
         addch('#');
-        (* FIXME: print decimal *)
-        printhexchar(opcode MOD 16);
+        printword(opcode MOD 16);
       ELSIF (subcode >= 80) AND (subcode <= 87) THEN
         addstr('LINK');
         addspaces();
         printaddrreg(opcode MOD 8);
         addstr(',#');
-        fetchword();
-        addch('H');
+        fetchword(2);
       ELSIF (subcode >= 88) AND (subcode <= 95) THEN
         addstr('UNLK');
         addspaces();
@@ -751,8 +752,8 @@ BEGIN (* disasm *)
         printdatareg(opcode MOD 8);
         addch(',');
         addch('[');
-        fetchword();
-        addstr('H] = ');
+        fetchword(0);
+        addstr('] = ');
         printtarget(2);
       ELSE
         addch('S');
@@ -792,8 +793,8 @@ BEGIN (* disasm *)
       printtarget(0);
     ELSE
       addch('[');
-      fetchword();
-      addstr('H] = ');
+      fetchword(0);
+      addstr('] = ');
       printtarget(2);
     END;
   

@@ -11,34 +11,15 @@ MODULE declnk;
 
 
 FROM SYSTEM IMPORT ADDRESS, ADR, BYTE;
-FROM SYSTEM IMPORT SETREG, CODE;
 
-IMPORT GEMDOS;
-IMPORT GEMAESbase;
-IMPORT AESGraphics;
-IMPORT AESWindows;
-IMPORT GEMVDIbase;
-IMPORT VDIAttribs;
-IMPORT VDIOutputs;
-IMPORT VDIControls;
-IMPORT VDIRasters;
 IMPORT AppBase;
 IMPORT AppWindow;
-IMPORT AESApplications;
-IMPORT AESForms;
-IMPORT AESShells;
-IMPORT Strings;
-IMPORT Buffers;
 IMPORT ExecUtil;
-IMPORT AESEvents;
 IMPORT M2Option;
 IMPORT NewStreams;
 IMPORT StrUtil;
 IMPORT disasm;
-IMPORT Filepool;
 FROM MCLnkFileDefs IMPORT LnkFileSymbols;
-
-CONST nop = 04E71H;
 
 VAR crc: CARDINAL;
 VAR outputFailed: BOOLEAN;
@@ -51,24 +32,20 @@ CONST ParamErrStr = 'Decode parameter error.';
 
 PROCEDURE ParameterError(VAR s: ARRAY OF CHAR);
 BEGIN
-  CODE(nop); (* XXX *)
   AppWindow.WriteString(s);
   AppWindow.WriteLn();
 END ParameterError;
 
 
 PROCEDURE OpenFiles();
-VAR lnkfilename: ARRAY[0..49] OF CHAR; (* FIXME: too short *)
-    decfilename: ARRAY[0..49] OF CHAR; (* FIXME: too short *)
+VAR lnkfilename: ARRAY[0..127] OF CHAR;
+    decfilename: ARRAY[0..127] OF CHAR;
     success: BOOLEAN;
     ok: BOOLEAN;
     info: NewStreams.OptionInfoRec;
-    list: INTEGER;
-    unused: INTEGER;
 BEGIN
   NewStreams.FileLookup('Link file', '', ORD(AppBase.lnk), lnkFile, TRUE, FALSE, lnkfilename, success);
   IF success THEN
-    list := Filepool.PoolAlloc('List');
     NewStreams.GetOptionInfo(info, ok);
     NewStreams.FileLookupOutput('Decode file', lnkfilename, ORD(AppBase.dec), decFile, FALSE, FALSE, decfilename, success);
   END;
@@ -327,7 +304,7 @@ BEGIN
 END DecodeLinkCodeVersion;
 
 
-PROCEDURE DecodeModuleHeader();
+PROCEDURE DecodeModuleName();
 VAR header: RECORD CASE :BOOLEAN OF
       FALSE: w: ARRAY [0..11] OF CARDINAL;
      | TRUE: s: ARRAY[0..23] OF CHAR;
@@ -339,7 +316,7 @@ BEGIN
     Read16Bit(header.w[i]);
   END;
   WriteString(header.s);
-END DecodeModuleHeader;
+END DecodeModuleName;
 
 
 PROCEDURE DecodeWord();
@@ -444,7 +421,6 @@ END DecodeCrc;
 
 PROCEDURE PrintDirective(VAR s: ARRAY OF CHAR; sy: CARDINAL);
 BEGIN
-  CODE(nop); (* XXX *)
   AppWindow.WriteString(s);
   AppWindow.WriteLn();
 END PrintDirective;
@@ -465,16 +441,15 @@ BEGIN
       WriteLn();
       Read16Bit(w);
       IF w <= ORD(MAX(LnkFileSymbols)) THEN
-        (* sy := LnkFileSymbols(w); *)
-        CODE(03A2EH, 0FFF8H, 01D45H, 0FFFFH); (* XXX *)
+        sy := LnkFileSymbols(w);
         DecodeSymbol(sy);
         CASE sy OF
           scmodHeader:
           WriteString(': MODULE ');
-          DecodeModuleHeader();
+          DecodeModuleName();
           DecodeModuleKey();
         | import:
-          DecodeModuleHeader();
+          DecodeModuleName();
           DecodeModuleKey();
           DecodeModnum();
         | dataSize:
